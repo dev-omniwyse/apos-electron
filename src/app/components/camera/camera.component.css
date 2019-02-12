@@ -1,0 +1,215 @@
+.cdta{
+    background-color: #0f2b5b;
+    padding:15px;
+    text-align:left;
+    color: white;
+    font-style:italic
+}
+.cdtabtn{
+    padding:150px; 
+    text-align:center
+}
+
+.btnsize{
+    margin-top:5px;
+     width: 450px;
+     height: 100px;
+     background-color: #337ab7;
+     border-radius: 6px;
+     color: white;
+}
+
+.cdta_btn_adm_prnt{
+    margin-top:5px;
+     width: 150px;
+     height: 50px;
+     background-color:#d86404;
+     border-radius: 6px;
+}
+
+.img-circle-sm {      
+    float: left;
+    height: 45px;
+    margin-top: -4px;
+    width: 45px;
+}
+
+.sccw .sccw-spacer,
+.sccw .content-tab-margin {
+
+	margin: 15px;
+}
+
+.sccw-spacer{
+    margin: 20px 0;
+}
+.tab-content{
+    padding: 20px;
+}
+
+.sccw .header-text,
+.sccw input,
+.sccw .strong-span{
+	font-weight: bolder;	
+}
+
+.clearfix{
+    clear: both;
+}
+
+
+
+.container{
+	max-width: 1198px;
+	margin: 0 auto
+}
+
+.breadcrumb{
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 10px 25px;
+	margin: 20px 0;
+}
+.step{
+	margin-right: 5px
+}
+.step span{
+	float: left
+}
+
+
+.step-completed .step-number{
+	background: #aaaaaa;
+	color: #fff;
+	padding: 5px 9px;
+	border-radius: 50%
+	
+}
+
+.step-not-completed{
+	color: #aaa
+}
+.step-not-completed .step-number{
+	color: #aaa;
+	padding: 5px 9px;
+	border-radius: 50%;
+	border:2px solid #ccc
+	
+}
+
+.step .step-arrow{
+	font-size: 27px;
+    line-height: 25px;
+    margin: 3px;
+    display: block;
+    float: left;
+	
+}
+.step-txt{
+	padding: 5px;
+}
+.float-left{
+	float: left
+}
+.float-right{
+	float: right
+}
+
+.clearfix{
+	clear: both
+}
+
+.container-in-a{
+	float: left;
+	width: 50%;
+}
+
+.id-card-head h1{
+	    margin: 5px 5px 0 10px;
+    font-size: 32px;
+    font-weight: 100;
+	color: #333;
+}
+
+.id-card-head .id-card-sub-head{
+	color: #666;
+    margin:5px 0 15px 75px;
+}
+
+.id-card-wizard img{
+	margin: 15px 0 0 15px
+}
+
+.id-card-set{
+	border-radius: 4px;
+	
+	padding: 15px;
+}
+
+.id-card-img{
+	width: 200px;
+    border: 1px solid #fff;
+    height: 200px;
+}
+
+
+
+.id-card-txt{
+	width: 60%;
+}
+.id-card-txt h2{
+	margin: 5px 0;
+	font-size: 25px
+}
+
+.connector-logo{
+	margin: 25px 0
+}
+
+.btn{
+	background-color: #3b80c3;
+	font-size: 16px;
+	border:1px solid #2064a7;
+	color: #fff;
+	border-radius: 4px;
+	padding: 7px 12px;
+}
+
+
+.btn:hover{
+	background-color: #2584A4;
+	font-size: 16px;
+	border:1px solid #4298b5;
+	color: #fff;
+	border-radius: 4px;
+	padding: 7px 12px;
+}
+
+.photo-right h2{
+	font-weight: 100;
+	color: #333333;
+}
+
+.text-right{
+	text-align: right
+}
+
+.img-txt{
+	margin: 5px 0;
+	font-style: italic;
+	font-size: 15px;
+}
+
+.upload-btn{
+	margin: 10px 0
+}
+
+
+#cameraParent{
+	float: left;
+    width: 200px;
+}
+
+#cameraParent img{
+	border:1px solid #ccc;
+}

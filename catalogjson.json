@@ -1,0 +1,1601 @@
+{
+    "Offering": [
+        {
+            "OfferingId": 1,
+            "ProductIdentifier": "1",
+            "Description": "bat",
+            "UnitPrice": 12.00,
+            "IsTaxable": false,
+            "IsMerchandise": true,
+            "IsAccountBased": false,
+            "IsCardBased": false
+        },
+        {
+            "OfferingId": 2,
+            "ProductIdentifier": "2",
+            "Description": "TARC Bottle",
+            "UnitPrice": 12.00,
+            "IsTaxable": false,
+            "IsMerchandise": true,
+            "IsAccountBased": false,
+            "IsCardBased": false
+        },
+        {
+            "OfferingId": 3,
+            "ProductIdentifier": "3",
+            "Description": "TARC Bag",
+            "UnitPrice": 5.60,
+            "IsTaxable": false,
+            "IsMerchandise": true,
+            "IsAccountBased": false,
+            "IsCardBased": false
+        },
+        {
+            "OfferingId": 4,
+            "ProductIdentifier": "4",
+            "Description": "V12 BAG",
+            "UnitPrice": 9.00,
+            "IsTaxable": false,
+            "IsMerchandise": true,
+            "IsAccountBased": false,
+            "IsCardBased": false
+        },
+        {
+            "OfferingId": 5,
+            "ProductIdentifier": "225",
+            "Description": "Smart Card",
+            "UnitPrice": 5.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "WalletType": {
+                "WalletTypeId": 3,
+                "Description": "Smart Card"
+            },
+            "IsAccountBased": false,
+            "IsCardBased": false
+        },
+        {
+            "OfferingId": 6,
+            "ProductIdentifier": "226",
+            "Description": "30-Day Express - Desfire",
+            "UnitPrice": 85.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 97,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "30-Day Express - Desfire",
+                "DescriptionLong": "30-Day Express - Desfire",
+                "Price": 85.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    },
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    },
+                    {
+                        "FareCodeId": 7,
+                        "Description": "Placeholder 0"
+                    },
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 10
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 7,
+            "ProductIdentifier": "227",
+            "Description": "30-Day Express - LUCC",
+            "UnitPrice": 0.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 103,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "30-Day Express - LUCC",
+                "DescriptionLong": "30-Day Express - LUCC",
+                "Price": 0.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 15
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 8,
+            "ProductIdentifier": "228",
+            "Description": "30-Day Local - Desfire",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 96,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "30-Day Local - Desfire",
+                "DescriptionLong": "30-Day Local - Desfire",
+                "Price": 50.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    },
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    },
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    },
+                    {
+                        "FareCodeId": 7,
+                        "Description": "Placeholder 0"
+                    },
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 9
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 9,
+            "ProductIdentifier": "229",
+            "Description": "30-Day Local - LUCC",
+            "UnitPrice": 0.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 102,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "30-Day Local - LUCC",
+                "DescriptionLong": "30-Day Local - LUCC",
+                "Price": 0.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 14
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 10,
+            "ProductIdentifier": "230",
+            "Description": "7-Day Express - Desfire",
+            "UnitPrice": 23.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 95,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "7-Day Express - Desfire",
+                "DescriptionLong": "7-Day Express - Desfire",
+                "Price": 23.00,
+                "Value": 7.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    },
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    },
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    },
+                    {
+                        "FareCodeId": 7,
+                        "Description": "Placeholder 0"
+                    },
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 8
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 11,
+            "ProductIdentifier": "231",
+            "Description": "7-Day Local - Desfire",
+            "UnitPrice": 40.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 94,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "7-Day Local - Desfire",
+                "DescriptionLong": "7-Day Local - Desfire",
+                "Price": 40.00,
+                "Value": 7.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "ExpirationTypeId": 0,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    },
+                    {
+                        "FareCodeId": 2,
+                        "Description": "Corporate"
+                    },
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    },
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    },
+                    {
+                        "FareCodeId": 7,
+                        "Description": "Placeholder 0"
+                    },
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 7
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 12,
+            "ProductIdentifier": "232",
+            "Description": "Adult 10-ride - Desfire",
+            "UnitPrice": 15.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 90,
+                "TicketType": {
+                    "TicketTypeId": 2,
+                    "Description": "Stored Ride"
+                },
+                "Description": "Adult 10-ride - Desfire",
+                "DescriptionLong": "Adult 10-ride - Desfire",
+                "Price": 15.00,
+                "Value": 10.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 2,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 13,
+            "ProductIdentifier": "233",
+            "Description": "Adult 24-Hour Express- Desfire",
+            "UnitPrice": 5.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 89,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "Adult 24-Hour Express- Desfire",
+                "DescriptionLong": "Adult 24-Hour Express- Desfire",
+                "Price": 5.00,
+                "Value": 0.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 2,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 14,
+            "ProductIdentifier": "234",
+            "Description": "Adult 24-Hour Local - Desfire",
+            "UnitPrice": 5.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 93,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "Adult 24-Hour Local - Desfire",
+                "DescriptionLong": "Adult 24-Hour Local - Desfire",
+                "Price": 5.00,
+                "Value": 0.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 2,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 15,
+            "ProductIdentifier": "235",
+            "Description": "Adult 4-Hour Express - Desfire",
+            "UnitPrice": 8.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 88,
+                "TicketType": {
+                    "TicketTypeId": 3,
+                    "Description": "Period Pass"
+                },
+                "Description": "Adult 4-Hour Express - Desfire",
+                "DescriptionLong": "Adult 4-Hour Express - Desfire",
+                "Price": 8.00,
+                "Value": 0.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "ExpirationTypeId": 3,
+                "ExpirationTime": 240,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 1,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 16,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 50.00,
+                "Value": 50.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 17,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 20.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 20.00,
+                "Value": 20.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 18,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 40.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 40.00,
+                "Value": 40.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 19,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 10.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 10.00,
+                "Value": 10.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 20,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 30.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 30.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 21,
+            "ProductIdentifier": "236",
+            "Description": "Pay As You Go Student",
+            "UnitPrice": 0.0,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 105,
+                "TicketType": {
+                    "TicketTypeId": 4
+                },
+                "Description": "Pay As You Go Student",
+                "DescriptionLong": "Pay As You Go Student",
+                "Price": 0.0,
+                "Value": 0.0,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 3,
+                        "Description": "Student"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 4
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 22,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 20.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 20.00,
+                "Value": 20.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 23,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 30.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 30.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 24,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 50.00,
+                "Value": 50.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 25,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 40.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 40.00,
+                "Value": 40.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 26,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 10.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 10.00,
+                "Value": 10.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 27,
+            "ProductIdentifier": "237",
+            "Description": "Pay As You Go Tarc3",
+            "UnitPrice": 0.0,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 106,
+                "TicketType": {
+                    "TicketTypeId": 4
+                },
+                "Description": "Pay As You Go Tarc3",
+                "DescriptionLong": "Pay As You Go Tarc3",
+                "Price": 0.0,
+                "Value": 0.0,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 4,
+                        "Description": "Tarc3"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 5
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 28,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 20.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 20.00,
+                "Value": 20.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 29,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 40.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 40.00,
+                "Value": 40.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 30,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 50.00,
+                "Value": 50.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 31,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 10.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 10.00,
+                "Value": 10.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 32,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 30.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 30.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 33,
+            "ProductIdentifier": "238",
+            "Description": "Pay As You Go Senior",
+            "UnitPrice": 0.0,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 99,
+                "TicketType": {
+                    "TicketTypeId": 4
+                },
+                "Description": "Pay As You Go Senior",
+                "DescriptionLong": "Pay As You Go Senior",
+                "Price": 0.0,
+                "Value": 0.0,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 16,
+                        "Description": "Senior"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 2
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 34,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 40.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 40.00,
+                "Value": 40.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 35,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 20.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 20.00,
+                "Value": 20.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 36,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 50.00,
+                "Value": 50.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 37,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 30.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 30.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 38,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 10.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 10.00,
+                "Value": 10.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 39,
+            "ProductIdentifier": "239",
+            "Description": "Pay As You Go S/D/M",
+            "UnitPrice": 0.0,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 104,
+                "TicketType": {
+                    "TicketTypeId": 4
+                },
+                "Description": "Pay As You Go S/D/M",
+                "DescriptionLong": "Pay As You Go S/D/M",
+                "Price": 0.0,
+                "Value": 0.0,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": false,
+                "FareCode": [
+                    {
+                        "FareCodeId": 10,
+                        "Description": "S/D/M"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 3
+            },
+            "IsAccountBased": false,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 40,
+            "ProductIdentifier": "240",
+            "Description": "Pay As You Go Regular",
+            "UnitPrice": 30.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 86,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Regular",
+                "DescriptionLong": "Pay As You Go Regular",
+                "Price": 30.00,
+                "Value": 30.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 1
+            },
+            "IsAccountBased": true,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 41,
+            "ProductIdentifier": "240",
+            "Description": "Pay As You Go Regular",
+            "UnitPrice": 50.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 86,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Regular",
+                "DescriptionLong": "Pay As You Go Regular",
+                "Price": 50.00,
+                "Value": 50.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 1
+            },
+            "IsAccountBased": true,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 42,
+            "ProductIdentifier": "240",
+            "Description": "Pay As You Go Regular",
+            "UnitPrice": 20.00,
+            "IsTaxable": false,
+            "IsMerchandise": false,
+            "DateEffective": 1534982400000,
+            "DateExpires": 1850601600000,
+            "Ticket": {
+                "TicketId": 86,
+                "TicketType": {
+                    "TicketTypeId": 1,
+                    "Description": "Stored Value"
+                },
+                "Description": "Pay As You Go Regular",
+                "DescriptionLong": "Pay As You Go Regular",
+                "Price": 20.00,
+                "Value": 20.00,
+                "DateStartEpochDays": 0,
+                "DateExpiresEpochDays": 0,
+                "IsSubscribable": true,
+                "FareCode": [
+                    {
+                        "FareCodeId": 1,
+                        "Description": "Regular"
+                    }
+                ],
+                "WalletType": [
+                    {
+                        "WalletTypeId": 3,
+                        "Description": "Smart Card"
+                    }
+                ],
+                "Group": 3,
+                "Designator": 1
+            },
+            "IsAccountBased": true,
+            "IsCardBased": true
+        },
+        {
+            "OfferingId": 43,
+            "ProductIdentifier": "240",
+            "Description":"Pay As You Go Regular",
+"UnitPrice":40.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":86,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Pay As You Go Regular","DescriptionLong":"Pay As You Go Regular","Price":40.00,"Value":40.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":1},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":44,"ProductIdentifier":"240","Description":"Pay As You Go Regular",
+"UnitPrice":17.77,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":86,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Pay As You Go Regular","DescriptionLong":"Pay As You Go Regular","Price":17.77,"Value":17.77,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":1},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":45,"ProductIdentifier":"240","Description":"Pay As You Go Regular","UnitPrice":0.0,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":86,"TicketType":{"TicketTypeId":4},"Description":"Pay As You Go Regular","DescriptionLong":"Pay As You Go Regular","Price":0.0,"Value":0.0,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":1},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":46,"ProductIdentifier":"241","Description":"Fund","UnitPrice":24.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Fund","DescriptionLong":"Fund","Price":24.00,"Value":24.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":47,"ProductIdentifier":"241","Description":"Fund","UnitPrice":48.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Fund","DescriptionLong":"Fund","Price":48.00,"Value":48.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":48,"ProductIdentifier":"241","Description":"Fund","UnitPrice":12.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Fund","DescriptionLong":"Fund","Price":12.00,"Value":12.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":49,"ProductIdentifier":"241","Description":"Fund","UnitPrice":56.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Fund","DescriptionLong":"Fund","Price":56.00,"Value":56.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":50,"ProductIdentifier":"241","Description":"Fund","UnitPrice":36.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Fund","DescriptionLong":"Fund","Price":36.00,"Value":36.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":51,"ProductIdentifier":"241","Description":"Fund","UnitPrice":0.0,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":122,"TicketType":{"TicketTypeId":4},"Description":"Fund","DescriptionLong":"Fund","Price":0.0,"Value":0.0,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":7},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":52,"ProductIdentifier":"242","Description":"Fixed Monthly for PPO","UnitPrice":18.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":120,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Fixed Monthly for PPO","DescriptionLong":"Fixed Monthly for PPO","Price":18.00,"Value":30.00,"DateStartEpochDays":17622,"DateExpiresEpochDays":17651,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"},{"FareCodeId":3,"Description":"Student"},{"FareCodeId":16,"Description":"Senior"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":16},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":53,"ProductIdentifier":"243","Description":"Adult 4-Hour Local - LUCC","UnitPrice":0.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":100,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Adult 4-Hour Local - LUCC","DescriptionLong":"Adult 4-Hour Local - LUCC","Price":0.00,"Value":0.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":3,"ExpirationTime":240,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"Group":1,"Designator":12},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":54,"ProductIdentifier":"244","Description":"Adult 4-Hour Local - Desfire","UnitPrice":1.75,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":87,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Adult 4-Hour Local - Desfire","DescriptionLong":"Adult 4-Hour Local - Desfire","Price":1.75,"Value":0.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":3,"ExpirationTime":240,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":1},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":55,"ProductIdentifier":"245","Description":"Adult 4-Hour Express - LUCC","UnitPrice":0.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":101,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Adult 4-Hour Express - LUCC","DescriptionLong":"Adult 4-Hour Express - LUCC","Price":0.00,"Value":0.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":3,"ExpirationTime":240,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"Group":1,"Designator":13},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":56,"ProductIdentifier":"246","Description":"Reduced 10-ride - Desfire","UnitPrice":8.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":91,"TicketType":{"TicketTypeId":2,"Description":"Stored Ride"},"Description":"Reduced 10-ride - Desfire","DescriptionLong":"Reduced 10-ride - Desfire","Price":8.00,"Value":10.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":true,"FareCode":[{"FareCodeId":2,"Description":"Corporate"},{"FareCodeId":3,"Description":"Student"},{"FareCodeId":4,"Description":"Tarc3"},{"FareCodeId":7,"Description":"Placeholder 0"},{"FareCodeId":16,"Description":"Senior"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":2,"Designator":2},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":57,"ProductIdentifier":"247","Description":"Reduced 24-Hour - Desfire","UnitPrice":3.50,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":107,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reduced 24-Hour - Desfire","DescriptionLong":"Reduced 24-Hour - Desfire","Price":3.50,"Value":1.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":2,"FareCode":[{"FareCodeId":2,"Description":"Corporate"},{"FareCodeId":3,"Description":"Student"},{"FareCodeId":4,"Description":"Tarc3"},{"FareCodeId":7,"Description":"Placeholder 0"},{"FareCodeId":16,"Description":"Senior"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":6},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":58,"ProductIdentifier":"248","Description":"Reduced 4-Hour - Desfire","UnitPrice":3.50,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":92,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reduced 4-Hour - Desfire","DescriptionLong":"Reduced 4-Hour - Desfire","Price":3.50,"Value":0.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":3,"ExpirationTime":240,"FareCode":[{"FareCodeId":16,"Description":"Senior"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":3},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":59,"ProductIdentifier":"249","Description":"Reg Period Pass","UnitPrice":13.50,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":116,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reg Period Pass","DescriptionLong":"Reg Period Pass","Price":13.50,"Value":31.00,"DateStartEpochDays":17897,"DateExpiresEpochDays":17927,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":0},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":60,"ProductIdentifier":"250","Description":"Reg Stored Ride","UnitPrice":15.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":115,"TicketType":{"TicketTypeId":2,"Description":"Stored Ride"},"Description":"Reg Stored Ride","DescriptionLong":"Reg Stored Ride","Price":15.00,"Value":13.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":2,"Designator":0},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":61,"ProductIdentifier":"252","Description":"Rolling Pass for PPO","UnitPrice":34.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":121,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Rolling Pass for PPO","DescriptionLong":"Rolling Pass for PPO","Price":34.00,"Value":31.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"},{"FareCodeId":3,"Description":"Student"},{"FareCodeId":16,"Description":"Senior"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":17},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":62,"ProductIdentifier":"253","Description":"SR PPO","UnitPrice":16.50,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":119,"TicketType":{"TicketTypeId":2,"Description":"Stored Ride"},"Description":"SR PPO","DescriptionLong":"SR PPO","Price":16.50,"Value":5.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"FareCode":[{"FareCodeId":1,"Description":"Regular"},{"FareCodeId":3,"Description":"Student"},{"FareCodeId":16,"Description":"Senior"},{"FareCodeId":128,"Description":"Employee"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":2,"Designator":1},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":63,"ProductIdentifier":"254","Description":"Summer Youth Pass - Desfire","UnitPrice":30.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":98,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Summer Youth Pass - Desfire","DescriptionLong":"Summer Youth Pass - Desfire","Price":30.00,"Value":45.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":2,"Description":"Corporate"},{"FareCodeId":3,"Description":"Student"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":11},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":64,"ProductIdentifier":"256","Description":"ZONE2","UnitPrice":50.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1534982400000,"DateExpires":1850601600000,"Ticket":{"TicketId":123,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"ZONE2","DescriptionLong":"ZONE2","Price":50.00,"Value":31.00,"DateStartEpochDays":17897,"DateExpiresEpochDays":17927,"IsSubscribable":false,"ExpirationTypeId":1,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":
+    3,"Description":"Smart Card"}],"Group":1,"Designator":18},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":65,"ProductIdentifier":"277","Description":"Reg V12 Stored Value","UnitPrice":15.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547078400000,"DateExpires":1862697600000,"Ticket":{"TicketId":134,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Reg V12 Stored Value","DescriptionLong":"Reg V12 Stored Value","Price":15.00,"Value":15.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":8},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":66,"ProductIdentifier":"281","Description":"Reg V12 Stored Ride","UnitPrice":20.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547078400000,"DateExpires":1862697600000,"Ticket":{"TicketId":135,"TicketType":{"TicketTypeId":2,"Description":"Stored Ride"},"Description":"Reg V12 Stored Ride","DescriptionLong":"Reg V12 Stored Ride","Price":20.00,"Value":20.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":2,"Designator":5},"IsAccountBased":false,"IsCardBased":true},{"OfferingId":67,"ProductIdentifier":"285","Description":"Reg V12 Fixed Monthly PP","UnitPrice":37.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547078400000,"DateExpires":1862697600000,"Ticket":{"TicketId":136,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reg V12 Fixed Monthly PP","DescriptionLong":"Reg V12 Fixed Monthly PP","Price":37.00,"Value":31.00,"DateStartEpochDays":17956,"DateExpiresEpochDays":17986,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":21},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":68,"ProductIdentifier":"289","Description":"Reg V12 Fixed Date Range PP","UnitPrice":55.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547078400000,"DateExpires":1862697600000,"Ticket":{"TicketId":137,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reg V12 Fixed Date Range PP","DescriptionLong":"Reg V12 Fixed Date Range PP","Price":55.00,"Value":50.00,"DateStartEpochDays":17906,"DateExpiresEpochDays":17955,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":22},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":69,"ProductIdentifier":"297","Description":"Reg V12 Rolling Start PP","UnitPrice":35.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547424000000,"DateExpires":1863043200000,"Ticket":{"TicketId":138,"TicketType":{"TicketTypeId":3,"Description":"Period Pass"},"Description":"Reg V12 Rolling Start PP","DescriptionLong":"Reg V12 Rolling Start PP","Price":35.00,"Value":31.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"ExpirationTypeId":0,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":1,"Designator":24},"IsAccountBased":true,"IsCardBased":true},{"OfferingId":70,"ProductIdentifier":"299","Description":"Test Stored Value","UnitPrice":55.00,"IsTaxable":false,"IsMerchandise":false,"DateEffective":1547596800000,"DateExpires":1863216000000,"Ticket":{"TicketId":139,"TicketType":{"TicketTypeId":1,"Description":"Stored Value"},"Description":"Test Stored Value","DescriptionLong":"Test Stored Value","Price":55.00,"Value":55.00,"DateStartEpochDays":0,"DateExpiresEpochDays":0,"IsSubscribable":false,"FareCode":[{"FareCodeId":1,"Description":"Regular"}],"WalletType":[{"WalletTypeId":3,"Description":"Smart Card"}],"Group":3,"Designator":9},"IsAccountBased":false,"IsCardBased":true}]}

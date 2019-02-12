@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js">
+</script>
+<script>
+$(document).ready(function(){
+   $("button").click(function(){
+       $.get("http://localhost:3000/run", function(data, status){
+        alert("\nStatus: " + data.status);
+    });
+   });
+});
+
+</script>
+</head>
+<body>
+
+<h2>Click The below button to launch APOS application</h2>
+<button>Surprise</button>
+
+</body>
+</html>

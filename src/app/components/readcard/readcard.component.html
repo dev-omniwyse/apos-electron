@@ -1,0 +1,127 @@
+<div class="main-container doNotPrint" *ngIf="carddata.length == 0">
+	<!-- <div class="header flex">
+		<div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
+		<div class="header-info pull-right">
+			<div class="login-info">
+				<div>CDTA Admin <span>|</span> Terminal: 1258</div>
+				<div><a href="#">logout</a></div>
+			</div>
+		</div>
+	</div> -->
+	<div class="content-container container-padding">
+		<div class="alert-msg">Main Shift is Closed</div>
+		<div class="clearfix"></div>
+		<h1>Card | Account</h1>
+	</div>
+
+	<div class="flex container-padding flex-column">
+		<button class="card-btn"  (click)="getProductCatalogJSON(); newFareCard($event)">
+			New Fare Card
+			<img src="assets/images/arrow-pointing-to-right.svg" />
+		</button>
+		<button class="card-btn"  (click)="readCard($event); getProductCatalogJSON()">
+			Existing Fare Card
+			<img src="assets/images/arrow-pointing-to-right.svg" />
+		</button>
+		<button class="card-btn" [routerLink]="['/carddata']" >
+			Non-Fare Product
+			<img src="assets/images/arrow-pointing-to-right.svg" />
+		</button>
+		<!-- <button class="card-btn"  (click)="writeCard($event)">
+			Go To Camera
+			<img src="assets/images/arrow-pointing-to-right.svg" />
+		</button> -->
+	</div>
+	<div class="flex container-padding flex-row admin-btn pull-left">
+		<div class="card-btn-orange">
+			Admin
+			<img src="assets/images/user.svg" />
+		</div>
+	</div>
+</div>
+
+<!-- <div *ngIf="carddata.length > 0">
+		<app-carddata [Carddata]="carddata"></app-carddata>
+	  </div> -->
+
+
+
+<div class="main-container" *ngIf="carddata.length > 0">
+	<!-- <div class="header flex">
+		<div class="header-logo pull-left doNotPrint"><img src="assets/images/logo.jpg" /></div>
+		<div class="header-info pull-right doNotPrint">
+			<div class="login-info">
+				<div>CDTA Admin <span>|</span> Terminal: 1258</div>
+				<div><a href="#">logout</a></div>
+			</div>
+		</div>
+	</div> -->
+	<div class="content-container container-padding doNotPrint">
+		<h1>Summary</h1>
+	</div>
+
+	<div class="flex container-padding flex-row" *ngFor="let card of carddata ">
+		<div class="flex-devide">
+			<div class="flex">
+				<div class="flex-devide">
+					<p>{{card.printed_id}} - Active</p>
+					<p>Fare Code: Full</p>
+					<p>Card Exp: {{card.card_expiration_date_str}}</p>
+				</div>
+				<div class="flex-devide">
+					<p>Bonus Ride(s): 0</p>
+					<p>Next Bonus: 0/4</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex-devide text-right">
+			<button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print Summary</button>
+
+			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square" ></i> Add New Product to Card</button>
+		</div>
+	</div>
+
+
+	<div class="content-container container-padding">
+		<h1></h1>
+	</div>
+
+	<div class="flex container-padding flex-row">
+		
+		<table class="table-css">
+			<tr>
+				<th>Product</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th>Balance</th>
+			</tr>
+			<tr  *ngFor="let product of readCardData" >
+				<td>{{product.product}}</td>
+				<td>{{product.description}}</td>
+				<td>{{product.status}}</td>
+				<td>{{product.remainingValue}}</td>
+			</tr>
+			<!-- <tr>
+				<td>Frequent Rider</td>
+				<td>31 Day Pass</td>
+				<td>{{product.status}}</td>
+				<td>{{product.balance}}</td>
+			</tr> -->
+
+		</table>
+	</div>
+	
+
+	<div class="content-container container-padding">
+		<h1></h1>
+
+		<div class="flex">
+			<div class="flex-devide">
+				<button class="back-btn doNotPrint" (click)="Back();"><i class="fal fa-long-arrow-left"></i> Back</button>
+			</div>
+		</div>
+
+	</div>
+
+</div>

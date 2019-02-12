@@ -1,0 +1,102 @@
+Feb 12, 2019 10:43:38 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/logs/APOS.1549948418619.%u.%g.log
+Feb 12, 2019 10:43:38 AM com.genfare.pos.applet.POSApplet runInitialization
+WARNING: Exception initializing applet: null
+java.lang.NullPointerException
+	at java.util.Properties$LineReader.readLine(Properties.java:434)
+	at java.util.Properties.load0(Properties.java:353)
+	at java.util.Properties.load(Properties.java:341)
+	at com.genfare.pos.applet.POSApplet.runInitialization(POSApplet.java:294)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+Feb 12, 2019 10:43:45 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 12, 2019 10:43:46 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Got TerminalConfig FrontEnd JSON.
+Feb 12, 2019 10:44:39 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: Validate register device serial aposqe02 key XXXXXX
+Feb 12, 2019 10:44:39 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 10:44:39 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: Tenant: TARC, Env: qe, Schema: TARC
+Feb 12, 2019 10:44:39 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 10:44:39 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 10:44:39 AM com.genfare.pos.core.device.Terminal initialize
+WARNING: Error populating Terminal from Equipment record
+java.sql.SQLException: path to 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master./data/apos.db': 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master.\data' does not exist
+	at org.sqlite.core.CoreConnection.open(CoreConnection.java:117)
+	at org.sqlite.core.CoreConnection.<init>(CoreConnection.java:66)
+	at org.sqlite.jdbc3.JDBC3Connection.<init>(JDBC3Connection.java:21)
+	at org.sqlite.jdbc4.JDBC4Connection.<init>(JDBC4Connection.java:23)
+	at org.sqlite.SQLiteConnection.<init>(SQLiteConnection.java:45)
+	at org.sqlite.JDBC.createConnection(JDBC.java:114)
+	at org.sqlite.JDBC.connect(JDBC.java:88)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:270)
+	at com.genfare.pos.core.data.loader.ConnectionManager.openConnection(ConnectionManager.java:49)
+	at com.genfare.pos.core.data.loader.EquipmentLoader.load(EquipmentLoader.java:236)
+	at com.genfare.pos.core.data.loader.EquipmentLoader.loadEquipment(EquipmentLoader.java:224)
+	at com.genfare.pos.core.device.Terminal.initialize(Terminal.java:166)
+	at com.genfare.pos.core.converters.TerminalConverter.populateTerminal(TerminalConverter.java:433)
+	at com.genfare.pos.applet.POSApplet.validateRegisterDevice(POSApplet.java:188)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+Feb 12, 2019 10:44:39 AM com.genfare.pos.remote.AWSRemoteSystem uploadDeviceSetup
+INFO: uploadDeviceSetup
+Feb 12, 2019 10:44:39 AM com.genfare.pos.remote.AWSRemoteSystem uploadDeviceSetup
+INFO: Uploading
+Feb 12, 2019 10:44:39 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Event URL uploadSetup: api.qe.gfcp.io/services/device/v4/setup
+Feb 12, 2019 10:44:39 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Setup body: {"header":{"tenantName":"TARC","environment":"qe","deviceType":"apos","dateSent":{"value":"2019-02-12T05:14:39","localTime":false}},"deviceSetup":{"serialNumber":"aposqe02","key":"51q65ajtoe"}}
+Feb 12, 2019 10:44:39 AM com.genfare.pos.remote.security.Client postTrySsl
+INFO: Trying SSL URL
+Feb 12, 2019 10:44:40 AM com.genfare.pos.remote.security.Client post
+INFO: Outputstream written
+Feb 12, 2019 10:44:41 AM com.genfare.pos.remote.security.Client post
+INFO: Response Code: 200, Message: OK
+Feb 12, 2019 10:44:41 AM com.genfare.pos.remote.security.Client post
+INFO: Response was identified as a correct response.
+Feb 12, 2019 10:44:41 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Success was {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"31b9ad52-8880-4c5e-90fa-2089b6295fb4","timezone":"America/New_York"}}
+
+Feb 12, 2019 10:44:41 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: result {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"31b9ad52-8880-4c5e-90fa-2089b6295fb4","timezone":"America/New_York"}}
+
+Feb 12, 2019 10:44:41 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: Done validate register device.
+Feb 12, 2019 10:44:41 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: _validateRegisterDeviceResult getSuccess true
+Feb 12, 2019 10:44:41 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: _validateRegisterDeviceResult getMessage {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"31b9ad52-8880-4c5e-90fa-2089b6295fb4","timezone":"America/New_York"}}
+
+Feb 12, 2019 10:45:02 AM com.genfare.pos.core.data.loader.EquipmentLoader insert
+INFO: insert()
+Feb 12, 2019 10:45:02 AM com.genfare.pos.applet.POSApplet registerDevice
+WARNING: Exception registering device: path to 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master./data/apos.db': 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master.\data' does not exist
+java.sql.SQLException: path to 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master./data/apos.db': 'C:\Users\user\Desktop\apos_electron-master\apos_electron-master.\data' does not exist
+	at org.sqlite.core.CoreConnection.open(CoreConnection.java:117)
+	at org.sqlite.core.CoreConnection.<init>(CoreConnection.java:66)
+	at org.sqlite.jdbc3.JDBC3Connection.<init>(JDBC3Connection.java:21)
+	at org.sqlite.jdbc4.JDBC4Connection.<init>(JDBC4Connection.java:23)
+	at org.sqlite.SQLiteConnection.<init>(SQLiteConnection.java:45)
+	at org.sqlite.JDBC.createConnection(JDBC.java:114)
+	at org.sqlite.JDBC.connect(JDBC.java:88)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:270)
+	at com.genfare.pos.core.data.loader.ConnectionManager.openConnection(ConnectionManager.java:49)
+	at com.genfare.pos.core.data.loader.EquipmentLoader.insert(EquipmentLoader.java:130)
+	at com.genfare.pos.applet.POSApplet.registerDevice(POSApplet.java:244)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+

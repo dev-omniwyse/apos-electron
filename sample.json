@@ -1,0 +1,70 @@
+{
+    "userID": "admin@ta.com",
+    "timestamp": 1548956849820,
+    "transactionID": "1548956849834",
+    "transactionType": "Charge",
+    "transactionAmount": 12.5,
+    "salesAmount": 12.5,
+    "taxAmount": 0,
+    "items": [
+        {
+            "transactionID": "1548956849834",
+            "cardPID": "0000004524",
+            "cardUID": "1185357863206784",
+            "quantity": 0,
+            "productIdentifier": null,
+            "ticketTypeId": null,
+            "ticketValue": 0,
+            "slotNumber": 0,
+            "expirationDate": 18198,
+            "balance": 0,
+            "IsMerchandise": false,
+            "IsBackendMerchandise": false,
+            "IsFareCard": true,
+            "unitPrice": 0,
+            "totalCost": 0,
+            "userID": "admin@ta.com",
+            "shiftID": 1,
+            "fareCode": "Full",
+            "walletContentItems": [
+                {
+                    "transactionID": "1548956849834",
+                    "quantity": 1,
+                    "productIdentifier": "1406",
+                    "ticketTypeId": 3,
+                    "ticketValue": 10,
+                    "status": "ACTIVE",
+                    "slotNumber": 3,
+                    "startDate": 0,
+                    "expirationDate": 0,
+                    "balance": 10,
+                    "rechargesPending": 0,
+                    "IsMerchandise": false,
+                    "IsBackendMerchandise": false,
+                    "IsFareCard": false,
+                    "unitPrice": 12.5,
+                    "totalCost": 12.5,
+                    "userID": "admin@ta.com",
+                    "shiftID": 1,
+                    "fareCode": "Full",
+                    "offeringId": 27,
+                    "cardPID": "0000004524",
+                    "cardUID": "1185357863206784",
+                    "walletTypeId": 3,
+                    "shiftType": 0,
+                    "timestamp": 1548956849820
+                }
+            ],
+            "walletTypeId": 3,
+            "shiftType": 0,
+            "timestamp": 1548956849820
+        }
+    ],
+    "payments": [
+        {
+            "paymentMethodId": 2,
+            "amount": 12.5
+        }
+    ],
+    "shiftType": 0
+}

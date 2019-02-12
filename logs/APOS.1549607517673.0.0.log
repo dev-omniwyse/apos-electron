@@ -1,0 +1,294 @@
+Feb 08, 2019 12:01:57 PM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/logs/APOS.1549607517673.%u.%g.log
+Feb 08, 2019 12:01:57 PM com.genfare.pos.applet.POSApplet runInitialization
+INFO: App mode: ${build.mode}
+Feb 08, 2019 12:01:57 PM com.genfare.pos.applet.POSApplet runInitialization
+INFO: EPX Mode: true
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 08, 2019 12:01:58 PM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Connection manager reported it is set up.
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: Tenant: TARC, Env: qe, Schema: TARC
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService initFromCache
+INFO: initFromCache()
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService loadTerminalConfig
+INFO: loadTerminalConfig()
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService loadTerminalConfig
+INFO: SUCCESS! Loaded cached terminal config file!
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: POPULATE TERMINAL
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: Card Config Attribute size: 20
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: Card Config Attribute size: 11
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Got TerminalConfig FrontEnd JSON.
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService loadFareTable
+INFO: loadFareTable()
+Feb 08, 2019 12:01:58 PM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadFareTable
+INFO: SUCCESS! Loaded Cached Fare Table file!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadProductCatalog
+INFO: loadProductCatalog()
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadProductCatalog
+INFO: SUCCESS! Loaded Cached Product Catalog file!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+INFO: Converting data to front end.
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+INFO: Offerings count: 68
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadAutoload
+INFO: loadAutoload()
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadAutoload
+INFO: SUCCESS! Loaded Cached Pending Activity file!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: AddProduct count: 51
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: AddValue count: 57
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: CardUpdate count: 44
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadPeople
+INFO: loadPeople()
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService loadPeople
+INFO: SUCCESS! Loaded cached people file!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.device.pinpad.PinpadManager init
+INFO: PindpadManager.init()!!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.device.pinpad.PinpadManager init
+INFO: Pinpad not initialized, initializing...
+Feb 08, 2019 12:01:59 PM com.genfare.pos.applet.POSApplet runInitialization
+WARNING: Error initializing pinpad: Unable to load library 'EdgeLiteWrapperC': Native library (win32-x86-64/EdgeLiteWrapperC.dll) not found in resource path ([file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/node_modules/java/commons-lang3-node-java.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/node_modules/java/src-java/, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/activation-1.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aspectjweaver-1.6.12.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-core-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-kms-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-s3-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/c3p0-0.9.1.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-codec-1.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-collections-3.2.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-logging-1.1.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/GenfareSmartCard-4.0.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/gson-2.2.4.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/httpclient-4.3.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/httpcore-4.3.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-annotations-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-core-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-databind-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-module-jaxb-annotations-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jna-4.0.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/joda-time-2.8.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/json-20090211.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/log4j-1.2.17.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/mail-1.4.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-applet-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-core-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-remote-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/quartz-2.2.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/slf4j-api-1.6.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/slf4j-log4j12-1.6.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/spring-core-3.2.6.RELEASE.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/spring-security-crypto-3.2.0.RELEASE.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/sqlite-jdbc-3.8.7.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/stax-1.2.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/stax-api-1.0.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/])
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 08, 2019 12:01:59 PM com.genfare.pos.diagnostics.DiagnosticJobScheduler scheduleStandardProcess
+INFO: DiagnosticScheduler has scheduled standard process
+Feb 08, 2019 12:01:59 PM com.genfare.pos.remote.sync.SyncScheduler scheduleStandardSyncProcess
+INFO: SyncScheduler has scheduled standard sync
+Feb 08, 2019 12:01:59 PM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Done with running initialization script.
+Feb 08, 2019 12:01:59 PM com.genfare.pos.remote.sync.SyncService <init>
+INFO: SyncService constructor
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 08, 2019 12:01:59 PM com.genfare.pos.remote.sync.SyncJobListener jobToBeExecuted
+INFO: Listener for sync reports job scheduled.
+Feb 08, 2019 12:01:59 PM com.genfare.pos.remote.sync.SyncJob execute
+INFO: SyncJob executing...
+Feb 08, 2019 12:01:59 PM com.genfare.pos.remote.sync.SyncService runSync
+INFO: Running sync!
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.service.EventServiceImpl logEvent
+INFO: Logging event 4 with data APOS Heartbeat
+Feb 08, 2019 12:01:59 PM com.genfare.pos.core.data.loader.EventLoader insert
+INFO: insert()
+Feb 08, 2019 12:02:00 PM com.genfare.pos.remote.AWSRemoteSystem authenticate
+INFO: Authenticating...
+Feb 08, 2019 12:02:00 PM com.genfare.pos.remote.security.Client postTrySsl
+INFO: Trying SSL URL
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.security.Client post
+INFO: Outputstream written
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.security.Client post
+INFO: Response Code: 200, Message: OK
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.security.Client post
+INFO: Response was identified as a correct response.
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.AWSRemoteSystem authenticate
+INFO: Successfully authenticated
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: downloadAuthenticationKeys!
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: terminal.getIsAposAccountBased() : false
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.AWSRemoteSystem downloadAuthenticationKeys
+INFO: AWSRemoteSystem downloadAuthenticationKeys called
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 08, 2019 12:02:01 PM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 08, 2019 12:02:02 PM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/global-configuration/authentication_key.js, 0180c2ce054a88515b4cc950fdf190b0)
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: New Authentication Keys downloaded
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.sync.SyncService downloadTerminalConfig
+INFO: downloadTerminalConfig!
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.AWSRemoteSystem downloadTerminalConfig
+INFO: AWSRemoteSystem downloadTerminalConfig called
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 08, 2019 12:02:03 PM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag

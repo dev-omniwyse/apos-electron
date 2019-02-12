@@ -1,0 +1,46 @@
+Feb 12, 2019 11:20:02 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/logs/APOS.1549950602235.%u.%g.log
+Feb 12, 2019 11:20:02 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549544836075.0.0.log
+Feb 12, 2019 11:20:03 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:03 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:03 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549544918287.0.0.log
+Feb 12, 2019 11:20:05 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:05 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:05 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549545164082.0.0.log
+Feb 12, 2019 11:20:07 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:07 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:07 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549545183418.0.0.log
+Feb 12, 2019 11:20:09 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:09 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:09 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549603588125.0.0.log
+Feb 12, 2019 11:20:10 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:10 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:10 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549604445665.0.0.log
+Feb 12, 2019 11:20:12 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:12 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:12 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549604464037.0.0.log
+Feb 12, 2019 11:20:14 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 12, 2019 11:20:14 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 12, 2019 11:20:14 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1549606537355.0.0.log

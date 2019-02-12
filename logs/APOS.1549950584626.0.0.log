@@ -1,0 +1,601 @@
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/logs/APOS.1549950584626.%u.%g.log
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: App mode: ${build.mode}
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: EPX Mode: true
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Connection manager reported it is set up.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: Tenant: TARC, Env: qe, Schema: TARC
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService initFromCache
+INFO: initFromCache()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadTerminalConfig
+INFO: loadTerminalConfig()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: File does not exist: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/TERMINAL_CONFIG_DATA
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadTerminalConfig
+INFO: Cached Terminal Config file is null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadFareTable
+INFO: loadFareTable()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: File does not exist: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/FARE_TABLE_DATA
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadFareTable
+INFO: Cached Fare Table file is null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadProductCatalog
+INFO: loadProductCatalog()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: File does not exist: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/PRODUCT_CATALOG_DATA
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadProductCatalog
+INFO: Cached Product Catalog file is null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadAutoload
+INFO: loadAutoload()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: File does not exist: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/AUTOLOAD_DATA
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadAutoload
+INFO: Cached Autoload file is null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadPeople
+INFO: loadPeople()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: loadStoredData
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadStoredData
+INFO: File does not exist: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/PEOPLE_DATA
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService loadPeople
+INFO: Cached People file is null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService initFromCache
+INFO: User list IS null
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.pinpad.PinpadManager init
+INFO: PindpadManager.init()!!
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.pinpad.PinpadManager init
+INFO: Pinpad not initialized, initializing...
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+WARNING: Error initializing pinpad: Unable to load library 'EdgeLiteWrapperC': Native library (win32-x86-64/EdgeLiteWrapperC.dll) not found in resource path ([file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/node_modules/java/commons-lang3-node-java.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/node_modules/java/src-java/, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/activation-1.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aspectjweaver-1.6.12.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-core-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-kms-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/aws-java-sdk-s3-1.10.14.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/c3p0-0.9.1.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-codec-1.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-collections-3.2.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/commons-logging-1.1.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/GenfareSmartCard-4.0.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/GenfareSmartCard-4.0.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/gson-2.2.4.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/httpclient-4.3.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/httpcore-4.3.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-annotations-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-core-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-databind-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jackson-module-jaxb-annotations-2.4.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/jna-4.0.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/joda-time-2.8.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/json-20090211.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/log4j-1.2.17.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/mail-1.4.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-applet-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-core-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/pos-remote-1.0.0.WEBVIEW.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/quartz-2.2.3.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/slf4j-api-1.6.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/slf4j-log4j12-1.6.6.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/spring-core-3.2.6.RELEASE.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/spring-security-crypto-3.2.0.RELEASE.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/sqlite-jdbc-3.8.7.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/stax-1.2.0.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/javajars/stax-api-1.0.1.jar, file:/C:/Users/user/Desktop/apos_electron-master/apos_electron-master/])
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:44 AM com.genfare.pos.diagnostics.DiagnosticJobScheduler scheduleStandardProcess
+INFO: DiagnosticScheduler has scheduled standard process
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.sync.SyncScheduler scheduleStandardSyncProcess
+INFO: SyncScheduler has scheduled standard sync
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Done with running initialization script.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet registerDevice
+INFO: Registered device.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.sync.SyncService <init>
+INFO: SyncService constructor
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.sync.SyncJobListener jobToBeExecuted
+INFO: Listener for sync reports job scheduled.
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.sync.SyncJob execute
+INFO: SyncJob executing...
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.sync.SyncService runSync
+INFO: Running sync!
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.service.EventServiceImpl logEvent
+INFO: Logging event 4 with data APOS Heartbeat
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.EventLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.AWSRemoteSystem authenticate
+INFO: Authenticating...
+Feb 12, 2019 11:19:44 AM com.genfare.pos.remote.security.Client postTrySsl
+INFO: Trying SSL URL
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.security.Client post
+INFO: Outputstream written
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.security.Client post
+INFO: Response Code: 200, Message: OK
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.security.Client post
+INFO: Response was identified as a correct response.
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.AWSRemoteSystem authenticate
+INFO: Successfully authenticated
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: downloadAuthenticationKeys!
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: terminal.getIsAposAccountBased() : null
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.AWSRemoteSystem downloadAuthenticationKeys
+INFO: AWSRemoteSystem downloadAuthenticationKeys called
+Feb 12, 2019 11:19:45 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:46 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/global-configuration/authentication_key.js, 0180c2ce054a88515b4cc950fdf190b0)
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.sync.SyncService downloadAuthenticationKeys
+INFO: New Authentication Keys downloaded
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.sync.SyncService downloadTerminalConfig
+INFO: downloadTerminalConfig!
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.AWSRemoteSystem downloadTerminalConfig
+INFO: AWSRemoteSystem downloadTerminalConfig called
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:47 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:19:48 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/f64e5d057165424ac949b719205f7b79/terminal_config.xml, cd2fdc04355664c44fa1e522aee8b063)
+Feb 12, 2019 11:19:49 AM com.genfare.pos.remote.sync.SyncService downloadTerminalConfig
+INFO: New terminal config downloaded
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: POPULATE TERMINAL
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: Card Config Attribute size: 20
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.converters.TerminalConverter populateTerminal
+INFO: Card Config Attribute size: 11
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.service.EventServiceImpl logEvent
+INFO: Logging event 12 with data Terminal Config downloaded
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.data.loader.EventLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.cache.FileCacheService saveTerminalConfig
+INFO: saveTerminalConfig
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: saveStoredData
+Feb 12, 2019 11:19:49 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: filePath: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/TERMINAL_CONFIG_DATA
+Feb 12, 2019 11:19:49 AM com.genfare.pos.remote.sync.SyncService downloadFareTable
+INFO: downloadFareTable!
+Feb 12, 2019 11:19:49 AM com.genfare.pos.remote.AWSRemoteSystem downloadFareTable
+INFO: AWSRemoteSystem downloadFareTable called
+Feb 12, 2019 11:19:49 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:49 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:19:50 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/1bf71427cd8b09bb36c44c78a4887e03/faretable.xml, 0537f86003adb6a7701e37b3fb2608f3)
+Feb 12, 2019 11:19:52 AM com.genfare.pos.remote.sync.SyncService downloadFareTable
+INFO: New fare table downloaded
+Feb 12, 2019 11:19:52 AM com.genfare.pos.core.cache.FileCacheService saveFareTable
+INFO: saveFareTable
+Feb 12, 2019 11:19:52 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: saveStoredData
+Feb 12, 2019 11:19:52 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: filePath: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/FARE_TABLE_DATA
+Feb 12, 2019 11:19:52 AM com.genfare.pos.remote.sync.SyncService downloadProductCatalog
+INFO: downloadProductCatalog!
+Feb 12, 2019 11:19:52 AM com.genfare.pos.remote.AWSRemoteSystem downloadProductCatalog
+INFO: AWSRemoteSystem downloadProductCatalog called
+Feb 12, 2019 11:19:52 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:52 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:19:54 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/0142cc22ff5fdf21a09f7c5a80e6d38d/product_catalog.xml, 8ec4c8c5b28e194749b187368cc932e0)
+Feb 12, 2019 11:19:54 AM com.genfare.pos.diagnostics.DiagnosticJobService <init>
+INFO: DiagnosticJobService constructor
+Feb 12, 2019 11:19:54 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:54 AM com.genfare.pos.diagnostics.DiagnosticJobListener jobToBeExecuted
+INFO: Listener for diagnostic reports job scheduled.
+Feb 12, 2019 11:19:54 AM com.genfare.pos.diagnostics.DiagnosticJob execute
+INFO: DiagnosticJob executing...
+Feb 12, 2019 11:19:54 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Running diagnostics!
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Found 5 attached printers.
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Printer specified: EPSON BA-T500II
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+WARNING: Printer not found: EPSON BA-T500II
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Found 5 attached printers.
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Printer specified: EPSON TM-T20II
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+WARNING: Printer not found: EPSON TM-T20II
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Found 5 attached printers.
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Printer specified: EPSON_TM_T20II
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+WARNING: Printer not found: EPSON_TM_T20II
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.service.DiagnosticServiceImpl logDiagnostic
+INFO: Logging diagnostic event code 5 with reason Receipt Printer Installed: false
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.data.loader.DiagnosticLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.sync.SyncService downloadProductCatalog
+INFO: New product catalog downloaded
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+INFO: Converting data to front end.
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Found 5 attached printers.
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+INFO: Printer specified: XP8200
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.smartcard.PrintServiceMatcher findPrinter
+WARNING: Printer not found: XP8200
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.service.DiagnosticServiceImpl logDiagnostic
+INFO: Logging diagnostic event code 8 with reason Patron Display Available: false
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.data.loader.DiagnosticLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketSubTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: expirationType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+WARNING: Unhandled product attribute: ticketTypeId
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter convertToFrontEnd
+INFO: Offerings count: 68
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.cache.FileCacheService saveProductCatalog
+INFO: saveProductCatalog
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.converters.ProductCatalogConverter makeXML
+INFO: Make XML from CatalogAPIType
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.service.DiagnosticServiceImpl logDiagnostic
+INFO: Logging diagnostic event code 6 with reason Encoder Available: true
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.data.loader.DiagnosticLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: saveStoredData
+Feb 12, 2019 11:19:55 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: filePath: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/PRODUCT_CATALOG_DATA
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.AWSRemoteSystem isAvailable
+INFO: Web Portal Url: http://tarc-qe.gfcp.io
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.sync.SyncService downloadAutoloads
+INFO: downloadAutoloads!
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.AWSRemoteSystem downloadAutoload
+INFO: AWSRemoteSystem downloadAutoload called
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:55 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:19:56 AM com.genfare.pos.remote.AWSRemoteSystem isAvailable
+INFO: Successfully connected. Response code is 301
+Feb 12, 2019 11:19:56 AM com.genfare.pos.core.service.DiagnosticServiceImpl logDiagnostic
+INFO: Logging diagnostic event code 7 with reason Network Available: true
+Feb 12, 2019 11:19:56 AM com.genfare.pos.core.data.loader.DiagnosticLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:56 AM com.genfare.pos.core.device.pinpad.PinpadService getStatus
+WARNING: Error getting status
+java.lang.NullPointerException
+	at com.genfare.pos.core.device.pinpad.PinpadManager.getStatus(PinpadManager.java:312)
+	at com.genfare.pos.core.device.pinpad.PinpadService.getStatus(PinpadService.java:65)
+	at com.genfare.pos.diagnostics.DiagnosticJobService.checkCreditCardProcessor(DiagnosticJobService.java:159)
+	at com.genfare.pos.diagnostics.DiagnosticJobService.runDiagnostics(DiagnosticJobService.java:97)
+	at com.genfare.pos.diagnostics.DiagnosticJob.execute(DiagnosticJob.java:23)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:573)
+
+Feb 12, 2019 11:19:56 AM com.genfare.pos.core.service.DiagnosticServiceImpl logDiagnostic
+INFO: Logging diagnostic event code 10 with reason Credit Card Processor Available: false
+Feb 12, 2019 11:19:56 AM com.genfare.pos.core.data.loader.DiagnosticLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: ******************************************
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: DIAGNOSTIC STATUS
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Receipt Printer Available: false
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Cash Drawer Availabler: null
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Patron Display Available: false
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Encoder Available: true
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Network Available: true
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: Credit Card Processor Available: false
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobService runDiagnostics
+INFO: ******************************************
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobListener getName
+INFO: Got listener name
+Feb 12, 2019 11:19:56 AM com.genfare.pos.diagnostics.DiagnosticJobListener jobWasExecuted
+INFO: Listener for diagnostic reports job finished.
+Feb 12, 2019 11:19:56 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/1bf71427cd8b09bb36c44c78a4887e03/autoload.xml, 880a096cb2b35426f92868a32d7ae3ac)
+Feb 12, 2019 11:19:58 AM com.genfare.pos.remote.sync.SyncService downloadAutoloads
+INFO: New autoload downloaded
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: AddProduct count: 51
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: AddValue count: 57
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.device.AutoloadProcessor setAutoloads
+INFO: CardUpdate count: 44
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.cache.FileCacheService saveAutoload
+INFO: saveAutoload
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: saveStoredData
+Feb 12, 2019 11:19:58 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: filePath: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/AUTOLOAD_DATA
+Feb 12, 2019 11:19:58 AM com.genfare.pos.remote.sync.SyncService downloadPeople
+INFO: downloadPeople!
+Feb 12, 2019 11:19:58 AM com.genfare.pos.remote.AWSRemoteSystem downloadPeople
+INFO: AWSRemoteSystem downloadPeople called
+Feb 12, 2019 11:19:58 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Downloading S3 Object...
+Feb 12, 2019 11:19:58 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Checking ETag
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem downloadS3Object
+INFO: Got object ETag (TARC/26a93d6f7afe19a1f4ef9d17229d1900/users.xml, 17e023c12d3bd70e1c42109f1443d7f0)
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.sync.SyncService downloadPeople
+INFO: New person list downloaded
+Feb 12, 2019 11:20:00 AM com.genfare.pos.core.cache.FileCacheService savePeople
+INFO: savePeople
+Feb 12, 2019 11:20:00 AM com.genfare.pos.core.converters.PersonConverter makeXML
+INFO: Make XML from PersonAPIType.
+Feb 12, 2019 11:20:00 AM com.genfare.pos.core.converters.PersonConverter makeXML
+INFO: Done making XML from PersonAPIType.
+Feb 12, 2019 11:20:00 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: saveStoredData
+Feb 12, 2019 11:20:00 AM com.genfare.pos.core.cache.FileCacheService saveStoredData
+INFO: filePath: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache/PEOPLE_DATA
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: There were no failed upload records to retry.
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem tryUploadingFailedTrnsactions
+INFO: RETRYING FAILED TRANSACTIONS : One-By-One
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: There were no failed upload records to retry.
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: 0 autoload(s) set to processing
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: 5 diagnostic(s) set to processing
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: 2 event(s) set to processing
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: 0 login(s) set to processing
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: 0 transaction(s) set to processing
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: Uploading Events and Diagnostics
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: Event URL uploadRecords: https://api.qe.gfcp.io/services/device/authenticated/v2/event
+Feb 12, 2019 11:20:00 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: XML Uploaded: <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:DeviceEventAPI xmlns="http://genfare.com/cloud/device/header" xmlns:ns2="http://genfare.com/cloud/device/record" xmlns:ns4="http://genfare.com/cloud/device/common" xmlns:ns3="http://genfare.com/cloud/device/autoload">
+    <ns2:Header>
+        <TenantName>TARC</TenantName>
+        <Environment>qe</Environment>
+        <DeviceType>apos</DeviceType>
+        <Organization>TARC</Organization>
+        <Location>CDTA Sales Office</Location>
+        <SourceId>aposqe02</SourceId>
+        <MessageId>MESSAGE_ID</MessageId>
+        <CorrelationId>CORRELATION_ID</CorrelationId>
+        <DateSent LocalTime="false">2019-02-12T05:50:00.596Z</DateSent>
+        <RetryNumber>1</RetryNumber>
+        <Action>UPDATE</Action>
+        <TestMode>true</TestMode>
+    </ns2:Header>
+    <ns2:Records>
+        <ns2:Events>
+            <ns2:Event>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:44.944Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950584945</ns2:SequenceNumber>
+                <ns2:EventCode>4</ns2:EventCode>
+                <ns2:EventData>APOS Heartbeat</ns2:EventData>
+            </ns2:Event>
+            <ns2:Event>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:49.407Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950589407</ns2:SequenceNumber>
+                <ns2:EventCode>12</ns2:EventCode>
+                <ns2:EventData>Terminal Config downloaded</ns2:EventData>
+            </ns2:Event>
+        </ns2:Events>
+        <ns2:Diagnostics>
+            <ns2:Diagnostic>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:55.489Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950595489</ns2:SequenceNumber>
+                <ns2:EventCode>5</ns2:EventCode>
+                <ns2:IterationNumber>1</ns2:IterationNumber>
+                <ns2:Reason>Receipt Printer Installed: false</ns2:Reason>
+                <ns2:Set>true</ns2:Set>
+            </ns2:Diagnostic>
+            <ns2:Diagnostic>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:55.575Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950595575</ns2:SequenceNumber>
+                <ns2:EventCode>8</ns2:EventCode>
+                <ns2:IterationNumber>1</ns2:IterationNumber>
+                <ns2:Reason>Patron Display Available: false</ns2:Reason>
+                <ns2:Set>true</ns2:Set>
+            </ns2:Diagnostic>
+            <ns2:Diagnostic>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:55.715Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950595715</ns2:SequenceNumber>
+                <ns2:EventCode>6</ns2:EventCode>
+                <ns2:IterationNumber>1</ns2:IterationNumber>
+                <ns2:Reason>Encoder Available: true</ns2:Reason>
+                <ns2:Set>false</ns2:Set>
+            </ns2:Diagnostic>
+            <ns2:Diagnostic>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:56.278Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950596278</ns2:SequenceNumber>
+                <ns2:EventCode>7</ns2:EventCode>
+                <ns2:IterationNumber>1</ns2:IterationNumber>
+                <ns2:Reason>Network Available: true</ns2:Reason>
+                <ns2:Set>false</ns2:Set>
+            </ns2:Diagnostic>
+            <ns2:Diagnostic>
+                <ns2:TerminalNumber>aposqe02</ns2:TerminalNumber>
+                <ns2:Timestamp LocalTime="false">2019-02-12T05:49:56.333Z</ns2:Timestamp>
+                <ns2:SequenceNumber>1549950596333</ns2:SequenceNumber>
+                <ns2:EventCode>10</ns2:EventCode>
+                <ns2:IterationNumber>1</ns2:IterationNumber>
+                <ns2:Reason>Credit Card Processor Available: false</ns2:Reason>
+                <ns2:Set>true</ns2:Set>
+            </ns2:Diagnostic>
+        </ns2:Diagnostics>
+    </ns2:Records>
+</ns2:DeviceEventAPI>
+
+Feb 12, 2019 11:20:01 AM com.genfare.pos.remote.security.Client post
+INFO: Outputstream written
+Feb 12, 2019 11:20:02 AM com.genfare.pos.remote.security.Client post
+INFO: Response Code: 200, Message: OK
+Feb 12, 2019 11:20:02 AM com.genfare.pos.remote.security.Client post
+INFO: Response was identified as a correct response.
+Feb 12, 2019 11:20:02 AM com.genfare.pos.remote.AWSRemoteSystem uploadRecords
+INFO: There were no transaction records to upload.

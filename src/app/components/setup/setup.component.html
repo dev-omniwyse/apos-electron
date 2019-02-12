@@ -1,0 +1,33 @@
+<form #personalForm="ngForm" class="editForm" novalidate *ngIf="showView">
+  <div class="tab-pane fade in active">
+      <h4 class="head text-center">{{title}}</h4>
+      <ul>
+          <ul>
+            <li> <b>FRONT OFFICE</b></li>
+            <ul>
+              <li>Keyboard</li>
+              <li>Mouse</li>
+              <li>Smart Card Reader</li>
+              <li>Receipt Printer</li>
+              <li>Ethernet Cable to an Internet Connection</li>
+              <li>Cash Drawer</li>
+              <li>Smart Card ID Printer with Smart Card Reader and Laminator</li>
+              <li>Barcode Printer</li>
+              <li>ID Camera anf Tripod</li>
+              <li>UPS</li>
+            </ul>
+            <br>
+            <li><b>PORTABLE</b></li>
+            <ul>
+            <li>Keyboard</li>
+            <li>Smart Card Reader</li>
+            <li>Receipt Printer</li>
+          </ul>
+        </ul>
+        </ul>
+     <br/>
+  </div>
+  <div class="form-group form-wiz">
+      <button class="pull-right btn btn-success btn-outline-rounded btn-info" [disabled]="!personalForm.valid" (click)="goToNext(personalForm)"> Next <span style="margin-left:10px;" class="glyphicon glyphicon-arrow-right"></span></button>
+  </div>
+</form>

@@ -1,0 +1,1862 @@
+{
+    "CatalogAPI": {
+        "Products": {
+            "Product": [
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 3,
+                    "Category": "merch",
+                    "Description": "10 Toy Token",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "1.00"
+                    },
+                    "Name": "Calvin GMC Toy Tokens"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 4,
+                    "Category": "merch",
+                    "Description": "Keychain",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "3.00"
+                    },
+                    "Name": "Calvin GMC Keychain"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 13,
+                    "Category": "merch",
+                    "Description": "Half Fare ID Card",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "3.00"
+                    },
+                    "Name": "Half Fare ID"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 7,
+                    "Category": "merch",
+                    "Description": "this is a good hat",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "5.00"
+                    },
+                    "Name": "Moe hat"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 9,
+                    "Category": "merch",
+                    "Description": "This is a good hat.",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": 9.99
+                    },
+                    "Name": "Moe Good hat"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 830,
+                    "Category": "merch",
+                    "Description": "asd",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "40.00"
+                    },
+                    "TaxRate": 0.75,
+                    "Name": "repotest1"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 831,
+                    "Category": "merch",
+                    "Description": "contain cdta app",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "400.00"
+                    },
+                    "Name": "CDTA-Mobile"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 832,
+                    "Category": "merch",
+                    "Description": "asdas",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "15.00"
+                    },
+                    "TaxRate": 0.25,
+                    "Name": "cdta-button"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 833,
+                    "Category": "merch",
+                    "Description": "testing tax",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "45.00"
+                    },
+                    "TaxRate": "5.00",
+                    "Name": "mer-tax"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 834,
+                    "Category": "merch",
+                    "Description": "tax test2",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "35.00"
+                    },
+                    "TaxRate": "0.50",
+                    "Name": "CDTA-Book"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 2,
+                    "Category": "merch",
+                    "Description": "Pretty hairclip",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "6.00"
+                    },
+                    "Name": "Calvin GMC Hairclip"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 837,
+                    "Category": "merch",
+                    "Description": "make your trip comfort.",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "100.00"
+                    },
+                    "TaxRate": 10.25,
+                    "Name": "CDTA-Bag"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 838,
+                    "Category": "merch",
+                    "Description": "tax test",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "40.00"
+                    },
+                    "TaxRate": "5.50",
+                    "Name": "cdta-cap"
+                },
+                {
+                    "Type": "MERCHANDISE",
+                    "IsAccountBased": false,
+                    "Identifier": 839,
+                    "Category": "merch",
+                    "Description": "fg",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "11.00"
+                    },
+                    "TaxRate": 1.75,
+                    "Name": "cdta-pen"
+                },
+                {
+                    "Type": "MEDIA",
+                    "IsAccountBased": false,
+                    "Identifier": 660,
+                    "Category": "Smart Card",
+                    "Description": "Smart Card",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "4.00"
+                    },
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "wallettypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "monthsToExpire",
+                                "content": 120
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-02-23T00:00:00.000Z",
+                    "DateExpires": "2028-02-23T00:00:00.000Z",
+                    "Name": "Smart Card"
+                },
+                {
+                    "Type": "MEDIA",
+                    "IsAccountBased": false,
+                    "Identifier": 840,
+                    "Category": "Mobile",
+                    "Description": "Mobile",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "0.00"
+                    },
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "wallettypeId",
+                                "content": 5
+                            },
+                            {
+                                "key": "monthsToExpire",
+                                "content": 120
+                            }
+                        ]
+                    },
+                    "DateEffective": "2019-01-17T00:00:00.000Z",
+                    "DateExpires": "2029-01-17T00:00:00.000Z",
+                    "Name": "Mobile"
+                },
+                {
+                    "Type": "MEDIA",
+                    "IsAccountBased": false,
+                    "Identifier": 841,
+                    "Category": "LUCC",
+                    "Description": "LUCC",
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": "50.00"
+                    },
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "wallettypeId",
+                                "content": 4
+                            },
+                            {
+                                "key": "monthsToExpire",
+                                "content": 9
+                            }
+                        ]
+                    },
+                    "DateEffective": "2019-01-17T00:00:00.000Z",
+                    "DateExpires": "2029-01-17T00:00:00.000Z",
+                    "Name": "LUCC"
+                },
+                {
+                    "IsAccountBased": true,
+                    "Category": "Stored Value",
+                    "Description": "Fund",
+                    "DisplayOrder": 1,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 3
+                            },
+                            {
+                                "key": "designator",
+                                "content": 29
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 132
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "Fund",
+                    "Type": "FARE",
+                    "Identifier": 661,
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "50.00",
+                                "content": "50.00"
+                            },
+                            {
+                                "productValue": "40.00",
+                                "content": "40.00"
+                            },
+                            {
+                                "productValue": "30.00",
+                                "content": "30.00"
+                            },
+                            {
+                                "productValue": "100.00",
+                                "content": "100.00"
+                            },
+                            {
+                                "productValue": "25.00",
+                                "content": "25.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Employee Child",
+                                "FareCodeId": 143
+                            },
+                            {
+                                "Description": "Retired Employee Spouse",
+                                "FareCodeId": 144
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-02-23T00:00:00.000Z",
+                    "DateExpires": "2028-02-23T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "1 Day Mobile",
+                    "DisplayOrder": 2,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 38
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "1.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 181
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "1 Day Mobile",
+                    "Type": "FARE",
+                    "Identifier": 731,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "1.00",
+                            "content": "3.90"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-04-11T00:00:00.000Z",
+                    "DateExpires": "2028-04-11T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "1 Ride LUCC",
+                    "DisplayOrder": 3,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 2
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "1.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 182
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "1 Ride LUCC",
+                    "Type": "FARE",
+                    "Identifier": 734,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "1.00",
+                            "content": "1.30"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "10 Ride LUCC",
+                    "DisplayOrder": 4,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 3
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "10.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 183
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "10 Ride LUCC",
+                    "Type": "FARE",
+                    "Identifier": 735,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "10.00",
+                            "content": "10.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "10 rides mobile",
+                    "DisplayOrder": 5,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 31
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "10.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 9
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "10 rides mobile",
+                    "Type": "FARE",
+                    "Identifier": 736,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "10.00",
+                                "content": "1.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "10 Trip Pass Reduced",
+                    "DisplayOrder": 6,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 4
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "10.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 186
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "10 Trip Pass Reduced",
+                    "Type": "FARE",
+                    "Identifier": 737,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "10.00",
+                            "content": "6.50"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Full",
+                                "FareCodeId": 1
+                            },
+                            {
+                                "Description": "Senior",
+                                "FareCodeId": 2
+                            },
+                            {
+                                "Description": "Half",
+                                "FareCodeId": 16
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "3 Day Visitor Pass",
+                    "DisplayOrder": 7,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 9
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "3.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 119
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "3 Day Visitor Pass",
+                    "Type": "FARE",
+                    "Identifier": 738,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "3.00",
+                            "content": "10.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "3 Day Visitor Pass Reduced",
+                    "DisplayOrder": 8,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 2
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "3.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 187
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "3 Day Visitor Pass Reduced",
+                    "Type": "FARE",
+                    "Identifier": 739,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "3.00",
+                            "content": "5.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Half",
+                            "FareCodeId": 16
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "5 Rides LUCC",
+                    "DisplayOrder": 9,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 7
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "5.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 101
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "5 Rides LUCC",
+                    "Type": "FARE",
+                    "Identifier": 740,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "5.00",
+                            "content": "6.50"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "NX Zone 3 - 10 Ride Ticket",
+                    "DisplayOrder": 10,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 28
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "10.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 127
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "NX Zone 3 - 10 Ride Ticket",
+                    "Type": "FARE",
+                    "Identifier": 741,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "10.00",
+                            "content": "50.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "NX Zone 3 - 10 Rides - Reduced",
+                    "DisplayOrder": 11,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 8
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "10.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 190
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "NX Zone 3 - 10 Rides - Reduced",
+                    "Type": "FARE",
+                    "Identifier": 742,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "10.00",
+                            "content": "25.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Full",
+                                "FareCodeId": 1
+                            },
+                            {
+                                "Description": "Half",
+                                "FareCodeId": 16
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "One Day Frequent Rider",
+                    "DisplayOrder": 12,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 33
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "1.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 257
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "One Day Frequent Rider",
+                    "Type": "FARE",
+                    "Identifier": 743,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "1.00",
+                            "content": "3.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Value",
+                    "Description": "One Way Mobile",
+                    "DisplayOrder": 13,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 3
+                            },
+                            {
+                                "key": "designator",
+                                "content": 7
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 265
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "One Way Mobile",
+                    "Type": "FARE",
+                    "Identifier": 744,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "5.00",
+                                "content": "5.00"
+                            },
+                            {
+                                "productValue": "20.00",
+                                "content": "20.00"
+                            },
+                            {
+                                "productValue": "30.00",
+                                "content": "30.00"
+                            },
+                            {
+                                "productValue": "50.00",
+                                "content": "50.00"
+                            },
+                            {
+                                "productValue": "40.00",
+                                "content": "40.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Value",
+                    "Description": "Pay As You Go - Half Fare",
+                    "DisplayOrder": 14,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 3
+                            },
+                            {
+                                "key": "designator",
+                                "content": 30
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 171
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "Pay As You Go - Half Fare",
+                    "Type": "FARE",
+                    "Identifier": 745,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "30.00",
+                                "content": "30.00"
+                            },
+                            {
+                                "productValue": "10.00",
+                                "content": "10.00"
+                            },
+                            {
+                                "productValue": "40.00",
+                                "content": "40.00"
+                            },
+                            {
+                                "productValue": "50.00",
+                                "content": "50.00"
+                            },
+                            {
+                                "productValue": "20.00",
+                                "content": "20.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Half",
+                            "FareCodeId": 16
+                        }
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Value",
+                    "Description": "PD",
+                    "DisplayOrder": 15,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 3
+                            },
+                            {
+                                "key": "designator",
+                                "content": 3
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 254
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "PD",
+                    "Type": "FARE",
+                    "Identifier": 747,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "15.00",
+                                "content": "15.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Full",
+                                "FareCodeId": 1
+                            },
+                            {
+                                "Description": "Senior",
+                                "FareCodeId": 2
+                            },
+                            {
+                                "Description": "Youth",
+                                "FareCodeId": 3
+                            },
+                            {
+                                "Description": "STAR",
+                                "FareCodeId": 10
+                            },
+                            {
+                                "Description": "Placeholder 4",
+                                "FareCodeId": 11
+                            },
+                            {
+                                "Description": "Placeholder 5",
+                                "FareCodeId": 12
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-06-20T00:00:00.000Z",
+                    "DateExpires": "2028-06-20T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "Frequent Rider",
+                    "DisplayOrder": 16,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 29
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "31.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 174
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "Frequent Rider",
+                    "Type": "FARE",
+                    "Identifier": 755,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "31.00",
+                            "content": "72.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Full",
+                                "FareCodeId": 1
+                            },
+                            {
+                                "Description": "Senior",
+                                "FareCodeId": 2
+                            },
+                            {
+                                "Description": "Youth",
+                                "FareCodeId": 3
+                            },
+                            {
+                                "Description": "Veteran",
+                                "FareCodeId": 4
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-09-14T00:00:00.000Z",
+                    "DateExpires": "2028-09-14T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "Frequent Rider - Half Fare",
+                    "DisplayOrder": 17,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 28
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "31.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": true
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 8
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "Frequent Rider - Half Fare",
+                    "Type": "FARE",
+                    "Identifier": 756,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "31.00",
+                            "content": "32.50"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Half",
+                            "FareCodeId": 16
+                        }
+                    },
+                    "DateEffective": "2018-09-14T00:00:00.000Z",
+                    "DateExpires": "2028-09-14T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Value",
+                    "Description": "Change Card",
+                    "DisplayOrder": 18,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 3
+                            },
+                            {
+                                "key": "designator",
+                                "content": 31
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 27
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "Change Card",
+                    "Type": "FARE",
+                    "Identifier": 774,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "30.00",
+                                "content": "30.00"
+                            },
+                            {
+                                "productValue": "10.00",
+                                "content": "10.00"
+                            },
+                            {
+                                "productValue": "50.00",
+                                "content": "50.00"
+                            },
+                            {
+                                "productValue": "40.00",
+                                "content": "40.00"
+                            },
+                            {
+                                "productValue": "20.00",
+                                "content": "20.00"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-09-23T00:00:00.000Z",
+                    "DateExpires": "2028-09-23T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": true,
+                    "Category": "Period Pass",
+                    "Description": "acc rolling period pass",
+                    "DisplayOrder": 19,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 51
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "31.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 286
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "acc rolling period pass",
+                    "Type": "FARE",
+                    "Identifier": 787,
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "31.00",
+                            "content": "32.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-10-09T00:00:00.000Z",
+                    "DateExpires": "2028-10-09T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": true,
+                    "Category": "Period Pass",
+                    "Description": "accountbased fixedperiod pass",
+                    "DisplayOrder": 20,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 50
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "31.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 285
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 2
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "accountbased fixedperiod pass",
+                    "Type": "FARE",
+                    "Identifier": 788,
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "31.00",
+                            "content": "100.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-10-09T00:00:00.000Z",
+                    "DateExpires": "2028-10-09T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": true,
+                    "Category": "Period Pass",
+                    "Description": "TestAccountbasePP",
+                    "DisplayOrder": 21,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 52
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "36.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 287
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 2
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "TestAccountbasePP",
+                    "Type": "FARE",
+                    "Identifier": 789,
+                    "IsCardBased": false,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "36.00",
+                            "content": "10.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-10-09T00:00:00.000Z",
+                    "DateExpires": "2028-10-09T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "1 Day Pass - Reduced",
+                    "DisplayOrder": 22,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 30
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "1.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 118
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 3
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "1 Day Pass - Reduced",
+                    "Type": "FARE",
+                    "Identifier": 791,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "1.00",
+                            "content": "2.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": [
+                            {
+                                "Description": "Full",
+                                "FareCodeId": 1
+                            },
+                            {
+                                "Description": "Half",
+                                "FareCodeId": 16
+                            }
+                        ]
+                    },
+                    "DateEffective": "2018-10-10T00:00:00.000Z",
+                    "DateExpires": "2028-10-10T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Stored Ride",
+                    "Description": "1 Ride",
+                    "DisplayOrder": 23,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 2
+                            },
+                            {
+                                "key": "designator",
+                                "content": 1
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "1.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 1
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 2
+                            }
+                        ]
+                    },
+                    "Name": "1 Ride",
+                    "Type": "FARE",
+                    "Identifier": 792,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": [
+                            {
+                                "productValue": "1.00",
+                                "content": "1.30"
+                            },
+                            {
+                                "variable": true
+                            }
+                        ]
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2018-10-10T00:00:00.000Z",
+                    "DateExpires": "2028-10-10T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": true,
+                    "Category": "Merchandise",
+                    "Description": "test merchandise",
+                    "DisplayOrder": 45,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": null
+                            },
+                            {
+                                "key": "designator",
+                                "content": null
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": null
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 317
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 30
+                            }
+                        ]
+                    },
+                    "Name": "test merchandise",
+                    "Type": "FARE",
+                    "Identifier": 826,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": "12.00"
+                    },
+                    "Farecodes": "",
+                    "DateEffective": "2018-12-04T00:00:00.000Z",
+                    "DateExpires": "2028-12-04T00:00:00.000Z"
+                },
+                {
+                    "IsAccountBased": false,
+                    "Category": "Period Pass",
+                    "Description": "3 day pass",
+                    "DisplayOrder": 46,
+                    "Attributes": {
+                        "Attribute": [
+                            {
+                                "key": "group",
+                                "content": 1
+                            },
+                            {
+                                "key": "designator",
+                                "content": 37
+                            },
+                            {
+                                "key": "valueUse",
+                                "content": "31.00"
+                            },
+                            {
+                                "key": "subscribable",
+                                "content": false
+                            },
+                            {
+                                "key": "ticketId",
+                                "content": 261
+                            },
+                            {
+                                "key": "ticketTypeId",
+                                "content": 6
+                            },
+                            {
+                                "key": "ticketSubTypeId",
+                                "content": 2
+                            },
+                            {
+                                "key": "expirationType",
+                                "content": 1
+                            }
+                        ]
+                    },
+                    "Name": "3 day pass",
+                    "Type": "FARE",
+                    "Identifier": 836,
+                    "IsCardBased": true,
+                    "Pricing": {
+                        "Price": {
+                            "productValue": "31.00",
+                            "content": "3.00"
+                        }
+                    },
+                    "Farecodes": {
+                        "FareCode": {
+                            "Description": "Full",
+                            "FareCodeId": 1
+                        }
+                    },
+                    "DateEffective": "2019-01-08T00:00:00.000Z",
+                    "DateExpires": "2029-01-08T00:00:00.000Z"
+                }
+            ]
+        },
+        "Header": {
+            "DeviceType": "APOS",
+            "Action": "update",
+            "Organization": "CDTA",
+            "DateSent": "2019-01-29T12:20:33.182Z",
+            "RetryNumber": 0,
+            "TenantName": "CDTA",
+            "Environment": "staging",
+            "TestMode": false,
+            "Location": "CDS",
+            "MessageId": "ID-aios5-test-gfcp-io-37584-1547805637066-6-36503972"
+        },
+        "ProductHierarchy": {
+            "Parent": [
+                {
+                    "Identifier": 660,
+                    "Children": {
+                        "Child": [
+                            661,
+                            737,
+                            740,
+                            745,
+                            747,
+                            755,
+                            756,
+                            787,
+                            788,
+                            789,
+                            791
+                        ]
+                    }
+                },
+                {
+                    "Identifier": 840,
+                    "Children": {
+                        "Child": [
+                            731,
+                            736,
+                            743,
+                            744,
+                            755,
+                            787,
+                            836
+                        ]
+                    }
+                },
+                {
+                    "Identifier": 841,
+                    "Children": {
+                        "Child": [
+                            734,
+                            735,
+                            740
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

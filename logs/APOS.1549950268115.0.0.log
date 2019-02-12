@@ -1,0 +1,107 @@
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/logs/APOS.1549950268115.%u.%g.log
+Feb 12, 2019 11:14:28 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: App mode: ${build.mode}
+Feb 12, 2019 11:14:28 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: EPX Mode: true
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.ConnectionManager checkIfSetup
+INFO: Creating DB directory: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.ConnectionManager checkIfSetup
+INFO: DB directory created
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.ConnectionManager createTables
+INFO: Creating tables
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Creating cache directory: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/cache
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Cache directory created
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Creating download directory: C:\Users\user\Desktop\apos_electron-master\apos_electron-master/data/download
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Download directory created
+Feb 12, 2019 11:14:28 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 12, 2019 11:14:28 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Done with running initialization script.
+Feb 12, 2019 11:14:31 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 12, 2019 11:14:31 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Got TerminalConfig FrontEnd JSON.
+Feb 12, 2019 11:19:36 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: Validate register device serial aposqe02 key XXXXXX
+Feb 12, 2019 11:19:37 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 11:19:37 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: Tenant: TARC, Env: qe, Schema: TARC
+Feb 12, 2019 11:19:37 AM com.genfare.pos.core.service.EnvironmentServiceImpl getByEnv
+INFO: ****************************************
+Feb 12, 2019 11:19:37 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:37 AM com.genfare.pos.remote.AWSRemoteSystem uploadDeviceSetup
+INFO: uploadDeviceSetup
+Feb 12, 2019 11:19:37 AM com.genfare.pos.remote.AWSRemoteSystem uploadDeviceSetup
+INFO: Uploading
+Feb 12, 2019 11:19:37 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Event URL uploadSetup: api.qe.gfcp.io/services/device/v4/setup
+Feb 12, 2019 11:19:37 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Setup body: {"header":{"tenantName":"TARC","environment":"qe","deviceType":"apos","dateSent":{"value":"2019-02-12T05:49:37","localTime":false}},"deviceSetup":{"serialNumber":"aposqe02","key":"oabvifgsak"}}
+Feb 12, 2019 11:19:37 AM com.genfare.pos.remote.security.Client postTrySsl
+INFO: Trying SSL URL
+Feb 12, 2019 11:19:38 AM com.genfare.pos.remote.security.Client post
+INFO: Outputstream written
+Feb 12, 2019 11:19:39 AM com.genfare.pos.remote.security.Client post
+INFO: Response Code: 200, Message: OK
+Feb 12, 2019 11:19:39 AM com.genfare.pos.remote.security.Client post
+INFO: Response was identified as a correct response.
+Feb 12, 2019 11:19:39 AM com.genfare.pos.remote.AWSRemoteSystem uploadSetup
+INFO: Success was {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"510fd8a7-739e-4d42-83ac-c7cfd747db49","timezone":"America/New_York"}}
+
+Feb 12, 2019 11:19:39 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: result {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"510fd8a7-739e-4d42-83ac-c7cfd747db49","timezone":"America/New_York"}}
+
+Feb 12, 2019 11:19:39 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: Done validate register device.
+Feb 12, 2019 11:19:39 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: _validateRegisterDeviceResult getSuccess true
+Feb 12, 2019 11:19:39 AM com.genfare.pos.applet.POSApplet validateRegisterDevice
+INFO: _validateRegisterDeviceResult getMessage {"deviceSetup":{"organizationName":"TARC","organizationAddress":"","organizationId":2,"password":"510fd8a7-739e-4d42-83ac-c7cfd747db49","timezone":"America/New_York"}}
+
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.EquipmentLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:44 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 12, 2019 11:19:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Running initialization.

@@ -1,0 +1,14 @@
+ {
+    "userdata": [
+        {
+            "username": "admin@cdta.com",
+            "password": "123456aA"
+        },
+        {
+            "username": "superadmin@cdta.com",
+            "password": "123456aA"
+        }
+        
+        
+    ]
+}
