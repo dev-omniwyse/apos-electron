@@ -15,15 +15,15 @@
 	</div>
 
 	<div class="flex container-padding flex-column">
-		<button class="card-btn"  (click)="getProductCatalogJSON(); newFareCard($event)">
+		<button class="card-btn" (click)="getProductCatalogJSON(); newFareCard($event)">
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn"  (click)="readCard($event); getProductCatalogJSON()">
+		<button class="card-btn" (click)="readCard($event); getProductCatalogJSON()">
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" [routerLink]="['/carddata']" >
+		<button class="card-btn" [routerLink]="['/carddata']">
 			Non-Fare Product
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
@@ -33,10 +33,10 @@
 		</button> -->
 	</div>
 	<div class="flex container-padding flex-row admin-btn pull-left">
-		<div class="card-btn-orange">
+		<button class="card-btn-orange" [routerLink]="['/admin']">
 			Admin
 			<img src="assets/images/user.svg" />
-		</div>
+		</button>
 	</div>
 </div>
 
@@ -78,7 +78,8 @@
 		<div class="flex-devide text-right">
 			<button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print Summary</button>
 
-			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square" ></i> Add New Product to Card</button>
+			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square"></i> Add New
+				Product to Card</button>
 		</div>
 	</div>
 
@@ -88,7 +89,7 @@
 	</div>
 
 	<div class="flex container-padding flex-row">
-		
+
 		<table class="table-css">
 			<tr>
 				<th>Product</th>
@@ -96,7 +97,7 @@
 				<th>Status</th>
 				<th>Balance</th>
 			</tr>
-			<tr  *ngFor="let product of readCardData" >
+			<tr *ngFor="let product of readCardData">
 				<td>{{product.product}}</td>
 				<td>{{product.description}}</td>
 				<td>{{product.status}}</td>
@@ -111,7 +112,7 @@
 
 		</table>
 	</div>
-	
+
 
 	<div class="content-container container-padding">
 		<h1></h1>

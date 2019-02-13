@@ -10,7 +10,8 @@ import { SetupComponent } from './components/setup/setup.component';
 import { ActivationComponent } from './components/activation/activation.component';
 import { VerifyComponent } from './components/verify/verify.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
-
+import { CompComponent } from './components/comp/comp.component';
+import { AdminComponent } from './components/admin/admin.component';
 const routes: Routes = [
   { 
     path: '', 
@@ -51,6 +52,14 @@ const routes: Routes = [
   {
     path:'addproduct',
     component: AddProductComponent
+  },
+  {
+    path:"comp",
+    component: CompComponent
+  },
+  {
+    path:"admin",
+    component: AdminComponent
   }
 
 

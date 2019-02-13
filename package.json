@@ -25,14 +25,6 @@
       "icon": "https://s3.amazonaws.com/qe-gfcp-tenant/cdta/resources/img/header_logo.png"
     },
     "files": [
-      "index.html",
-      "main.js",
-      "javaInit.js",
-      "javajars/**/*",
-      "data/**/*/",
-      "*.js",
-      "build",
-      "node_modules",
       "**/*",
       "dist/**/*"
     ],
@@ -55,20 +47,21 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "bootstrap": "^3.4.0",
+    "buffertools": "^2.1.6",
     "chrome-devtools": "0.0.0",
     "core-js": "^2.5.4",
+    "electron-log": "^3.0.1",
     "java": "^0.11.0",
     "jquery": "^3.3.1",
     "ngx-electron": "^2.1.1",
     "node-gyp": "^3.8.0",
+    "pcsclite": "^0.6.0",
     "popper.js": "^1.14.6",
     "rebuild": "^0.1.2",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "webcamjs": "^1.0.25",
-    "zone.js": "~0.8.26",
-    "pcsclite": "^0.6.0",
-    "buffertools": "^2.1.6"
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.12.0",

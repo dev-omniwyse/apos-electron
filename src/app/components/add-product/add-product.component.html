@@ -79,42 +79,227 @@
           </div>
           <div class="cr-right">
             <button data-toggle="modal" data-target="#myModal">Cash</button>
-            <button>Credit or Debit Card</button>
-            <button>Check</button>
-            <button>Existing Farecard</button>
-            <button>Voucher</button>
-            <button>Pay As You Go</button>
-            <button>Comp</button>
+            <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+            <button data-toggle="modal" data-target="#checkModal">Check</button>
+            <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
+            <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
+            <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
+            <button data-toggle="modal" data-target="#compModal">Comp</button>
           </div>
            <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-            <h4 class="modal-title">Cash Applied</h4>
-          </div>
-          
-          <div class="modal-body">
-            <p>Return change to customer</p>
-            <p>Click "OK" When cash drawer is closed</p>
-            <div class="pop-up-box">
-                <div class="pull-left">Cash Applied </div>
-                 <div class="pull-right">${{productTotal}}</div>
-                 <div class="clearfix"></div>
+           <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Cash Applied</h4>
+                </div>
+  
+                <div class="modal-body">
+                  <p>Return change to customer</p>
+                  <p>Click "OK" When cash drawer is closed</p>
+                  <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="pop-up-box">
+                    <div class="pull-left">Cash Back </div>
+                    <div class="pull-right">$</div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)"
+                    data-dismiss="modal">Ok</button>
+                </div>
+              </div>
             </div>
-                 <div class="pop-up-box">
-                 <div class="pull-left">Cash Back </div>
-                 <div class="pull-right">$</div>
-                 <div class="clearfix"></div>
+          </div>
+          <div class="modal fade" id="creditModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Cash Applied</h4>
+                </div>
+  
+                <div class="modal-body">
+                  <!-- <p>Return change to customer</p>
+              <p>Click "OK" When cash drawer is closed</p> -->
+                  <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div>
+  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)"
+                    data-dismiss="modal">Ok</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)" data-dismiss="modal">Ok</button>
+          <div class="modal fade" id="checkModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Check Applied</h4>
+                </div>
+  
+                <div class="modal-body">
+              <p>Click "OK" When cash drawer is closed</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                    data-dismiss="modal">Ok</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+
+          <div class="modal fade" id="fareCardModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Are you sure you want use an existing fare card ?</h4>
+                </div>
+  
+                <div class="modal-body">
+                 
+              <p>By continiuing you confirming that the customer has a fare card for the amount of $50.00 that you are using in place of payment</p>
+                  <!-- <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div> -->
+  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-default" 
+                    data-dismiss="modal" data-toggle="modal" href="#fareApplyModal">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="fareApplyModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Fare Card Applied</h4>
+                </div>
+                <p>Place the Fare Card in the drawer</p>
+                <div class="modal-body">
+              <p>Click "OK" When cash drawer is closed</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                    data-dismiss="modal">Ok</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="voucherModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Are you sure you want use voucher ?</h4>
+                </div>
+  
+                <div class="modal-body">
+                 
+              <p>By continiuing you confirming that the customer has a voucher for the amount of $50.00 that you are using in place of payment</p>
+                  <!-- <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div> -->
+  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-default" 
+                    data-target="#fareApplyModal">Yes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="voucherApplyModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">voucher Applied</h4>
+                </div>
+                <p>Place the Voucher in the drawer</p>
+                <div class="modal-body">
+              <p>Click "OK" When cash drawer is closed</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                    data-dismiss="modal">Ok</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="payasyougoModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <p>Place Card on Reader</p>
+                  <h4 class="modal-title">Pay with Pay As You Go</h4>
+                </div>
+  
+                <div class="modal-body">
+                  <!-- <p>Return change to customer</p>
+              <p>Click "OK" When cash drawer is closed</p> -->
+                  <!-- <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div> -->
+  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" 
+                    data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="compModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                  <h4 class="modal-title">Are you sure you want comp this sale ?</h4>
+                </div>
+  
+                <div class="modal-body">
+                 
+              <p>By continiuing you confirming that you want to comp this sale for amount of $50.00 that you are using in place of payment</p>
+                  <!-- <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div> -->
+  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
+                    <button type="button" class="btn btn-default" 
+                    [routerLink]="['/comp']" >Yes,continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         </div>
       </div>

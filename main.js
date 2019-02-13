@@ -5,18 +5,18 @@ var fs = require("fs");
 var javaInit = require('./javaInit')
 var childProcess = require('child_process');
 var javaInstancePath = "com.genfare.applet.encoder.EncoderApplet";
-
+var logger = require('electron-log');
 // var EncoderApplet = java.import(javaInstancePath);
 // var EncoderInstance = new EncoderApplet()
 
 var java = javaInit.getJavaInstance();
-console.log("classpath", java.classpath)
+logger.info("classpath", java.classpath)
 var JPOSApplet = java.import("com.genfare.pos.applet.POSApplet");
 var posAppletInstance = new JPOSApplet();
 var jsObject = java.import("netscape.javascript.JSObject");
 var myjsObject = null;
 var result = posAppletInstance.runInitializationSync();
-console.log(result);
+logger.info(result);
 
 let win;
 
@@ -75,7 +75,7 @@ app.on("activate", () => {
 
 ipcMain.on('readSmartcard', (event, cardname) => {
   var cardName = cardname
-  console.log("cardName", cardName)
+  logger.info("cardName", cardName)
   var cardConfig = {
     "agency_id": 194,
     "end_of_transit_day_desfire": null,
@@ -99,17 +99,17 @@ ipcMain.on('readSmartcard', (event, cardname) => {
   }
 
 
-  console.log("before java call  Data", posAppletInstance)
+  logger.info("before java call  Data", posAppletInstance)
 
   var result = posAppletInstance.setEncoderSync(cardName);
 
-  console.log("setEncoder Data", '' + result)
+  logger.info("setEncoder Data", '' + result)
   try {
     // var resultObject = java.newInstance("com.genfare.pos.applet.POSApplet.ResultObject");
 
     var resultObject = posAppletInstance.readCardSync();
   } catch (error) {
-    console.log(error);
+    logger.info(error);
   }
 
   event.sender.send('readcardResult',resultObject.getValueSync());
@@ -117,12 +117,12 @@ ipcMain.on('readSmartcard', (event, cardname) => {
 
 
 ipcMain.on('newfarecard', (event, cardname) => {
-  console.log("before java call  Data", posAppletInstance)
+  logger.info("before java call  Data", posAppletInstance)
   try {
     var smartread = posAppletInstance.readCardSync();
-    console.log("smartcard", smartread)
+    logger.info("smartcard", smartread)
   } catch (error) {
-    console.log(error);
+    logger.info(error);
   }
 
   event.sender.send('newfarecardResult', smartread);
@@ -131,14 +131,14 @@ ipcMain.on('newfarecard', (event, cardname) => {
 //encode new card
 ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
   
-  console.log("before java call  Data", posAppletInstance)
+  logger.info("before java call  Data", posAppletInstance)
   try {
-    // console.log("show the json data",jsondata);
+    // logger.info("show the json data",jsondata);
     var encodevar = posAppletInstance.encodeCardSync(a,b,c,d,JSON.stringify(jsondata));
   } catch (error) {
-    console.log('show thw error here',error);
+    logger.info('show thw error here',error);
   }
-  console.log('result of encode', encodevar)
+  logger.info('result of encode', encodevar)
   event.sender.send('encodeCardResult', encodevar.getValueSync());
 });
 
@@ -147,17 +147,17 @@ ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
 // encode existing card
 ipcMain.on('encodeExistingCard', (event, cardNumber,jsondata) => {
   
-  console.log("before java call  Data", posAppletInstance)
+  logger.info("before java call  Data", posAppletInstance)
   try {
-    // console.log("show the json data",jsondata);
+    // logger.info("show the json data",jsondata);
     // var encodevar = posAppletInstance.encodeCardSync(a,b,c,d,jsondata1,jsondata2,jsondata3);
     var cardNumberStr = "";
     cardNumberStr = cardNumber.toString();
     var encodevar = posAppletInstance.addProductsSync(cardNumberStr,JSON.stringify(jsondata));
   } catch (error) {
-    console.log('show thw error here',error);
+    logger.info('show thw error here',error);
   }
-  console.log('result of encode', encodevar)
+  logger.info('result of encode', encodevar)
   event.sender.send('encodeCardResult', encodevar.getValueSync());
 });
 
@@ -169,11 +169,11 @@ ipcMain.on('encodeExistingCard', (event, cardNumber,jsondata) => {
 //   var cardName = cardname
 //   var writeData = [{ "type_expiration": 0, "add_time": 0, "recharges_pending": 0, "days": 31, "priority_and_condition": 5, "status": "ACTIVE", "is_prod_bad_listed": false, "product_type": 1, "ticket_id": 124, "designator": 3, "designator_details": 0, "start_date_epoch_days": 0, "exp_date_epoch_days": 0, "is_linked_to_user_profile": false, "sourceZone": 0, "destinationZone": 0, "mfgId": 0, "equipmentType": 0, "equipmentId": 0, "individualLoadSeqNo": 0, "tpbCode": 0, "rangeLoadSeqNo": 0, "fileSize": 0, "accessRights": 0, "fileVersion": 0, "slotNumber": 2, "balance": 31, "isRegistered": false, "start_date": 18000000, "isAutoRechargeBackend": false, "isAutoRechargePurse1": false, "isAutoRechargePurse2": false, "isCardBased": true, "isAccountBased": false, "isTpbLock": false, "exp_date": 18000000, "exp_date_str": "01/01/1970", "start_date_str": "01/01/1970" }]
 //   var PID = "0000003945"
-//   console.log("  write card call", EncoderInstance)
+//   logger.info("  write card call", EncoderInstance)
 
 //   var result = EncoderInstance.encodeCardSync(PID, 1, 0, 0, JSON.stringify(writeData));
 
-//   console.log("write call result", '' + result)
+//   logger.info("write call result", '' + result)
 
 
 //   event.sender.send('writeSmartCardResult', result);
@@ -184,21 +184,21 @@ ipcMain.on('activationcall', (event, environment, data) => {
   //var assetId = setup
   // var JSString = java.import("java.lang.String");
   var result = posAppletInstance.registerDeviceSync(environment, data.assetId, data.password);
-   console.log(result);
+   logger.info(result);
   event.sender.send('activationCallResult', result.getSuccessSync());
 })
 
 
 ipcMain.on('verifycall', (event, data, environment) => {
   // var assetId = data.assetId
-  console.log("verify call  Data", posAppletInstance)
+  logger.info("verify call  Data", posAppletInstance)
   var result = posAppletInstance.validateRegisterDeviceSync(environment,data.assetId, data.setupCode);
   event.sender.send('verifyCallResult', result.getMessageSync());
 })
 
 ipcMain.on('switchlogincall', (event) => {
   var result = posAppletInstance.getTerminalConfigJSONSync();
-  console.log(result);
+  logger.info(result);
   event.sender.send('switchLoginCallResult', result);
 })
 
@@ -211,9 +211,9 @@ ipcMain.on('logincall', (event, login) => {
 })
 
 ipcMain.on('catalogJson', (event, catalog) => {
-  console.log("catalogJson  Data", posAppletInstance)
+  logger.info("catalogJson  Data", posAppletInstance)
   var result = posAppletInstance.getProductCatalogJSONSync();
-  console.log("catalogJson data", '' + result)
+  logger.info("catalogJson data", '' + result)
 
   event.sender.send('catalogJsonResult', result);
 })
@@ -221,18 +221,18 @@ ipcMain.on('catalogJson', (event, catalog) => {
 
 ipcMain.on('savaTransaction', (event, TransData) => {
   var TransData = { "userID": "admin@ta.com", "timestamp": 1548956849820, "transactionID": "1548956849834", "transactionType": "Charge", "transactionAmount": 12.5, "salesAmount": 12.5, "taxAmount": 0, "items": [{ "transactionID": "1548956849834", "cardPID": "0000004524", "cardUID": "1185357863206784", "quantity": 0, "productIdentifier": null, "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": 18198, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": true, "unitPrice": 0, "totalCost": 0, "userID": "admin@ta.com", "shiftID": 1, "fareCode": "Full", "walletContentItems": [{ "transactionID": "1548956849834", "quantity": 1, "productIdentifier": "1406", "ticketTypeId": 3, "ticketValue": 10, "status": "ACTIVE", "slotNumber": 3, "startDate": 0, "expirationDate": 0, "balance": 10, "rechargesPending": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": 12.5, "totalCost": 12.5, "userID": "admin@ta.com", "shiftID": 1, "fareCode": "Full", "offeringId": 27, "cardPID": "0000004524", "cardUID": "1185357863206784", "walletTypeId": 3, "shiftType": 0, "timestamp": 1548956849820 }], "walletTypeId": 3, "shiftType": 0, "timestamp": 1548956849820 }], "payments": [{ "paymentMethodId": 2, "amount": 12.5 }], "shiftType": 0 }
-  console.log("savaTransaction  Data", posAppletInstance)
+  logger.info("savaTransaction  Data", posAppletInstance)
   var result = posAppletInstance.saveTransactionSync(JSON.stringify(TransData));
-  console.log("savaTransaction data", '' + result)
+  logger.info("savaTransaction data", '' + result)
 
   event.sender.send('saveTransactionResult', result);
 })
 
 
 // ipcMain.on('encodeCard', (event, encodeCardData) => {
-//   console.log("catalogJson  Data", posAppletInstance)
+//   logger.info("catalogJson  Data", posAppletInstance)
 //   var result = posAppletInstance.encodeCardSync();
-//   console.log("catalogJson data", '' + result)
+//   logger.info("catalogJson data", '' + result)
 
 //   event.sender.send('catalogJsonResult', result);
 // })

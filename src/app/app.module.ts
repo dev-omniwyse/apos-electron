@@ -18,6 +18,8 @@ import { ActivationComponent } from './components/activation/activation.componen
 import { VerifyComponent } from './components/verify/verify.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
+import { CompComponent } from './components/comp/comp.component';
+import { AdminComponent } from './components/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { AddProductComponent } from './components/add-product/add-product.compon
     ActivationComponent,
     VerifyComponent,
     NavbarComponent,
-    AddProductComponent
+    AddProductComponent,
+    CompComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

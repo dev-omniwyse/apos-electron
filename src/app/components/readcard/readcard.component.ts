@@ -83,7 +83,8 @@ export class ReadcardComponent implements OnInit {
     title = 'Add Cdta';
     url = '';
     event = "20+20";
-    value: any
+    value: any;
+    public logger ;
     public singleImage: any
     public carddata = [];
     public carddataProducts = [];
@@ -93,6 +94,9 @@ export class ReadcardComponent implements OnInit {
 
     constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
+        if(this.electronService.isElectronApp) {
+            this.logger = this.electronService.remote.require("electron-log");
+        }
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
             if (data != undefined && data != "") {
                 this.show = true;
@@ -201,6 +205,7 @@ export class ReadcardComponent implements OnInit {
     }
 
     getProductCatalogJSON() {
+        this.logger.info('this is a message from angular');
         this.electronService.ipcRenderer.send('catalogJson', cardName)
     }
 
