@@ -19,7 +19,7 @@
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" [routerLink]="['/addproduct']">
+		<button class="card-btn" (click)="readCard($event); getProductCatalogJSON()">
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
