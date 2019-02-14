@@ -19,7 +19,7 @@
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" (click)="readCard($event); getProductCatalogJSON()">
+		<button class="card-btn" [routerLink]="['/addproduct']">
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
@@ -31,6 +31,7 @@
 			Go To Camera
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button> -->
+		<!-- (click)="readCard($event); getProductCatalogJSON()" -->
 	</div>
 	<div class="flex container-padding flex-row admin-btn pull-left">
 		<button class="card-btn-orange" [routerLink]="['/admin']">

@@ -1,13 +1,18 @@
+
+
 var { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
 var path = require("path");
 var url = require("url");
-var fs = require("fs");
+var fs = require("fs-extra");
 var javaInit = require('./javaInit')
 var childProcess = require('child_process');
 var javaInstancePath = "com.genfare.applet.encoder.EncoderApplet";
 var logger = require('electron-log');
-// var EncoderApplet = java.import(javaInstancePath);
-// var EncoderInstance = new EncoderApplet()
+
+let reqPath = path.join(app.getAppPath(), '../../')
+fs.copyFile(app.getAppPath()+'/logging.properties', reqPath+'/logging.properties');
+
+fs.copySync(app.getAppPath()+'/app.properties', reqPath+'app.properties');
 
 var java = javaInit.getJavaInstance();
 logger.info("classpath", java.classpath)
@@ -184,7 +189,7 @@ ipcMain.on('activationcall', (event, environment, data) => {
   //var assetId = setup
   // var JSString = java.import("java.lang.String");
   var result = posAppletInstance.registerDeviceSync(environment, data.assetId, data.password);
-   logger.info(result);
+   logger.info("activation call",result.getSuccessSync());
   event.sender.send('activationCallResult', result.getSuccessSync());
 })
 
@@ -229,10 +234,102 @@ ipcMain.on('savaTransaction', (event, TransData) => {
 })
 
 
-// ipcMain.on('encodeCard', (event, encodeCardData) => {
-//   logger.info("catalogJson  Data", posAppletInstance)
-//   var result = posAppletInstance.encodeCardSync();
-//   logger.info("catalogJson data", '' + result)
+ipcMain.on('creditOrDebit', (event, catalog) => {
+  logger.info("creditOrDebit  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("creditOrDebitResult data", '' + result)
 
-//   event.sender.send('catalogJsonResult', result);
-// })
+  event.sender.send('creditOrDebitResult', result);
+})
+
+ipcMain.on('check', (event, catalog) => {
+  logger.info("check  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("checkResult data", '' + result)
+
+  event.sender.send('checkResult', result);
+})
+
+ipcMain.on('existingFareCard', (event, catalog) => {
+  logger.info("existingFareCard  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("existingFareCardResult data", '' + result)
+
+  event.sender.send('existingFareCardResult', result);
+})
+
+ipcMain.on('voucher', (event, catalog) => {
+  logger.info("voucher  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("voucherResult data", '' + result)
+
+  event.sender.send('voucherResult', result);
+})
+
+ipcMain.on('payAsYouGo', (event, catalog) => {
+  logger.info("payAsYouGo  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("payAsYouGoResult data", '' + result)
+
+  event.sender.send('payAsYouGoResult', result);
+})
+
+ipcMain.on('comp', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('compResult', result);
+})
+
+
+/** ADMIN METHODS STARTS HERE*/
+
+ipcMain.on('adminSales', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminSalesResult', result);
+})
+
+ipcMain.on('adminCloseShift', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminCloseShiftResult', result);
+})
+
+ipcMain.on('adminOpenShift', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminOpenShiftResult', result);
+})
+ipcMain.on('adminSync', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminSyncResult', result);
+})
+
+ipcMain.on('adminDeviceConfig', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminDeviceConfigResult', result);
+})
+
+ipcMain.on('adminShiftSaleSummary', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.getProductCatalogJSONSync();
+  logger.info("compResult", '' + result)
+
+  event.sender.send('adminShiftSaleSummaryResult', result);
+})
+
+/** ADMIN METHODS END HERE*/

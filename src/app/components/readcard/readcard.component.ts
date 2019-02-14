@@ -196,7 +196,7 @@ export class ReadcardComponent implements OnInit {
 
     newFareCard(event) {
         this.electronService.ipcRenderer.send('newfarecard', cardName)
-        console.log('read call', cardName)
+        //console.log('read call', cardName)
     }
 
     writeCard(event) {

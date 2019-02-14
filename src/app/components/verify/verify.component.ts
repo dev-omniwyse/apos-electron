@@ -33,6 +33,7 @@ export class VerifyComponent implements OnInit {
     //   }
     // });
         this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
+          
         if (data != undefined && data != "") {
           this._ngZone.run(() => {
             this.cdtaservice.announceHeaderShowHide("hideHeader");
