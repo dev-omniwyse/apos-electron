@@ -97,7 +97,9 @@ export class ReadcardComponent implements OnInit {
         if(this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
+        
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
+            console.log("data", data)
             if (data != undefined && data != "") {
                 this.show = true;
                 this._ngZone.run(() => {

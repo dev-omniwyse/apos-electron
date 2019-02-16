@@ -79,40 +79,41 @@ app.on("activate", () => {
   */
 
 ipcMain.on('readSmartcard', (event, cardname) => {
-  var cardName = cardname
-  logger.info("cardName", cardName)
-  var cardConfig = {
-    "agency_id": 194,
-    "end_of_transit_day_desfire": null,
-    "priorities_and_configuration_type": 1,
-    "printed_id_file_version": 2,
-    "card_properties_file_version": 0,
-    "transfer_file_version": 1,
-    "product_list_file_version": 0,
-    "product_file_version": 3,
-    "journal_file_version": 1,
-    "equipment_id": 0,
-    "first_product_must_be_stored_value": true,
-    "number_of_products": 4,
-    "number_of_transfers": 1,
-    "number_of_bonus_passes": 1,
-    "number_of_pay_as_you_go_passes": 1,
-    "max_stored_value": 20000,
-    "max_pending_passes": 3,
-    "agency_timezone_offset": -21600000,
-    "accountFlag": false
-  }
+  // var cardName = cardname
+  // logger.info("cardName", cardName)
+  // var cardConfig = {
+  //   "agency_id": 194,
+  //   "end_of_transit_day_desfire": null,
+  //   "priorities_and_configuration_type": 1,
+  //   "printed_id_file_version": 2,
+  //   "card_properties_file_version": 0,
+  //   "transfer_file_version": 1,
+  //   "product_list_file_version": 0,
+  //   "product_file_version": 3,
+  //   "journal_file_version": 1,
+  //   "equipment_id": 0,
+  //   "first_product_must_be_stored_value": true,
+  //   "number_of_products": 4,
+  //   "number_of_transfers": 1,
+  //   "number_of_bonus_passes": 1,
+  //   "number_of_pay_as_you_go_passes": 1,
+  //   "max_stored_value": 20000,
+  //   "max_pending_passes": 3,
+  //   "agency_timezone_offset": -21600000,
+  //   "accountFlag": false
+  // }
 
 
-  logger.info("before java call  Data", posAppletInstance)
+  // logger.info("before java call  Data", posAppletInstance)
 
-  var result = posAppletInstance.setEncoderSync(cardName);
+  // var result = posAppletInstance.setEncoderSync(cardName);
 
-  logger.info("setEncoder Data", '' + result)
+  // logger.info("setEncoder Data", '' + result)
   try {
     // var resultObject = java.newInstance("com.genfare.pos.applet.POSApplet.ResultObject");
 
     var resultObject = posAppletInstance.readCardSync();
+    logger.info('resultObject',resultObject);
   } catch (error) {
     logger.info(error);
   }

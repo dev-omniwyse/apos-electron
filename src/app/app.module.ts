@@ -20,7 +20,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { CompComponent } from './components/comp/comp.component';
 import { AdminComponent } from './components/admin/admin.component';
-
+import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
+import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
+import { ShiftsComponent } from './components/shifts/shifts.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +39,11 @@ import { AdminComponent } from './components/admin/admin.component';
     NavbarComponent,
     AddProductComponent,
     CompComponent,
-    AdminComponent
+    AdminComponent,
+    DeviceconfComponent,
+    ShiftSalesSummaryComponent,
+    ShiftsComponent
+    
   ],
   imports: [
     BrowserModule,

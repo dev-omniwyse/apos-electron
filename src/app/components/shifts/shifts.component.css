@@ -9,7 +9,7 @@ body {
 }
 
 .main-container {
-    background-color: #f0f3fa;
+    background-color: #777777;
     display: flex;
     padding: 5px
 }
@@ -17,7 +17,7 @@ body {
 .container-left {
     width: 35%;
     float: left;
-    background-color: #fff;
+    background-color: #f0f3fa;
     border-radius: 5px;
     margin: 0 5px;
     padding: 20px;
@@ -26,7 +26,7 @@ body {
 .container-right {
     width: 65%;
     float: left;
-    background-color: #f0f3fa;
+    background-color: #fff;
     margin: 0 5px;
     border-radius: 5px;
     padding: 20px;
@@ -324,63 +324,4 @@ body {
 
 .modal-footer {
     justify-content: center;
-}
-
-.main-shift-row {
-    overflow: hidden;
-    padding: 5px 0;
-}
-
-.main-shift-head {
-    border-bottom: 1px solid #ccc;
-    padding: 5px 0;
-    color: green;
-    margin-bottom: 15px;
-}
-
-.hr-css {
-    border-top: 1px solid #e7e7e7;
-    margin: 2px 0;
-}
-
-.print-report {
-    width: 100%;
-    margin-top: 15px;
-    border: 1px solid #D64900;
-    border-radius: 3px;
-    background-color: #d65400;
-    padding: 15px;
-    color: #fff;
-    font-size: 22px;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cr-right-btns {
-    width: 100%;
-}
-
-.cr-right-btns button {
-    width: 100%;
-    background-color: #337ab7;
-    border: 1px solid #337ab7;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
-    margin: 5px 0;
-}
-
-.back-to-sales {
-    background-color: #d65400;
-    border: 1px solid #d65400;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
-}
-
-.back-sales-txt {
-    margin: 20px 0 15px 0;
 }

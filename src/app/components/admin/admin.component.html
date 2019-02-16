@@ -1,3 +1,154 @@
-<p>
-  admin works!
-</p>
+<div class="main-container">
+    <div class="container-left">
+
+        <div class="container-l-app">
+            <div class="main-shift">
+                <div class="main-shift-head">Main Shift is Opened</div>
+                <div class="main-shift-head">Shift Report</div>
+                <div class="main-shift-row">
+                    <div class="pull-left">Fare Sold Total</div>
+                    <div class="pull-right">$35.00</div>
+                </div>
+                <div class="main-shift-row">
+                    <div class="pull-left">Non Fare Products Sold Total</div>
+                    <div class="pull-right">$0.00</div>
+                </div>
+                <hr class="hr-css">
+                <div class="main-shift-row">
+                    <div class="pull-left">Total Sold </div>
+                    <div class="pull-right">$35.00</div>
+                </div>
+
+                <br/>
+
+                <div class="main-shift-row">
+                    <div class="pull-left">Opening Drawer</div>
+                    <div class="pull-right">$0.00</div>
+                </div>
+                <div class="main-shift-row">
+                    <div class="pull-left">Expected Cash</div>
+                    <div class="pull-right">$35.00</div>
+                </div>
+                <div class="main-shift-row">
+                    <div class="pull-left">Actual Cash</div>
+                    <div class="pull-right">$0.00</div>
+                </div>
+                <div class="main-shift-row">
+                    <div class="pull-left">Over/Short</div>
+                    <div class="pull-right">$0.00</div>
+                </div>
+            </div>
+        </div>
+        <div>
+
+            <button class="print-report"><i class="fa fa-print" aria-hidden="true"></i>
+               PRINT REPORT</button>
+        </div>
+
+    </div>
+
+    <div class="container-right">
+        <div class="cr-r-set">
+            <div class="">
+                <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
+                <div class="back-sales-txt">What would you like to do ? </div>
+                <div class="cr-right-btns">
+                    <button [routerLink]="['/shifts']">
+                      Close Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button data-toggle="modal" data-target="#reliefShiftModal">
+                      Pause Main Shift For Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button data-toggle="modal" data-target="#noSale">
+                      NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button [routerLink]="['/shift_sales']">
+                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button>
+                      Print Last Transaction Receipt <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button [routerLink]="['/deviceconfig']">
+                      Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="modal fade" id="reliefShiftModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Confirm Main Shift Relief</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Remove the till from the cash drawer, Click ok to Continue </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="noSale" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Cash Drawer is Open</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Please proceed with your task. Click "OK" When complete </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="syncCds" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Sync Data</h4>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <p>Confirm Sync</p>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#continueSyncModal">Yes,continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="continueSyncModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Syncing With CDS</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Syncing with CDS</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
