@@ -1,0 +1,30 @@
+Feb 18, 2019 10:38:16 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos-electron/logs/APOS.1550466496698.%u.%g.log
+Feb 18, 2019 10:38:16 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: App mode: ${build.mode}
+Feb 18, 2019 10:38:16 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: EPX Mode: true
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 18, 2019 10:38:17 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 18, 2019 10:38:17 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Done with running initialization script.

@@ -1,0 +1,52 @@
+Feb 18, 2019 10:31:03 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos-electron/logs/APOS.1550466063693.%u.%g.log
+Feb 18, 2019 10:31:03 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Uploading log file: APOS.1550465942444.0.0.log
+Feb 18, 2019 10:31:05 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Successfully uploaded log file to S3
+Feb 18, 2019 10:31:05 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
+INFO: Log File deleted
+Feb 18, 2019 10:31:05 AM com.genfare.pos.remote.sync.SyncService runSync
+INFO: Finished running sync service and error state was = false
+Feb 18, 2019 10:31:05 AM com.genfare.pos.remote.sync.SyncService runSync
+INFO: Sync success!
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.ConnectionManager cleanupDatabase
+INFO: Cleaning up database
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.AutoloadLoader purge
+INFO: Purging processed autoload records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.AutoloadLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.DiagnosticLoader purge
+INFO: Purging processed diagnostic records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.DiagnosticLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.EventLoader purge
+INFO: Purging processed event records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.EventLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.LoginLoader purge
+INFO: Purging processed login records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.LoginLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.PaymentLoader purge
+INFO: Purging processed payment records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.PaymentLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.ProductLineItemLoader purge
+INFO: Purging processed product line item records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.ProductLineItemLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.WalletContentLoader purge
+INFO: Purging processed wallet content records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.WalletContentLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.WalletLineItemLoader purge
+INFO: Purging processed wallet line item records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.WalletLineItemLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.PosTransactionLoader purge
+INFO: Purging processed transaction records earlier than 2019-01-19 10:31:05
+Feb 18, 2019 10:31:05 AM com.genfare.pos.core.data.loader.PosTransactionLoader purge
+INFO: Purged 0 records
+Feb 18, 2019 10:31:05 AM com.genfare.pos.remote.sync.SyncJobListener jobWasExecuted
+INFO: Listener for sync reports job finished.
