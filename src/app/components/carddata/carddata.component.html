@@ -15,9 +15,9 @@
 	"></div>
 
 	<div class="pull-left encode-card-txt">
-		<h2>Please place card {{cardJson?.printed_id}} on the reader.</h2>
+		<h2>Please place card {{currentCard?.printed_id}} on the reader.</h2>
 		<h2>The following products will be added.</h2>
-		<div *ngFor="let merch of encodeParseData">
+		<div *ngFor="let merch of currentCardMerchantList">
 			<h3>{{merch.Ticket.Description}} -  {{merch.Ticket.Price}}</h3>
 		</div>
 	</div>

@@ -12,15 +12,30 @@
         <div class="header-l ">
           <img src="assets/images/shopping-cart.svg" width="30"/>
           <button class="btn-white-top">View Card</button>
-          <button class="btn-orange">Add Card</button>
+          <button class="btn-orange" (click)="addCard()">Add Card</button>
         </div>
-        <div class="flex header-l">
+        <div>
+          <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
+          <!-- <div class="menucontainer left"> -->
+            <ul style="height:100px">
+              <li>
+                    <button class="btn-b-white">Merch</button>
+              </li>
+              <li *ngFor="let cards of cardJson;let i= index" (click)="selectCard(i)">
+                    <button class="btn-b-white">{{cards.printed_id}}</button>
+              </li>
+      
+            </ul> 
+          <!-- </div> -->
+          <!-- <input (click)="myStyle={'margin-left': moveRight()}" [disabled]="rightdisabled" class="left" type="button" value="Move Right" /> -->
+        </div>
+        <!-- <div class="flex header-l">
           <button class="btn-b-white">Merch</button>
           <button class="btn-b-white">{{cardJson?.printed_id}}</button>
-        </div>
+        </div> -->
           <div class="container-l-app">
-            <div class="" *ngFor="let merch of merchantList">
-            <span class="label label-default">
+            <div class="" *ngFor="let merch of merchantList; let j=index">
+            <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
               
               <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
