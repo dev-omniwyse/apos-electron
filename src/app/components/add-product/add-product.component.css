@@ -301,3 +301,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .modal-footer{
     justify-content: center;
 }
+
+/* .li-horizontal{
+    display: inline-block;
+    width: 100%;
+}
+
+#cards-div ul{
+    list-style: none;
+}
+#cards-div li{
+    display: inline;
+} */
