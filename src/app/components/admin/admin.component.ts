@@ -3,6 +3,8 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 
+declare var $: any
+
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -10,7 +12,12 @@ import { ElectronService } from 'ngx-electron';
 })
 export class AdminComponent implements OnInit {
 
-  constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService,) {
+  public openShift = true
+  public closeShift = true
+  public mainShiftClosed = false
+  public mainShiftPaused = false
+
+  constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
       if (data != undefined && data != "") {
@@ -63,9 +70,11 @@ export class AdminComponent implements OnInit {
     });
 
 
-   }
-
-   adminSales(event) {
+  }
+  closeShifts() {
+    localStorage.setItem("closeShift", this.closeShift.toString())
+  }
+  adminSales(event) {
     this.electronService.ipcRenderer.send('adminSales')
     //console.log('read call', cardName)
   }
@@ -90,13 +99,36 @@ export class AdminComponent implements OnInit {
     //console.log('read call', cardName)
   }
 
+  mainShiftPause() {
+    this.mainShiftPaused = true
+    localStorage.setItem("mainShiftPaused", this.mainShiftPaused.toString())
+    this.router.navigate(['/login'])
+  }
 
-
-
-
-
+  reOpenShift(){
+    this.mainShiftPaused = false
+    localStorage.removeItem("mainShiftClosed")
+  }
 
   ngOnInit() {
+    let shift = JSON.parse(localStorage.getItem("openShift"));
+    if (localStorage.getItem("mainShiftPaused") == "true") {
+      this.mainShiftPaused = true
+      this.mainShiftClosed = false
+      this.openShift = false
+    }else
+    if (shift == undefined || shift == null) {
+      this.openShift = true
+    } else if (localStorage.getItem("mainShiftClosed") == "true") {
+      this.mainShiftClosed = true
+    }
+    else {
+      this.openShift = false
+      $("#readyForSaleModal").modal('show');
+
+    }
+
   }
+
 
 }

@@ -1,0 +1,56 @@
+Feb 18, 2019 1:02:44 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
+INFO: Parent log configured, future logs will go to log file: C:\Users\vamsi deepak\Desktop\prod_apos_electron\apos-electron/logs/APOS.1550431964561.%u.%g.log
+Feb 18, 2019 1:02:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: App mode: ${build.mode}
+Feb 18, 2019 1:02:44 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: EPX Mode: true
+Feb 18, 2019 1:02:45 AM com.genfare.pos.core.data.loader.ConnectionManager createTables
+INFO: Creating tables
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Starting FileCacheService.
+Feb 18, 2019 1:02:47 AM com.genfare.pos.core.cache.FileCacheService <init>
+INFO: Done running FileCacheService.
+Feb 18, 2019 1:02:48 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Done with running initialization script.
+Feb 18, 2019 1:02:52 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Make JSON from Terminal.
+Feb 18, 2019 1:02:52 AM com.genfare.pos.core.converters.TerminalFrontEndConverter makeJSON
+INFO: Got TerminalConfig FrontEnd JSON.
+Feb 18, 2019 1:03:11 AM com.genfare.pos.core.data.loader.EquipmentLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:11 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:12 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:12 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:13 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:13 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:13 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:13 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:14 AM com.genfare.pos.core.data.loader.SchemaVersionLoader insert
+INFO: insert()
+Feb 18, 2019 1:03:14 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 18, 2019 1:03:14 AM com.genfare.pos.core.device.Terminal initialize
+INFO: Initializing terminal
+Feb 18, 2019 1:03:14 AM com.genfare.pos.applet.POSApplet runInitialization
+INFO: Running initialization.

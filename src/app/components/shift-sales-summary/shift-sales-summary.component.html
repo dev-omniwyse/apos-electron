@@ -1,4 +1,55 @@
-<p>
-    shift-sales-summary works!
-</p>
-<button [routerLink]="['/admin']">back</button>
+<div class="container-padding">
+    <div class="shift-sales-head">
+        <div class="pull-left shift-sales-txt">SHIFT SALES SUMMARY</div>
+        <div class="pull-right"><button class="back-to-sales"><i class="fa fa-print"></i> Print Summary</button></div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="shift-data-sets">
+        <div class="shift-data-set">
+            <table>
+                <tr>
+                    <th>Quanity</th>
+                    <th>Product</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Smart Card</td>
+                    <td>$5.00</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Pay As You Go</td>
+                    <td>$30.00</td>
+                </tr>
+            </table>
+        </div>
+        <div class="shift-data-set">
+            <table>
+                <tr>
+                    <th>Payment Method</th>
+                    <th>Amount</th>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>$35.00</td>
+                </tr>
+                <tr>
+                    <td>Credit or Debit Card</td>
+                    <td>$0.00</td>
+                </tr>
+                <tr>
+                    <td>Cash</td>
+                    <td>$35.00</td>
+                </tr>
+                <tr>
+                    <td>Credit or Debit Card</td>
+                    <td>$0.00</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <button class="back-to-sales" [routerLink]="['/admin']"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Back to Admin</button>
+</div>

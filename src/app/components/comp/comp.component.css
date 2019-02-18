@@ -1,0 +1,37 @@
+.process-comp-btn {
+    border: 1px solid #2064a7;
+    border-radius: 3px;
+    background-color: #3b80c3;
+    padding: 50px 0px;
+    color: #fff;
+    font-size: 20px;
+    width: calc(25% - 20px);
+    margin: 10px;
+}
+
+.process-cota-head{
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    margin-bottom: 30px; 
+}
+
+.process-cota-head-txt{
+    font-size: 22px;
+    padding-top: 30px;
+}
+
+.serch-txt-process{
+    text-align: center;
+    background-color: #d4f0ff;
+    padding: 40px; 
+    color: #2064a7;
+    font-size: 22px;  
+}
+
+.serch-txt-process input{
+width: 100%;
+padding: 10px;
+border: 1px solid #ccc;
+margin: 35px 0;
+border-radius: 6px;
+}

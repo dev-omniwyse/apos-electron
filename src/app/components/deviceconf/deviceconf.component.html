@@ -1,4 +1,35 @@
-<p>
-    deviceconf works!
-</p>
-<button [routerLink]="['/admin']">back to admin</button>
+<div class="container-padding">
+    <div class="shift-sales-head">
+        <div class="pull-left shift-sales-txt">About This Device</div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="shift-data-sets">
+        <div class="shift-data-set">
+            <table>
+                <tr>
+                    <td>Software Version</td>
+                    <td>V 12.0</td>
+                </tr>
+                <tr>
+                    <td>CDS Address</td>
+                    <td>$30.00</td>
+                </tr>
+            </table>
+        </div>
+        <div class="shift-data-set">
+            <table>
+                <tr>
+                    <td>Software Version</td>
+                    <td>V 12.0</td>
+                </tr>
+                <tr>
+                    <td>CDS Address</td>
+                    <td>$30.00</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <button class="back-to-sales" [routerLink]="['/admin']"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Back to Admin</button>
+</div>

@@ -1,25 +1,23 @@
 <div class="main-container ">
-
   <div class="content-container container-padding">
-    <div class="clearfix">
-      <h1>REASON FOR COMP</h1>
+    <div class="process-cota-head">
+      <div class="pull-left process-cota-head-txt">REASON FOR COMP</div>
+      <button class="card-btn-orange pull-right"> PROCESS COMP </button>
+      <div class="clearfix"></div>
     </div>
-
-  </div>
-  <div class="flex-devide text-right">
-    <button class="card-btn-orange "><i class="fal fa-plus-square"></i> PROCESS COMP </button>
-  </div>
+   
   <div *ngIf="reason">
-    <button class="card-btn"> DEFECTIVE CARD</button>
-    <button class="card-btn"> LOST CARD </button>
-    <button class="card-btn"> SCHEDULE DELAYS</button>
-    <button class="card-btn" (click)="compReason();"> OTHERS</button>
+    <button class="process-comp-btn"> DEFECTIVE CARD</button>
+    <button class="process-comp-btn"> LOST CARD </button>
+    <button class="process-comp-btn"> SCHEDULE DELAYS</button>
+    <button class="process-comp-btn" (click)="compReason();"> OTHERS</button>
   </div>
-  <div *ngIf="!reason">
+  <div *ngIf="!reason" class="serch-txt-process">
     Enter the Reason for comp
     <input type="text" placeholder="Enter Reason For Comp" [(ngModel)]="reasonForComp">
   </div>
-  <div class=" admin-btn pull-left">
-    <button class="btn btn-default" (click) = "compNavigate();"> Cancel </button>
+  <div style="margin-top:150px">
+    <button class="pull-left btn btn-outline-rounded btn-default" (click) = "compNavigate();"> Cancel </button>
   </div>
+</div>
 </div>

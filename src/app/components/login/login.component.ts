@@ -60,6 +60,12 @@ export class LoginComponent implements OnInit {
             password: ['', Validators.required]
         });
         // console.log(process.env.PATH);
+       // let shift = JSON.parse(localStorage.getItem("openShift"));
+      //  if (shift != undefined || shift != null) {
+        localStorage.removeItem("openShift")
+        localStorage.removeItem("closeShift")
+        localStorage.removeItem("mainShiftClosed")
+       // } 
 
     }
 
@@ -115,6 +121,7 @@ export class LoginComponent implements OnInit {
             password: this.password
         }
         this.electronService.ipcRenderer.send('logincall', user)
+        
 
     }
 }

@@ -287,6 +287,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
     padding: 5px;
     color: #529657;
     font-size: 20px;
+    margin: 10px 0;
 }
 .modal-footer .btn-default {
     background-color: #d65400;
@@ -295,9 +296,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
     color: #fff;
     font-size: 16px;
     padding: 10px 15px;
-    margin: 1% 0;
+    margin:0 5px;
     width: 50%;
 }
 .modal-footer{
     justify-content: center;
+}
+
+.pay-as-you{
+    width: 100%;
+    background-color: #337ab7;
+    border: 1px solid #337ab7;
+    border-radius: 3px;
+    padding: 14px;
+    color: #fff;
 }
