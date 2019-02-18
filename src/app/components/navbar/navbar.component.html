@@ -1,17 +1,18 @@
 <div class="header flex">
     <div class="header-logo pull-left"><img src="assets/images/logo-header.png" /></div>
     <div class="header-info pull-right">
-      <div class="login-info">
-        <div>CDTA Admin <span>|</span> Terminal: 1258</div>
-        <div><a href="#">logout</a></div>
-      </div>
+        <div class="login-info">
+            <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
+            <div class="pull-left"><a href="#">logout</a></div>
+            <div class="pull-left">Menu</div>
+        </div>
     </div>
-  </div>
-  
-  <div  id="status-buttons" *ngIf="hideHeader">
+</div>
+
+<div id="status-buttons" *ngIf="hideHeader">
     <ul class="nav nav-tabs" id="myTab">
         <!-- <div class="liner"></div> -->
-                    
+
         <!-- circular user icon -->
         <li>
             <a routerLink="/setup" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" data-toggle="tab" title="personal">
@@ -22,18 +23,18 @@
                 </span>
             </a>
         </li>
-  
+
         <!-- circular tasks icon -->
-         <li>
+        <li>
             <a routerLink="/activation" routerLinkActive="active" data-toggle="tab" title="work">
                 <span class=" two">
                         Step 2
                         <div>Activation Information</div>
                         <span class="glyphicon glyphicon-arrow-right wizard-arrow"></span>
-                </span> 
+                </span>
             </a>
         </li>
-  
+
         <!-- circular home icon -->
         <li>
             <a routerLink="/verify" routerLinkActive="active" data-toggle="tab" title="address">
@@ -44,10 +45,10 @@
                 </span>
             </a>
         </li>
-                
+
     </ul>
     <div class="clearfix"></div>
-  </div>
-  
-  <!-- Close the Splash screen -->
-  <script src="assets/js/loading-bars.js"></script>
+</div>
+
+<!-- Close the Splash screen -->
+<script src="assets/js/loading-bars.js"></script>

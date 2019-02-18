@@ -12,6 +12,9 @@ import { VerifyComponent } from './components/verify/verify.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { CompComponent } from './components/comp/comp.component';
 import { AdminComponent } from './components/admin/admin.component';
+import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
+import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
+import { ShiftsComponent } from './components/shifts/shifts.component'
 const routes: Routes = [
   { 
     path: '', 
@@ -60,6 +63,18 @@ const routes: Routes = [
   {
     path:"admin",
     component: AdminComponent
+  },
+  {
+    path:"deviceconfig",
+    component: DeviceconfComponent
+  },
+  {
+    path:"shift_sales",
+    component: ShiftSalesSummaryComponent
+  },
+  {
+    path:"shifts",
+    component: ShiftsComponent
   }
 
 

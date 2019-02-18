@@ -11,65 +11,65 @@ declare var WebCamera: any;
 declare var dialog: any;
 declare var fs: any;
 declare var electron: any;
-declare var pcsc: any;
-var pcs = pcsc();
-var cardName: any;
+// declare var pcsc: any;
+// var pcs = pcsc();
+var cardName: any = 0;
 var isExistingCard = false;
-pcs.on('reader', function (reader) {
-    console.log('reader', reader);
-    console.log('New reader detected', reader.name);
+// pcs.on('reader', function (reader) {
+//     console.log('reader', reader);
+//     console.log('New reader detected', reader.name);
 
-    reader.on('error', function (err) {
-        console.log('Error(', this.name, '):', err.message);
-    });
+//     reader.on('error', function (err) {
+//         console.log('Error(', this.name, '):', err.message);
+//     });
 
-    reader.on('status', function (status) {
-        console.log('Status(', this.name, '):', status);
-        /* check what has changed */
-        const changes = this.state ^ status.state;
-        if (changes) {
-            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-                console.log("card removed");/* card removed */
-                reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Disconnected');
-                    }
-                });
-            } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-                cardName = reader.name
-                console.log("sample", cardName)
-                console.log("card inserted");/* card inserted */
-                reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Protocol(', reader.name, '):', protocol);
-                        reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('Data received', data);
-                                console.log('Data base64', data.toString('base64'));
-                                // reader.close();
-                                // pcs.close();
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    });
+//     reader.on('status', function (status) {
+//         console.log('Status(', this.name, '):', status);
+//         /* check what has changed */
+//         const changes = this.state ^ status.state;
+//         if (changes) {
+//             if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+//                 console.log("card removed");/* card removed */
+//                 reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
+//                     if (err) {
+//                         console.log(err);
+//                     } else {
+//                         console.log('Disconnected');
+//                     }
+//                 });
+//             } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+//                 cardName = reader.name
+//                 console.log("sample", cardName)
+//                 console.log("card inserted");/* card inserted */
+//                 reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
+//                     if (err) {
+//                         console.log(err);
+//                     } else {
+//                         console.log('Protocol(', reader.name, '):', protocol);
+//                         reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
+//                             if (err) {
+//                                 console.log(err);
+//                             } else {
+//                                 console.log('Data received', data);
+//                                 console.log('Data base64', data.toString('base64'));
+//                                 // reader.close();
+//                                 // pcs.close();
+//                             }
+//                         });
+//                     }
+//                 });
+//             }
+//         }
+//     });
 
-    reader.on('end', function () {
-        console.log('Reader', this.name, 'removed');
-    });
-});
+//     reader.on('end', function () {
+//         console.log('Reader', this.name, 'removed');
+//     });
+// });
 
-pcs.on('error', function (err) {
-    console.log('PCSC error', err.message);
-});
+// pcs.on('error', function (err) {
+//     console.log('PCSC error', err.message);
+// });
 
 @Component({
     selector: 'app-readcard',
@@ -97,7 +97,9 @@ export class ReadcardComponent implements OnInit {
         if(this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
+        
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
+            console.log("data", data)
             if (data != undefined && data != "") {
                 this.show = true;
                 this._ngZone.run(() => {
