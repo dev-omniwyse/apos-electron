@@ -24,9 +24,49 @@
 
 
 </div>
+
+<div class="modal fade" id="cardModal" role="dialog">
+	<div class="modal-dialog modal-sm">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+		  <h4 class="modal-title">Error</h4>
+		</div>
+
+		<div class="modal-body">
+	  <p>Please place card {{currentCard?.printed_id}} on the reader."</p>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default"
+			data-dismiss="modal">Ok</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <div class="modal fade" id="encodeModal" role="dialog">
+	<div class="modal-dialog modal-sm">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+		  <h4 class="modal-title">Error</h4>
+		</div>
+
+		<div class="modal-body">
+	  <p>Error encoding card!</p>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-default"
+			data-dismiss="modal">Ok</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+
 </div>
 
 <div class="form-group  form-wiz">
 	<button class="pull-left btn btn-outline-rounded btn-default" [routerLink]="['/addproduct']" (click)="goToPreviousgoToPrevious(workForm)"> Cancel</button>
-	<button class="pull-right btn btn-outline-rounded btn-info encode-end" [disabled]="!workForm.valid" (click)="encodeCard()"> Encode Card </button>
+	<button class="pull-right btn btn-outline-rounded btn-info encode-end" [disabled]="!workForm.valid" (click)="checkCorrectCard()"> Encode Card </button>
 </div>

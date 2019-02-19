@@ -39,6 +39,16 @@ announceHeaderShowHide(mission: string) {
   this.headerShowHideSource.next(mission);
 }
 
+private terminalNumberSrc = new Subject<string>();
+ 
+// Observable string streams
+terminalNumber$ = this.terminalNumberSrc.asObservable();
+
+// Service message commands
+setterminalNumber(mission: string) {
+  this.terminalNumberSrc.next(mission);
+}
+
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }

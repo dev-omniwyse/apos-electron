@@ -248,6 +248,20 @@ ipcMain.on('savaTransaction', (event, TransData) => {
 })
 
 
+ipcMain.on('getCardPID', (event, cardname) => {
+  var result = posAppletInstance.setEncoderSync(cardname);
+  try {
+    var resultCardPid = posAppletInstance.getCardPIDSync();
+  } catch (error) {
+    logger.info('show thw error here',error);
+  }
+  logger.info("getCardPID", '' + resultCardPid)
+  event.sender.send('getCardPIDResult', resultCardPid.getValueSync());
+})
+
+
+
+
 ipcMain.on('creditOrDebit', (event, catalog) => {
   logger.info("creditOrDebit  Data", posAppletInstance)
   var result = posAppletInstance.getProductCatalogJSONSync();

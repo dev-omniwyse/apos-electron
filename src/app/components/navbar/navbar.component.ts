@@ -9,6 +9,7 @@ import { CdtaService } from 'src/app/cdta.service';
 export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
+  terminalNumber:any = "";
 // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService) { 
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
@@ -18,6 +19,10 @@ export class NavbarComponent implements OnInit {
         else
         this.hideHeader = true;
       });
+      this.subscription = this.cdtaservice.terminalNumber$.subscribe(
+        mission => {
+         this.terminalNumber = mission;
+        });
   }
 
   

@@ -117,6 +117,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
             if (data != undefined && data != "") {
                 localStorage.setItem('terminalConfigJson',data)
+                this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
                 this._ngZone.run(() => {
                   this.terminalConfigJson = JSON.parse(data);
                 });
