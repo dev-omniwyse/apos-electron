@@ -18,6 +18,19 @@ export class LoginComponent implements OnInit {
     password: string;
     errorMsg: Boolean = false;
     carddata: any
+    sales: any =
+        {
+            userID: 1111,
+            shiftID: "0",
+            shiftType: "main",
+            shiftState: "open",
+            openingDrawer: "0.00",
+            closingDrawer: "0.00",
+            initialOpeningTime: 1550404677000,
+            timeOpened: new Date().getTime(),
+            timeClosed: 0,
+            userThatClosedShift: 1111
+        }
 
     usersData = {
         "users": [
@@ -39,15 +52,21 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private cdtaservice: CdtaService, private _ngZone: NgZone, private electronService: ElectronService
-    ) { 
+    ) {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
-               // this.show = true;
+                // this.show = true;
+                let previousOpenShif = localStorage.getItem("openShift")
+                if (previousOpenShif == "false") {
+                    localStorage.removeItem("openShift")
+                }
+                
+                localStorage.setItem("sales", JSON.stringify(this.sales))
 
                 this._ngZone.run(() => {
-                   // this.carddata = new Array(JSON.parse(data));
-                   // console.log('this.carddata', this.carddata);
+                    // this.carddata = new Array(JSON.parse(data));
+                    // console.log('this.carddata', this.carddata);
                     this.router.navigate(['/readcard'])
                 });
             }
@@ -59,13 +78,9 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
-        // console.log(process.env.PATH);
-       // let shift = JSON.parse(localStorage.getItem("openShift"));
-      //  if (shift != undefined || shift != null) {
-        localStorage.removeItem("openShift")
-        localStorage.removeItem("closeShift")
         localStorage.removeItem("mainShiftClosed")
-       // } 
+
+
 
     }
 
@@ -121,7 +136,7 @@ export class LoginComponent implements OnInit {
             password: this.password
         }
         this.electronService.ipcRenderer.send('logincall', user)
-        
+        localStorage.setItem("userId", user.username)
 
     }
 }
