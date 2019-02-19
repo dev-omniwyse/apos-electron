@@ -79,7 +79,7 @@ pcs.on('error', function (err) {
 export class ReadcardComponent implements OnInit {
 
     // Global Declarations will go here
-
+    terminalConfigJson:any = [];
     title = 'Add Cdta';
     url = '';
     event = "20+20";
@@ -113,6 +113,15 @@ export class ReadcardComponent implements OnInit {
                 });
             }
         });
+
+        this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
+            if (data != undefined && data != "") {
+                localStorage.setItem('terminalConfigJson',data)
+                this._ngZone.run(() => {
+                  this.terminalConfigJson = JSON.parse(data);
+                });
+            }
+        }); 
 
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
@@ -230,7 +239,7 @@ export class ReadcardComponent implements OnInit {
 
 
     ngOnInit() {
-
+        this.electronService.ipcRenderer.send("terminalConfigcall");
     }
 
 }

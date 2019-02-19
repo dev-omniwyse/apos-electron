@@ -3,6 +3,7 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 declare var pcsc: any;
+declare var $: any;
 var pcs = pcsc();
 var cardName: any;
 var isExistingCard = false;
@@ -84,22 +85,19 @@ export class AddProductComponent implements OnInit {
   selectedProductCategoryIndex:any = 0;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
-    this.electronService.ipcRenderer.on('saveTransactionResult', (event, data) => {
-      if (data != undefined && data != "") {
-        // this.show = true;
-        this._ngZone.run(() => {
-          // this.carddata = new Array(JSON.parse(data));
-          // console.log('this.carddata', this.carddata);
-          // localStorage.setItem('catalogJSON', JSON.stringify(data));
-          //this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-
     this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
+      var isDuplicateCard = false;
       if (data != undefined && data != "") {
           this._ngZone.run(() => {
-               this.cardJson.push(JSON.parse(data));
+            this.cardJson.forEach(element => {
+              if(element.printed_id == JSON.parse(data).printed_id){
+               isDuplicateCard = true;
+              }
+            });
+            if(isDuplicateCard)
+              $("#newCardValidationModal").modal('show');
+            else
+              this.cardJson.push(JSON.parse(data));
           });
       }
   });

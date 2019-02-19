@@ -89,11 +89,13 @@ export class CarddataComponent implements OnInit, OnChanges {
   catalogJson:any = [];
   terminalConfigJson:any = [];
   JsonObjCardObj:any = [];
+  isFromCardComponent = false;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
 
   this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       console.log("data", data)
-      if (data != undefined && data != "") {
+      if (data != undefined && data != "" && this.isFromCardComponent) {
+        this.isFromCardComponent = false;
           this._ngZone.run(() => {
               localStorage.setItem("readCardData", JSON.stringify(data));
               this.carddata = new Array(JSON.parse(data));
@@ -102,8 +104,8 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
       }
   });
-
-  this.electronService.ipcRenderer.on('generateSequenceNumberResult', (event, data) => {
+  
+  this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
           this._ngZone.run(() => {
@@ -129,7 +131,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             });
            
             this.cardJson.forEach(element => {
-              this.currentCardMerchantList.array.forEach(walletElement => {
+              this.currentCardMerchantList.forEach(walletElement => {
                 var jsonWalletObj = {"transactionID":this.transactionId,"quantity":1,"productIdentifier":walletElement.ProductIdentifier,"ticketTypeId":walletElement.Ticket.TicketType.TicketTypeId,"ticketValue":walletElement.Ticket.Value,"status":"ACTIVE","slotNumber":3,"startDate":walletElement.DateEffective,"expirationDate":walletElement.DateExpires,"balance":walletElement.UnitPrice,"rechargesPending":0,"IsMerchandise":walletElement.IsMerchandise,"IsBackendMerchandise":false,"IsFareCard":false,"unitPrice":walletElement.unitPrice,"totalCost":this.transactionAmount,"userID":"admin@ta.com","shiftID":1,"fareCode":fareCode,"offeringId":walletElement.OfferingId,"cardPID":element.printed_id,"cardUID":element.uid,"walletTypeId":walletElement.Ticket.WalletType.WalletTypeId,"shiftType":0,"timestamp":new Date().getTime()}
                 walletObj.push(jsonWalletObj);
               });
@@ -146,7 +148,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
   });
 
-  this.electronService.ipcRenderer.on('savaTransactionResult', (event, data) => {
+  this.electronService.ipcRenderer.on('saveTransactionResult', (event, data) => {
     console.log("data", data)
     if (data != undefined && data != "") {
         this._ngZone.run(() => {
@@ -157,42 +159,21 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {
+        console.log(data);
         this._ngZone.run(() => {
-        if(this.encodeParseData.length-1 == this.cardIndex)
+        if(this.cardJson.length-1 == this.cardIndex){
+          this.isFromCardComponent = true;
           this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        }
         else{
           this.cardIndex++;
           this.currentCard = this.cardJson[this.cardIndex];
           this.populatCurrentCardEncodedData();
         }
      });
-
-     this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
-      if (data != undefined && data != "") {
-          localStorage.setItem('terminalConfigJson',data)
-          this._ngZone.run(() => {
-            this.terminalConfigJson = JSON.parse(data);
-          });
-      }
+    }
   });
-          //this.show = true;
-      //  saveTransaction(merch){
-      //  this.saveTransactionData.push(merch);
-
-      // this.electronService.ipcRenderer.send('savaTransaction',  this.merchantList)
-      // console.log(this.merchantList);
-  
-          // this._ngZone.run(() => {
-            // if(this.encodeParseData.length-1 == this.cardIndex)
-            //    this.router.navigate(['/readcard']) 
-            // else{
-            //   this.cardIndex++;
-            //   this.currentCard = this.cardJson[this.cardIndex];
-            //   this.populatCurrentCardEncodedData();
-            // }
-          // });
-        }
-  });
+        
  }
 
   printDiv() {
@@ -205,7 +186,8 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.electronService.ipcRenderer.send("switchlogincall");
+    this.cardIndex = 0;
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
     this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
     this.merchantList = localStorage.getItem('encodeData');
     this.productCardList = localStorage.getItem('productCardData');
@@ -216,9 +198,13 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.catalogJson = JSON.parse(item).Offering;
     // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
     // this.cardJson = JSON.parse(this.readCarddata);
+    this.checkIsCardNew();
     this.currentCard = this.cardJson[this.cardIndex];
-    this.isNew = (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
     this.populatCurrentCardEncodedData();
+  }
+
+  checkIsCardNew(){
+    this.isNew = (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
   }
 
   populatCurrentCardEncodedData(){
@@ -354,6 +340,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       //   }]
 
   console.log(this.encodeJsonData);
+  this.checkIsCardNew();
     if(this.isNew)
      this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id ,1,0,0, this.encodeJsonData);
     else
