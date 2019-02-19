@@ -30,7 +30,6 @@ pcs.on('reader', function (reader) {
                 });
             } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
                 cardName = reader.name
-                alert(cardName);
                 console.log("sample", cardName)
                 console.log("card inserted");/* card inserted */
                 reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
@@ -209,6 +208,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('encodeData', JSON.stringify(this.merchantList));
     localStorage.setItem('productCardData', JSON.stringify(this.productCardList));
     localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
+    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
     this.checkout = false;
   }
 

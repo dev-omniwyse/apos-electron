@@ -106,7 +106,7 @@ ipcMain.on('readSmartcard', (event, cardname) => {
 
   // logger.info("before java call  Data", posAppletInstance)
 
-  // var result = posAppletInstance.setEncoderSync(cardName);
+  var result = posAppletInstance.setEncoderSync(cardname);
 
   // logger.info("setEncoder Data", '' + result)
   try {
@@ -124,6 +124,7 @@ ipcMain.on('readSmartcard', (event, cardname) => {
 
 ipcMain.on('newfarecard', (event, cardname) => {
   logger.info("before java call  Data", posAppletInstance)
+  var result = posAppletInstance.setEncoderSync(cardname);
   try {
     var smartread = posAppletInstance.readCardSync();
     logger.info("smartcard", smartread)
@@ -131,7 +132,7 @@ ipcMain.on('newfarecard', (event, cardname) => {
     logger.info(error);
   }
 
-  event.sender.send('newfarecardResult', smartread);
+  event.sender.send('newfarecardResult', smartread.getValueSync());
 })
 
 //encode new card
@@ -204,7 +205,7 @@ ipcMain.on('verifycall', (event, data, environment) => {
 
 ipcMain.on('switchlogincall', (event) => {
   var result = posAppletInstance.getTerminalConfigJSONSync();
-  logger.info(result);
+  logger.info("terminalConfig"+result);
   event.sender.send('switchLoginCallResult', result);
 })
 
@@ -222,6 +223,13 @@ ipcMain.on('catalogJson', (event, catalog) => {
   logger.info("catalogJson data", '' + result)
 
   event.sender.send('catalogJsonResult', result);
+})
+
+
+ipcMain.on('generateSequenceNumber', (event, catalog) => {
+  var result = posAppletInstance.generateSequenceNumberSync();
+  logger.info("generateSequenceNumber", '' + result)
+  event.sender.send('generateSequenceNumberSyncResult', result);
 })
 
 

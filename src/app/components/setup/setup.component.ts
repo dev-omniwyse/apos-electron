@@ -17,6 +17,8 @@ export class SetupComponent implements OnInit {
     constructor(private router: Router, private cdtaservice: CdtaService, private electronService:ElectronService,private _ngZone: NgZone,private ref: ChangeDetectorRef, private http: HttpClient) {
         this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
             if (data != undefined && data != "") {
+                alert(data);
+                localStorage.setItem('terminalConfigJson',data)
                 this._ngZone.run(() => {
                   if(JSON.parse(data).EquipmentId !=0){
                     this.cdtaservice.announceHeaderShowHide("hideHeader");

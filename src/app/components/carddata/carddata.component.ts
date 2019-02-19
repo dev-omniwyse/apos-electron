@@ -2,7 +2,67 @@ import { Component, OnInit, Input, OnChanges, SimpleChange, SimpleChanges, NgZon
 import { CdtaService } from 'src/app/cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
+import { SSL_OP_NO_TICKET } from 'constants';
 // import { product_log } from '../../../assets/data/product_catalog'
+declare var pcsc: any;
+var pcs = pcsc();
+var cardName: any = 0;
+var isExistingCard = false;
+pcs.on('reader', function (reader) {
+    console.log('reader', reader);
+    console.log('New reader detected', reader.name);
+
+    reader.on('error', function (err) {
+        console.log('Error(', this.name, '):', err.message);
+    });
+
+    reader.on('status', function (status) {
+        console.log('Status(', this.name, '):', status);
+        /* check what has changed */
+        const changes = this.state ^ status.state;
+        if (changes) {
+            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+                console.log("card removed");/* card removed */
+                reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Disconnected');
+                    }
+                });
+            } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+                cardName = reader.name
+                console.log("sample", cardName)
+                console.log("card inserted");/* card inserted */
+                reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Protocol(', reader.name, '):', protocol);
+                        reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log('Data received', data);
+                                console.log('Data base64', data.toString('base64'));
+                                // reader.close();
+                                // pcs.close();
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    reader.on('end', function () {
+        console.log('Reader', this.name, 'removed');
+    });
+});
+
+pcs.on('error', function (err) {
+    console.log('PCSC error', err.message);
+});
 @Component({
   selector: 'app-carddata',
   templateUrl: './carddata.component.html',
@@ -22,20 +82,116 @@ export class CarddataComponent implements OnInit, OnChanges {
   currentCard:any = [];
   currentCardMerchantList:any = [];
   cardIndex:any = 0;
+  carddata:any = [];
+  transactionId:any = "";
+  transactionAmount:any = 0;
+  isNew:any = false;
+  catalogJson:any = [];
+  terminalConfigJson:any = [];
+  JsonObjCardObj:any = [];
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
-    this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-      // if (data != undefined && data != "") {
-          //this.show = true;
+
+  this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
+      console.log("data", data)
+      if (data != undefined && data != "") {
           this._ngZone.run(() => {
-            if(this.encodeParseData.length-1 == this.cardIndex)
-               this.router.navigate(['/readcard']) 
-            else{
-              this.cardIndex++;
-              this.currentCard = this.cardJson[this.cardIndex];
-              this.populatCurrentCardEncodedData();
-            }
+              localStorage.setItem("readCardData", JSON.stringify(data));
+              this.carddata = new Array(JSON.parse(data));
+              console.log('this.carddata', this.carddata);
+              this.electronService.ipcRenderer.send('generateSequenceNumber');
           });
-      // }
+      }
+  });
+
+  this.electronService.ipcRenderer.on('generateSequenceNumberResult', (event, data) => {
+      console.log("data", data)
+      if (data != undefined && data != "") {
+          this._ngZone.run(() => {
+            this.transactionId = data;
+            var cardsjson:any = [];
+            var unitPrice:any = 0;
+            var fareCode:any = "";
+            var walletObj:any = [];
+            // var de
+            this.catalogJson.forEach(catalogElement => {
+              if ((null == catalogElement.Ticket) &&
+              (false == catalogElement.IsMerchandise) &&
+              (null != catalogElement.WalletType)) {
+                if (catalogElement.WalletType.WalletTypeId == 3) {
+                  unitPrice = catalogElement.WalletType.UnitPrice;
+                }
+              }
+            });
+            this.terminalConfigJson.Farecodes.forEach(terminalConfigElement => {
+              if (this.currentCard.user_profile == terminalConfigElement.FareCodeId){
+                  fareCode = terminalConfigElement.Description;
+                }
+            });
+           
+            this.cardJson.forEach(element => {
+              this.currentCardMerchantList.array.forEach(walletElement => {
+                var jsonWalletObj = {"transactionID":this.transactionId,"quantity":1,"productIdentifier":walletElement.ProductIdentifier,"ticketTypeId":walletElement.Ticket.TicketType.TicketTypeId,"ticketValue":walletElement.Ticket.Value,"status":"ACTIVE","slotNumber":3,"startDate":walletElement.DateEffective,"expirationDate":walletElement.DateExpires,"balance":walletElement.UnitPrice,"rechargesPending":0,"IsMerchandise":walletElement.IsMerchandise,"IsBackendMerchandise":false,"IsFareCard":false,"unitPrice":walletElement.unitPrice,"totalCost":this.transactionAmount,"userID":"admin@ta.com","shiftID":1,"fareCode":fareCode,"offeringId":walletElement.OfferingId,"cardPID":element.printed_id,"cardUID":element.uid,"walletTypeId":walletElement.Ticket.WalletType.WalletTypeId,"shiftType":0,"timestamp":new Date().getTime()}
+                walletObj.push(jsonWalletObj);
+              });
+              var JsonObj:any = {"transactionID":this.transactionId,"cardPID":element.printed_id,"cardUID":element.uid,"quantity":(this.isNew)?1:0,"productIdentifier":null,"ticketTypeId":null,"ticketValue":0,"slotNumber":0,"expirationDate":element.card_expiration_date,"balance":0,"IsMerchandise":false,"IsBackendMerchandise":false,"IsFareCard":true,"unitPrice":(this.isNew)?unitPrice:0,"totalCost":(this.isNew)?unitPrice:0,"userID":"admin@ta.com","shiftID":1,"fareCode":fareCode,"walletContentItems":walletObj,"walletTypeId":3,"shiftType":0,"timestamp":new Date().getTime()};
+              this.JsonObjCardObj.push(JsonObj);
+              
+            });
+            var transactionObj = 
+            {"userID":"admin@ta.com","timestamp":new Date().getTime(),"transactionID":this.transactionId,"transactionType":"Charge","transactionAmount":this.transactionAmount,"salesAmount":this.transactionAmount,"taxAmount":0,
+            "items":this.JsonObjCardObj,
+            "payments":[{"paymentMethodId":2,"amount":this.transactionAmount}],"shiftType":0}
+            this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
+          });
+      }
+  });
+
+  this.electronService.ipcRenderer.on('savaTransactionResult', (event, data) => {
+    console.log("data", data)
+    if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          this.router.navigate(['/readcard']) 
+        });
+    }
+});
+
+    this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+        if(this.encodeParseData.length-1 == this.cardIndex)
+          this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        else{
+          this.cardIndex++;
+          this.currentCard = this.cardJson[this.cardIndex];
+          this.populatCurrentCardEncodedData();
+        }
+     });
+
+     this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
+      if (data != undefined && data != "") {
+          localStorage.setItem('terminalConfigJson',data)
+          this._ngZone.run(() => {
+            this.terminalConfigJson = JSON.parse(data);
+          });
+      }
+  });
+          //this.show = true;
+      //  saveTransaction(merch){
+      //  this.saveTransactionData.push(merch);
+
+      // this.electronService.ipcRenderer.send('savaTransaction',  this.merchantList)
+      // console.log(this.merchantList);
+  
+          // this._ngZone.run(() => {
+            // if(this.encodeParseData.length-1 == this.cardIndex)
+            //    this.router.navigate(['/readcard']) 
+            // else{
+            //   this.cardIndex++;
+            //   this.currentCard = this.cardJson[this.cardIndex];
+            //   this.populatCurrentCardEncodedData();
+            // }
+          // });
+        }
   });
  }
 
@@ -49,14 +205,19 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.electronService.ipcRenderer.send("switchlogincall");
+    this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
     this.merchantList = localStorage.getItem('encodeData');
     this.productCardList = localStorage.getItem('productCardData');
     this.encodeParseData = JSON.parse(this.merchantList); 
     this.encodedProductCardData = JSON.parse(this.productCardList); 
     this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
+    let item = JSON.parse(localStorage.getItem("catalogJSON"));
+    this.catalogJson = JSON.parse(item).Offering;
     // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
     // this.cardJson = JSON.parse(this.readCarddata);
     this.currentCard = this.cardJson[this.cardIndex];
+    this.isNew = (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
     this.populatCurrentCardEncodedData();
   }
 
@@ -193,7 +354,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       //   }]
 
   console.log(this.encodeJsonData);
-    if(this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))
+    if(this.isNew)
      this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id ,1,0,0, this.encodeJsonData);
     else
     this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id , this.encodeJsonData);
