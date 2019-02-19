@@ -299,10 +299,14 @@ ipcMain.on('comp', (event, catalog) => {
 
 /** ADMIN METHODS STARTS HERE*/
 
-ipcMain.on('adminSales', (event, catalog) => {
-  logger.info("comp  Data", posAppletInstance)
-  var result = posAppletInstance.getProductCatalogJSONSync();
-  logger.info("compResult", '' + result)
+ipcMain.on('adminSales', (event, sales, userId) => {
+    // logger.info("sales  Data", posAppletInstance)
+    // var sales = JSON.stringify(localStorage.getItem("sales"))
+    // var userID = localStorage.getItem("userId")
+    console.log("asaad", sales)
+    console.log("asaad2", userId)
+    var result = posAppletInstance.getSalesreportSync(1111, 1550404677000, new Date().getTime());
+    logger.info("salesResult", '' + result)
 
   event.sender.send('adminSalesResult', result);
 })
@@ -331,11 +335,19 @@ ipcMain.on('adminSync', (event, catalog) => {
 })
 
 ipcMain.on('adminDeviceConfig', (event, catalog) => {
-  logger.info("comp  Data", posAppletInstance)
-  var result = posAppletInstance.getProductCatalogJSONSync();
-  logger.info("compResult", '' + result)
+    logger.info("deviceConfig  Data", posAppletInstance)
+    var result = posAppletInstance.getDeviceInfoJSONSync();
+    logger.info("deviceConfig", '' + result)
 
-  event.sender.send('adminDeviceConfigResult', result);
+    event.sender.send('adminDeviceConfigResult', result);
+})
+
+ipcMain.on('adminTerminalConfig', (event, catalog) => {
+    logger.info("adminTerminalConfig  Data", posAppletInstance)
+    var result = posAppletInstance.getTerminalConfigJSONSync();
+    logger.info("adminTerminalConfig", '' + result)
+
+    event.sender.send('adminTerminalConfigResult', result);
 })
 
 ipcMain.on('adminShiftSaleSummary', (event, catalog) => {

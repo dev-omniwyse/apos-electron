@@ -49,11 +49,11 @@
 
     <div class="container-right">
         <div class="cr-r-set">
-            <div class="">
+            <div class="" *ngIf="shifType">
                 <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
                 <div class="back-sales-txt">What would you like to do ? </div>
-                <div class="cr-right-btns" *ngIf="!openShift">
-                    <button [routerLink]="['/shifts']" (click)="closeShifts();">
+                <div class="cr-right-btns" *ngIf="!openShift && !mainShiftClosed && !mainShiftPaused">
+                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
                       Close Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                     <button data-toggle="modal" data-target="#reliefShiftModal">
@@ -62,7 +62,7 @@
                     <button data-toggle="modal" data-target="#noSale">
                       NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
-                    <button [routerLink]="['/shift_sales']">
+                    <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
                       Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
 
@@ -74,7 +74,7 @@
                       Print Last Transaction Receipt <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
 
-                    <button [routerLink]="['/deviceconfig']">
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();getTerminalConfig();">
                       Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -85,19 +85,19 @@
                     <button data-toggle="modal" data-target="#syncCds">
                         Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                       </button>
-                    <button [routerLink]="['/deviceconfig']">
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig(); getTerminalConfig();">
                         Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                       </button>
 
                 </div>
                 <div class="cr-right-btns" *ngIf="mainShiftClosed">
-                    <button [routerLink]="['/shifts']">
+                    <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
                       Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                     <button data-toggle="modal" data-target="#syncCds">
                         Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                       </button>
-                    <button [routerLink]="['/deviceconfig']">
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig(); getTerminalConfig();">
                         Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                       </button>
 
@@ -221,6 +221,182 @@
                     </div>
                 </div>
             </div>
+            <div class="" *ngIf="!shifType">
+                <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
+                <div class="back-sales-txt">What would you like to do ? </div>
+
+                <div class="cr-right-btns">
+                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
+                        Close Paused Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+                    <button [routerLink]="['/shifts']">
+                        Open Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+                    <button data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig(); getTerminalConfig();">
+                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+
+                </div>
+
+                <div class="cr-right-btns" *ngIf="!openShift && !mainShiftClosed && !mainShiftPaused">
+                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
+                      Close Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button data-toggle="modal" data-target="#noSale">
+                      NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button>
+                      Print Last Transaction Receipt <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();getTerminalConfig();">
+                      Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <!-- <div class="cr-right-btns" *ngIf="mainShiftClosed">
+                    <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+                    <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig(); getTerminalConfig();">
+                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+
+                </div> -->
+                <!-- <div class="cr-right-btns" *ngIf="mainShiftPaused">
+                    <button data-toggle="modal" data-target="#reOpenModal">
+                    Re-Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    </button>
+                    <button data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+                    <button [routerLink]="['/deviceconfig']">
+                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      </button>
+
+                </div> -->
+
+                <!-- <div class="modal fade" id="reliefShiftModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Confirm Main Shift Relief</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Remove the till from the cash drawer, Click ok to Continue </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="mainShiftPause();">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- <div class="modal fade" id="noSale" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Cash Drawer is Open</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Please proceed with your task. Click "OK" When complete </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="modal fade" id="syncCds" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Sync Data</h4>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <p>Confirm Sync</p>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#continueSyncModal">Yes,continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="continueSyncModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Syncing With CDS</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Syncing with CDS</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="readyForSaleModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Ready For Sales ?</h4>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <p>Main Shift Has successfully been opened . Close the window or Start Sales </p>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">No,Close Window</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Yes,Start Sales</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="modal fade" id="reOpenModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Cash Drawer is Open</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Please insert the cash till and Click "OK" Button </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="reOpenShift();">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+
         </div>
     </div>
 </div>

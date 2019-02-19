@@ -15,7 +15,6 @@ export class ShiftsComponent implements OnInit {
   numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   productTotal: any = 0;
   openShift: Boolean = true
-  closeShift : Boolean = false
   mainShiftClosed : Boolean = false
 
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) { }
@@ -29,16 +28,18 @@ export class ShiftsComponent implements OnInit {
   mainShiftClose(){
     this.mainShiftClosed = true
     localStorage.setItem("mainShiftClosed", this.mainShiftClosed.toString());
-    localStorage.removeItem("mainShiftPaused")
+    localStorage.removeItem("openShift")
     this.router.navigate(["/admin"])
   }
   validShifts(){
-    if (localStorage.getItem("closeShift") == "true"){
+    let mainShiftClosed = localStorage.getItem("mainShiftClosed")
+   if(mainShiftClosed == undefined || mainShiftClosed == null) {
+      $("#openShiftModal").modal('show');
+    }else
+    if (localStorage.getItem("mainShiftClosed") == "true"){
       $("#closeShiftModal").modal('show');
     }
-    else{
-      $("#openShiftModal").modal('show');
-    }
+    
 
   }
   ngOnInit() {

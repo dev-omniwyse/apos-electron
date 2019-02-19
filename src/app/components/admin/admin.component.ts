@@ -12,16 +12,18 @@ declare var $: any
 })
 export class AdminComponent implements OnInit {
 
-  public openShift = true
-  public closeShift = true
-  public mainShiftClosed = false
-  public mainShiftPaused = false
+  openShift = true
+  mainShiftClosed = false
+  mainShiftPaused = false
+  shiftType = true
+
 
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
       if (data != undefined && data != "") {
         //this.show = true;
+        localStorage.setItem("salesReport", data)
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -55,6 +57,16 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
       if (data != undefined && data != "") {
         //this.show = true;
+        localStorage.setItem("deviceConfigData", data);
+        this._ngZone.run(() => {
+          // this.router.navigate(['/addproduct'])
+        });
+      }
+    });
+    this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
+      if (data != undefined && data != "") {
+        //this.show = true;
+        localStorage.setItem("terminalConfig", data);
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -71,11 +83,13 @@ export class AdminComponent implements OnInit {
 
 
   }
-  closeShifts() {
-    localStorage.setItem("closeShift", this.closeShift.toString())
+
+  mainShiftClosing() {
+    this.mainShiftClosed = true
+    localStorage.setItem("mainShiftClosed", this.mainShiftClosed.toString())
   }
-  adminSales(event) {
-    this.electronService.ipcRenderer.send('adminSales')
+  getSalesReports(event) {
+    this.electronService.ipcRenderer.send('adminSales', localStorage.getItem("userId"), localStorage.getItem("sales"))
     //console.log('read call', cardName)
   }
   adminCloseShift(event) {
@@ -90,7 +104,7 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminSync')
     //console.log('read call', cardName)
   }
-  adminDeviceConfig(event) {
+  adminDeviceConfig() {
     this.electronService.ipcRenderer.send('adminDeviceConfig')
     //console.log('read call', cardName)
   }
@@ -98,33 +112,47 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminShiftSaleSummary')
     //console.log('read call', cardName)
   }
-
+  getTerminalConfig() {
+    this.electronService.ipcRenderer.send('adminTerminalConfig')
+  }
   mainShiftPause() {
     this.mainShiftPaused = true
     localStorage.setItem("mainShiftPaused", this.mainShiftPaused.toString())
+    localStorage.removeItem("openShift")
     this.router.navigate(['/login'])
   }
 
-  reOpenShift(){
+  reOpenShift() {
+    this.mainShiftPaused = false
+    this.openShift = false
     this.mainShiftPaused = false
     localStorage.removeItem("mainShiftClosed")
+    localStorage.removeItem("mainShiftPaused")
   }
 
   ngOnInit() {
-    let shift = JSON.parse(localStorage.getItem("openShift"));
-    if (localStorage.getItem("mainShiftPaused") == "true") {
-      this.mainShiftPaused = true
-      this.mainShiftClosed = false
-      this.openShift = false
-    }else
-    if (shift == undefined || shift == null) {
-      this.openShift = true
-    } else if (localStorage.getItem("mainShiftClosed") == "true") {
-      this.mainShiftClosed = true
+    let reliefShif = JSON.parse(localStorage.getItem("sales"));
+
+    if (reliefShif.shiftType == "main") {
+      this.shiftType = true
+    }else if(reliefShif.shiftType == "relief") {
+      this.shiftType = false
     }
-    else {
+    
+    let shift = JSON.parse(localStorage.getItem("openShift"));
+    if (shift != undefined || shift != null) {
       this.openShift = false
       $("#readyForSaleModal").modal('show');
+    }
+    else if (localStorage.getItem("mainShiftClosed") == "true") {
+      this.mainShiftClosed = true
+    } else
+      if (localStorage.getItem("mainShiftPaused") == "true") {
+        this.mainShiftPaused = true
+        this.mainShiftClosed = false
+      }
+      else {
+        this.openShift = true
 
     }
 
