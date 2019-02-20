@@ -86,7 +86,7 @@ export class ReadcardComponent implements OnInit {
     value: any;
     public logger ;
     public singleImage: any
-    public carddata = [];
+    public carddata:any = [];
     public carddataProducts = [];
     public catalogData = [];
     public readCardData = [];
@@ -131,7 +131,13 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                      this.carddata = new Array(JSON.parse(data));
                     console.log('this.carddata', this.carddata);
-                    this.router.navigate(['/addproduct']) 
+                    if(this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)){
+                        this.getProductCatalogJSON();
+                        this.router.navigate(['/addproduct']) ;
+                    }else{
+                        this.carddata.length = [];
+                        $("#newCardValidateModal").modal('show');
+                    }
                 });
             }
         });
@@ -237,10 +243,12 @@ export class ReadcardComponent implements OnInit {
         this.carddata.length = 0;
     }
 
-
-
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");
+    }
+
+    checkIfcardIsEmpty(){
+        // (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
     }
 
 }
