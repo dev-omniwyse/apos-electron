@@ -23,6 +23,7 @@ import { AdminComponent } from './components/admin/admin.component';
 import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component'
+import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +43,8 @@ import { ShiftsComponent } from './components/shifts/shifts.component'
     AdminComponent,
     DeviceconfComponent,
     ShiftSalesSummaryComponent,
-    ShiftsComponent
+    ShiftsComponent,
+    AddMagneticProductComponent 
     
   ],
   imports: [

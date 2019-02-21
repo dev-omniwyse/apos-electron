@@ -15,6 +15,7 @@ import { AdminComponent } from './components/admin/admin.component';
 import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component'
+import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
 const routes: Routes = [
   { 
     path: '', 
@@ -75,6 +76,10 @@ const routes: Routes = [
   {
     path:"shifts",
     component: ShiftsComponent
+  },
+  {
+    path: 'addmagneticproduct',
+    component: AddMagneticProductComponent
   }
 
 

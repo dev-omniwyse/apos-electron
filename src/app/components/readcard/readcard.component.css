@@ -1,4 +1,43 @@
 @media print{
-    .doNotPrint{display:none !important;}
-  } 
- 
+  .doNotPrint{display:none !important;}
+} 
+
+.flex{
+  display: flex
+  
+}
+
+.cardBtn{
+width: 250px;
+height: 65px;
+flex: 1;
+border: 1px solid #2064a7;
+border-radius: 3px;
+background-color: #3b80c3;
+padding: 30px 20px;
+color: #fff;
+font-size: 22px;
+position: relative;
+margin: 1px 400px 10px;
+}
+
+.cardBtn img {
+position: absolute;
+width: 25px;
+right: 20px;
+}
+
+.flex-right-items div{
+width: 50%;
+}
+.flex-right-items div button{
+/* flex: 1 1 calc(48% - 15px); */
+/* max-width: calc(48% - 15px); */
+margin: 15px;
+/* width: calc(100% - 30px); */
+padding: 10px 0;
+border-radius: 7px;
+
+font-size: 1.25em;
+
+}
