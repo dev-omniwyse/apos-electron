@@ -120,6 +120,18 @@ body {
     padding: 0px 15px;
 }
 
+
+.nonFare,.regularRoute {
+    width: 50%;
+    margin-left: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    color: #999999;
+    font-size: 20px;
+    padding: 0px 15px;
+    border: 1px solid #013D7B
+}
+
 .btn-primary {
     padding: 10px 15px;
     width: 30%;

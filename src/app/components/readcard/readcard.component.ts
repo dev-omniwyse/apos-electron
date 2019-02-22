@@ -146,7 +146,8 @@ export class ReadcardComponent implements OnInit {
             if (data != undefined && data != "") {
                 //this.show = true;
                 this._ngZone.run(() => {
-                    this.router.navigate(['/addmagneticproduct']) 
+                    this.getProductCatalogJSON();
+                    this.router.navigate(['/addproduct']) 
                 });
             }
         });

@@ -19,10 +19,10 @@
           <!-- <div class="menucontainer left"> -->
             <ul style="height:100px">
               <li>
-                    <button class="btn-b-white">Merch</button>
+                    <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"  (click)=clickOnMerch()>Merch</button>
               </li>
-              <li *ngFor="let cards of cardJson;let i= index" (click)="selectCard(i)">
-                    <button class="btn-b-white">{{cards.printed_id}}</button>
+              <li *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
+                    <button [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards.printed_id}}</button>
               </li>
       
             </ul> 
@@ -34,15 +34,30 @@
           <button class="btn-b-white">{{cardJson?.printed_id}}</button>
         </div> -->
           <div class="container-l-app">
-            <div class="" *ngFor="let merch of merchantList; let j=index">
-            <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
-              
-              <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
-
-              <div class="pull-right" (click)="removeProduct(merch)"><span class="glyphicon glyphicon-minus-sign"></span></div>
-
-            </span>
+            <div *ngIf="!regularRoute && nonFare">
+                <div class="" *ngFor="let merch of merchantList; let j = index">
+                    <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
+                      
+                      <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
+        
+                      <div class="pull-right" (click)="removeProduct(merch)"><span class="glyphicon glyphicon-minus-sign"></span></div>
+        
+                    </span>
+                  </div>
+            </div>
+        
+          <div *ngIf="regularRoute && !nonFare">
+            <div class="" *ngFor="let merch of merchantiseList; let k = index" >
+              <span  class="label label-default">
+                
+                <div class="pull-left">{{merch.Description}} &nbsp; {{merch.UnitPrice}}</div>
+  
+                <div class="pull-right" (click)="removeMerchProduct(merch)"><span class="glyphicon glyphicon-minus-sign"></span></div>
+  
+              </span>
+            </div>
           </div>
+        
           </div>
         <div class="sub-total ">
           <div class="flex">
@@ -62,17 +77,20 @@
       </div>
       <div class="container-right" *ngIf="checkout">
           <div class="flex header-l add-product-head">
-          <button class="btn btn-primary">Regular Route</button>
-          <button class="btn btn-default" disabled = "disabled">NON-FARE</button>
+          <button  class="btn btn-primary" [disabled] = "regularRoute">Regular Route</button>
+          <button  class="btn btn-default"  [disabled] = "nonFare">NON-FARE</button>
           </div>
-        <div class="tab-sets">
-        <ul class="nav nav-pills">
+        <div class="tab-sets" >
+        <ul class="nav nav-pills" *ngIf = "!regularRoute">
             <li class="active" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
             <li (click)="storedValue()"><a data-toggle="pill" >STORED RIDE PASS</a></li>
             <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
           </ul>
-        <div class="flex flex-wrap flex-right-items">
+        <div class="flex flex-wrap flex-right-items" *ngIf = "!regularRoute">
           <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="getSelectedProductData(merch)">{{merch.Description}}<br/>${{merch.Ticket.Price}}</button></div>
+        </div>
+        <div class="flex flex-wrap flex-right-items"  *ngIf = "regularRoute">
+          <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br/>${{merch.UnitPrice}}</button></div>
         </div>
       </div>
       </div>

@@ -7,6 +7,7 @@ declare var $: any;
 var pcs = pcsc();
 var cardName: any;
 var isExistingCard = false;
+
 pcs.on('reader', function (reader) {
     console.log('reader', reader);
     console.log('New reader detected', reader.name);
@@ -71,6 +72,7 @@ export class AddProductComponent implements OnInit {
   merchantise = [];
   merch = [];
   merchantList: any = [];
+  merchantiseList: any = [];
   productCardList:any = [];
   productTotal: any = 0;
   checkout = true;
@@ -82,7 +84,10 @@ export class AddProductComponent implements OnInit {
   saveTransactionData: any;
   encodeJsonData: any = []; // encode data json 
   currentCard:any = {};
+  selectedIdx: any = 0;
   selectedProductCategoryIndex:any = 0;
+  nonFare = true;
+  regularRoute = false;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
@@ -196,10 +201,24 @@ export class AddProductComponent implements OnInit {
     this.productCardList.push(this.currentCard.printed_id)
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
+
+  getSelectedMerchProductData(merch) {
+    this.merchantiseList.push(merch);
+    this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
+  }
+
+
   removeProduct(merch) {
     this.productTotal = this.productTotal - parseFloat(merch.Ticket.Price);
     var selectedIndex = this.merchantList.indexOf(merch);
     this.merchantList.splice(selectedIndex, 1);
+    this.productCardList.splice(selectedIndex,1);
+  }
+
+  removeMerchProduct(merch) {
+    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    var selectedIndex = this.merchantiseList.indexOf(merch);
+    this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex,1);
   }
   productCheckout() {
@@ -211,6 +230,9 @@ export class AddProductComponent implements OnInit {
   }
 
   selectCard(index:any){
+    this.selectedIdx = index;
+    this.nonFare = true;
+    this.regularRoute = false;
     this.currentCard = this.cardJson[index];
     (this.selectedProductCategoryIndex == 0)?this.frequentRide(): (this.selectedProductCategoryIndex == 1)?this.storedValue():this.payValue();
   }
@@ -255,6 +277,23 @@ export class AddProductComponent implements OnInit {
 
   addCard(){
     this.electronService.ipcRenderer.send('readSmartcard', cardName)
+  }
+
+  clickOnMerch() {
+    console.log('clicked on merch')
+    this.nonFare = false;
+    this.regularRoute = true;
+    this.merchantise = [];
+
+    let i = 0;
+    this.productJson.forEach(element => {
+      if ((null == element.Ticket || undefined == element.Ticket)  &&  (element.IsMerchandise ) && i < 10) {
+        this.merchantise.push(element);
+        i++;
+      }
+    console.log(this.merchantise)
+
+    });
   }
   //   saveTransaction(merch){
   //     // this.saveTransactionData.push(merch);
