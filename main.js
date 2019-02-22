@@ -113,7 +113,7 @@ ipcMain.on('readSmartcard', (event, cardname) => {
     // var resultObject = java.newInstance("com.genfare.pos.applet.POSApplet.ResultObject");
 
     var resultObject = posAppletInstance.readCardSync();
-    logger.info('resultObject',resultObject);
+    logger.info('main.js: resultObject',resultObject);
   } catch (error) {
     logger.info(error);
   }
@@ -141,6 +141,7 @@ ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
   logger.info("before java call  Data", posAppletInstance)
   try {
     // logger.info("show the json data",jsondata);
+    var resultCardPid = posAppletInstance.getCardPIDSync();
     var encodevar = posAppletInstance.encodeCardSync(a,b,c,d,JSON.stringify(jsondata));
   } catch (error) {
     logger.info('show thw error here',error);
@@ -160,6 +161,8 @@ ipcMain.on('encodeExistingCard', (event, cardNumber,jsondata) => {
     // var encodevar = posAppletInstance.encodeCardSync(a,b,c,d,jsondata1,jsondata2,jsondata3);
     var cardNumberStr = "";
     cardNumberStr = cardNumber.toString();
+    var resultCardPid = posAppletInstance.getCardPIDSync();
+
     var encodevar = posAppletInstance.addProductsSync(cardNumberStr,JSON.stringify(jsondata));
   } catch (error) {
     logger.info('show thw error here',error);
@@ -249,13 +252,13 @@ ipcMain.on('savaTransaction', (event, TransData) => {
 
 
 ipcMain.on('getCardPID', (event, cardname) => {
-  var result = posAppletInstance.setEncoderSync(cardname);
+  // var result = posAppletInstance.setEncoderSync(cardname);
   try {
     var resultCardPid = posAppletInstance.getCardPIDSync();
   } catch (error) {
     logger.info('show thw error here',error);
   }
-  logger.info("getCardPID", '' + resultCardPid)
+  logger.info("main.js : getCardPID", '' + resultCardPid)
   event.sender.send('getCardPIDResult', resultCardPid.getValueSync());
 })
 

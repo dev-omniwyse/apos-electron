@@ -21,7 +21,7 @@
               <li>
                     <button class="btn-b-white">Merch</button>
               </li>
-              <li *ngFor="let cards of cardJson;let i= index" (click)="selectCard(i)">
+              <li #cardsList *ngFor="let cards of cardJson;let i= index" (click)="selectCard(i)">
                     <button class="btn-b-white">{{cards.printed_id}}</button>
               </li>
       
@@ -150,7 +150,7 @@
   
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)"
+                  <button type="button" class="btn btn-default" [routerLink]="['']" (click)="saveTransaction(merch)"
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -168,7 +168,7 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                  <button type="button" class="btn btn-default" [routerLink]="['']" 
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -213,7 +213,7 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                  <button type="button" class="btn btn-default" [routerLink]="['']" 
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -257,7 +257,7 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" 
+                  <button type="button" class="btn btn-default" [routerLink]="['']" 
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
