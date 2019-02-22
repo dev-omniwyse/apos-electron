@@ -1,26 +1,43 @@
 @media print{
-    .doNotPrint{display:none !important;}
-  } 
+  .doNotPrint{display:none !important;}
+} 
 
-  .modal-header {
-    padding: 15px;
-    border-bottom: 1px solid #e5e5e5;
-    background-color: #003C76;
-    color: #fff;
-    text-align: center;
-  }
+.flex{
+  display: flex
   
-  .modal-footer .btn-default {
-    background-color: #d65400;
-    border: 1px solid #d65400;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
-    margin: 0 5px;
-    width: 50%;
-  }
-  
-  .modal-footer {
-    justify-content: center;
-  }
+}
+
+.cardBtn{
+width: 250px;
+height: 65px;
+flex: 1;
+border: 1px solid #2064a7;
+border-radius: 3px;
+background-color: #3b80c3;
+padding: 30px 20px;
+color: #fff;
+font-size: 22px;
+position: relative;
+margin: 1px 400px 10px;
+}
+
+.cardBtn img {
+position: absolute;
+width: 25px;
+right: 20px;
+}
+
+.flex-right-items div{
+width: 50%;
+}
+.flex-right-items div button{
+/* flex: 1 1 calc(48% - 15px); */
+/* max-width: calc(48% - 15px); */
+margin: 15px;
+/* width: calc(100% - 30px); */
+padding: 10px 0;
+border-radius: 7px;
+
+font-size: 1.25em;
+
+}

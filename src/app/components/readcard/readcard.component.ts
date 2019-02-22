@@ -153,6 +153,15 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
+        this.electronService.ipcRenderer.on('magneticcardResult', (event, data) => {
+            if (data != undefined && data != "") {
+                //this.show = true;
+                this._ngZone.run(() => {
+                    this.router.navigate(['/addmagneticproduct']) 
+                });
+            }
+        });
+
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
             if (data != undefined && data != "") {
                 this.readCardData = [];
@@ -229,6 +238,11 @@ export class ReadcardComponent implements OnInit {
     newFareCard(event) {
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
+    }
+
+    magneticCard(event) {
+        this.electronService.ipcRenderer.send('magneticcard', cardName)
+        console.log('read call', cardName)
     }
 
     writeCard(event) {

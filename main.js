@@ -135,6 +135,18 @@ ipcMain.on('newfarecard', (event, cardname) => {
   event.sender.send('newfarecardResult', smartread.getValueSync());
 })
 
+ipcMain.on('magneticcard', (event, cardname) => {
+  console.log("before java call  Data", posAppletInstance)
+  try {
+    var smartread = posAppletInstance.readCardSync();
+    console.log("smartcard", smartread)
+  } catch (error) {
+    console.log(error);
+  }
+
+  event.sender.send('magneticcardResult', smartread);
+})
+
 //encode new card
 ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
   

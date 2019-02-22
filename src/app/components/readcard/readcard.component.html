@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="flex container-padding flex-column">
-		<button class="card-btn" (click)="newFareCard($event)">
+		<button class="card-btn" data-toggle="modal" data-target="#myModal" >
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
@@ -33,6 +33,30 @@
 		</button> -->
 		<!-- (click)="readCard($event); getProductCatalogJSON()" -->
 	</div>
+		<!--modal-->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+				<div class="modal-header">
+					<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+					<h4 class="modal-title">Select Media Type</h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="flex flex-wrap flex-right-items">
+						<div>
+							<button class="cardBtn" (click)="getProductCatalogJSON(); newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img src="assets/images/arrow-pointing-to-right.svg" /></button>
+							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)" data-dismiss="modal">Magnetic Card <img src="assets/images/arrow-pointing-to-right.svg" /></button>
+						</div>
+					</div>
+				
+				</div>
+				<!-- <div class="modal-footer">
+					<button type="button" class="btn btn-default"  data-dismiss="modal">Ok</button>
+				</div> -->
+				</div>
+			</div>
+			</div>
 	<div class="flex container-padding flex-row admin-btn pull-left">
 		<button class="card-btn-orange" [routerLink]="['/admin']">
 			Admin
