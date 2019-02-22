@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
 
                 shiftStore.forEach(element => {
                     console.log(element);
-                    if (element.shiftState == "3" || element.userID == "") {
+                    if (element.shiftState == "3" && element.userID == "") {
                         element.userID = this.userdata.personId
                         element.userEmail = this.userdata.username;
                         element.shiftType = "0"

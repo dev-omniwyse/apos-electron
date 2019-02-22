@@ -10,7 +10,7 @@
 
         <div class="login-section pull-right pos-relative">
             <div class="login-container">
-                <div class="shift-report-status">{{statusOfShiftReport}}</div>
+                <div *ngIf="statusOfShiftReport.length != 0  " class="shift-report-status">{{statusOfShiftReport}}</div>
                 <div class="alert alert-danger " *ngIf=errorMsg>
                     <strong>Huh</strong> Please Enter valid Details
                 </div>
