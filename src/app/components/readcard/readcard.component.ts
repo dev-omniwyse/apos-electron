@@ -84,7 +84,8 @@ export class ReadcardComponent implements OnInit {
     url = '';
     event = "20+20";
     value: any;
-    public logger ;
+    statusOfShiftReport: string = ""
+    public logger;
     public singleImage: any
     public carddata:any = [];
     public carddataProducts = [];
@@ -269,12 +270,31 @@ export class ReadcardComponent implements OnInit {
         this.carddata.length = 0;
     }
 
-    ngOnInit() {
-       
-        
-        this.electronService.ipcRenderer.send("terminalConfigcall");
-    }
 
+
+    ngOnInit() {
+this.electronService.ipcRenderer.send("terminalConfigcall");
+
+        if (localStorage.getItem("shiftReport") != undefined) {
+            let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+            let userId = localStorage.getItem("userID")
+            shiftReports.forEach(element => {
+                if (element.shiftState == "3"  && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+                    this.statusOfShiftReport = "Main Shift is Closed"
+                }  else
+                if (element.shiftState == "3" && element.shiftType == "0") {
+                  this.statusOfShiftReport = "Main Shift is Closed"
+                }else if (element.shiftState == "4"  && element.shiftType == "0") {
+                    this.statusOfShiftReport = "Main Shift is Paused"
+                }
+            })
+        }
+
+
+
+
+    }
+    
     checkIfcardIsEmpty(){
         // (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
     }
