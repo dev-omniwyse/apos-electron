@@ -94,7 +94,7 @@ export class ReadcardComponent implements OnInit {
     public x:any = 0;
     constructor(private cdtaservice: CdtaService, private route:ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
-            alert(this.x++);
+            // alert(this.x++);
         // var x:any = localStorage.getItem('loginCount')
         //     if(x == null)
         //         x = 1;
