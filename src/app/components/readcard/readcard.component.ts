@@ -91,12 +91,23 @@ export class ReadcardComponent implements OnInit {
     public catalogData = [];
     public readCardData = [];
     public show: Boolean = false;
-
-    constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
-
+    public x:any = 0;
+    constructor(private cdtaservice: CdtaService, private route:ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
+        route.params.subscribe(val => {
+            alert(this.x++);
+        // var x:any = localStorage.getItem('loginCount')
+        //     if(x == null)
+        //         x = 1;
+        //     else{
+        //         x++
+        //     }
+        //     localStorage.setItem('loginCount', x)
+        });
         if(this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
+
+        
         
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
             console.log("data", data)
@@ -259,6 +270,8 @@ export class ReadcardComponent implements OnInit {
     }
 
     ngOnInit() {
+       
+        
         this.electronService.ipcRenderer.send("terminalConfigcall");
     }
 

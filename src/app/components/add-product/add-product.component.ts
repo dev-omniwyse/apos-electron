@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -88,6 +88,7 @@ export class AddProductComponent implements OnInit {
   selectedProductCategoryIndex:any = 0;
   nonFare = true;
   regularRoute = false;
+  @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
@@ -167,6 +168,7 @@ export class AddProductComponent implements OnInit {
     this.currentCard = JSON.parse(this.readCarddata)
     console.log(this.readCarddata);
     this.frequentRide();
+    // this.cardsList.toArray()[0].nativeElement.classList.add('isActive');
   }
 
 
@@ -234,6 +236,7 @@ export class AddProductComponent implements OnInit {
     this.nonFare = true;
     this.regularRoute = false;
     this.currentCard = this.cardJson[index];
+    // this.cardsList.toArray()[index].nativeElement.setStyle('color','red');
     (this.selectedProductCategoryIndex == 0)?this.frequentRide(): (this.selectedProductCategoryIndex == 1)?this.storedValue():this.payValue();
   }
 

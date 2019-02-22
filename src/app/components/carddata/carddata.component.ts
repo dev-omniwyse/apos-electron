@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChange, SimpleChanges, NgZone } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ElectronService } from 'ngx-electron';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SSL_OP_NO_TICKET } from 'constants';
 import { encode } from 'punycode';
 // import { product_log } from '../../../assets/data/product_catalog'
@@ -93,8 +93,26 @@ export class CarddataComponent implements OnInit, OnChanges {
   JsonObjCardObj:any = [];
   isFromCardComponent = false;
   isCorrectCardPlaced = false;
-  constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
-
+  isFromEncode = false;
+  constructor(private cdtaService: CdtaService, private route:ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
+    route.params.subscribe(val => {
+      this.cardIndex = 0;
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+    this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
+    this.merchantList = localStorage.getItem('encodeData');
+    this.productCardList = localStorage.getItem('productCardData');
+    this.encodeParseData = JSON.parse(this.merchantList); 
+    this.encodedProductCardData = JSON.parse(this.productCardList); 
+    this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
+    let item = JSON.parse(localStorage.getItem("catalogJSON"));
+    this.catalogJson = JSON.parse(item).Offering;
+    // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
+    // this.cardJson = JSON.parse(this.readCarddata);
+    this.currentCard = this.cardJson[this.cardIndex];
+    this.populatCurrentCardEncodedData();
+    // this.checkIsCardNew();
+      // put the code from `ngOnInit` here
+    });
   this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "" && this.isFromCardComponent) {
@@ -107,12 +125,12 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
       }
   });
-
   this.electronService.ipcRenderer.on('getCardPIDResult', (event, data) => {
     console.log("data", data)
-    if (data != undefined && data != "") {
+    if (data != undefined && data != "" && this.isFromEncode) {
+      this.isFromEncode = false;
         this._ngZone.run(() => {
-            if(data == this.currentCard.printed_id){
+            if(data == this.cardJson[this.cardIndex].printed_id){
               this.encodeCard();
             }
             else{
@@ -124,7 +142,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
     }
   });
-  
+
   this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
@@ -172,27 +190,38 @@ export class CarddataComponent implements OnInit, OnChanges {
     console.log("data", data)
     if (data != undefined && data != "") {
         this._ngZone.run(() => {
+          localStorage.removeItem('encodeData');
+          localStorage.removeItem('productCardData');
+          localStorage.removeItem("cardsData");
+          localStorage.removeItem("catalogJSON");
+          localStorage.removeItem("readCardData");
+          this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+          this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+          this.electronService.ipcRenderer.removeAllListeners("cardsData");
+          this.electronService.ipcRenderer.removeAllListeners("catalogJSON");
+          this.electronService.ipcRenderer.removeAllListeners("readCardData");
           this.router.navigate(['/readcard']) 
         });
     }
 });
 
-    this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
+this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {
         console.log(data);
         this._ngZone.run(() => {
-        if(this.cardJson.length == this.cardIndex){
+        if((this.cardJson.length-1) == this.cardIndex){
           this.isFromCardComponent = true;
           this.electronService.ipcRenderer.send('readSmartcard', cardName)
         }
         else{
+          this.cardIndex++;
           this.currentCard = this.cardJson[this.cardIndex];
           this.populatCurrentCardEncodedData();
         }
      });
     }
     else{
-      $("#encodeModal").modal('show');
+      // $("#encodeModal").modal('show');
     }
   });
         
@@ -208,21 +237,25 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.cardIndex = 0;
-    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-    this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
-    this.merchantList = localStorage.getItem('encodeData');
-    this.productCardList = localStorage.getItem('productCardData');
-    this.encodeParseData = JSON.parse(this.merchantList); 
-    this.encodedProductCardData = JSON.parse(this.productCardList); 
-    this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
-    let item = JSON.parse(localStorage.getItem("catalogJSON"));
-    this.catalogJson = JSON.parse(item).Offering;
-    // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
-    // this.cardJson = JSON.parse(this.readCarddata);
-    this.currentCard = this.cardJson[this.cardIndex];
-    this.populatCurrentCardEncodedData();
-    this.checkIsCardNew();
+    // this.cardIndex = 0;
+    // this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+    // this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
+    // this.merchantList = localStorage.getItem('encodeData');
+    // this.productCardList = localStorage.getItem('productCardData');
+    // this.encodeParseData = JSON.parse(this.merchantList); 
+    // this.encodedProductCardData = JSON.parse(this.productCardList); 
+    // this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
+    // let item = JSON.parse(localStorage.getItem("catalogJSON"));
+    // this.catalogJson = JSON.parse(item).Offering;
+    // // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
+    // // this.cardJson = JSON.parse(this.readCarddata);
+    // this.currentCard = this.cardJson[this.cardIndex];
+    // this.populatCurrentCardEncodedData();
+    // this.checkIsCardNew();
+  }
+
+  removeEventListeners(){
+
   }
 
   checkIsCardNew(){
@@ -233,7 +266,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     var dataIndex:any = 0;
     this.currentCardMerchantList = [];
     this.encodedProductCardData.forEach(element => {
-      if(element == this.currentCard.printed_id){
+      if(element == this.cardJson[this.cardIndex].printed_id){
         this.currentCardMerchantList.push(this.encodeParseData[dataIndex]);
       }
       dataIndex++
@@ -260,12 +293,15 @@ export class CarddataComponent implements OnInit, OnChanges {
   // "isCardBased":true}
   
   checkIfCorrectCardPlaced(){
-     console.log(cardName);
-    this.electronService.ipcRenderer.send('getCardPID',cardName);
+    
   }
 
   checkCorrectCard(){
-    this.checkIfCorrectCardPlaced();
+    this.currentCard = this.cardJson[this.cardIndex];
+    // this.checkIfCorrectCardPlaced();
+    console.log(cardName);
+    this.isFromEncode = true;
+    this.electronService.ipcRenderer.send('getCardPID',cardName);
   }
 
   encodeCard() {
@@ -371,7 +407,6 @@ export class CarddataComponent implements OnInit, OnChanges {
       //   }]
 
   console.log(this.encodeJsonData);
-  this.cardIndex++;
   this.checkIsCardNew();
     if(this.isNew)
      this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id ,1,0,0, this.encodeJsonData);
