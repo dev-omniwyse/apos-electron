@@ -129,7 +129,7 @@ body {
     color: #999999;
     font-size: 20px;
     padding: 0px 15px;
-    border: 1px solid #013D7B
+    border: 2px solid #d65400
 }
 
 .btn-primary {
@@ -139,6 +139,16 @@ body {
     background-color: #013d79;
 }
 
+.btndefault {
+    padding: 10px 15px;
+    width: 30%;
+    border-radius: 5px;
+    background-color: #ffffff;
+    background-image: none;
+    display: inline-block;
+    border: 1px solid #ccc;
+    cursor: not-allowed
+}
 .merch-btn {
     margin: 20px 0
 }

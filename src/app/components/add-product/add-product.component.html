@@ -77,9 +77,9 @@
       </div>
       <div class="container-right" *ngIf="checkout">
           <div class="flex header-l add-product-head">
-          <button  class="btn btn-primary" [disabled] = "regularRoute">Regular Route</button>
-          <button  class="btn btn-default"  [disabled] = "nonFare">NON-FARE</button>
-          </div>
+          <button [ngClass] = "{'btn btndefault': regularRoute , 'btn btn-primary': !regularRoute}" [disabled] = "regularRoute">Regular Route</button>
+          <button  [ngClass]="{'btn btndefault': !regularRoute , 'btn btn-primary': regularRoute}"  [disabled] = "nonFare">NON-FARE</button>
+          </div>   
         <div class="tab-sets" >
         <ul class="nav nav-pills" *ngIf = "!regularRoute">
             <li class="active" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
