@@ -3,7 +3,7 @@
 
         <div class="container-l-app">
             <div class="main-shift">
-                <div class="main-shift-heads">Main Shift is Opened</div>
+                <div class="main-shift-heads">{{statusOfShiftReport}}</div>
                 <div class="main-shift-head">Shift Report</div>
                 <div class="main-shift-row">
                     <div class="pull-left">Fare Sold Total</div>
@@ -49,11 +49,11 @@
 
     <div class="container-right">
         <div class="cr-r-set">
-            <div class="" *ngIf="shifType">
+            <div class="">
                 <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
                 <div class="back-sales-txt">What would you like to do ? </div>
-                <div class="cr-right-btns" *ngIf="!openShift && !mainShiftClosed && !mainShiftPaused">
-                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
+                <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 0">
+                    <button [routerLink]="['/shifts']">
                       Close Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                     <button data-toggle="modal" data-target="#reliefShiftModal">
@@ -78,7 +78,7 @@
                       Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                 </div>
-                <div class="cr-right-btns" *ngIf="openShift && !mainShiftClosed && !mainShiftPaused">
+                <div class="cr-right-btns" *ngIf="shiftState == 3 && shiftType == 0 && !mainshiftCloser">
                     <button [routerLink]="['/shifts']">
                       Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
@@ -90,8 +90,8 @@
                       </button>
 
                 </div>
-                <div class="cr-right-btns" *ngIf="mainShiftClosed">
-                    <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                <div class="cr-right-btns" *ngIf="mainshiftCloser || closingPausedMainShift">
+                    <button (click)="getSalesReports();" [routerLink]="['/shift_sales']">
                       Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                     <button data-toggle="modal" data-target="#syncCds">
@@ -102,7 +102,7 @@
                       </button>
 
                 </div>
-                <div class="cr-right-btns" *ngIf="mainShiftPaused">
+                <div class="cr-right-btns" *ngIf="shiftState == 4 && shiftType == 0">
                     <button data-toggle="modal" data-target="#reOpenModal">
                     Re-Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
@@ -220,13 +220,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="" *ngIf="!shifType">
+                <!-- </div> -->
+                <!-- <div class="" >
                 <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
-                <div class="back-sales-txt">What would you like to do ? </div>
+                <div class="back-sales-txt">What would you like to do ? </div> -->
 
-                <div class="cr-right-btns">
-                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
+                <div class="cr-right-btns" *ngIf="shiftState == 3 && shiftType == 1">
+                    <button [routerLink]="['/shifts']" (click)="closePausedMainShift();">
                         Close Paused Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                       </button>
                     <button [routerLink]="['/shifts']">
@@ -241,8 +241,8 @@
 
                 </div>
 
-                <div class="cr-right-btns" *ngIf="!openShift && !mainShiftClosed && !mainShiftPaused">
-                    <button [routerLink]="['/shifts']" (click)="mainShiftClosing()">
+                <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 1">
+                    <button [routerLink]="['/shifts']">
                       Close Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
 
@@ -265,6 +265,7 @@
                       Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                 </div>
+
                 <!-- <div class="cr-right-btns" *ngIf="mainShiftClosed">
                     <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
                       Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
@@ -323,7 +324,7 @@
                     </div>
                 </div> -->
 
-                <div class="modal fade" id="syncCds" role="dialog">
+                <!-- <div class="modal fade" id="syncCds" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -342,8 +343,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal fade" id="continueSyncModal" role="dialog">
+                </div> -->
+                <!-- <div class="modal fade" id="continueSyncModal" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -358,8 +359,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal fade" id="readyForSaleModal" role="dialog">
+                </div> -->
+                <!-- <div class="modal fade" id="readyForSaleModal" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -378,7 +379,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- <div class="modal fade" id="reOpenModal" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">

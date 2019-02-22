@@ -16,36 +16,42 @@ export class LoginComponent implements OnInit {
     returnUrl: string;
     username: string;
     password: string;
+    userdata: any
     errorMsg: Boolean = false;
     carddata: any
-    sales: any =
+    shiftType: any
+    shiftState: any
+    statusOfShiftReport: string = ""
+    shiftReport: any = [
         {
-            userID: 1111,
+            userID: "",
             shiftID: "0",
-            shiftType: "main",
-            shiftState: "open",
+            shiftType: "",
+            shiftState: "3",
             openingDrawer: "0.00",
             closingDrawer: "0.00",
-            initialOpeningTime: 1550404677000,
-            timeOpened: new Date().getTime(),
+            initialOpeningTime: 0,
+            timeOpened: 0,
             timeClosed: 0,
-            userThatClosedShift: 1111
+            userThatClosedShift: ""
         }
-
-    usersData = {
-        "users": [
-            {
-                "username": "admin@cdta.com",
-                "password": "123456aA"
-            },
-            {
-                "username": "superadmin@cdta.com",
-                "password": "123456aA"
-            }
+    ]
 
 
-        ]
-    }
+    // usersData = {
+    //     "users": [
+    //         {
+    //             "username": "admin@cdta.com",
+    //             "password": "123456aA"
+    //         },
+    //         {
+    //             "username": "superadmin@cdta.com",
+    //             "password": "123456aA"
+    //         }
+
+
+    //     ]
+    // }
 
     constructor(
         private formBuilder: FormBuilder,
@@ -56,13 +62,51 @@ export class LoginComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
-                // this.show = true;
-                let previousOpenShif = localStorage.getItem("openShift")
-                if (previousOpenShif == "false") {
-                    localStorage.removeItem("openShift")
-                }
-                
-                localStorage.setItem("sales", JSON.stringify(this.sales))
+                this.userdata = JSON.parse(data)
+                localStorage.setItem("userID", this.userdata.personId)
+                localStorage.setItem("userEmail", this.userdata.username)
+                // let previousOpenShif = localStorage.getItem("openShift")
+                let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
+
+                shiftStore = shiftStore.filter(element => element.userID != this.userdata.personId)
+
+                shiftStore.forEach(element => {
+                    console.log(element);
+                    if (element.shiftState == "3" || element.userID == "") {
+                        element.userID = this.userdata.personId
+                        element.userEmail = this.userdata.username;
+                        element.shiftType = "0"
+                    } else if (element.userID != this.userdata.personId && element.userID != "") {
+
+                        if (shiftStore.indexOf(this.userdata.personId) === -1) {
+                            let newShiftReport = {
+                                userEmail: this.userdata.username,
+                                userID: this.userdata.personId,
+                                shiftID: "0",
+                                shiftType: "1",
+                                shiftState: "3",
+                                openingDrawer: "0.00",
+                                closingDrawer: "0.00",
+                                initialOpeningTime: 0,
+                                timeOpened: 0,
+                                timeClosed: 0,
+                                userThatClosedShift: ""
+                            }
+                            shiftStore.push(newShiftReport)
+
+                        }
+                    }
+                    else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
+
+                    }
+
+                    localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
+                });
+
+                // if (previousOpenShif == "false") {
+                //     localStorage.removeItem("openShift")
+                // }
+
 
                 this._ngZone.run(() => {
                     // this.carddata = new Array(JSON.parse(data));
@@ -79,6 +123,27 @@ export class LoginComponent implements OnInit {
             password: ['', Validators.required]
         });
         localStorage.removeItem("mainShiftClosed")
+        localStorage.removeItem("mainShiftClose")
+        if (localStorage.getItem("shiftReport") != undefined) {
+            let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+            let userId = localStorage.getItem("userID")
+            shiftReports.forEach(element => {
+                if (element.shiftState == "3"  && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+                    this.statusOfShiftReport = "Main Shift is Closed"
+                } else
+                    if (element.shiftState == "3"  && element.shiftType == "0") {
+                        this.statusOfShiftReport = "Main Shift is Closed"
+                    }
+                    else if (element.shiftState == "4"  && element.shiftType == "0") {
+                        this.statusOfShiftReport = "Main Shift is Paused"
+                    }
+            })
+        }
+        else {
+            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
+        }
+
+
 
 
 
@@ -136,7 +201,7 @@ export class LoginComponent implements OnInit {
             password: this.password
         }
         this.electronService.ipcRenderer.send('logincall', user)
-        localStorage.setItem("userId", user.username)
+
 
     }
 }

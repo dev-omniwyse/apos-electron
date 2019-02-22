@@ -236,7 +236,7 @@ ipcMain.on('logincall', (event, login) => {
   var password = login.password.toString()
   var result = posAppletInstance.authenticateSync(userName, password);
 
-  event.sender.send('loginCallResult', result);
+    event.sender.send('loginCallResult', result.getValueSync());
 })
 
 ipcMain.on('catalogJson', (event, catalog) => {
@@ -328,13 +328,11 @@ ipcMain.on('comp', (event, catalog) => {
 
 /** ADMIN METHODS STARTS HERE*/
 
-ipcMain.on('adminSales', (event, sales, userId) => {
-    // logger.info("sales  Data", posAppletInstance)
-    // var sales = JSON.stringify(localStorage.getItem("sales"))
-    // var userID = localStorage.getItem("userId")
-    console.log("asaad", sales)
-    console.log("asaad2", userId)
-    var result = posAppletInstance.getSalesreportSync(1111, 1550404677000, new Date().getTime());
+ipcMain.on('adminSales', (event, shiftType, startTime, endTime) => {
+    var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
+    var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
+    logger.info('sales call', shiftType, startTime, endTime)
+    var result = posAppletInstance.getSalesreportSync(shiftType, javaLong1, javaLong2);
     logger.info("salesResult", '' + result)
 
   event.sender.send('adminSalesResult', result);
