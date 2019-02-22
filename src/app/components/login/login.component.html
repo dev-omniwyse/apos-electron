@@ -1,22 +1,23 @@
 <div class="main-container">
-  <!-- <div class="header flex">
+    <!-- <div class="header flex">
     <div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
     <div class="header-info pull-right"></div>
   </div> -->
-  <div class="content-container flex full-hight">
-    <div class="login-img pull-left">
-      <div class="login-bg-img"></div>
-    </div>
-
-    <div class="login-section pull-right pos-relative">
-      <div class="login-container">
-        <div class="alert alert-danger " *ngIf=errorMsg>
-          <strong>Huh</strong> Please Enter valid Details
+    <div class="content-container flex full-hight">
+        <div class="login-img pull-left">
+            <div class="login-bg-img"></div>
         </div>
-        <input type="text" placeholder="User Name" [(ngModel)]="username" />
-        <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
-        <button class="mt20" (click)="Login()">Login</button>
-      </div>
+
+        <div class="login-section pull-right pos-relative">
+            <div class="login-container">
+                <div class="shift-report-status">{{statusOfShiftReport}}</div>
+                <div class="alert alert-danger " *ngIf=errorMsg>
+                    <strong>Huh</strong> Please Enter valid Details
+                </div>
+                <input type="text" placeholder="User Name" [(ngModel)]="username" />
+                <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
+                <button class="mt20" (click)="Login()">Login</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

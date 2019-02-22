@@ -2,8 +2,8 @@
     <div class="header-logo pull-left"><img src="assets/images/logo-header.png" /></div>
     <div class="header-info pull-right">
         <div class="login-info">
-            <div class="pull-left">CDTA Admin <span>|</span> Terminal: {{terminalNumber}}</div>
-            <div class="pull-left"><a href="#">logout</a></div>
+            <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
+            <button class="pull-left" (click)="logOut();">logout</button>
             <div class="pull-left">Menu</div>
         </div>
     </div>
@@ -50,5 +50,21 @@
     <div class="clearfix"></div>
 </div>
 
+<div class="modal fade" id="warning" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Warning</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>You cannot log out until you've closed your shift. </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Close the Splash screen -->
 <script src="assets/js/loading-bars.js"></script>
