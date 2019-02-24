@@ -93,6 +93,7 @@ export class ReadcardComponent implements OnInit {
     public readCardData = [];
     public show: Boolean = false;
     public x:any = 0;
+    public offeringSList:any = [];
     constructor(private cdtaservice: CdtaService, private route:ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
             // alert(this.x++);
@@ -255,6 +256,19 @@ export class ReadcardComponent implements OnInit {
     getProductCatalogJSON() {
         this.logger.info('this is a message from angular');
         this.electronService.ipcRenderer.send('catalogJson', cardName)
+    }
+
+    setOffering(){
+        // let item = JSON.parse(localStorage.getItem("catalogJSON"));
+        //  this.catalogData= JSON.parse(item).Offering;
+         this.catalogData.forEach(element => {
+            if(element.Ticket != undefined){
+                var jsonObj = {'TicketId' : element.TicketId, 'Description' : element.Ticket.TicketType.Description};
+                this.offeringSList.push(jsonObj);
+            }
+         });
+            
+        // });
     }
 
     printDiv() {

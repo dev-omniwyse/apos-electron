@@ -178,7 +178,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
           this.cardJson.forEach(element => {
             this.currentCardMerchantList.forEach(walletElement => {
-              var jsonWalletObj = { "transactionID": this.transactionId, "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": "ACTIVE", "slotNumber": 3, "startDate": walletElement.DateEffective, "expirationDate": walletElement.DateExpires, "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.unitPrice, "totalCost": this.transactionAmount, "userID": "admin@ta.com", "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": element.printed_id, "cardUID": element.uid, "walletTypeId": walletElement.Ticket.WalletType.WalletTypeId, "shiftType": 0, "timestamp": new Date().getTime() }
+              var jsonWalletObj = { "transactionID": this.transactionId, "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": "ACTIVE", "slotNumber": 3, "startDate": walletElement.DateEffective, "expirationDate": walletElement.DateExpires, "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.unitPrice, "totalCost": this.transactionAmount, "userID": "admin@ta.com", "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": element.printed_id, "cardUID": element.uid, "walletTypeId": (walletElement.Ticket.WalletType == undefined)?0:walletElement.Ticket.WalletType.walletTypeId, "shiftType": 0, "timestamp": new Date().getTime() }
               walletObj.push(jsonWalletObj);
             });
             var JsonObj: any = { "transactionID": this.transactionId, "cardPID": element.printed_id, "cardUID": element.uid, "quantity": (this.isNew) ? 1 : 0, "productIdentifier": null, "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": element.card_expiration_date, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": true, "unitPrice": (this.isNew) ? unitPrice : 0, "totalCost": (this.isNew) ? unitPrice : 0, "userID": "admin@ta.com", "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 3, "shiftType": 0, "timestamp": new Date().getTime() };
@@ -200,6 +200,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
+          alert("Encoding Successfull");
           localStorage.removeItem('encodeData');
           localStorage.removeItem('productCardData');
           localStorage.removeItem("cardsData");
@@ -231,7 +232,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
       else {
-        // $("#encodeModal").modal('show');
+        //  $("#encodeModal").modal('show');
       }
     });
 
@@ -252,6 +253,20 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   removeEventListeners() {
 
+  }
+
+  navigateToReadCard(){
+    localStorage.removeItem('encodeData');
+    localStorage.removeItem('productCardData');
+    localStorage.removeItem("cardsData");
+    localStorage.removeItem("catalogJSON");
+    localStorage.removeItem("readCardData");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+    this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
+    this.router.navigate(['/readcard'])
   }
 
   checkIsCardNew() {
