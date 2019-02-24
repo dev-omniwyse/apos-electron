@@ -1,1 +1,16 @@
 /* @import "./../../../styles.css"; */
+
+.header-btn-menu,
+.header-btn-menu:hover {
+    border-radius: 5px;
+    border: 1px solid #fff;
+    padding: 5px 15px;
+    margin: 0 20px 0 0;
+    color: #D64900;
+    background-color: #fff;
+}
+
+.header-tx-top {
+    margin: 0 20px;
+    padding: 7px 0 0 0;
+}

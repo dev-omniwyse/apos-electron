@@ -446,3 +446,15 @@ body {
 .modal-footer {
 	justify-content: center;
 }
+
+.login-info .dropdown-menu {
+    right: 20px!important;
+    left: inherit;
+}
+
+.login-info .dropdown-menu>li>a,
+.login-info .dropdown-menu>li>a:hover {
+    background-color: transparent!important;
+    padding: 5px 20px;
+    margin: 0;
+}

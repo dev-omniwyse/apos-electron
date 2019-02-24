@@ -1,4 +1,0 @@
-Feb 22, 2019 10:48:37 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
-INFO: Parent log configured, future logs will go to log file: C:\Users\user\Desktop\apos-electron/logs/APOS.1550812717572.%u.%g.log
-Feb 22, 2019 10:48:37 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
-INFO: Uploading log file: APOS.1550812417377.0.0.log

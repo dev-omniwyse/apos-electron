@@ -1,8 +1,17 @@
 <div class="container-padding">
     <div class="shift-sales-head">
         <div class="pull-left shift-sales-txt">SHIFT SALES SUMMARY</div>
+
         <div class="pull-right"><button class="back-to-sales"><i class="fa fa-print"></i> Print Summary</button></div>
         <div class="clearfix"></div>
+    </div>
+    <div>
+        <label for="sales">Clerk:</label>
+        <select *ngFor="let sale of sales" id="sales" name="sale" (change)="shiftSaleSummary(sale)">
+                  <option [value]="sale">
+                    {{sale.userEmail}}
+                  </option>
+                </select>
     </div>
 
     <div class="shift-data-sets">

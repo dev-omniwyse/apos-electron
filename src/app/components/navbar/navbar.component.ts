@@ -39,9 +39,18 @@ terminalNumber:any = "";
         userData = element
       }
     });
-    if (userData.shiftState !="3") {
+    if (userData.shiftState != "3" && userData.shiftType == "0") {
       $("#warning").modal('show');
-    } else {
+    } else if (userData.shiftState == "3" && userData.shiftType == "1") {
+      // localStorage.removeItem("shiftReport");
+      // localStorage.removeItem("mainShiftClose")
+      //  localStorage.removeItem("closingPausedMainShift")
+      this.router.navigate(['/login'])
+    }
+    else if (userData.shiftState != "3" && userData.shiftType == "1") {
+      $("#warning").modal('show');
+    }
+    else {
       localStorage.removeItem("shiftReport");
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
