@@ -14,16 +14,16 @@
         <h1>Card | Account</h1>
     </div>
 
-	<div class="flex container-padding flex-column">
-		<button class="card-btn" data-toggle="modal" data-target="#myModal" >
+    <div class="flex container-padding flex-column">
+        <button class="card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" (click)="readCard($event); getProductCatalogJSON()">
+        <button class="card-btn" [disabled]="disableCards" (click)="readCard($event); getProductCatalogJSON()">
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" /> 
 		</button>
-		<button class="card-btn" [routerLink]="['/carddata']">
+        <button class="card-btn" [disabled]="disableCards" [routerLink]="['/carddata']">
 			Non-Fare Product
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>

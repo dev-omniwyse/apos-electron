@@ -1,11 +1,31 @@
 <div class="header flex">
     <div class="header-logo pull-left"><img src="assets/images/logo-header.png" /></div>
     <div class="header-info pull-right">
-        <div *ngIf="terminalNumber" class="login-info ull-left">
-            <div> Terminal: {{terminalNumber}}</div>
-            <div >Menu</div>
-            <div >
-                <button class="card-btn-orange-logout"  (click)="logOut();">logout</button>
+        <div class="login-info">
+            <!-- <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
+            <button class="pull-left" (click)="logOut();">logout</button>
+            <div class="pull-left">Menu</div> -->
+            <div class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
+            <!-- <div class="pull-left"><a href="#">logout</a></div> -->
+            <div class="pull-left">
+                <div class="dropdown">
+                    <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>
+                    <ul class="dropdown-menu">
+                        <li><a>Lock Device</a></li>
+                        <li><a (click)="logOut();">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- <div class="pull-left">Menu</div> -->
+            <div class="pull-left">
+                <div class="dropdown">
+                    <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">APPS <i class="fa fa-bars"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">About APOS</a></li>
+                        <li><a href="#">Genfare Link</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

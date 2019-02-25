@@ -85,6 +85,7 @@ export class ReadcardComponent implements OnInit {
     event = "20+20";
     value: any;
     statusOfShiftReport: string = ""
+    disableCards: Boolean = false
     public logger;
     public singleImage: any
     public carddata:any = [];
@@ -291,20 +292,28 @@ export class ReadcardComponent implements OnInit {
 
 
     ngOnInit() {
-this.electronService.ipcRenderer.send("terminalConfigcall");
+        this.electronService.ipcRenderer.send("terminalConfigcall");
 
         if (localStorage.getItem("shiftReport") != undefined) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
             shiftReports.forEach(element => {
-                if (element.shiftState == "3"  && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+                if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                     this.statusOfShiftReport = "Main Shift is Closed"
-                }  else
-                if (element.shiftState == "3" && element.shiftType == "0") {
-                  this.statusOfShiftReport = "Main Shift is Closed"
-                }else if (element.shiftState == "4"  && element.shiftType == "0") {
-                    this.statusOfShiftReport = "Main Shift is Paused"
-                }
+                } else
+                    if (element.shiftState == "3" && element.shiftType == "0") {
+                        this.statusOfShiftReport = "Main Shift is Closed"
+                        
+                    } else if (element.shiftState == "4" && element.shiftType == "0") {
+                        this.statusOfShiftReport = "Main Shift is Paused"
+                    }
+
+                    if (element.shiftState == "3" && element.shiftType == "0") {
+                        this.statusOfShiftReport = "Main Shift is Closed"
+                        this.disableCards = true
+                    }else{
+                        this.disableCards = false
+                    }
             })
         }
 
