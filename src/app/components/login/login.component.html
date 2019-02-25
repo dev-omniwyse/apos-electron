@@ -10,10 +10,18 @@
 
         <div class="login-section pull-right pos-relative">
             <div class="login-container">
+
                 <div *ngIf="statusOfShiftReport.length != 0  " class="shift-report-status">{{statusOfShiftReport}}</div>
+                <div *ngIf="ownedByUser.length != 0 ">Main Shift Is Owned By :
+                    <strong>{{ownedByUser}}</strong>
+                </div>
+                <div *ngIf="lockedByUser.length != 0 ">Terminal Locked By :
+                    <strong>{{lockedByUser}}</strong>
+                </div>
                 <div class="alert alert-danger " *ngIf=errorMsg>
                     <strong>Huh</strong> Please Enter valid Details
                 </div>
+
                 <input type="text" placeholder="User Name" [(ngModel)]="username" />
                 <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
                 <button class="mt20" (click)="Login()">Login</button>

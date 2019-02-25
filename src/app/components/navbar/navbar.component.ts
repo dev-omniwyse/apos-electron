@@ -43,7 +43,15 @@ export class NavbarComponent implements OnInit {
     });
     if (userData.shiftState != "3" && userData.shiftType == "0") {
       $("#warning").modal('show');
-    } else if (userData.shiftState == "3" && userData.shiftType == "1") {
+    }
+    else if (userData.shiftState == "3" && userData.shiftType == "1" && localStorage.getItem("closingPausedMainShift") == "true") {
+      localStorage.removeItem("shiftReport");
+      localStorage.removeItem("mainShiftClose")
+      localStorage.removeItem("closingPausedMainShift")
+      localStorage.removeItem("hideModalPopup")
+      this.router.navigate(['/login'])
+    }
+    else if (userData.shiftState == "3" && userData.shiftType == "1") {
       // localStorage.removeItem("shiftReport");
       // localStorage.removeItem("mainShiftClose")
       //  localStorage.removeItem("closingPausedMainShift")
@@ -59,14 +67,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("hideModalPopup")
       this.router.navigate(['/login'])
     }
-    // if (shiftreportUser != undefined) {
-    //   localStorage.removeItem("shiftReport")
-    //   this.router.navigate(['/login'])
-    // }
-
-
-
-    //console.log('read call', cardName)
+    localStorage.removeItem("userEmail")
   }
 
   ngOnInit() {
