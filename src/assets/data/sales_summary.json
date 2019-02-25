@@ -1,0 +1,19 @@
+[{
+        "quantity": "1",
+        "description": "1 Day Pass",
+        "value": "5.0",
+        "IsMerchandise": "0"
+    },
+    {
+        "quantity": "1",
+        "description": "1 Ride",
+        "value": "12.0",
+        "IsMerchandise": "0"
+    },
+    {
+        "quantity": "1",
+        "description": "Pay As You Go",
+        "value": "34.0",
+        "IsMerchandise": "0"
+    }
+]

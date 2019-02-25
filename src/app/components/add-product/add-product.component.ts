@@ -81,6 +81,7 @@ export class AddProductComponent implements OnInit {
   productJson: any = [];
   readCarddata: any = {};
   numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  zeroDigits: any = ["0", "00"]
   saveTransactionData: any;
   encodeJsonData: any = []; // encode data json 
   currentCard: any = {};
@@ -346,6 +347,20 @@ export class AddProductComponent implements OnInit {
       console.log(this.merchantise)
 
     });
+  }
+
+  displayDigit(digit) {
+    console.log("numberDigits", digit);
+    if (this.productTotal == 0) {
+      this.productTotal = digit;
+      // this.productTotal+=digit
+    } else
+      this.productTotal += digit
+
+  }
+  clearDigit(digit) {
+    console.log("numberDigits", digit);
+    this.productTotal = digit
   }
   //   saveTransaction(merch){
   //     // this.saveTransactionData.push(merch);

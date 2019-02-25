@@ -15,6 +15,7 @@
             </option>
         </select> -->
         <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
+            <option [ngValue]="undefined" selected>Select</option>
             <option [ngValue] ="0">--All--</option>
             <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
            
@@ -29,16 +30,16 @@
                     <th>Product</th>
                     <th>Value</th>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Smart Card</td>
-                    <td>$5.00</td>
+                <tr *ngFor="let salesdetail of salesData">
+                    <td>{{salesdetail.quantity}}</td>
+                    <td>{{salesdetail.description}}</td>
+                    <td>${{salesdetail.value}}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td>1</td>
                     <td>Pay As You Go</td>
                     <td>$30.00</td>
-                </tr>
+                </tr> -->
             </table>
         </div>
         <div class="shift-data-set">
@@ -47,11 +48,11 @@
                     <th>Payment Method</th>
                     <th>Amount</th>
                 </tr>
-                <tr>
-                    <td>Cash</td>
-                    <td>$35.00</td>
+                <tr *ngFor="let salePayment of salesPaymentData">
+                    <td>{{salePayment.paymentMethod}}</td>
+                    <td>${{salePayment.value}}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td>Credit or Debit Card</td>
                     <td>$0.00</td>
                 </tr>
@@ -62,10 +63,10 @@
                 <tr>
                     <td>Credit or Debit Card</td>
                     <td>$0.00</td>
-                </tr>
+                </tr> -->
             </table>
         </div>
     </div>
 
-    <button class="back-to-sales" [routerLink]="['/admin']"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Back to Admin</button>
+    <button class="back-to-sales" [routerLink]="['/admin']" (click)="hidePopUp();"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Back to Admin</button>
 </div>

@@ -23,8 +23,11 @@ export class LoginComponent implements OnInit {
     shiftState: any
     statusOfShiftReport: string = ""
     hideAndShowLogout: Boolean = false
+    lockedByUser : string =""
+    ownedByUser : string = ""
     shiftReport: any = [
         {
+            userEmail:"",
             userID: "",
             shiftID: "0",
             shiftType: "",
@@ -147,9 +150,9 @@ export class LoginComponent implements OnInit {
             password: ['', Validators.required]
         });
 
-        // if(localStorage.getItem("hideAndShowLogout") == "true"){
-        //     this.hideAndShowLogout = false
-        //     localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
+        // if(localStorage.getItem("userEmail") != undefined){
+        //    // this.hideAndShowLogout = false
+        //    // localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
         //    } 
 
         localStorage.removeItem("mainShiftClosed")
@@ -158,14 +161,20 @@ export class LoginComponent implements OnInit {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
             shiftReports.forEach(element => {
-                if (element.shiftState == "3"  && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+                if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                     this.statusOfShiftReport = "Main Shift is Closed"
                 } else
-                    if (element.shiftState == "3"  && element.shiftType == "0") {
+                    if (element.shiftState == "3" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Closed"
                     }
-                    else if (element.shiftState == "4"  && element.shiftType == "0") {
+                    else if (element.shiftState == "4" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Paused"
+                        this.ownedByUser =  localStorage.getItem("userEmail")
+
+                    } else if (element.shiftState == "0" && element.shiftType == "0" && element.userEmail != "") {
+                       // this.statusOfShiftReport = "Main Shift is Paused"
+                        this.lockedByUser =  localStorage.getItem("userEmail")
+
                     }
             })
         }

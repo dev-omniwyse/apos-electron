@@ -103,67 +103,66 @@
         <div class="cr-r-set">
         <h1><span class="label label-primary cr-label">${{productTotal}}</span></h1>
         <div class="flex">
-          <div class="cr-left">
-              <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
-                <button>{{digit}}</button>
-              </div>
-              <div class="number-btns-set-2">
-                  <button>0</button>
-                  <button>00</button>
-              </div>
-              <div class="number-btns-set-1">
-                  <button>Clear</button>
-              </div>
-          </div>
-          <div class="cr-right">
-            <button data-toggle="modal" data-target="#myModal">Cash</button>
-            <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
-            <button data-toggle="modal" data-target="#checkModal">Check</button>
-            <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
-            <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
-            <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
-            <button data-toggle="modal" data-target="#compModal">Comp</button>
-          </div>
-           <!-- Modal -->
-           <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                  <h4 class="modal-title">Cash Applied</h4>
+            <div class="cr-left">
+                <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
+                    <button>{{digit}}</button>
                 </div>
-  
-                <div class="modal-body">
-                  <p>Return change to customer</p>
-                  <p>Click "OK" When cash drawer is closed</p>
-                  <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="pop-up-box">
-                    <div class="pull-left">Cash Back </div>
-                    <div class="pull-right">$</div>
-                    <div class="clearfix"></div>
-                  </div>
+                <div class="number-btns-set-2" *ngFor="let digit of zeroDigits">
+                    <button (click)="displayDigit(digit)">{{digit}}</button>
+                    <!-- <button>00</button> -->
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)"
-                    data-dismiss="modal">Ok</button>
+                <div class="number-btns-set-1">
+                    <button (click)="clearDigit(0)">Clear</button>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="modal fade" id="creditModal" role="dialog">
-            <div class="modal-dialog modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                  <h4 class="modal-title">Cash Applied</h4>
+            <div class="cr-right">
+                <button data-toggle="modal" data-target="#myModal">Cash</button>
+                <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+                <button data-toggle="modal" data-target="#checkModal">Check</button>
+                <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
+                <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
+                <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
+                <button data-toggle="modal" data-target="#compModal">Comp</button>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Cash Applied</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Return change to customer</p>
+                            <p>Click "OK" When cash drawer is closed</p>
+                            <div class="pop-up-box">
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal}}</div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="pop-up-box">
+                                <div class="pull-left">Cash Back </div>
+                                <div class="pull-right">$</div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" [routerLink]="['/carddata']" (click)="saveTransaction(merch)" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
                 </div>
-  
-                <div class="modal-body">
-                  <!-- <p>Return change to customer</p>
+            </div>
+            <div class="modal fade" id="creditModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Cash Applied</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <!-- <p>Return change to customer</p>
               <p>Click "OK" When cash drawer is closed</p> -->
                   <div class="pop-up-box">
                     <div class="pull-left">Cash Applied </div>
