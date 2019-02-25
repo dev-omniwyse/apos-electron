@@ -13,7 +13,7 @@ declare var $: any
 export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
-  terminalNumber: any = "";
+  terminalNumber: any = undefined;
   hideAndShowLogout : Boolean 
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {

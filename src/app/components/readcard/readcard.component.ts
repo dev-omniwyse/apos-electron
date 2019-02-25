@@ -79,7 +79,7 @@ pcs.on('error', function (err) {
 export class ReadcardComponent implements OnInit {
 
     // Global Declarations will go here
-    terminalConfigJson:any = [];
+    terminalConfigJson: any = [];
     title = 'Add Cdta';
     url = '';
     event = "20+20";
@@ -88,30 +88,30 @@ export class ReadcardComponent implements OnInit {
     disableCards: Boolean = false
     public logger;
     public singleImage: any
-    public carddata:any = [];
+    public carddata: any = [];
     public carddataProducts = [];
     public catalogData = [];
     public readCardData = [];
     public show: Boolean = false;
-    public x:any = 0;
-    public offeringSList:any = [];
-    constructor(private cdtaservice: CdtaService, private route:ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
+    public x: any = 0;
+    public offeringSList: any = [];
+    constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
             // alert(this.x++);
-        // var x:any = localStorage.getItem('loginCount')
-        //     if(x == null)
-        //         x = 1;
-        //     else{
-        //         x++
-        //     }
-        //     localStorage.setItem('loginCount', x)
+            // var x:any = localStorage.getItem('loginCount')
+            //     if(x == null)
+            //         x = 1;
+            //     else{
+            //         x++
+            //     }
+            //     localStorage.setItem('loginCount', x)
         });
-        if(this.electronService.isElectronApp) {
+        if (this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
 
-        
-        
+
+
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
             console.log("data", data)
             if (data != undefined && data != "") {
@@ -120,7 +120,7 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
                     // this.carddata = JSON.parse(item);
-                     this.carddata = new Array(JSON.parse(data));
+                    this.carddata = new Array(JSON.parse(data));
                     //  this.carddataProducts = this.carddata.products;
                     console.log('this.carddata', this.carddata);
 
@@ -129,27 +129,35 @@ export class ReadcardComponent implements OnInit {
             this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
 
+        this.electronService.ipcRenderer.on('saveOfferingResult', (event, data) => {
+            if (data != undefined && data != "") {
+                console.log('Offerings Success');
+            }
+        });
+
+
+
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
             if (data != undefined && data != "") {
-                localStorage.setItem('terminalConfigJson',data)
+                localStorage.setItem('terminalConfigJson', data)
                 this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
                 this._ngZone.run(() => {
-                  this.terminalConfigJson = JSON.parse(data);
+                    this.terminalConfigJson = JSON.parse(data);
                 });
             }
-        }); 
+        });
 
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
-                     this.carddata = new Array(JSON.parse(data));
+                    this.carddata = new Array(JSON.parse(data));
                     console.log('this.carddata', this.carddata);
-                    if(this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)){
+                    if (this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)) {
                         this.getProductCatalogJSON();
-                        this.router.navigate(['/addproduct']) ;
-                    }else{
+                        this.router.navigate(['/addproduct']);
+                    } else {
                         this.carddata.length = [];
                         $("#newCardValidateModal").modal('show');
                     }
@@ -162,7 +170,7 @@ export class ReadcardComponent implements OnInit {
                 //this.show = true;
                 this._ngZone.run(() => {
                     this.getProductCatalogJSON();
-                    this.router.navigate(['/addproduct']) 
+                    this.router.navigate(['/addproduct'])
                 });
             }
         });
@@ -176,58 +184,59 @@ export class ReadcardComponent implements OnInit {
                     // console.log('this.carddata', this.catalogData);
                     localStorage.setItem('catalogJSON', JSON.stringify(data));
                     let item = JSON.parse(localStorage.getItem("catalogJSON"));
-                    this.catalogData= JSON.parse(item).Offering;
+                    this.catalogData = JSON.parse(item).Offering;
                     var keepGoing = true;
                     this.carddata[0].products.forEach(cardElement => {
-                       
-                            this.catalogData.forEach(catalogElement => {
-                                if(catalogElement.Ticket && keepGoing){
-                                if(catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
+
+                        this.catalogData.forEach(catalogElement => {
+                            if (catalogElement.Ticket && keepGoing) {
+                                if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
                                     var remainingValue = "";
                                     var productName = "";
-                                    if(cardElement.product_type == 1)
+                                    if (cardElement.product_type == 1)
                                         productName = "Frequent Ride"
-                                    else if(cardElement.product_type == 2)
+                                    else if (cardElement.product_type == 2)
                                         productName = "Stored Ride"
-                                    else if(cardElement.product_type == 3)
+                                    else if (cardElement.product_type == 3)
                                         productName = "Pay As You Go"
-                                    if(cardElement.product_type == 1)
-                                        remainingValue = cardElement.days +" Days" ;
-                                    else if(cardElement.product_type == 2)
-                                        remainingValue = cardElement.remaining_rides+" Rides" ;
+                                    if (cardElement.product_type == 1)
+                                        remainingValue = cardElement.days + " Days";
+                                    else if (cardElement.product_type == 2)
+                                        remainingValue = cardElement.remaining_rides + " Rides";
                                     else
-                                        remainingValue = "$ "+cardElement.remaining_value/100;
-                                    var jsonObject  = {
-                                      
-                                            "product":productName,
-                                            "description":catalogElement.Ticket.Description,
-                                            "status":cardElement.status,
-                                            "remainingValue":remainingValue
+                                        remainingValue = "$ " + cardElement.remaining_value / 100;
+                                    var jsonObject = {
+
+                                        "product": productName,
+                                        "description": catalogElement.Ticket.Description,
+                                        "status": cardElement.status,
+                                        "remainingValue": remainingValue
                                     }
                                     keepGoing = false;
                                     this.readCardData.push(jsonObject);
-                                    
+
                                 }
                             }
-                            });
-                            if(keepGoing == true){
-                                var jObject  = {
-                                      
-                                    "product": "Pay As You Go",
-                                    "description":"Frequent Rider",
-                                    "status":cardElement.status,
-                                    "balance":cardElement.balance
+                        });
+                        if (keepGoing == true) {
+                            var jObject = {
+
+                                "product": "Pay As You Go",
+                                "description": "Frequent Rider",
+                                "status": cardElement.status,
+                                "balance": cardElement.balance
                             }
-                                this.readCardData.push(jObject);
-                            }
-                            keepGoing = true;
-                        
+                            this.readCardData.push(jObject);
+                        }
+                        keepGoing = true;
+
                     });
                     console.log("pushedData --", this.readCardData)
-                    if(!isExistingCard)
-                    this.router.navigate(['/addproduct'])
+                    if (!isExistingCard)
+                        this.router.navigate(['/addproduct'])
                 });
             }
+            this.setOffering();
         });
 
     }
@@ -235,7 +244,7 @@ export class ReadcardComponent implements OnInit {
     /* JAVA SERVICE CALL */
 
     readCard(event) {
-        isExistingCard  = true;
+        isExistingCard = true;
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
@@ -263,17 +272,27 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('catalogJson', cardName)
     }
 
-    setOffering(){
-        // let item = JSON.parse(localStorage.getItem("catalogJSON"));
-        //  this.catalogData= JSON.parse(item).Offering;
-         this.catalogData.forEach(element => {
-            if(element.Ticket != undefined){
-                var jsonObj = {'TicketId' : element.TicketId, 'Description' : element.Ticket.TicketType.Description};
-                this.offeringSList.push(jsonObj);
+    setOffering() {
+        this.offeringSList = [];
+        this.catalogData.forEach(element => {
+            if (element.Ticket != undefined && element.Ticket != "") {
+                var jsonObj:any =  {
+                    "OfferingId": element.OfferingId,
+                    "ProductIdentifier": element.ProductIdentifier,
+                    "Description": element.Description,
+                    "UnitPrice":  element.UnitPrice,
+                    "IsTaxable":  element.IsTaxable,
+                    "IsMerchandise":  element.IsMerchandise,
+                    "IsAccountBased":  element.IsAccountBased,
+                    "IsCardBased":  element.IsCardBased
+                  }
+                // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
+                 this.offeringSList.push(jsonObj);
             }
-         });
-            
-        // });
+        });
+        console.log(JSON.stringify(this.offeringSList));
+        // var tempJson:string = '[{"TicketId": 3, "Description": test1},{"TicketId": 4, "Description": test1}]'
+        this.electronService.ipcRenderer.send('saveOffering', '{"data": '+JSON.stringify(this.offeringSList)+'}');
     }
 
     printDiv() {
@@ -303,17 +322,17 @@ export class ReadcardComponent implements OnInit {
                 } else
                     if (element.shiftState == "3" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Closed"
-                        
+
                     } else if (element.shiftState == "4" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Paused"
                     }
 
-                    if (element.shiftState == "3" && element.shiftType == "0") {
-                        this.statusOfShiftReport = "Main Shift is Closed"
-                        this.disableCards = true
-                    }else{
-                        this.disableCards = false
-                    }
+                if (element.shiftState == "3" && element.shiftType == "0") {
+                    this.statusOfShiftReport = "Main Shift is Closed"
+                    this.disableCards = true
+                } else {
+                    this.disableCards = false
+                }
             })
         }
 
@@ -321,8 +340,8 @@ export class ReadcardComponent implements OnInit {
 
 
     }
-    
-    checkIfcardIsEmpty(){
+
+    checkIfcardIsEmpty() {
         // (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3))?true:false;
     }
 

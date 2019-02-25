@@ -307,14 +307,22 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.send('readSmartcard', cardName)
   }
 
+  // Boolean getWalletTypeID(walletList:any []) {
+  //   walletList.forEach(element => {
+  //     if(element.WalletTypeId == 10)
+  //       return true;
+  //   });
+
+  // }
+
   clickOnMagnetic(){
     console.log('clicked on Magnetic')
-    this.nonFare = false;
-    this.regularRoute = true;
+    // this.nonFare = false;
+    // this.regularRoute = true;
     let i = 0;
     this.merchantise = [];
     this.productJson.forEach(element => {
-      if ((element.IsMagnetic) && i < 10) {
+      if (null != element.Ticket && undefined != element.Ticket && i < 10) {
         this.merchantise.push(element);
         i++;
       }

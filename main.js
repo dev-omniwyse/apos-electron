@@ -4,6 +4,8 @@ var { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron");
 var path = require("path");
 var url = require("url");
 var fs = require("fs-extra");
+
+
 var javaInit = require('./javaInit')
 var childProcess = require('child_process');
 var javaInstancePath = "com.genfare.applet.encoder.EncoderApplet";
@@ -329,10 +331,10 @@ ipcMain.on('comp', (event, catalog) => {
 /** ADMIN METHODS STARTS HERE*/
 
 ipcMain.on('adminSales', (event, shiftType, startTime, endTime) => {
-    var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
-    var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
-    logger.info('sales call', shiftType, startTime, endTime)
-    var result = posAppletInstance.getSalesreportSync(shiftType, javaLong1, javaLong2);
+    // var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
+    // var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
+    logger.info('sales call', shiftType, startTime.toString(), endTime.toString())
+    var result = posAppletInstance.getSalesreportSync(shiftType, startTime.toString(), endTime.toString());
     logger.info("salesResult", '' + result)
 
   event.sender.send('adminSalesResult', result);
@@ -384,5 +386,10 @@ ipcMain.on('adminShiftSaleSummary', (event, catalog) => {
 
   event.sender.send('adminShiftSaleSummaryResult', result);
 })
+
+ipcMain.on('saveOffering', (event, offerings) => {
+  var result = posAppletInstance.saveOfferingSync(offerings);
+  event.sender.send('saveOfferingResult', '' + result.getSuccessSync());
+});
 
 /** ADMIN METHODS END HERE*/

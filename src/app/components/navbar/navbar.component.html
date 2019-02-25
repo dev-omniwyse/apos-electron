@@ -5,9 +5,9 @@
             <!-- <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
             <button class="pull-left" (click)="logOut();">logout</button>
             <div class="pull-left">Menu</div> -->
-            <div class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
+            <div *ngIf="terminalNumber" class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
             <!-- <div class="pull-left"><a href="#">logout</a></div> -->
-            <div class="pull-left">
+            <div *ngIf="terminalNumber" class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>
                     <ul class="dropdown-menu">
