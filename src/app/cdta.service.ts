@@ -28,6 +28,12 @@ export class CdtaService {
   public getJSON(): Observable<any> {
     return this.http.get("assets/data/product_catalog.json")
 }
+public getsalesJson(): Observable<any> {
+  return this.http.get("assets/data/sales_summary.json")
+}
+public getsalesPaymentJson(): Observable<any> {
+  return this.http.get("assets/data/sales_payment.json")
+}
 // Observable string sources
 private headerShowHideSource = new Subject<string>();
  

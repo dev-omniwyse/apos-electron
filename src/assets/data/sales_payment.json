@@ -1,0 +1,18 @@
+[{
+        "quantity": "1",
+        "paymentMethod": "Cash",
+        "value": "26.0"
+    },
+    {
+        "quantity": "1",
+        "paymentMethod": "Credit or Debit",
+        "value": "17.0"
+
+    },
+    {
+        "quantity": "2",
+        "paymentMethod": "Cash",
+        "value": "29.0"
+
+    }
+]
