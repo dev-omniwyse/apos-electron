@@ -4,7 +4,7 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-declare var $ : any
+declare var $: any
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -13,7 +13,8 @@ declare var $ : any
 export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
-terminalNumber:any = "";
+  terminalNumber: any = "";
+  hideAndShowLogout : Boolean 
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
@@ -54,6 +55,7 @@ terminalNumber:any = "";
       localStorage.removeItem("shiftReport");
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
+      localStorage.removeItem("hideModalPopup")
       this.router.navigate(['/login'])
     }
     // if (shiftreportUser != undefined) {
@@ -68,6 +70,13 @@ terminalNumber:any = "";
 
   ngOnInit() {
     let item = localStorage.getItem("header");
+
+    // if( localStorage.getItem("hideAndShowLogout") == undefined){
+    //   this.hideAndShowLogout = false
+    //   localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
+    // }else if(localStorage.getItem("hideAndShowLogout")=="true"){
+    //   this.hideAndShowLogout = true
+    // }
   }
 
 }

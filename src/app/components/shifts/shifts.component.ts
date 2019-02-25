@@ -17,7 +17,8 @@ export class ShiftsComponent implements OnInit {
   zeroDigits: any = ["0", "00"]
   productTotal: any = 0;
   openShift: Boolean = true
-  sales: []
+  hideModalPopup: Boolean = false
+
   // mainShiftClosed: Boolean = false
 
   constructor( private formBuilder: FormBuilder,private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) { }
@@ -36,6 +37,8 @@ export class ShiftsComponent implements OnInit {
       localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     });
     this.router.navigate(["/admin"])
+    this.hideModalPopup = false
+    localStorage.setItem("hideModalPopup", this.hideModalPopup.toString())
 
   }
   mainShiftClose() {
@@ -43,13 +46,11 @@ export class ShiftsComponent implements OnInit {
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
     let mainShiftClose = "true"
-
     if (localStorage.getItem("closingPausedMainShift") == "true") {
-
       shiftStore.filter(element => {
         if (element.shiftState == "4") {
           element.shiftState = "3"
-          element.userThatClosedShift = shiftreportUser
+          element.userThatClosedShift = localStorage.getItem("userEmail")
           element.timeClosed = new Date().getTime();
           element.closingDrawer = this.productTotal
         }
@@ -108,8 +109,22 @@ export class ShiftsComponent implements OnInit {
     console.log("numberDigits", digit);
     this.productTotal = digit
   }
+
+  hidePopUp() {
+    // this.hideModalPopup = true
+    // localStorage.setItem("hideModalPopup",this.hideModalPopup.toString())
+    let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+    let userId = localStorage.getItem("userID")
+    shiftReports.forEach(element => {
+      if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
+        localStorage.setItem("hideModalPopup", "true")
+      } else {
+        localStorage.setItem("hideModalPopup", "false")
+      }
+    })
+  }
   ngOnInit() {
-    this.sales = JSON.parse(localStorage.getItem("shiftReport"));
+
   }
 
 }

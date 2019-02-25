@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
     shiftType: any
     shiftState: any
     statusOfShiftReport: string = ""
+    hideAndShowLogout: Boolean = false
     shiftReport: any = [
         {
             userID: "",
@@ -62,14 +63,19 @@ export class LoginComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
+
+            //    if(localStorage.getItem("hideAndShowLogout") == "false" || this.hideAndShowLogout == false){
+            //     this.hideAndShowLogout = true
+            //     localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
+            //    } 
+
                 this.userdata = JSON.parse(data)
                 localStorage.setItem("userID", this.userdata.personId)
                 localStorage.setItem("userEmail", this.userdata.username)
                 // let previousOpenShif = localStorage.getItem("openShift")
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
-
-                shiftStore = shiftStore.filter(element => element.userID != this.userdata.personId)
-
+                //shiftStore = shiftStore.filter(element => element.userID != this.userdata.personId)
+                var shiftIndex:any = 0;
                 shiftStore.forEach(element => {
                     console.log(element);
                     if (element.shiftState == "3" && element.userID == "") {
@@ -77,9 +83,33 @@ export class LoginComponent implements OnInit {
                         element.userEmail = this.userdata.username;
                         element.shiftType = "0"
                     } else if (element.userID != this.userdata.personId && element.userID != "") {
+                        shiftIndex++;
+                        // if (shiftStore.indexOf(this.userdata.personId) == -1) {
+                        //     let newShiftReport = {
+                        //         userEmail: this.userdata.username,
+                        //         userID: this.userdata.personId,
+                        //         shiftID: "0",
+                        //         shiftType: "1",
+                        //         shiftState: "3",
+                        //         openingDrawer: "0.00",
+                        //         closingDrawer: "0.00",
+                        //         initialOpeningTime: 0,
+                        //         timeOpened: 0,
+                        //         timeClosed: 0,
+                        //         userThatClosedShift: ""
+                        //     }
+                        //     shiftStore.push(newShiftReport)
 
-                        if (shiftStore.indexOf(this.userdata.personId) === -1) {
-                            let newShiftReport = {
+                        // }
+                    }
+                    else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
+
+                    }
+
+                    
+                });
+                if(shiftIndex == shiftStore.length){
+                    let newShiftReport = {
                                 userEmail: this.userdata.username,
                                 userID: this.userdata.personId,
                                 shiftID: "0",
@@ -93,16 +123,8 @@ export class LoginComponent implements OnInit {
                                 userThatClosedShift: ""
                             }
                             shiftStore.push(newShiftReport)
-
-                        }
-                    }
-                    else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
-
-                    }
-
-                    localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-                });
-
+                }
+                localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
                 // if (previousOpenShif == "false") {
                 //     localStorage.removeItem("openShift")
                 // }
@@ -113,6 +135,8 @@ export class LoginComponent implements OnInit {
                     // console.log('this.carddata', this.carddata);
                     this.router.navigate(['/readcard'])
                 });
+            }else{
+                this.errorMsg = true
             }
         });
     }
@@ -122,6 +146,12 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
+
+        // if(localStorage.getItem("hideAndShowLogout") == "true"){
+        //     this.hideAndShowLogout = false
+        //     localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
+        //    } 
+
         localStorage.removeItem("mainShiftClosed")
         localStorage.removeItem("mainShiftClose")
         if (localStorage.getItem("shiftReport") != undefined) {

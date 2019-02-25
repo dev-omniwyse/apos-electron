@@ -7,7 +7,7 @@
                 <div class="main-shift-head">Shift Report</div>
                 <div class="main-shift-row">
                     <div class="pull-left">Fare Sold Total</div>
-                    <div class="pull-right">$35.00</div>
+                    <div class="pull-right">$0.00</div>
                 </div>
                 <div class="main-shift-row">
                     <div class="pull-left">Non Fare Products Sold Total</div>
@@ -16,18 +16,18 @@
                 <hr class="hr-css">
                 <div class="main-shift-row">
                     <div class="pull-left">Total Sold </div>
-                    <div class="pull-right">$35.00</div>
+                    <div class="pull-right">$0.00</div>
                 </div>
 
                 <br/>
 
                 <div class="main-shift-row">
                     <div class="pull-left">Opening Drawer</div>
-                    <div class="pull-right">$0.00</div>
+                    <div class="pull-right">${{openingDrawerBal}}</div>
                 </div>
                 <div class="main-shift-row">
                     <div class="pull-left">Expected Cash</div>
-                    <div class="pull-right">$35.00</div>
+                    <div class="pull-right">$0.00</div>
                 </div>
                 <div class="main-shift-row">
                     <div class="pull-left">Actual Cash</div>
@@ -50,7 +50,7 @@
     <div class="container-right">
         <div class="cr-r-set">
             <div class="">
-                <button class="back-to-sales" [routerLink]="['/readcard']"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
+                <button class="back-to-sales" [routerLink]="['/readcard']" (click)="hideModalPop()"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
                 <div class="back-sales-txt">What would you like to do ? </div>
                 <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 0">
                     <button [routerLink]="['/shifts']">
@@ -92,7 +92,7 @@
                 </div>
                 <div class="cr-right-btns" *ngIf="mainshiftCloser || closingPausedMainShift">
                     <button (click)="getSalesReports();" [routerLink]="['/shift_sales']">
-                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                     <button data-toggle="modal" data-target="#syncCds">
                         Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>

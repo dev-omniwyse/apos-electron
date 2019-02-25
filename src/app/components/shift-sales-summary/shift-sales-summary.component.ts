@@ -12,6 +12,7 @@ import { ElectronService } from 'ngx-electron';
 })
 export class ShiftSalesSummaryComponent implements OnInit {
   sales: []
+  selectedValue: any 
 
   constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
@@ -30,11 +31,13 @@ export class ShiftSalesSummaryComponent implements OnInit {
   ngOnInit() {
 
     this.sales = JSON.parse(localStorage.getItem("shiftReport"));
+    
   }
 
-  shiftSaleSummary(saleSummary) {
-    console.log("saleSummary", saleSummary)
-    this.electronService.ipcRenderer.send('adminSales', Number(saleSummary.shiftType), saleSummary.initialOpeningTime, saleSummary.timeClosed)
+  shiftSaleSummary() {
+    console.log("selectedValue:", this.selectedValue)
+   // console.log("saleSummary", JSON.parse(saleSummary))
+    //this.electronService.ipcRenderer.send('adminSales', Number(this.selectedValue.shiftType), this.selectedValue.initialOpeningTime, this.selectedValue.timeClosed)
   }
 
 }

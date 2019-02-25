@@ -5,13 +5,20 @@
         <div class="pull-right"><button class="back-to-sales"><i class="fa fa-print"></i> Print Summary</button></div>
         <div class="clearfix"></div>
     </div>
+
     <div>
-        <label for="sales">Clerk:</label>
-        <select *ngFor="let sale of sales" id="sales" name="sale" (change)="shiftSaleSummary(sale)">
-                  <option [value]="sale">
-                    {{sale.userEmail}}
-                  </option>
-                </select>
+        <label>Clerk: </label>
+        <!-- <select (change)="shiftSaleSummary($event.target.value)">
+            <option value="0">--All--</option>
+            <option *ngFor="let sale of sales"  value={{sale.userEmail}}>
+                {{sale.userEmail}}
+            </option>
+        </select> -->
+        <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
+            <option [ngValue] ="0">--All--</option>
+            <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
+           
+        </select>
     </div>
 
     <div class="shift-data-sets">
