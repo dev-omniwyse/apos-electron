@@ -66,6 +66,20 @@ export class ShiftSalesSummaryComponent implements OnInit {
     });
   }
 
+  hidePopUp() {
+    // this.hideModalPopup = true
+    // localStorage.setItem("hideModalPopup",this.hideModalPopup.toString())
+    let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+    let userId = localStorage.getItem("userID")
+    shiftReports.forEach(element => {
+      if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
+        localStorage.setItem("hideModalPopup", "true")
+      } else {
+        localStorage.setItem("hideModalPopup", "false")
+      }
+    })
+  }
+
   shiftSaleSummary() {
     console.log("selectedValue:", this.selectedValue)
     // console.log("saleSummary", JSON.parse(saleSummary))
