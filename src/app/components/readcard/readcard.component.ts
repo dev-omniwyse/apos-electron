@@ -125,6 +125,7 @@ export class ReadcardComponent implements OnInit {
 
                 });
             }
+            this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
 
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
@@ -234,16 +235,19 @@ export class ReadcardComponent implements OnInit {
 
     readCard(event) {
         isExistingCard  = true;
+        localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
     }
 
     newFareCard(event) {
+        localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
     }
 
     magneticCard(event) {
+        localStorage.setItem("isMagnetic", "true");
         this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }

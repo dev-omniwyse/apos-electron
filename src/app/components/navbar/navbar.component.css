@@ -14,3 +14,13 @@
     margin: 0 20px;
     padding: 7px 0 0 0;
 }
+
+.login-info{
+    margin: 20px;
+    padding: 10px 10px 10px 10px;
+}
+
+.login-info div{
+    float: left;
+    margin-left: 25px
+}

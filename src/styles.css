@@ -195,6 +195,16 @@ body {
     font-size: 22px;
 }
 
+.card-btn-orange-logout {
+    border: 1px solid #D64900;
+    border-radius: 3px;
+    background-color: #d65400;
+    height: 25px;
+    /* padding: 10px 10px; */
+    color: #fff;
+    /* font-size: 22px; */
+}
+
 .card-btn-orange img {
     width: 25px;
     right: 20px;

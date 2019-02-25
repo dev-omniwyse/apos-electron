@@ -88,9 +88,11 @@ export class AddProductComponent implements OnInit {
   selectedProductCategoryIndex: any = 0;
   nonFare = true;
   regularRoute = false;
+  isMagnetic = false;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
+      this.isMagnetic = localStorage.getItem("isMagnetic") == "true"?true:false;
       let item = JSON.parse(localStorage.getItem("catalogJSON"));
       this.productJson = JSON.parse(item).Offering;
       console.log(this.productJson);
@@ -192,9 +194,8 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
   }
-
 
 
   creditOrDebit(event) {
@@ -304,6 +305,22 @@ export class AddProductComponent implements OnInit {
 
   addCard() {
     this.electronService.ipcRenderer.send('readSmartcard', cardName)
+  }
+
+  clickOnMagnetic(){
+    console.log('clicked on Magnetic')
+    this.nonFare = false;
+    this.regularRoute = true;
+    let i = 0;
+    this.merchantise = [];
+    this.productJson.forEach(element => {
+      if ((element.IsMagnetic) && i < 10) {
+        this.merchantise.push(element);
+        i++;
+      }
+      console.log(this.merchantise)
+
+    });
   }
 
   clickOnMerch() {

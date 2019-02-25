@@ -9,7 +9,7 @@
 </div> -->
     <div class="main-container">
       <div class="container-left">
-        <div class="header-l ">
+        <div *ngIf="!isMagnetic" class="header-l">
           <img src="assets/images/shopping-cart.svg" width="30"/>
           <button class="btn-white-top">View Card</button>
           <button class="btn-orange" (click)="addCard()">Add Card</button>
@@ -19,10 +19,15 @@
           <!-- <div class="menucontainer left"> -->
             <ul style="height:100px">
               <li>
-                    <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"  (click)=clickOnMerch()>Merch</button>
+                  <div *ngIf="!isMagnetic">
+                      <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"  (click)=clickOnMerch()>Merch*</button>
+                  </div>
+                  <div *ngIf="isMagnetic">
+                      <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"  (click)=clickOnMagnetic()>Magnetic*</button>
+                  </div>
               </li>
               <li #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
-                    <button [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards.printed_id}}</button>
+                    <button *ngIf="!isMagnetic" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards.printed_id}}</button>
               </li>
       
             </ul> 

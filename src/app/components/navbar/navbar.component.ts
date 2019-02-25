@@ -13,7 +13,7 @@ declare var $ : any
 export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
-terminalNumber:any = "";
+terminalNumber:any = undefined;
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
@@ -33,6 +33,7 @@ terminalNumber:any = "";
     console.log("logging out");
     let shiftreportUser = localStorage.getItem("userID")
     let shiftreport = JSON.parse(localStorage.getItem("shiftReport"))
+    this.cdtaservice.setterminalNumber(undefined);
     let userData
     shiftreport.forEach(element => {
       if (element.userID == shiftreportUser) {
