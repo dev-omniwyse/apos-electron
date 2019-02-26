@@ -12,9 +12,9 @@ var javaInstancePath = "com.genfare.applet.encoder.EncoderApplet";
 var logger = require('electron-log');
 
 let reqPath = path.join(app.getAppPath(), '../../')
-fs.copyFile(app.getAppPath()+'/logging.properties', reqPath+'/logging.properties');
+fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.properties');
 
-fs.copySync(app.getAppPath()+'/app.properties', reqPath+'app.properties');
+fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
 
 // var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
 // logger.info("Java Class Path "+ app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json');
@@ -119,18 +119,18 @@ ipcMain.on('readSmartcard', (event, cardname) => {
     // var resultObject = java.newInstance("com.genfare.pos.applet.POSApplet.ResultObject");
 
     var resultObject = posAppletInstance.readCardSync();
-    logger.info('main.js: resultObject',resultObject);
+    logger.info('main.js: resultObject', resultObject);
   } catch (error) {
     logger.info(error);
   }
 
-  event.sender.send('readcardResult',resultObject.getValueSync());
+  event.sender.send('readcardResult', resultObject.getValueSync());
 })
 
 
 ipcMain.on('newfarecard', (event, cardname) => {
   logger.info("before java call  Data", posAppletInstance)
-  var result = posAppletInstance.setEncoderSync(cardname); 
+  var result = posAppletInstance.setEncoderSync(cardname);
   try {
     var smartread = posAppletInstance.readCardSync();
     logger.info("smartcard", smartread)
@@ -154,15 +154,15 @@ ipcMain.on('magneticcard', (event, cardname) => {
 })
 
 //encode new card
-ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
-  
+ipcMain.on('encodenewCard', (event, a, b, c, d, jsondata) => {
+
   logger.info("before java call  Data", posAppletInstance)
   try {
     // logger.info("show the json data",jsondata);
     var resultCardPid = posAppletInstance.getCardPIDSync();
-    var encodevar = posAppletInstance.encodeCardSync(a,b,c,d,JSON.stringify(jsondata));
+    var encodevar = posAppletInstance.encodeCardSync(a, b, c, d, JSON.stringify(jsondata));
   } catch (error) {
-    logger.info('show thw error here',error);
+    logger.info('show thw error here', error);
   }
   logger.info('result of encode', encodevar)
   event.sender.send('encodeCardResult', encodevar.getValueSync());
@@ -171,8 +171,8 @@ ipcMain.on('encodenewCard', (event, a,b,c,d,jsondata) => {
 
 
 // encode existing card
-ipcMain.on('encodeExistingCard', (event, cardNumber,jsondata) => {
-  
+ipcMain.on('encodeExistingCard', (event, cardNumber, jsondata) => {
+
   logger.info("before java call  Data", posAppletInstance)
   try {
     // logger.info("show the json data",jsondata);
@@ -181,9 +181,9 @@ ipcMain.on('encodeExistingCard', (event, cardNumber,jsondata) => {
     cardNumberStr = cardNumber.toString();
     var resultCardPid = posAppletInstance.getCardPIDSync();
 
-    var encodevar = posAppletInstance.addProductsSync(cardNumberStr,JSON.stringify(jsondata));
+    var encodevar = posAppletInstance.addProductsSync(cardNumberStr, JSON.stringify(jsondata));
   } catch (error) {
-    logger.info('show thw error here',error);
+    logger.info('show thw error here', error);
   }
   logger.info('result of encode', encodevar)
   event.sender.send('encodeCardResult', encodevar.getValueSync());
@@ -212,7 +212,7 @@ ipcMain.on('activationcall', (event, environment, data) => {
   //var assetId = setup
   // var JSString = java.import("java.lang.String");
   var result = posAppletInstance.registerDeviceSync(environment, data.assetId, data.password);
-   logger.info("activation call",result.getSuccessSync());
+  logger.info("activation call", result.getSuccessSync());
   event.sender.send('activationCallResult', result.getSuccessSync());
 })
 
@@ -220,20 +220,20 @@ ipcMain.on('activationcall', (event, environment, data) => {
 ipcMain.on('verifycall', (event, data, environment) => {
   // var assetId = data.assetId
   logger.info("verify call  Data", posAppletInstance)
-  var result = posAppletInstance.validateRegisterDeviceSync(environment,data.assetId, data.setupCode);
+  var result = posAppletInstance.validateRegisterDeviceSync(environment, data.assetId, data.setupCode);
   event.sender.send('verifyCallResult', result.getMessageSync());
 })
 
 ipcMain.on('switchlogincall', (event) => {
   var result = posAppletInstance.getTerminalConfigJSONSync();
-  logger.info("terminalConfig"+result);
+  logger.info("terminalConfig" + result);
   event.sender.send('switchLoginCallResult', result);
 })
 
 
 ipcMain.on('terminalConfigcall', (event) => {
   var result = posAppletInstance.getTerminalConfigJSONSync();
-  logger.info("terminalConfig"+result);
+  logger.info("terminalConfig" + result);
   event.sender.send('terminalConfigResult', result);
 })
 
@@ -242,7 +242,7 @@ ipcMain.on('logincall', (event, login) => {
   var password = login.password.toString()
   var result = posAppletInstance.authenticateSync(userName, password);
 
-    event.sender.send('loginCallResult', result.getValueSync());
+  event.sender.send('loginCallResult', result.getValueSync());
 })
 
 ipcMain.on('catalogJson', (event, catalog) => {
@@ -274,7 +274,7 @@ ipcMain.on('getCardPID', (event, cardname) => {
   try {
     var resultCardPid = posAppletInstance.getCardPIDSync();
   } catch (error) {
-    logger.info('show thw error here',error);
+    logger.info('show thw error here', error);
   }
   logger.info("main.js : getCardPID", '' + resultCardPid)
   event.sender.send('getCardPIDResult', resultCardPid.getValueSync());
@@ -335,11 +335,13 @@ ipcMain.on('comp', (event, catalog) => {
 /** ADMIN METHODS STARTS HERE*/
 
 ipcMain.on('adminSales', (event, shiftType, startTime, endTime) => {
-    // var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
-    // var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
-    logger.info('sales call', shiftType, startTime.toString(), endTime.toString())
-    var result = posAppletInstance.getSalesreportSync(shiftType, startTime.toString(), endTime.toString());
-    logger.info("salesResult", '' + result)
+  // var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
+  // var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
+  //  logger.info('sales call', shiftType, startTime.toString(), endTime.toString())
+  var S = java.newLong(Number(startTime / 1000));
+  var E = java.newLong(Number(endTime / 1000));
+  var result = posAppletInstance.getSalesreportSync(shiftType, S, E);
+  logger.info("salesResult", '' + result)
 
   event.sender.send('adminSalesResult', result);
 })
@@ -368,19 +370,19 @@ ipcMain.on('adminSync', (event, catalog) => {
 })
 
 ipcMain.on('adminDeviceConfig', (event, catalog) => {
-    logger.info("deviceConfig  Data", posAppletInstance)
-    var result = posAppletInstance.getDeviceInfoJSONSync();
-    logger.info("deviceConfig", '' + result)
+  logger.info("deviceConfig  Data", posAppletInstance)
+  var result = posAppletInstance.getDeviceInfoJSONSync();
+  logger.info("deviceConfig", '' + result)
 
-    event.sender.send('adminDeviceConfigResult', result);
+  event.sender.send('adminDeviceConfigResult', result);
 })
 
 ipcMain.on('adminTerminalConfig', (event, catalog) => {
-    logger.info("adminTerminalConfig  Data", posAppletInstance)
-    var result = posAppletInstance.getTerminalConfigJSONSync();
-    logger.info("adminTerminalConfig", '' + result)
+  logger.info("adminTerminalConfig  Data", posAppletInstance)
+  var result = posAppletInstance.getTerminalConfigJSONSync();
+  logger.info("adminTerminalConfig", '' + result)
 
-    event.sender.send('adminTerminalConfigResult', result);
+  event.sender.send('adminTerminalConfigResult', result);
 })
 
 ipcMain.on('adminShiftSaleSummary', (event, catalog) => {

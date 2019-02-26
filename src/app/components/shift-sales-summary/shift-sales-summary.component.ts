@@ -23,6 +23,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         localStorage.setItem("allSales", data)
+        this.salesData = JSON.parse(data);
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -49,14 +50,15 @@ export class ShiftSalesSummaryComponent implements OnInit {
     // }
     // this.sales.push(all)
 
-    this.cdtaservice.getsalesJson().subscribe(data => {
-      if (data != '') {
-        console.log("sales json", data)
-        this.salesData = data
-      }
+    // this.cdtaservice.getsalesJson().subscribe(data => {
+    //   if (data != '') {
+    //     console.log("sales json", data)
+    //     this.salesData = data
+    //   }
 
-    });
-
+    // });
+    this.salesData = JSON.parse(localStorage.getItem("allSales"));
+    
     this.cdtaservice.getsalesPaymentJson().subscribe(data => {
       if (data != '') {
         console.log("sales json", data)
