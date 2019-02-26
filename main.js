@@ -16,6 +16,10 @@ fs.copyFile(app.getAppPath()+'/logging.properties', reqPath+'/logging.properties
 
 fs.copySync(app.getAppPath()+'/app.properties', reqPath+'app.properties');
 
+// var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
+// logger.info("Java Class Path "+ app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json');
+// fs.writeJson(app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json',getLocalJavaPath);
+
 var java = javaInit.getJavaInstance();
 logger.info("classpath", java.classpath)
 var JPOSApplet = java.import("com.genfare.pos.applet.POSApplet");
@@ -29,7 +33,7 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1000, height: 800, webPreferences: {
+    width: 1300, height: 1000, webPreferences: {
       webSecurity: false
     }
   });
