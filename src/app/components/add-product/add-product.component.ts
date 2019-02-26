@@ -113,10 +113,12 @@ export class AddProductComponent implements OnInit {
               isDuplicateCard = true;
             }
           });
-          if (isDuplicateCard)
-            $("#newCardValidationModal").modal('show');
-          else
+          if (isDuplicateCard){
+            // $("#newCardValidationModal").modal('show');
+          }
+          else{
             this.cardJson.push(JSON.parse(data));
+          }
         });
       }
       this.electronService.ipcRenderer.removeAllListeners("readCardResult");
