@@ -95,6 +95,7 @@ export class ReadcardComponent implements OnInit {
     public show: Boolean = false;
     public x: any = 0;
     public offeringSList: any = [];
+    public isShowCardOptions:Boolean = true;
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
             // alert(this.x++);
@@ -123,10 +124,10 @@ export class ReadcardComponent implements OnInit {
                     this.carddata = new Array(JSON.parse(data));
                     //  this.carddataProducts = this.carddata.products;
                     console.log('this.carddata', this.carddata);
-
+                    this.getProductCatalogJSON();
                 });
             }
-            this.electronService.ipcRenderer.removeAllListeners("readcardResult");
+            // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
 
         this.electronService.ipcRenderer.on('saveOfferingResult', (event, data) => {
@@ -176,6 +177,8 @@ export class ReadcardComponent implements OnInit {
         });
 
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
+            if(this.carddata[0] == undefined || this.carddata[0] == '' )
+                return;
             if (data != undefined && data != "") {
                 this.readCardData = [];
                 // this.show = true;
@@ -244,6 +247,7 @@ export class ReadcardComponent implements OnInit {
     /* JAVA SERVICE CALL */
 
     readCard(event) {
+        this.isShowCardOptions = false;
         isExistingCard = true;
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
@@ -251,6 +255,7 @@ export class ReadcardComponent implements OnInit {
     }
 
     newFareCard(event) {
+        this.isShowCardOptions = false;
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
@@ -305,7 +310,8 @@ export class ReadcardComponent implements OnInit {
     }
 
     Back() {
-        this.carddata.length = 0;
+        this.isShowCardOptions = true;
+        // this.carddata.length = 0;
     }
 
 
