@@ -82,24 +82,32 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, isSyncDone) => {
       this._ngZone.run(() => {
         this.numOfAttempts++;
-        if(isSyncDone == false){
-          if(this.numOfAttempts<1000){
+        if (isSyncDone == false) {
+          if (this.numOfAttempts < 10000) {
             this.electronService.ipcRenderer.send('isSyncCompleted')
           }
-          
-          else{
-            $("#errorSyncModal").modal("show")
+          else {
             $("#continueSyncModal").modal("hide")
+            $("#errorSyncModal").modal("show")
+          
           }
 
-        }else if(isSyncDone){
+        } else if (isSyncDone) {
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
+          if (this.deviceInfoNew == true) {
+            this.electronService.ipcRenderer.send('adminDeviceConfig')
+            var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
+            UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+            UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+            localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
+            $("#successSyncModal").modal("show")
+          }
         }
         //alert(isSyncDone)
         // if (isSyncDone == false ) {
         //   alert("inside if")
-       // console.log("isSyncDone", isSyncDone)
+        // console.log("isSyncDone", isSyncDone)
         // var intervalSyc = setInterval(() => {
         //   if (isSyncDone == false && this.numOfAttempts < this.maxLoopingCount) {
         //     this.numOfAttempts += 1
@@ -111,7 +119,7 @@ export class AdminComponent implements OnInit {
         //     //  alert("inside sync")
         //      this.maxLoopingCount = 0;
         //       clearInterval(intervalSyc);
-            
+
 
         //     $("#continueSyncModal").modal("hide")
         //     if (isSyncDone) {
