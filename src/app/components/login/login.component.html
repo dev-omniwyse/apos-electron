@@ -21,8 +21,12 @@
                 <div class="alert alert-danger " *ngIf=errorMsg>
                     <strong>Huh</strong> Please Enter valid Details
                 </div>
-
+                
                 <input type="text" placeholder="User Name" [(ngModel)]="username" />
+                <ngx-loading [show]="loading" [config]="{
+                primaryColour: '#006ddd', 
+                secondaryColour: '#ccc', 
+                tertiaryColour: '#006ddd' }"></ngx-loading>
                 <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
                 <button class="mt20" (click)="Login()">Login</button>
             </div>

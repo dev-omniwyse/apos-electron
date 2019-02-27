@@ -163,7 +163,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#continueSyncModal">Yes,continue</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)="syncData();">Yes,continue</button>
                             </div>
                         </div>
                     </div>
@@ -177,6 +177,44 @@
 
                             <div class="modal-body">
                                 <p>Syncing with CDS</p>
+                                <ngx-loading [show]="loading" [config]="{
+                                    primaryColour: '#006ddd', 
+                                    secondaryColour: '#ccc', 
+                                    tertiaryColour: '#006ddd' }"></ngx-loading>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="successSyncModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Sync Success</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Sync successfully Completed</p>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="errorSyncModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Sync Error</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>An error occurred during sync</p>
+                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -199,7 +237,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">No,Close Window</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Yes,Start Sales</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes,Start Sales</button>
                             </div>
                         </div>
                     </div>

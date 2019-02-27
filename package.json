@@ -55,11 +55,13 @@
     "java": "^0.11.0",
     "jquery": "^3.3.1",
     "ngx-electron": "^2.1.1",
+    "ngx-loading": "^3.0.1",
     "node-gyp": "^3.8.0",
     "pcsclite": "^0.6.0",
     "popper.js": "^1.14.6",
     "rebuild": "^0.1.2",
     "rxjs": "~6.3.3",
+    "timers": "^0.1.1",
     "tslib": "^1.9.0",
     "webcamjs": "^1.0.25",
     "zone.js": "~0.8.26"

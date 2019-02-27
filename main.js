@@ -341,6 +341,14 @@ ipcMain.on('adminSales', (event, shiftType, startTime, endTime) => {
 
   event.sender.send('adminSalesResult', result);
 })
+ipcMain.on('adminSalesPaymentMethod', (event, userID,shiftType, startTime, endTime, nul1, nul2, nul3) => {
+  var S = java.newLong(Number(startTime / 1000));
+  var E = java.newLong(Number(endTime / 1000));
+  var result = posAppletInstance.getTotalPaymentReportSync(false,shiftType, S, E, 0,0, 0);
+  logger.info("adminSalesPaymentMethod", '' + result)
+
+  event.sender.send('adminSalesPaymentResult', result);
+})
 
 ipcMain.on('adminCloseShift', (event, catalog) => {
   logger.info("comp  Data", posAppletInstance)
@@ -359,10 +367,17 @@ ipcMain.on('adminOpenShift', (event, catalog) => {
 })
 ipcMain.on('adminSync', (event, catalog) => {
   logger.info("comp  Data", posAppletInstance)
-  var result = posAppletInstance.getProductCatalogJSONSync();
-  logger.info("compResult", '' + result)
+  var result = posAppletInstance.triggerSyncSync();
+  logger.info("adminSync Result", '' + result.getSuccessSync())
 
-  event.sender.send('adminSyncResult', result);
+  event.sender.send('adminSyncResult', result.getSuccessSync());
+})
+
+ipcMain.on('isSyncCompleted', (event, catalog) => {
+  logger.info("comp  Data", posAppletInstance)
+  var result = posAppletInstance.isSyncCompleteSync();
+  logger.info("isSync Completed Result", '' + result)
+  event.sender.send('isSyncCompletedResult', result);
 })
 
 ipcMain.on('adminDeviceConfig', (event, catalog) => {

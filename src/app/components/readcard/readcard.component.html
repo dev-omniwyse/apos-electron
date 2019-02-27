@@ -8,22 +8,22 @@
 			</div>
 		</div>
 	</div> -->
-    <div class="content-container container-padding">
-        <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
-        <div class="clearfix"></div>
-        <h1>Card | Account</h1>
-    </div>
+	<div class="content-container container-padding">
+		<div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
+		<div class="clearfix"></div>
+		<h1>Card | Account</h1>
+	</div>
 
-    <div class="flex container-padding flex-column">
-        <button class="card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
+	<div class="flex container-padding flex-column">
+		<button class="card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-        <button class="card-btn" [disabled]="disableCards" (click)="readCard($event); getProductCatalogJSON()">
+		<button class="card-btn" [disabled]="disableCards" (click)="readCard($event); getProductCatalogJSON()">
 			Existing Fare Card
-			<img src="assets/images/arrow-pointing-to-right.svg" /> 
+			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-        <button class="card-btn" [disabled]="disableCards" [routerLink]="['/carddata']">
+		<button class="card-btn" [disabled]="disableCards" [routerLink]="['/carddata']">
 			Non-Fare Product
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
@@ -33,32 +33,36 @@
 		</button> -->
 		<!-- (click)="readCard($event); getProductCatalogJSON()" -->
 	</div>
-		<!--modal-->
-		<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
+	<!--modal-->
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
 				<div class="modal-header">
 					<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
 					<h4 class="modal-title">Select Media Type</h4>
 				</div>
-				
+
 				<div class="modal-body">
 					<div class="flex flex-wrap flex-right-items">
 						<div>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img src="assets/images/arrow-pointing-to-right.svg" /></button>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)" data-dismiss="modal">Magnetic Card <img src="assets/images/arrow-pointing-to-right.svg" /></button>
+							<button class="cardBtn" (click)="getProductCatalogJSON(); newFareCard($event)"
+								data-dismiss="modal">Smart Card/LUCC<img
+									src="assets/images/arrow-pointing-to-right.svg" /></button>
+							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)"
+								data-dismiss="modal">Magnetic Card <img
+									src="assets/images/arrow-pointing-to-right.svg" /></button>
 						</div>
 					</div>
-				
+
 				</div>
 				<!-- <div class="modal-footer">
 					<button type="button" class="btn btn-default"  data-dismiss="modal">Ok</button>
 				</div> -->
-				</div>
 			</div>
-			</div>
+		</div>
+	</div>
 	<div class="flex container-padding flex-row admin-btn pull-left">
-		<button class="card-btn-orange" [routerLink]="['/admin']">
+		<button class="card-btn-orange" (click)="hideModalPop(); adminDeviceConfig();" [routerLink]="['/admin']">
 			Admin
 			<img src="assets/images/user.svg" />
 		</button>
@@ -101,9 +105,11 @@
 		</div>
 
 		<div class="flex-devide text-right">
-			<button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print Summary</button>
+			<button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print
+				Summary</button>
 
-			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square"></i> Add New
+			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square"></i> Add
+				New
 				Product to Card</button>
 		</div>
 	</div>
@@ -144,7 +150,8 @@
 
 		<div class="flex">
 			<div class="flex-devide">
-				<button class="back-btn doNotPrint" (click)="Back();"><i class="fal fa-long-arrow-left"></i> Back</button>
+				<button class="back-btn doNotPrint" (click)="Back();"><i class="fal fa-long-arrow-left"></i>
+					Back</button>
 			</div>
 		</div>
 
@@ -153,18 +160,19 @@
 
 <div class="modal fade" id="newCardValidateModal" role="dialog">
 	<div class="modal-dialog modal-sm">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-		  <h4 class="modal-title">Error</h4>
-		</div>
+		<div class="modal-content">
+			<div class="modal-header">
+				<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+				<h4 class="modal-title">Error</h4>
+			</div>
 
-            <div class="modal-body">
-                <p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-            </div>
-        </div>
-    </div>
+			<div class="modal-body">
+				<p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+			</div>
+		</div>
+	</div>
 </div>

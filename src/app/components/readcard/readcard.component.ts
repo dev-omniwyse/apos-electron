@@ -135,7 +135,14 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-
+        this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
+            if (data != undefined && data != "") {
+              localStorage.setItem("deviceConfigData", data);
+              this._ngZone.run(() => {
+                // this.router.navigate(['/addproduct'])
+              });
+            }
+          });
 
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
             if (data != undefined && data != "") {
@@ -272,6 +279,10 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('catalogJson', cardName)
     }
 
+    adminDeviceConfig() {
+        this.electronService.ipcRenderer.send('adminDeviceConfig')
+        //console.log('read call', cardName)
+      }
     setOffering() {
         this.offeringSList = [];
         this.catalogData.forEach(element => {
@@ -308,7 +319,19 @@ export class ReadcardComponent implements OnInit {
         this.carddata.length = 0;
     }
 
-
+    hideModalPop() {
+        let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+        let userId = localStorage.getItem("userID")
+    
+        shiftReports.forEach(element => {
+          if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
+            localStorage.setItem("hideModalPopup", "true")
+          } else {
+            localStorage.setItem("hideModalPopup", "false")
+          }
+        })
+    
+      }
 
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");

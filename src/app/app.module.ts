@@ -24,6 +24,7 @@ import {DeviceconfComponent} from './components/deviceconf/deviceconf.component'
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component'
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
+import { NgxLoadingModule } from 'ngx-loading'
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,7 +54,8 @@ import { AddMagneticProductComponent } from './components/add-magnetic-product/a
     HttpClientModule,
     NgxElectronModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxLoadingModule.forRoot({})
   ],
   providers: [CdtaService],
   bootstrap: [AppComponent]

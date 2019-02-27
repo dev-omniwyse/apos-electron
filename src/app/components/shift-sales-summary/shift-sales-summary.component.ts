@@ -14,7 +14,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
   sales = []
   selectedValue: any
   salesData: any
-  salesPaymentData : any
+  salesPaymentData: any
 
   constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
@@ -22,14 +22,27 @@ export class ShiftSalesSummaryComponent implements OnInit {
       console.log("sales data", data)
       if (data != undefined && data != "") {
         //this.show = true;
-        localStorage.setItem("allSales", data)
+        // localStorage.setItem("allSales", data)
         this.salesData = JSON.parse(data);
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
       }
     });
+
+    this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
+      console.log("sales data", data)
+      if (data != undefined && data != "") {
+        //this.show = true;
+        // localStorage.setItem("paymentTypes", data)
+        this.salesPaymentData = JSON.parse(data);
+        this._ngZone.run(() => {
+          // this.router.navigate(['/addproduct'])
+        });
+      }
+    });
   }
+
 
   ngOnInit() {
 
@@ -58,14 +71,14 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
     // });
     this.salesData = JSON.parse(localStorage.getItem("allSales"));
-    
-    this.cdtaservice.getsalesPaymentJson().subscribe(data => {
-      if (data != '') {
-        console.log("sales json", data)
-        this.salesPaymentData = data
-      }
+    this.salesPaymentData = JSON.parse(localStorage.getItem("paymentTypes"))
+    // this.cdtaservice.getsalesPaymentJson().subscribe(data => {
+    //   if (data != '') {
+    //     console.log("sales json", data)
+    //     this.salesPaymentData = data
+    //   }
 
-    });
+    // });
   }
 
   hidePopUp() {
@@ -86,6 +99,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
     console.log("selectedValue:", this.selectedValue)
     // console.log("saleSummary", JSON.parse(saleSummary))
     this.electronService.ipcRenderer.send('adminSales', Number(this.selectedValue.shiftType), this.selectedValue.initialOpeningTime, this.selectedValue.timeClosed)
+    this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(this.selectedValue.userID), Number(this.selectedValue.shiftType), this.selectedValue.initialOpeningTime, this.selectedValue.timeClosed, null, null, null)
   }
 
 }

@@ -11,7 +11,8 @@ import { ElectronService } from 'ngx-electron';
 })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
-    loading = false;
+    public loading :Boolean = false;
+    //loading = false;
     submitted = false;
     returnUrl: string;
     username: string;
@@ -23,11 +24,11 @@ export class LoginComponent implements OnInit {
     shiftState: any
     statusOfShiftReport: string = ""
     hideAndShowLogout: Boolean = false
-    lockedByUser : string =""
-    ownedByUser : string = ""
+    lockedByUser: string = ""
+    ownedByUser: string = ""
     shiftReport: any = [
         {
-            userEmail:"",
+            userEmail: "",
             userID: "",
             shiftID: "0",
             shiftType: "",
@@ -66,19 +67,12 @@ export class LoginComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
-
-            //    if(localStorage.getItem("hideAndShowLogout") == "false" || this.hideAndShowLogout == false){
-            //     this.hideAndShowLogout = true
-            //     localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
-            //    } 
-
+                this.loading = false
                 this.userdata = JSON.parse(data)
                 localStorage.setItem("userID", this.userdata.personId)
                 localStorage.setItem("userEmail", this.userdata.username)
-                // let previousOpenShif = localStorage.getItem("openShift")
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
-                //shiftStore = shiftStore.filter(element => element.userID != this.userdata.personId)
-                var shiftIndex:any = 0;
+                var shiftIndex: any = 0;
                 shiftStore.forEach(element => {
                     console.log(element);
                     if (element.shiftState == "3" && element.userID == "") {
@@ -109,23 +103,23 @@ export class LoginComponent implements OnInit {
 
                     }
 
-                    
+
                 });
-                if(shiftIndex == shiftStore.length){
+                if (shiftIndex == shiftStore.length) {
                     let newShiftReport = {
-                                userEmail: this.userdata.username,
-                                userID: this.userdata.personId,
-                                shiftID: "0",
-                                shiftType: "1",
-                                shiftState: "3",
-                                openingDrawer: "0.00",
-                                closingDrawer: "0.00",
-                                initialOpeningTime: 0,
-                                timeOpened: 0,
-                                timeClosed: 0,
-                                userThatClosedShift: ""
-                            }
-                            shiftStore.push(newShiftReport)
+                        userEmail: this.userdata.username,
+                        userID: this.userdata.personId,
+                        shiftID: "0",
+                        shiftType: "1",
+                        shiftState: "3",
+                        openingDrawer: "0.00",
+                        closingDrawer: "0.00",
+                        initialOpeningTime: 0,
+                        timeOpened: 0,
+                        timeClosed: 0,
+                        userThatClosedShift: ""
+                    }
+                    shiftStore.push(newShiftReport)
                 }
                 localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
                 // if (previousOpenShif == "false") {
@@ -138,8 +132,10 @@ export class LoginComponent implements OnInit {
                     // console.log('this.carddata', this.carddata);
                     this.router.navigate(['/readcard'])
                 });
-            }else{
+            } else {
+                this.loading = false
                 this.errorMsg = true
+
             }
         });
     }
@@ -169,11 +165,11 @@ export class LoginComponent implements OnInit {
                     }
                     else if (element.shiftState == "4" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Paused"
-                        this.ownedByUser =  localStorage.getItem("userEmail")
+                        this.ownedByUser = localStorage.getItem("userEmail")
 
                     } else if (element.shiftState == "0" && element.shiftType == "0" && element.userEmail != "") {
-                       // this.statusOfShiftReport = "Main Shift is Paused"
-                        this.lockedByUser =  localStorage.getItem("userEmail")
+                        // this.statusOfShiftReport = "Main Shift is Paused"
+                        this.lockedByUser = localStorage.getItem("userEmail")
 
                     }
             })
@@ -239,6 +235,7 @@ export class LoginComponent implements OnInit {
             username: this.username,
             password: this.password
         }
+        this.loading = true;
         this.electronService.ipcRenderer.send('logincall', user)
 
 
