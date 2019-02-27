@@ -275,7 +275,14 @@ export class AddProductComponent implements OnInit {
     this.cdtaService.getJSON().subscribe(data => {
       var i = 0;
       this.productJson.forEach(element => {
-        if (null != element.Ticket && undefined != element.Ticket && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "2" && (element.Ticket.TicketType.TicketTypeId == 2 && !element.IsMerchandise)) {
+        var isSmartCard = false;
+        if(element.Ticket != undefined && element.Ticket.WalletType != undefined){
+          element.Ticket.WalletType.forEach(walletElement => {
+            if(walletElement.WalletTypeId == 3)
+              isSmartCard = true;
+          });
+        }
+        if (null != element.Ticket && undefined != element.Ticket && isSmartCard && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "2" && (element.Ticket.TicketType.TicketTypeId == 2 && !element.IsMerchandise)) {
           this.merchantise.push(element);
           i++;
         }
@@ -285,11 +292,16 @@ export class AddProductComponent implements OnInit {
   frequentRide() {
     this.selectedProductCategoryIndex = 0;
     this.merchantise = [];
-    var i = 0;
     this.productJson.forEach(element => {
-      if (null != element.Ticket && undefined != element.Ticket && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise) && i < 10) {
+      var isSmartCard = false;
+      if(element.Ticket != undefined && element.Ticket.WalletType != undefined){
+        element.Ticket.WalletType.forEach(walletElement => {
+          if(walletElement.WalletTypeId == 3)
+            isSmartCard = true;
+        });
+      }
+      if (null != element.Ticket && undefined != element.Ticket && isSmartCard && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
         this.merchantise.push(element);
-        i++;
       }
     });
 
@@ -297,11 +309,16 @@ export class AddProductComponent implements OnInit {
   payValue() {
     this.selectedProductCategoryIndex = 2;
     this.merchantise = [];
-    var i = 0;
     this.productJson.forEach(element => {
-      if (null != element.Ticket && undefined != element.Ticket && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "3" && (element.Ticket.TicketType.TicketTypeId == 1 && !element.IsMerchandise) && i < 10) {
+      var isSmartCard = false;
+      if(element.Ticket != undefined && element.Ticket.WalletType != undefined){
+        element.Ticket.WalletType.forEach(walletElement => {
+          if(walletElement.WalletTypeId == 3)
+            isSmartCard = true;
+        });
+      }
+      if (null != element.Ticket && undefined != element.Ticket && isSmartCard && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "3" && (element.Ticket.TicketType.TicketTypeId == 1 && !element.IsMerchandise)) {
         this.merchantise.push(element);
-        i++;
       }
     });
   }
@@ -322,12 +339,10 @@ export class AddProductComponent implements OnInit {
     console.log('clicked on Magnetic')
     // this.nonFare = false;
     // this.regularRoute = true;
-    let i = 0;
     this.merchantise = [];
-    this.productJson.forEach(element => {
-      if (null != element.Ticket && undefined != element.Ticket && i < 10) {
+    this.productJson.forEach(element => { // hardcoded to 10 later need to put in constants file
+      if (undefined != element.Ticket && undefined != element.Ticket.WalletType && 10 == element.Ticket.WalletType[0].WalletTypeId) {
         this.merchantise.push(element);
-        i++;
       }
       console.log(this.merchantise)
 

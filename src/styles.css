@@ -180,6 +180,10 @@ body {
     margin: 10px auto;
 }
 
+.card-btn :disabled {
+    background-color: rgba(212, 212, 207, 0.8);
+}
+
 .card-btn img {
     position: absolute;
     width: 25px;
@@ -467,4 +471,7 @@ body {
     background-color: transparent!important;
     padding: 5px 20px;
     margin: 0;
+}
+.noclick {
+    pointer-events: none;
 }
