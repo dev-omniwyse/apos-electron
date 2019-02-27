@@ -1,4 +1,4 @@
-<div class="main-container doNotPrint" *ngIf="carddata.length == 0">
+<div class="main-container doNotPrint" *ngIf="isShowCardOptions">
 	<!-- <div class="header flex">
 		<div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
 		<div class="header-info pull-right">
@@ -19,7 +19,7 @@
 			New Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" [disabled]="disableCards" (click)="readCard($event); getProductCatalogJSON()">
+        <button class="card-btn" [disabled]="disableCards" (click)="readCard($event);">
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
@@ -45,12 +45,8 @@
 				<div class="modal-body">
 					<div class="flex flex-wrap flex-right-items">
 						<div>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); newFareCard($event)"
-								data-dismiss="modal">Smart Card/LUCC<img
-									src="assets/images/arrow-pointing-to-right.svg" /></button>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)"
-								data-dismiss="modal">Magnetic Card <img
-									src="assets/images/arrow-pointing-to-right.svg" /></button>
+							<button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img src="assets/images/arrow-pointing-to-right.svg" /></button>
+							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)" data-dismiss="modal">Magnetic Card <img src="assets/images/arrow-pointing-to-right.svg" /></button>
 						</div>
 					</div>
 
@@ -75,7 +71,7 @@
 
 
 
-<div class="main-container" *ngIf="carddata.length > 0">
+<div class="main-container" *ngIf="!isShowCardOptions">
 	<!-- <div class="header flex">
 		<div class="header-logo pull-left doNotPrint"><img src="assets/images/logo.jpg" /></div>
 		<div class="header-info pull-right doNotPrint">

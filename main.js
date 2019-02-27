@@ -16,6 +16,10 @@ fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.proper
 
 fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
 
+// var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
+// logger.info("Java Class Path "+ app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json');
+// fs.writeJson(app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json',getLocalJavaPath);
+
 var java = javaInit.getJavaInstance();
 logger.info("classpath", java.classpath)
 var JPOSApplet = java.import("com.genfare.pos.applet.POSApplet");
@@ -29,7 +33,7 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1000, height: 800, webPreferences: {
+    width: 1300, height: 1000, webPreferences: {
       webSecurity: false
     }
   });
@@ -50,7 +54,7 @@ function createWindow() {
   // win.webContents.openDevTools();
 
   // The following is optional and will open the DevTools:
-  win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
   win.on("closed", () => {
     win = null;
@@ -264,6 +268,13 @@ ipcMain.on('savaTransaction', (event, TransData) => {
   event.sender.send('saveTransactionResult', result);
 })
 
+
+ipcMain.on('savaTransactionForMagneticMerchandise', (event, TransData) => {
+  logger.info("savaTransaction  Data", posAppletInstance)
+  var result = posAppletInstance.saveTransactionSync(JSON.stringify(TransData));
+  logger.info("savaTransaction data", '' + result)
+  event.sender.send('saveTransactionForMagneticMerchandiseResult', result);
+})
 
 ipcMain.on('getCardPID', (event, cardname) => {
   // var result = posAppletInstance.setEncoderSync(cardname);
