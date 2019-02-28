@@ -28,6 +28,11 @@ var jsObject = java.import("netscape.javascript.JSObject");
 var myjsObject = null;
 var result = posAppletInstance.runInitializationSync();
 logger.info(result);
+const electron = require('electron');
+const dialog = electron.dialog;
+dialog.showErrorBox = function (title, content) {
+  // console.log('${title}\n${content}');
+};
 
 let win;
 
@@ -54,7 +59,7 @@ function createWindow() {
   // win.webContents.openDevTools();
 
   // The following is optional and will open the DevTools:
-    win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   win.on("closed", () => {
     win = null;
@@ -80,65 +85,88 @@ app.on("activate", () => {
 
 });
 
+
+ipcMain.removeAllListeners("ELECTRON_BROWSER_WINDOW_ALERT")
+ipcMain.on("ELECTRON_BROWSER_WINDOW_ALERT", (event, message, title) => {
+  console.warn('[Alert] ** ${title} ** ${message}')
+  event.returnValue = 0 // **IMPORTANT!**
+})
+
 /*
  * Read SmartCard Functionality Start Here
   */
 
 ipcMain.on('readSmartcard', (event, cardname) => {
-  // var cardName = cardname
-  // logger.info("cardName", cardName)
-  // var cardConfig = {
-  //   "agency_id": 194,
-  //   "end_of_transit_day_desfire": null,
-  //   "priorities_and_configuration_type": 1,
-  //   "printed_id_file_version": 2,
-  //   "card_properties_file_version": 0,
-  //   "transfer_file_version": 1,
-  //   "product_list_file_version": 0,
-  //   "product_file_version": 3,
-  //   "journal_file_version": 1,
-  //   "equipment_id": 0,
-  //   "first_product_must_be_stored_value": true,
-  //   "number_of_products": 4,
-  //   "number_of_transfers": 1,
-  //   "number_of_bonus_passes": 1,
-  //   "number_of_pay_as_you_go_passes": 1,
-  //   "max_stored_value": 20000,
-  //   "max_pending_passes": 3,
-  //   "agency_timezone_offset": -21600000,
-  //   "accountFlag": false
-  // }
-
-
-  // logger.info("before java call  Data", posAppletInstance)
-
-  var result = posAppletInstance.setEncoderSync(cardname);
-
-  // logger.info("setEncoder Data", '' + result)
   try {
-    // var resultObject = java.newInstance("com.genfare.pos.applet.POSApplet.ResultObject");
-
-    var resultObject = posAppletInstance.readCardSync();
-    logger.info('main.js: resultObject', resultObject);
+    var result = posAppletInstance.setEncoderSync(cardname);
   } catch (error) {
-    logger.info(error);
+    logger.info("error " + error);
+    event.sender.send('encoder', error);
   }
-
-  event.sender.send('readcardResult', resultObject.getValueSync());
+  if (result.getSuccessSync()) {
+    // readSmartCardOnSetEncoder();
+    try {
+      var result = posAppletInstance.readCardSync();
+    }
+    catch (error) {
+      logger.info("error " + error);
+      event.sender.send('readcardError', error);
+    }
+    if (result.getSuccessSync()) {
+      event.sender.send('readcardResult', result.getValueSync());
+    }
+    else {
+      event.sender.send('readcardError', result.getMessageSync());
+    }
+  }
+  else {
+    event.sender.send('encoderError', result.getMessageSync());
+  }
 })
 
+// function readSmartCardOnSetEncoder(){
+//   try{
+//     var result = posAppletInstance.readCardSync();
+//   }
+//   catch (error) {
+//     logger.info("error " + error);
+//     event.sender.send('readcardError', error);
+//   }
+//  if(result.getSuccessSync()){
+//    event.sender.send('readcardResult', result.getValueSync());
+//  }
+//  else{
+//   event.sender.send('readcardError', result.getMessageSync());
+//  }
+// }
 
+// need to use readcard instead of newfarecard by passing isNew Variable
 ipcMain.on('newfarecard', (event, cardname) => {
-  logger.info("before java call  Data", posAppletInstance)
-  var result = posAppletInstance.setEncoderSync(cardname);
   try {
-    var smartread = posAppletInstance.readCardSync();
-    logger.info("smartcard", smartread)
+    var result = posAppletInstance.setEncoderSync(cardname);
   } catch (error) {
-    logger.info(error);
+    logger.info("error " + error);
+    event.sender.send('encoder', error);
   }
-
-  event.sender.send('newfarecardResult', smartread.getValueSync());
+  if (result.getSuccessSync()) {
+    // readSmartCardOnSetEncoder();
+    try {
+      var result = posAppletInstance.readCardSync();
+    }
+    catch (error) {
+      logger.info("error " + error);
+      event.sender.send('readcardError', error);
+    }
+    if (result.getSuccessSync()) {
+      event.sender.send('newfarecardResult', result.getValueSync());
+    }
+    else {
+      event.sender.send('readcardError', result.getMessageSync());
+    }
+  }
+  else {
+    event.sender.send('encoderError', result.getMessageSync());
+  }
 })
 
 ipcMain.on('magneticcard', (event, cardname) => {
@@ -352,10 +380,10 @@ ipcMain.on('adminSales', (event, shiftType, startTime, endTime) => {
 
   event.sender.send('adminSalesResult', result);
 })
-ipcMain.on('adminSalesPaymentMethod', (event, userID,shiftType, startTime, endTime, nul1, nul2, nul3) => {
+ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3) => {
   var S = java.newLong(Number(startTime / 1000));
   var E = java.newLong(Number(endTime / 1000));
-  var result = posAppletInstance.getTotalPaymentReportSync(false,shiftType, S, E, 0,0, 0);
+  var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
   logger.info("adminSalesPaymentMethod", '' + result)
 
   event.sender.send('adminSalesPaymentResult', result);

@@ -95,14 +95,14 @@ export class AdminComponent implements OnInit {
         } else if (isSyncDone) {
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
-          if (this.deviceInfoNew == true) {
-            this.electronService.ipcRenderer.send('adminDeviceConfig')
-            var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
-            UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
-            UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
-            localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
-            $("#successSyncModal").modal("show")
-          }
+          // if (this.deviceInfoNew == true) {
+          //   this.electronService.ipcRenderer.send('adminDeviceConfig')
+          //   var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
+          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+          //   localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
+          //   $("#successSyncModal").modal("show")
+          // }
         }
         //alert(isSyncDone)
         // if (isSyncDone == false ) {

@@ -13,7 +13,7 @@ declare var fs: any;
 declare var electron: any;
 declare var pcsc: any;
 var pcs = pcsc();
-var cardName: any = 0;
+var cardName: any = "";
 var isExistingCard = false;
 pcs.on('reader', function (reader) {
     console.log('reader', reader);
@@ -85,7 +85,8 @@ export class ReadcardComponent implements OnInit {
     event = "20+20";
     value: any;
     statusOfShiftReport: string = ""
-    disableCards: Boolean = false
+    disableCards: Boolean = false;
+    public errorMessage: String = "Cannot find encoder:";
     public logger;
     public singleImage: any
     public carddata: any = [];
@@ -98,14 +99,6 @@ export class ReadcardComponent implements OnInit {
     public isShowCardOptions: Boolean = true;
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
-            // alert(this.x++);
-            // var x:any = localStorage.getItem('loginCount')
-            //     if(x == null)
-            //         x = 1;
-            //     else{
-            //         x++
-            //     }
-            //     localStorage.setItem('loginCount', x)
         });
         if (this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
@@ -117,6 +110,7 @@ export class ReadcardComponent implements OnInit {
             console.log("data", data)
             if (data != undefined && data != "") {
                 this.show = true;
+                this.isShowCardOptions = false;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
@@ -130,6 +124,21 @@ export class ReadcardComponent implements OnInit {
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
 
+        //readcardError
+
+
+        this.electronService.ipcRenderer.on('encoderError', (event, data) => {
+            this.errorMessage = data;
+            this.showErrorMessages();
+        });
+
+
+        this.electronService.ipcRenderer.on('readcardError', (event, data) => {
+            this.errorMessage = data;
+            this.showErrorMessages();
+        });
+
+
         this.electronService.ipcRenderer.on('saveOfferingResult', (event, data) => {
             if (data != undefined && data != "") {
                 console.log('Offerings Success');
@@ -138,12 +147,12 @@ export class ReadcardComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
             if (data != undefined && data != "") {
-              localStorage.setItem("deviceConfigData", data);
-              this._ngZone.run(() => {
-                // this.router.navigate(['/addproduct'])
-              });
+                localStorage.setItem("deviceConfigData", data);
+                this._ngZone.run(() => {
+                    // this.router.navigate(['/addproduct'])
+                });
             }
-          });
+        });
 
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
             if (data != undefined && data != "") {
@@ -158,6 +167,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
+                this.isShowCardOptions = false;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
@@ -260,10 +270,12 @@ export class ReadcardComponent implements OnInit {
 
     }
 
+    showErrorMessages() {
+        $("#errorModal").modal('show');
+    }
     /* JAVA SERVICE CALL */
 
     readCard(event) {
-        this.isShowCardOptions = false;
         isExistingCard = true;
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
@@ -271,7 +283,6 @@ export class ReadcardComponent implements OnInit {
     }
 
     newFareCard(event) {
-        this.isShowCardOptions = false;
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
@@ -296,7 +307,7 @@ export class ReadcardComponent implements OnInit {
     adminDeviceConfig() {
         this.electronService.ipcRenderer.send('adminDeviceConfig')
         //console.log('read call', cardName)
-      }
+    }
     setOffering() {
         this.offeringSList = [];
         this.catalogData.forEach(element => {
@@ -337,16 +348,16 @@ export class ReadcardComponent implements OnInit {
     hideModalPop() {
         let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
         let userId = localStorage.getItem("userID")
-    
+
         shiftReports.forEach(element => {
-          if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
-            localStorage.setItem("hideModalPopup", "true")
-          } else {
-            localStorage.setItem("hideModalPopup", "false")
-          }
+            if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
+                localStorage.setItem("hideModalPopup", "true")
+            } else {
+                localStorage.setItem("hideModalPopup", "false")
+            }
         })
-    
-      }
+
+    }
 
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");

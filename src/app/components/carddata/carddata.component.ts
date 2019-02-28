@@ -191,7 +191,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           {
             "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": this.transactionId, "transactionType": "Charge", "transactionAmount": this.transactionAmount, "salesAmount": this.transactionAmount, "taxAmount": 0,
             "items": this.JsonObjCardObj,
-            "payments": [{ "paymentMethodId": 2, "amount": this.transactionAmount }], "shiftType": 0
+            "payments": [{ "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount }], "shiftType": 0
           }
           console.log("transObj" + JSON.stringify(transactionObj));
           this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
