@@ -12,10 +12,10 @@
             <div class="login-container">
 
                 <div *ngIf="statusOfShiftReport.length != 0  " class="shift-report-status">{{statusOfShiftReport}}</div>
-                <div *ngIf="ownedByUser.length != 0 ">Main Shift Is Owned By :
+                <div *ngIf="ownedByUser.length != 0 "class="terminal-locked">Main Shift Is Owned By :
                     <strong>{{ownedByUser}}</strong>
                 </div>
-                <div *ngIf="lockedByUser.length != 0 ">Terminal Locked By :
+                <div *ngIf="lockedByUser.length != 0 " class="terminal-locked">Terminal Locked By :
                     <strong>{{lockedByUser}}</strong>
                 </div>
                 <div class="alert alert-danger " *ngIf=errorMsg>

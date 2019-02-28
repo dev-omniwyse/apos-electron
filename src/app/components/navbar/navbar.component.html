@@ -80,10 +80,11 @@
             </div>
 
             <div class="modal-body">
-                <p>You cannot log out until you've closed your shift. </p>
+                <p>You can't logout until you've closed your shift. </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" [routerLink]="['/shifts']" class="btn btn-org" data-dismiss="modal">Close Shift</button>
             </div>
         </div>
     </div>

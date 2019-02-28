@@ -81,72 +81,64 @@ export class AdminComponent implements OnInit {
 
     this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, isSyncDone) => {
       this._ngZone.run(() => {
-        this.numOfAttempts++;
-        if (isSyncDone == false) {
-          if (this.numOfAttempts < 10000) {
-            this.electronService.ipcRenderer.send('isSyncCompleted')
-          }
-          else {
-            $("#continueSyncModal").modal("hide")
-            $("#errorSyncModal").modal("show")
-          
-          }
-
-        } else if (isSyncDone) {
+        // this.numOfAttempts++;
+        // console.log(" this.numOfAttempts", this.numOfAttempts)
+        // if (isSyncDone == false) {
+        //   if (this.numOfAttempts < 10000) {
+        //     this.electronService.ipcRenderer.send('isSyncCompleted')
+        //   }
+        //   else {
+        //     $("#continueSyncModal").modal("hide")
+        //     $("#errorSyncModal").modal("show")
+        //   }
+        // } else if (isSyncDone) {
+        //   $("#continueSyncModal").modal("hide")
+        //   $("#successSyncModal").modal("show")
+        //   this.electronService.ipcRenderer.send('adminDeviceConfig')
+        //   if (this.deviceInfoNew == true) {
+        //     var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
+        //     UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+        //     UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+        //     localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
+        //    // $("#successSyncModal").modal("show")
+        //   }
+        // }
+        //alert(isSyncDone)
+        if (!isSyncDone) {
+          // alert("inside if")
+          console.log("isSyncDone", isSyncDone)
+          this.intervalSyc = setInterval(() => {
+            if (isSyncDone == false && this.numOfAttempts < 600) {
+              isSyncDone = true
+              this.numOfAttempts += 1
+              this.electronService.ipcRenderer.send('isSyncCompleted')
+            }
+          }, 1000)
+        }
+        else if (isSyncDone === true) {
+          isSyncDone = false
+          clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
+          console.log("sync has been done buddy")
+          // if (isSyncDone) {
+          // this.electronService.ipcRenderer.send('adminDeviceConfig')
+          // console.log("this.deviceInfoNew ", this.deviceInfoNew)
           // if (this.deviceInfoNew == true) {
-          //   this.electronService.ipcRenderer.send('adminDeviceConfig')
           //   var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
           //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
           //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
           //   localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
-          //   $("#successSyncModal").modal("show")
+          //  // $("#successSyncModal").modal("show")
+          // }
+          // } else {
+          //   console.log("Sync Timeout");
           // }
         }
-        //alert(isSyncDone)
-        // if (isSyncDone == false ) {
-        //   alert("inside if")
-        // console.log("isSyncDone", isSyncDone)
-        // var intervalSyc = setInterval(() => {
-        //   if (isSyncDone == false && this.numOfAttempts < this.maxLoopingCount) {
-        //     this.numOfAttempts += 1
-        //     console.log("this.numOfAttempts", this.numOfAttempts)
-        //     console.log("IsSync Has Been Done ?", isSyncDone);
-        //     this.electronService.ipcRenderer.send('isSyncCompleted')
-        //   }
-        //   else if (isSyncDone) {
-        //     //  alert("inside sync")
-        //      this.maxLoopingCount = 0;
-        //       clearInterval(intervalSyc);
-
-
-        //     $("#continueSyncModal").modal("hide")
-        //     if (isSyncDone) {
-        //       console.log("sync has been done buddy")
-        //       this.electronService.ipcRenderer.send('adminDeviceConfig')
-
-        //       console.log("this.deviceInfoNew ", this.deviceInfoNew)
-        //       if (this.deviceInfoNew == true) {
-        //         var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
-        //         UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
-        //         UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
-        //         localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
-        //         $("#successSyncModal").modal("show")
-        //       }
-        //       else {
-        //         console.log("Sync error");
-        //         $("#errorSyncModal").modal("show")
-        //       }
-        //     } else {
-        //       console.log("Sync Timeout");
-        //     }
-        //   }
-
-        // }, 1000)
-
-        // }
-
+        else {
+          console.log("Sync error");
+          $("#errorSyncModal").modal("show")
+        }
       });
     });
     this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
@@ -157,8 +149,9 @@ export class AdminComponent implements OnInit {
         console.log("this.deviceInfoNew", this.deviceInfoNew)
 
         this._ngZone.run(() => {
-          // this.router.navigate(['/deviceconfig'])
+
           localStorage.setItem("deviceConfigData", data);
+          // this.router.navigate(['/deviceconfig'])
 
         });
       }
