@@ -3,8 +3,14 @@
     background-color: #fefaf7;
     padding: 10px;
     width: 60%;
-    margin: 0 auto 50px;
+    margin: 0 auto 20px;
     border-radius: 3px;
     border: 1px dashed #f8ceb3;
     color: #d65400;
+}
+
+.terminal-locked{
+    text-align: center;
+    padding: 15px;
+    color: #3b80c3;
 }

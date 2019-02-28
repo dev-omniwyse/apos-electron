@@ -80,7 +80,7 @@ body {
     bottom: 0;
     margin: auto;
     width: 80%;
-    height: 10vh
+    display: table;
 }
 
 .login-container input {

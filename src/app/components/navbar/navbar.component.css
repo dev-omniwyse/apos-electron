@@ -24,3 +24,13 @@
     float: left;
     margin-left: 25px
 }
+.btn-org {
+    background-color: #d65400;
+    border: 1px solid #d65400;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 0 5px;
+    width: 50%;
+}

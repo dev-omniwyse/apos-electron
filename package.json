@@ -56,6 +56,7 @@
     "jquery": "^3.3.1",
     "ngx-electron": "^2.1.1",
     "ngx-loading": "^3.0.1",
+    "ngx-spinner": "^7.0.0",
     "node-gyp": "^3.8.0",
     "pcsclite": "^0.6.0",
     "popper.js": "^1.14.6",

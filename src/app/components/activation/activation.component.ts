@@ -16,6 +16,7 @@ export class ActivationComponent implements OnInit {
   workType: string;
   form: any;
   password:any
+  organization : string
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
   //   this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
@@ -32,6 +33,8 @@ export class ActivationComponent implements OnInit {
       this._ngZone.run(() => {
         this.carddata = new Array(JSON.parse(data));
         this.password =  this.carddata[0].deviceSetup.password;
+        this.organization = this.carddata[0].deviceSetup.organizationName
+        localStorage.setItem("organization",this.organization)
         localStorage.setItem("pass", this.password);
         console.log('this.carddata', this.carddata);
          this.router.navigate(['/verify'])

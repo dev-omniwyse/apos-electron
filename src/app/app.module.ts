@@ -25,6 +25,7 @@ import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shi
 import { ShiftsComponent } from './components/shifts/shifts.component'
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
 import { NgxLoadingModule } from 'ngx-loading'
+import { NgxSpinnerModule } from 'ngx-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,6 +56,7 @@ import { NgxLoadingModule } from 'ngx-loading'
     NgxElectronModule,
     ReactiveFormsModule,
     FormsModule,
+    NgxSpinnerModule,
     NgxLoadingModule.forRoot({})
   ],
   providers: [CdtaService],
