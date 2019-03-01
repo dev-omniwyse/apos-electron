@@ -456,7 +456,7 @@ export class AddProductComponent implements OnInit {
     console.log("numberDigits", digit);
     this.productTotal = digit
   }
-    saveTransaction(){
+    saveTransaction(paymentMethodId){
       var walletObj:any = [];
       var jsonMagneticObj:any = [];
       var jsonMerchandiseObj:any = [];
@@ -472,11 +472,6 @@ export class AddProductComponent implements OnInit {
           }
         }
       });
-      // this.terminalConfigJson.Farecodes.forEach(terminalConfigElement => {
-      //   if (this.currentCard.user_profile == terminalConfigElement.FareCodeId) {
-      //     fareCode = terminalConfigElement.Description;
-      //   }
-      // });
       fareCode = "full";
       //Magnetic
       if(this.isMagnetic){
@@ -487,14 +482,14 @@ export class AddProductComponent implements OnInit {
           var JsonObj: any = { "transactionID": new Date().getTime(), "cardPID": "Magnetic 1", "cardUID": new Date().getTime(), "quantity": 1 , "productIdentifier": localStorage.getItem("smartCardProductIndentifier"), "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": 0, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": true, "IsFareCard": true, "unitPrice": unitPrice, "totalCost": unitPrice, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 10, "shiftType": 0, "timestamp": new Date().getTime() };
           jsonMagneticObj.push(JsonObj);
 
-        var transactionObj =
+        var magneticTransactionObj =
         {
           "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": new Date().getTime(), "transactionType": "Charge", "transactionAmount": this.productTotal, "salesAmount": this.productTotal, "taxAmount": 0,
           "items": jsonMagneticObj,
-          "payments": [{ "paymentMethodId": 2, "amount": this.productTotal }], "shiftType": 0
+          "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": 0
         }
-        console.log("transObj" + JSON.stringify(transactionObj));
-        this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj); 
+        console.log("transObj" + JSON.stringify(magneticTransactionObj));
+        this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj); 
       }
       // Merchandise
       else if(this.nonFare == false && this.regularRoute == true){
@@ -502,17 +497,18 @@ export class AddProductComponent implements OnInit {
           var merchandiseObj: any = { "transactionID": new Date().getTime(),"quantity":1, "productIdentifier": merchandiseElement.ProductIdentifier, "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "balance": 0, "IsMerchandise": true, "IsBackendMerchandise": true, "IsFareCard": false, "unitPrice": merchandiseElement.UnitPrice, "totalCost": merchandiseElement.UnitPrice, "tax": 0, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": null, "shiftType": 0, "timestamp": new Date().getTime() };
           jsonMerchandiseObj.push(merchandiseObj);
         });
-        var transactionObj =
+        var merchandiseTransactionObj =
         {
           "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": new Date().getTime(), "transactionType": "Charge", "transactionAmount": this.productTotal, "salesAmount": this.productTotal, "taxAmount": 0,
           "items": jsonMerchandiseObj,
-          "payments": [{ "paymentMethodId": 2, "amount": this.productTotal }], "shiftType": 0
+          "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": 0
         }
-        console.log("transObj" + JSON.stringify(transactionObj));
-        this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj); 
+        console.log("transObj" + JSON.stringify(merchandiseTransactionObj));
+        this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj); 
       }
       else{
-         this.router.navigate(['/carddata'])
+        localStorage.setItem("paymentMethodId", paymentMethodId)
+        this.router.navigate(['/carddata'])
       }
      
   }

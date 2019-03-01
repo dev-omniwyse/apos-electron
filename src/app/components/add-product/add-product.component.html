@@ -160,7 +160,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" (click)="saveTransaction()" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-default" (click)="saveTransaction(2)" data-dismiss="modal">Ok</button>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
   
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['']" (click)="saveTransaction(merch)"
+                  <button type="button" class="btn btn-default"
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -202,7 +202,7 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['']" 
+                  <button type="button" class="btn btn-default" (click)="saveTransaction(3)" 
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -247,7 +247,7 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['']" 
+                  <button type="button" class="btn btn-default"
                     data-dismiss="modal">Ok</button>
                 </div>
               </div>
@@ -273,8 +273,8 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-default" 
-                    data-target="#fareApplyModal">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                    href="#voucherApplyModal">Yes</button>
                 </div>
               </div>
             </div>
@@ -291,8 +291,8 @@
               <p>Click "OK" When cash drawer is closed</p>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" [routerLink]="['']" 
-                    data-dismiss="modal">Ok</button>
+                  <button type="button" class="btn btn-default" 
+                    data-dismiss="modal" (click)="saveTransaction(11)">Ok</button>
                 </div>
               </div>
             </div>
