@@ -18,8 +18,8 @@
                 <div *ngIf="lockedByUser.length != 0 " class="terminal-locked">Terminal Locked By :
                     <strong>{{lockedByUser}}</strong>
                 </div>
-                <div class="alert alert-danger " *ngIf=errorMsg>
-                    <strong>Huh</strong> Please Enter valid Details
+                <div class="alert alert-danger " *ngIf="errorMsg.length != 0">
+                    {{errorMsg}}
                 </div>
                 
                 <input type="text" placeholder="User Name" [(ngModel)]="username" />

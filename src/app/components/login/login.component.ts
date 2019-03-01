@@ -11,14 +11,14 @@ import { ElectronService } from 'ngx-electron';
 })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
-    public loading :Boolean = false;
+    public loading: Boolean = false;
     //loading = false;
     submitted = false;
     returnUrl: string;
     username: string;
     password: string;
     userdata: any
-    errorMsg: Boolean = false;
+    errorMsg: string = ""
     carddata: any
     shiftType: any
     shiftState: any
@@ -134,7 +134,7 @@ export class LoginComponent implements OnInit {
                 });
             } else {
                 this.loading = false
-                this.errorMsg = true
+                this.errorMsg = " Please Enter valid Details"
 
             }
         });
@@ -235,8 +235,13 @@ export class LoginComponent implements OnInit {
             username: this.username,
             password: this.password
         }
-        this.loading = true;
-        this.electronService.ipcRenderer.send('logincall', user)
+        if (user.username == undefined || user.password == undefined) {
+            return this.errorMsg = " Username Or Password Shouldn't be Empty"
+        } else {
+            //this.loading = true;
+            this.electronService.ipcRenderer.send('logincall', user)
+        }
+
 
 
     }
