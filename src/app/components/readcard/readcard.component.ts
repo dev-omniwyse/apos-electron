@@ -97,6 +97,7 @@ export class ReadcardComponent implements OnInit {
     public x: any = 0;
     public offeringSList: any = [];
     public isShowCardOptions: Boolean = true;
+    public isFromReadCard = false;
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
         });
@@ -108,9 +109,10 @@ export class ReadcardComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
             console.log("data", data)
-            if (data != undefined && data != "") {
+            if (this.isFromReadCard && data != undefined && data != "") {
                 this.show = true;
                 this.isShowCardOptions = false;
+                this.isFromReadCard = false
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
@@ -194,9 +196,6 @@ export class ReadcardComponent implements OnInit {
         });
 
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
-            var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
-            if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
-                return;
             if (data != undefined && data != "") {
                 this.readCardData = [];
                 // this.show = true;
@@ -206,6 +205,9 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem('catalogJSON', JSON.stringify(data));
                     let item = JSON.parse(localStorage.getItem("catalogJSON"));
                     this.catalogData = JSON.parse(item).Offering;
+                    var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
+                    if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
+                        return;
                     var keepGoing = true;
                     if (isMagnetic == false) {
                         this.carddata[0].products.forEach(cardElement => {
@@ -239,10 +241,10 @@ export class ReadcardComponent implements OnInit {
 
                                     }
                                 }
-                                if (catalogElement.Description == "Magnetics") {
+                                if (catalogElement.Description === "Magnetics") {
                                     localStorage.setItem("magneticProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
                                 }
-                                if (catalogElement.Description == "Smart Card") {
+                                if (catalogElement.Description === "Smart Card") {
                                     localStorage.setItem("smartCardProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
                                 }
                             });
@@ -277,6 +279,8 @@ export class ReadcardComponent implements OnInit {
 
     readCard(event) {
         isExistingCard = true;
+        this.isFromReadCard = true;
+        localStorage.setItem("isNonFareProduct", "false");
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
@@ -284,12 +288,21 @@ export class ReadcardComponent implements OnInit {
 
     newFareCard(event) {
         localStorage.setItem("isMagnetic", "false");
+        localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
     }
 
+    nonFareProduct() {
+        localStorage.setItem("isNonFareProduct", "true");
+        localStorage.setItem("isMagnetic", "false");
+        this.getProductCatalogJSON();
+        this.router.navigate(['/addproduct']);
+    }
+
     magneticCard(event) {
         localStorage.setItem("isMagnetic", "true");
+        localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }
@@ -311,20 +324,20 @@ export class ReadcardComponent implements OnInit {
     setOffering() {
         this.offeringSList = [];
         this.catalogData.forEach(element => {
-            if (element.Ticket != undefined && element.Ticket != "") {
-                var jsonObj: any = {
-                    "OfferingId": element.OfferingId,
-                    "ProductIdentifier": element.ProductIdentifier,
-                    "Description": element.Description,
-                    "UnitPrice": element.UnitPrice,
-                    "IsTaxable": element.IsTaxable,
-                    "IsMerchandise": element.IsMerchandise,
-                    "IsAccountBased": element.IsAccountBased,
-                    "IsCardBased": element.IsCardBased
-                }
-                // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
-                this.offeringSList.push(jsonObj);
+            // if ((element.Ticket != undefined && element.Ticket != "") || element.IsMerchandise) {
+            var jsonObj: any = {
+                "OfferingId": element.OfferingId,
+                "ProductIdentifier": element.ProductIdentifier,
+                "Description": element.Description,
+                "UnitPrice": element.UnitPrice,
+                "IsTaxable": element.IsTaxable,
+                "IsMerchandise": element.IsMerchandise,
+                "IsAccountBased": element.IsAccountBased,
+                "IsCardBased": element.IsCardBased
             }
+            // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
+            this.offeringSList.push(jsonObj);
+            // }
         });
         console.log(JSON.stringify(this.offeringSList));
         // var tempJson:string = '[{"TicketId": 3, "Description": test1},{"TicketId": 4, "Description": test1}]'

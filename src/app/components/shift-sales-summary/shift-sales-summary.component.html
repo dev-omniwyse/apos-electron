@@ -16,9 +16,8 @@
         </select> -->
         <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
             <option [ngValue]="undefined" selected>Select</option>
-            <option [ngValue] ="0">--All--</option>
+            <!-- <option [ngValue] ="0">--All--</option> -->
             <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
-           
         </select>
     </div>
 

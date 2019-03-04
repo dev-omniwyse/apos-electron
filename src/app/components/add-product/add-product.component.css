@@ -7,7 +7,9 @@ body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
 }
-
+ul{
+    list-style-type:none;
+}
 .main-container {
     background-color: #777777;
     display: flex;

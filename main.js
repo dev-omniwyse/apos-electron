@@ -28,11 +28,11 @@ var jsObject = java.import("netscape.javascript.JSObject");
 var myjsObject = null;
 var result = posAppletInstance.runInitializationSync();
 logger.info(result);
-const electron = require('electron');
-const dialog = electron.dialog;
-dialog.showErrorBox = function (title, content) {
-  // console.log('${title}\n${content}');
-};
+// const electron = require('electron');
+// const dialog = electron.dialog;
+// dialog.showErrorBox = function (title, content) {
+//   // console.log('${title}\n${content}');
+// };
 
 let win;
 
@@ -59,7 +59,7 @@ function createWindow() {
   // win.webContents.openDevTools();
 
   // The following is optional and will open the DevTools:
-  win.webContents.openDevTools()
+   win.webContents.openDevTools()
 
   win.on("closed", () => {
     win = null;
@@ -404,6 +404,7 @@ ipcMain.on('adminOpenShift', (event, catalog) => {
 
   event.sender.send('adminOpenShiftResult', result);
 })
+
 ipcMain.on('adminSync', (event, catalog) => {
   logger.info("comp  Data", posAppletInstance)
   var result = posAppletInstance.triggerSyncSync();
@@ -446,6 +447,12 @@ ipcMain.on('adminShiftSaleSummary', (event, catalog) => {
 ipcMain.on('saveOffering', (event, offerings) => {
   var result = posAppletInstance.saveOfferingSync(offerings);
   event.sender.send('saveOfferingResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
+  var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+  var result = posAppletInstance.updateCardDataSync("changecardexp",transactionDate.toString());
+  event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 
 /** ADMIN METHODS END HERE*/
