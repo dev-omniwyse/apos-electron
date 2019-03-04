@@ -13,11 +13,29 @@ import { ElectronService } from 'ngx-electron';
 })
 export class CompComponent implements OnInit {
   public reason: Boolean = true
-  constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) { }
+  public reasonForComp: string
+  public buttonArray = ["DEFECTIVE CARD", "LOST CARD", "SCHEDULE DELAYS", "OTHERS"]
+  constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
-  compReason() {
-    if (this.reason == true) {
+
+    this.electronService.ipcRenderer.on('compensationResult', (event, data) => {
+      if (data != undefined && data != "") {
+        //this.show = true;
+        this._ngZone.run(() => {
+          //this.router.navigate(['/addproduct'])
+        });
+      }
+    });
+
+  }
+
+  compReason(value) {
+    this.reasonForComp = value
+    if (this.reason == true && value == "OTHERS") {
       this.reason = false
+    } else {
+      // this.reasonForComp = value
+      localStorage.setItem("compReason", this.reasonForComp)
     }
   }
   compNavigate() {
@@ -27,6 +45,15 @@ export class CompComponent implements OnInit {
       this.reason = true
     }
   }
+
+  compensation() {
+    //this.electronService.ipcRenderer.send('compensation')
+    //console.log('read call', cardName)
+    localStorage.setItem("compReason", this.reasonForComp)
+    console.log('reason for comp', this.reasonForComp)
+    this.router.navigate(['/carddata'])
+  }
+
   ngOnInit() {
 
   }

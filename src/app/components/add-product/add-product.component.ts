@@ -94,6 +94,7 @@ export class AddProductComponent implements OnInit {
   isMerchendise = false;
   terminalConfigJson: any = [];
   isfromAddProduct = false;
+
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -470,18 +471,17 @@ export class AddProductComponent implements OnInit {
     var unitPrice: any = 0;
     var fareCode: any = "";
     var shiftType: any = 0;
+
     // var de
-    // get UnitPrice for Ticket
     this.productJson.forEach(catalogElement => {
       if ((null == catalogElement.Ticket) &&
         (false == catalogElement.IsMerchandise) &&
         (null != catalogElement.WalletType)) {
         if (catalogElement.WalletType.WalletTypeId == 3) {
-          unitPrice = catalogElement.UnitPrice;
+          unitPrice = catalogElement.WalletType.UnitPrice;
         }
       }
     });
-    //farecode full for Magnetic and Merchendise
     fareCode = "full";
     // get shiftType from ShiftReport
     var shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
@@ -525,8 +525,14 @@ export class AddProductComponent implements OnInit {
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
     }
     else {
-      localStorage.setItem("paymentMethodId", paymentMethodId)
-      this.router.navigate(['/carddata'])
+      if (paymentMethodId == "8") {
+        localStorage.setItem("paymentMethodId", paymentMethodId)
+        this.router.navigate(['/comp'])
+      } else {
+        localStorage.setItem("paymentMethodId", paymentMethodId)
+        this.router.navigate(['/carddata'])
+      }
+
     }
 
   }

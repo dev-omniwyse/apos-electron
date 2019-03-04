@@ -159,7 +159,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
       // this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
     });
-
+    
     var sequenceNumberListener: any = this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
@@ -206,11 +206,16 @@ export class CarddataComponent implements OnInit, OnChanges {
             this.JsonObjCardObj.push(JsonObj);
 
           });
+          if (localStorage.getItem("paymentMethodId") == "8") {
+            var paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": localStorage.getItem("compReason") }
+          }else{
+             paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": null }
+          }
           var transactionObj =
           {
             "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": this.transactionId, "transactionType": "Charge", "transactionAmount": this.transactionAmount, "salesAmount": this.transactionAmount, "taxAmount": 0,
             "items": this.JsonObjCardObj,
-            "payments": [{ "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount }], "shiftType": shiftType
+            "payments": [paymentObj], "shiftType": shiftType
           }
           console.log("transObj" + JSON.stringify(transactionObj));
           this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
