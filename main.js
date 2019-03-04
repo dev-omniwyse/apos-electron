@@ -358,12 +358,12 @@ ipcMain.on('payAsYouGo', (event, catalog) => {
   event.sender.send('payAsYouGoResult', result);
 })
 
-ipcMain.on('comp', (event, catalog) => {
-  logger.info("comp  Data", posAppletInstance)
+ipcMain.on('compensation', (event, catalog) => {
+  logger.info("compensation  Data", posAppletInstance)
   var result = posAppletInstance.getProductCatalogJSONSync();
-  logger.info("compResult", '' + result)
+  logger.info("compensationResult", '' + result)
 
-  event.sender.send('compResult', result);
+  event.sender.send('compensationResult', result);
 })
 
 

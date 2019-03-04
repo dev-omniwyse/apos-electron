@@ -155,7 +155,7 @@
                             </div>
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Back </div>
-                                <div class="pull-right">$</div>
+                                <div class="pull-right">$0.00</div>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -347,7 +347,7 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"
-                    [routerLink]="['/comp']" >Yes,continue</button>
+                    [routerLink]="['/comp']" (click)= "saveTransaction(8);" >Yes,continue</button>
                 </div>
               </div>
             </div>
