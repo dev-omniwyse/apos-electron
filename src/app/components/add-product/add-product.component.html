@@ -27,7 +27,7 @@
                   </div>
               </li>
               <li #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
-                    <button *ngIf="!isMagnetic" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards.printed_id}}</button>
+                    <button *ngIf="!isMagnetic || !isMerchendise" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
               </li>
       
             </ul> 

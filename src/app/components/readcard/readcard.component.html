@@ -23,7 +23,7 @@
 			Existing Fare Card
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>
-		<button class="card-btn" [disabled]="disableCards" [routerLink]="['/carddata']">
+		<button class="card-btn" [disabled]="disableCards" (click)="nonFareProduct()">
 			Non-Fare Product
 			<img src="assets/images/arrow-pointing-to-right.svg" />
 		</button>

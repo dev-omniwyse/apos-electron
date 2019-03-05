@@ -121,6 +121,13 @@ export class CarddataComponent implements OnInit, OnChanges {
       // this.checkIsCardNew();
       // put the code from `ngOnInit` here
     });
+
+    var updateCardDataListener: any = this.electronService.ipcRenderer.on('updateCardDataResult', (event, data) => {
+      if (data != undefined && data != "" && this.isFromCardComponent) {
+        this.electronService.ipcRenderer.send('readSmartcard', cardName)
+      }
+
+    });
     var readcardListener: any = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "" && this.isFromCardComponent && this.executeIpcRendererOn) {
@@ -132,7 +139,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           this.electronService.ipcRenderer.send('generateSequenceNumber');
         });
       }
-      this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+      // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     });
     var cardPIDListener: any = this.electronService.ipcRenderer.on('getCardPIDResult', (event, data) => {
       console.log("data", data)
@@ -150,9 +157,9 @@ export class CarddataComponent implements OnInit, OnChanges {
 
         });
       }
-      this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+      // this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
     });
-
+    
     var sequenceNumberListener: any = this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
@@ -162,28 +169,40 @@ export class CarddataComponent implements OnInit, OnChanges {
           var unitPrice: any = 0;
           var fareCode: any = "";
           var walletObj: any = [];
+          var shiftType: any = 0;
           // var de
+          // get unit price for ticket
           this.catalogJson.forEach(catalogElement => {
             if ((null == catalogElement.Ticket) &&
               (false == catalogElement.IsMerchandise) &&
               (null != catalogElement.WalletType)) {
               if (catalogElement.WalletType.WalletTypeId == 3) {
-                unitPrice = catalogElement.WalletType.UnitPrice;
+                unitPrice = catalogElement.UnitPrice;
               }
             }
           });
+          // get farecode from terminal config
           this.terminalConfigJson.Farecodes.forEach(terminalConfigElement => {
             if (this.currentCard.user_profile == terminalConfigElement.FareCodeId) {
               fareCode = terminalConfigElement.Description;
             }
           });
 
+          // get shiftType from ShiftReport
+          var shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+          var userId = localStorage.getItem("userID")
+          shiftReports.forEach(shiftReportElement => {
+            if (shiftReportElement.userID == userId) {
+              shiftType = shiftReportElement.shiftType;
+            }
+          })
+
           this.cardJson.forEach(element => {
             this.currentCardMerchantList.forEach(walletElement => {
-              var jsonWalletObj = { "transactionID": this.transactionId, "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": "ACTIVE", "slotNumber": 3, "startDate": walletElement.DateEffective, "expirationDate": walletElement.DateExpires, "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.UnitPrice, "totalCost": this.transactionAmount, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": element.printed_id, "cardUID": element.uid, "walletTypeId": 3, "shiftType": 0, "timestamp": new Date().getTime() }
+              var jsonWalletObj = { "transactionID": this.transactionId, "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": "ACTIVE", "slotNumber": 3, "startDate": walletElement.DateEffective, "expirationDate": walletElement.DateExpires, "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.UnitPrice, "totalCost": this.transactionAmount, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": element.printed_id, "cardUID": element.uid, "walletTypeId": 3, "shiftType": shiftType, "timestamp": new Date().getTime() }
               walletObj.push(jsonWalletObj);
             });
-            var JsonObj: any = { "transactionID": this.transactionId, "cardPID": element.printed_id, "cardUID": element.uid, "quantity": (this.isNew) ? 1 : 0, "productIdentifier": localStorage.getItem("magneticProductIndentifier"), "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": element.card_expiration_date, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": true, "unitPrice": (this.isNew) ? unitPrice : 0, "totalCost": (this.isNew) ? unitPrice : 0, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 3, "shiftType": 0, "timestamp": new Date().getTime() };
+            var JsonObj: any = { "transactionID": this.transactionId, "cardPID": element.printed_id, "cardUID": element.uid, "quantity": (this.isNew) ? 1 : 0, "productIdentifier": JSON.parse(localStorage.getItem("smartCardProductIndentifier")), "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": element.card_expiration_date, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": true, "unitPrice": (this.isNew) ? unitPrice : 0, "totalCost": (this.isNew) ? unitPrice : 0, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 3, "shiftType": shiftType, "timestamp": new Date().getTime() };
             this.JsonObjCardObj.push(JsonObj);
 
           });
@@ -196,13 +215,13 @@ export class CarddataComponent implements OnInit, OnChanges {
           {
             "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": this.transactionId, "transactionType": "Charge", "transactionAmount": this.transactionAmount, "salesAmount": this.transactionAmount, "taxAmount": 0,
             "items": this.JsonObjCardObj,
-            "payments": [paymentObj], "shiftType": 0
+            "payments": [paymentObj], "shiftType": shiftType
           }
           console.log("transObj" + JSON.stringify(transactionObj));
           this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
         });
       }
-      this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
+      // this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
     });
 
     var transactionListener: any = this.electronService.ipcRenderer.on('saveTransactionResult', (event, data) => {
@@ -220,19 +239,21 @@ export class CarddataComponent implements OnInit, OnChanges {
           this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
           this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
           this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
+          this.electronService.ipcRenderer.removeAllListeners("updateCardDataResult");
           this.router.navigate(['/readcard'])
         });
       }
-      this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
+      // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {
+        var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
         console.log(data);
         this._ngZone.run(() => {
           if ((this.cardJson.length - 1) == this.cardIndex) {
             this.isFromCardComponent = true;
-            this.electronService.ipcRenderer.send('readSmartcard', cardName)
+            this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
           }
           else {
             this.cardIndex++;

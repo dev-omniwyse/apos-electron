@@ -121,6 +121,8 @@ export class AdminComponent implements OnInit {
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
           console.log("sync has been done buddy")
+          // this.electronService.ipcRenderer.removeAllListeners("adminSyncResult");
+          // this.electronService.ipcRenderer.removeAllListeners("isSyncCompletedResult");
           // if (isSyncDone) {
           // this.electronService.ipcRenderer.send('adminDeviceConfig')
           // console.log("this.deviceInfoNew ", this.deviceInfoNew)

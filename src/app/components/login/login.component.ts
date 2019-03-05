@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
-                this.loading = false
+                // this.loading = false
                 this.userdata = JSON.parse(data)
                 localStorage.setItem("userID", this.userdata.personId)
                 localStorage.setItem("userEmail", this.userdata.username)
@@ -195,14 +195,14 @@ export class LoginComponent implements OnInit {
             return;
         }
 
-        this.loading = true;
+        // this.loading = true;
         this.cdtaservice.login(this.f.username.value, this.f.password.value)
             .subscribe((data: any) => {
                 this.router.navigate(['/readcard']);
             },
                 error => {
                     // this.alertService.error(error);
-                    this.loading = false;
+                    // this.loading = false;
                 });
     }
 
