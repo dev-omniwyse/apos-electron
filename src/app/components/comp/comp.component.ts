@@ -33,6 +33,7 @@ export class CompComponent implements OnInit {
     this.reasonForComp = value
     if (this.reason == true && value == "OTHERS") {
       this.reason = false
+      this.reasonForComp = ""
     } else {
       // this.reasonForComp = value
       localStorage.setItem("compReason", this.reasonForComp)
