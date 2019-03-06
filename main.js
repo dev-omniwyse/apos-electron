@@ -28,11 +28,11 @@ var jsObject = java.import("netscape.javascript.JSObject");
 var myjsObject = null;
 var result = posAppletInstance.runInitializationSync();
 logger.info(result);
-// const electron = require('electron');
-// const dialog = electron.dialog;
-// dialog.showErrorBox = function (title, content) {
-//   // console.log('${title}\n${content}');
-// };
+const electron = require('electron');
+const dialog = electron.dialog;
+dialog.showErrorBox = function (title, content) {
+  // console.log('${title}\n${content}');
+};
 
 let win;
 
@@ -59,7 +59,7 @@ function createWindow() {
   // win.webContents.openDevTools();
 
   // The following is optional and will open the DevTools:
-   win.webContents.openDevTools()
+  //  win.webContents.openDevTools()
 
   win.on("closed", () => {
     win = null;
@@ -75,6 +75,11 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+app.on('before-quit', () => {
+    mainWindow.removeAllListeners('close');
+    mainWindow.close();
 });
 
 // initialize the app's main window

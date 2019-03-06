@@ -321,6 +321,23 @@ export class AddProductComponent implements OnInit {
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
 
+  getCorrectType(element: any) {
+    var booleanCorrectType = false;
+    if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
+      element.Ticket.WalletType.forEach(walletElement => {
+        if (this.isMagnetic) {
+          if (walletElement.WalletTypeId == 10)
+            booleanCorrectType = true;
+        }
+        else {
+          if (walletElement.WalletTypeId == 3)
+            booleanCorrectType = true;
+        }
+      });
+    }
+    return booleanCorrectType;
+  }
+
   // stored ride values
   storedValue() {
     this.selectedProductCategoryIndex = 1;
@@ -328,19 +345,7 @@ export class AddProductComponent implements OnInit {
     this.cdtaService.getJSON().subscribe(data => {
       var i = 0;
       this.productJson.forEach(element => {
-        var isCorrectType = false;
-        if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-          element.Ticket.WalletType.forEach(walletElement => {
-            if (this.isMagnetic) {
-              if (walletElement.WalletTypeId == 10)
-                isCorrectType = true;
-            }
-            else {
-              if (walletElement.WalletTypeId == 3)
-                isCorrectType = true;
-            }
-          });
-        }
+        var isCorrectType = this.getCorrectType(element);
         if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "2" && (element.Ticket.TicketType.TicketTypeId == 2 && !element.IsMerchandise)) {
           this.merchantise.push(element);
         }
@@ -354,19 +359,7 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 0;
     this.merchantise = [];
     this.productJson.forEach(element => {
-      var isCorrectType = false;
-      if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-        element.Ticket.WalletType.forEach(walletElement => {
-          if (this.isMagnetic) {
-            if (walletElement.WalletTypeId == 10)
-              isCorrectType = true;
-          }
-          else {
-            if (walletElement.WalletTypeId == 3)
-              isCorrectType = true;
-          }
-        });
-      }
+      var isCorrectType = this.getCorrectType(element);
       if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
         this.merchantise.push(element);
       }
@@ -380,19 +373,7 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 2;
     this.merchantise = [];
     this.productJson.forEach(element => {
-      var isCorrectType = false;
-      if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-        element.Ticket.WalletType.forEach(walletElement => {
-          if (this.isMagnetic) {
-            if (walletElement.WalletTypeId == 10)
-              isCorrectType = true;
-          }
-          else {
-            if (walletElement.WalletTypeId == 3)
-              isCorrectType = true;
-          }
-        });
-      }
+      var isCorrectType = this.getCorrectType(element);
       if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "3" && (element.Ticket.TicketType.TicketTypeId == 1 && !element.IsMerchandise)) {
         this.merchantise.push(element);
       }

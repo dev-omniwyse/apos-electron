@@ -104,7 +104,7 @@ export class AdminComponent implements OnInit {
         //   }
         // }
         //alert(isSyncDone)
-        if (!isSyncDone) {
+        if (isSyncDone === false) {
           // alert("inside if")
           console.log("isSyncDone", isSyncDone)
           this.intervalSyc = setInterval(() => {
