@@ -7,8 +7,8 @@
     </div>
    
   <div *ngIf="reason" >
-    <div *ngFor="let value of buttonArray">
-    <button class="process-comp-btn" (click)="compReason(value);"> {{value}}</button>
+    <div *ngFor="let value of buttonArray" class="process-comp-btn" >
+    <button (click)="compReason(value);"> {{value}}</button>
     <!-- <button class="process-comp-btn"> LOST CARD </button>
     <button class="process-comp-btn"> SCHEDULE DELAYS</button>
     <button class="process-comp-btn" (click)="compReason();"> OTHERS</button> -->

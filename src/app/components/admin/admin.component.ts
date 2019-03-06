@@ -113,9 +113,9 @@ export class AdminComponent implements OnInit {
               this.numOfAttempts += 1
               this.electronService.ipcRenderer.send('isSyncCompleted')
             }
-          }, 1000)
+          }, 1500)
         }
-        else if (isSyncDone === true) {
+        else if (isSyncDone == true) {
           isSyncDone = false
           clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
@@ -274,7 +274,7 @@ export class AdminComponent implements OnInit {
 
   syncData() {
     this.loading = true;
-    this.maxLoopingCount = 600;
+   // this.maxLoopingCount = 600;
     this.numOfAttempts = 0;
     $("#continueSyncModal").modal("show")
     this.electronService.ipcRenderer.send('adminSync')
