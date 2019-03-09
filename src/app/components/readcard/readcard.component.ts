@@ -115,6 +115,7 @@ export class ReadcardComponent implements OnInit {
                 this.isFromReadCard = false
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
+                    localStorage.setItem("printCardData",data)
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
                     // this.carddata = JSON.parse(item);
                     this.carddata = new Array(JSON.parse(data));

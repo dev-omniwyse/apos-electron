@@ -24,8 +24,8 @@ export class LoginComponent implements OnInit {
     shiftState: any
     statusOfShiftReport: string = ""
     hideAndShowLogout: Boolean = false
-    lockedByUser: string = ""
-    ownedByUser: string = ""
+    lockedByUser: string = ''
+    ownedByUser: string = ''
     shiftReport: any = [
         {
             userEmail: "",
@@ -171,6 +171,8 @@ export class LoginComponent implements OnInit {
                         // this.statusOfShiftReport = "Main Shift is Paused"
                         this.lockedByUser = localStorage.getItem("userEmail")
 
+                    }else if (element.shiftState == "0" && element.shiftType == "1" && element.userEmail != ""){
+                        this.ownedByUser = ''
                     }
             })
         }

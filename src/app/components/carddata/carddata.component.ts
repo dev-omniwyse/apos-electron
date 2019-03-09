@@ -134,6 +134,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         this.isFromCardComponent = false;
         this._ngZone.run(() => {
           localStorage.setItem("readCardData", JSON.stringify(data));
+          localStorage.setItem("printCardData",data)
           this.carddata = new Array(JSON.parse(data));
           console.log('this.carddata', this.carddata);
           this.electronService.ipcRenderer.send('generateSequenceNumber');
@@ -159,7 +160,16 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
       // this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
     });
-    
+    this.electronService.ipcRenderer.on('printReceiptResult', (event, data) => {
+      if (data != undefined && data != "") {
+        // localStorage.setItem("deviceConfigData", data);
+        alert("print success ");
+        this._ngZone.run(() => {
+          // this.router.navigate(['/addproduct'])
+        });
+      }
+    });
+
     var sequenceNumberListener: any = this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
@@ -208,8 +218,8 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
           if (localStorage.getItem("paymentMethodId") == "8") {
             var paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": localStorage.getItem("compReason") }
-          }else{
-             paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": null }
+          } else {
+            paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": null }
           }
           var transactionObj =
           {
@@ -218,6 +228,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             "payments": [paymentObj], "shiftType": shiftType
           }
           console.log("transObj" + JSON.stringify(transactionObj));
+          localStorage.setItem("transObj", JSON.stringify(transactionObj))
           this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
         });
       }
@@ -229,6 +240,8 @@ export class CarddataComponent implements OnInit, OnChanges {
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
           alert("Encoding Successfull");
+          var timestamp = new Date().getTime();
+          this.generateReceipt(timestamp);
           localStorage.removeItem('encodeData');
           localStorage.removeItem('productCardData');
           localStorage.removeItem("cardsData");
@@ -393,4 +406,464 @@ export class CarddataComponent implements OnInit, OnChanges {
     else
       this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id, this.encodeJsonData);
   }
+
+  generateReceipt(timestamp) {
+
+    // TODO: stop using two different ways of getting transaction IDs.
+    var paymentsStore
+    var transRecord
+    var cart
+    var transObj = JSON.parse(localStorage.getItem("transObj"))
+    var catalog = JSON.parse(localStorage.getItem("catalogJSON"));
+    var storedTransactionID = '';
+    var taxAmountValue
+    paymentsStore = transObj.payments;
+    cart = transObj.items
+    storedTransactionID = transObj.transactionID;
+    taxAmountValue = transObj.taxAmount
+    var paymentTypeText = '';
+    var receiptWidth = 44;
+    var receipt = "";
+    var signatureRequired = false;
+    var customerCopyReceipt = "";
+    var changeDue = 0;
+    var padSize = 0;
+    var transText = "Trans ID:";
+
+    receipt += transText;
+    padSize = receiptWidth - (transText.length + storedTransactionID.length);
+
+    var spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    receipt += spacer + storedTransactionID + "\n";
+
+    var transTypeLabel = "Trans Type:";
+    var transType = "Sale";
+
+    padSize = receiptWidth - (transTypeLabel.length + transType.length);
+
+    spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    receipt += transTypeLabel + spacer + transType + "\n";
+
+    var anythingToPrint = false;
+
+    if (cart.length > 0) {
+      console.log("Receipt printing, detected wallets.");
+      anythingToPrint = true;
+    } else {
+      console.log("Receipt printing, did not detect any wallets.");
+    }
+    // if(cart.ProductLineItems != undefined){
+    //   if (cart.ProductLineItems.length > 0) {
+    //     console.log("Receipt printing, detected products.");
+    //     anythingToPrint = true;
+    //   } else {
+    //     console.log("Receipt printing, did not detect any products.");
+    //   }
+    // }
+
+
+    if (anythingToPrint) {
+      console.log("Detected items to print.");
+    } else {
+      console.warn("Receipt printing, failed to detect anything to print.");
+      return;
+    }
+
+    // if (cart.ProductLineItems > 0) {
+    //   console.log("Receipt printing, detected products.");
+    // }
+
+    //Add a spacer due to multiple cards on order
+    receipt += "\n";
+
+    var walletContents
+    cart.forEach(element => {
+      walletContents = element.walletContentItems
+      console.log("walletContents", walletContents);
+      // var PID = element.cardPID;
+      // var cardText = "Card ID:";
+
+      // receipt += cardText;
+      // padSize = receiptWidth - (cardText.length + PID.length);
+      // spacer = '';
+
+      // while (spacer.length <= (padSize - 1)) {
+      //   spacer += " ";
+      // }
+
+      // receipt += spacer + PID + "\n";
+
+      // var dashes = "";
+      // while (dashes.length <= receiptWidth) {
+      //   dashes += "-";
+      // }
+
+      // receipt += dashes + "\n";
+
+      // var lineItem = element.description + "";
+      // var lineItemQty = " - Qty: 1 ";
+
+      // if (lineItem.length > (35 - lineItemQty.length)) {
+      //   lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+      // }
+
+      // lineItem = lineItem + lineItemQty + "                                   ";
+      // lineItem = lineItem.substring(0, 35);
+
+      // var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
+
+      // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+      // receipt += lineItem + subtotalStr + "\n\n";
+
+
+      walletContents.forEach(item => {
+
+        JSON.parse(catalog).Offering.forEach(catalogElement => {
+          if (catalogElement.Ticket != undefined) {
+            if (catalogElement.ProductIdentifier == item.productIdentifier) {
+              //  var catalogdata = {
+              //    "ticketid": 
+              //  }
+              return item.description = catalogElement.Ticket.Description
+
+            }
+          }
+        });
+        var lineItem = item.description + "";
+        var lineItemQty = " - Qty: " + item.quantity + " ";
+
+        if (lineItem.length > (35 - lineItemQty.length)) {
+          lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+        }
+
+        lineItem = lineItem + lineItemQty + "                                   ";
+        lineItem = lineItem.substring(0, 35);
+
+        var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+
+        subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+        receipt += lineItem + subtotalStr + "\n\n";
+
+      })
+
+    });
+
+    // cart.ProductLineItems.forEach(item => {
+    //   var lineItem = item.description + "";
+    //   var taxAmount = "Tax";
+    //   var lineItemQty = " - Qty: " + item.quantity + " ";
+
+    //   if (lineItem.length > (35 - lineItemQty.length)) {
+    //     lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+    //   }
+
+    //   lineItem = lineItem + lineItemQty + "                                   ";
+    //   lineItem = lineItem.substring(0, 35);
+
+    //   var taxtotalStr = "          $" + (item.tax * item.quantity).toFixed(2);
+    //   taxtotalStr = taxtotalStr.substring(taxtotalStr.length - 10);
+    //   var taxPercentage = ((item.tax * 100) / item.unitPrice).toFixed(2);
+
+    //   taxAmount = taxAmount + "(" + taxPercentage + "%)" + "                                   ";
+    //   taxAmount = taxAmount.substring(0, 35);
+
+    //   var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+
+    //   subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+    //   receipt += lineItem + subtotalStr + "\n";
+    //   receipt += taxAmount + taxtotalStr + "\n\n";
+
+    // });
+
+    var totalDue = localStorage.getItem("transactionAmount")
+    var taxtotalDue = taxAmountValue
+    var faretotalDue = localStorage.getItem("transactionAmount")
+
+    var faretotalStr = "";
+    var taxtotalStr = "";
+
+    var totalStr = "";
+
+    if ("0" == totalDue) {
+      totalStr = '$0.00';
+    } else {
+      totalStr = "$" + Number(totalDue).toFixed(2);
+    }
+
+    if ("0" == faretotalDue) {
+      faretotalStr = '$0.00';
+    } else {
+      faretotalStr = "$" + Number(faretotalDue).toFixed(2);
+    }
+
+    if (0 == taxtotalDue) {
+      taxtotalStr = '$0.00';
+    } else {
+      taxtotalStr = "$" + taxtotalDue.toFixed(2);
+    }
+
+    totalStr = "                    " + totalStr;
+    faretotalStr = "              " + faretotalStr;
+    taxtotalStr = "              " + taxtotalStr;
+    totalStr = totalStr.substring(totalStr.length - 20);
+
+    receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
+    receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
+
+    receipt += "\nTOTAL:                   " + totalStr + "\n\n";
+
+    var paymentAmount = "";
+    var paymentId = 0;
+
+    // possible add for payment type and change due
+    paymentsStore.forEach(paymentRecord => {
+      paymentId = paymentRecord.paymentMethodId;
+      paymentTypeText = ""
+
+      switch (paymentId) {
+        case 1:
+          paymentTypeText = "INVOICED"
+          break;
+        case 2:
+          paymentTypeText = "CASH"
+          break;
+        case 3:
+          paymentTypeText = "CHECK"
+          break;
+        case 4:
+          paymentTypeText = "AMEX"
+          break;
+        case 5:
+          paymentTypeText = "VISA"
+          break;
+        case 6:
+          paymentTypeText = "MASTERCARD"
+          break;
+        case 7:
+          paymentTypeText = "DISCOVER"
+          break;
+        case 8:
+          paymentTypeText = "COMP"
+          break;
+        case 9:
+          paymentTypeText = "CREDIT"
+          break;
+        case 10:
+          paymentTypeText = "FARE_CARD"
+          break;
+        case 11:
+          paymentTypeText = "VOUCHER"
+          break;
+        case 12:
+          paymentTypeText = "STORED_VALUE"
+          break;
+        default:
+          paymentTypeText = "UNKNOWN"
+          break;
+      }
+
+      // if the payment method is cash, you want to give the full amount tendered.
+      //    that is the amount we stored + the change due
+      if (null != paymentId) {
+        if (2 == paymentId) {
+          paymentAmount = "          $" + (changeDue + (paymentRecord.amount)).toFixed(2);
+        } else {
+          if (paymentRecord.amount != null) {
+            paymentAmount = "          $" + (paymentRecord.amount).toFixed(2);
+          }
+        }
+      }
+
+      var paymentTenderedItem = "Payment tendered: " + paymentTypeText + "                                   ";
+
+      paymentTenderedItem = paymentTenderedItem.substring(0, 35);
+
+      paymentAmount = paymentAmount.substring(paymentAmount.length - 10);
+
+      receipt += "\n" + paymentTenderedItem + paymentAmount + "\n";
+
+    });
+
+    // if cash was one of your payment types, figure out if there's any change due
+    if (paymentId == 2) {
+      var changeDueLabel = "CHANGE DUE:              ";
+      var changeDueStr = "";
+
+      changeDueStr = "$" + changeDue.toFixed(2);
+      changeDueStr = "                    " + changeDueStr;
+
+      changeDueStr = changeDueStr.substring(changeDueStr.length - 20);
+
+      receipt += "\n" + changeDueLabel + changeDueStr;
+    }
+
+    var cardBalance = "",
+      textProductType = "",
+      remainingRides: any = 0;
+
+    receipt += "\n\n             Current Card Balance\n\n";
+    var cardStore = JSON.parse(localStorage.getItem("printCardData"));
+    
+
+
+    var receiptWidth = 44;
+    var dashes = "";
+    while (dashes.length <= receiptWidth) {
+      dashes += "-";
+    }
+
+    receipt += dashes + "\n";
+    var PID = cardStore.printed_id;
+    var cardText = "Card ID:";
+    receipt += cardText;
+    padSize = receiptWidth - (cardText.length + PID.length);
+    spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    receipt += spacer + PID + "\n";
+
+    if (cardStore.products) {
+
+      for (var i = 0; i < cardStore.products.length; i++) {
+
+        var dataItem = cardStore.products[i];
+
+        var productType = dataItem.product_type;
+        var designator = dataItem.designator;
+        var days = dataItem.days;
+        var rechargesPending = dataItem.recharges_pending;
+        var remainingValue = dataItem.remaining_value;
+        var remainingRides = dataItem.remaining_rides;
+        var start_date = dataItem.start_date_str;
+        var exp_date = dataItem.exp_date_str;
+        var start_date_epoch_days = dataItem.start_date_epoch_days;
+        var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+        var bad_listed = dataItem.is_prod_bad_listed;
+        var textProductType = '';
+        var cardBalance = '';
+        var productDescription = '';
+        var productStatus = '';
+
+        switch (productType) {
+          case 1:
+
+            if (exp_date_epoch_days > 1) {
+              cardBalance = "Exp: " + exp_date;
+            } else {
+              cardBalance = (days + 1) + " Days";
+            }
+
+            productDescription = (days + 1) + " Day Pass";
+
+            if (rechargesPending > 0) {
+              productStatus += " (" + rechargesPending + " Pending)"
+            }
+
+            break;
+          case 2:
+            if (1 == remainingRides) {
+              cardBalance = remainingRides + " Ride";
+            } else {
+              cardBalance = remainingRides + " Rides";
+            }
+            productDescription = 'Stored Ride Pass';
+            break;
+          case 3:
+
+            var remaining_value = 0;
+
+            if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+              remaining_value = dataItem.remaining_value / 100;
+            }
+
+            productDescription = 'Pay As You Go';
+            cardBalance = "$" + remaining_value.toFixed(2);
+
+            break;
+          case 7:
+
+            productDescription = "Employee Pass";
+
+            if (exp_date_epoch_days > 1) {
+              cardBalance = "Exp: " + exp_date;
+            }
+
+            break;
+          default:
+            productDescription = "Unknown Product";
+            break;
+        }
+
+        // var ticketKey = productType + "_" + designator;
+
+        //  var carddata = new Array(cardStore);
+
+        //  cardStore.products.forEach(cardElement => {
+        JSON.parse(catalog).Offering.forEach(catalogElement => {
+          if (catalogElement.Ticket != undefined) {
+            if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
+              //  var catalogdata = {
+              //    "ticketid": 
+              //  }
+              return productDescription = catalogElement.Ticket.Description
+
+            }
+          }
+        });
+        // });
+
+
+        // don't print anything if your stored value is $0
+        if ((3 != productType) || (0 < remaining_value)) {
+
+          var receiptWidth = 44;
+          var padSize = 0;
+          var maxDescriptionLength = receiptWidth - 16;
+
+          if (productDescription.length >= maxDescriptionLength) {
+            productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+          }
+
+          receipt += productDescription;
+
+          padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+          var spacer = '';
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          receipt += spacer + cardBalance + "\n";
+        }
+      }
+      receipt += "\n";
+    }
+    else {
+      console.log("Receipt printing: No smart cards stored.");
+    }
+    receipt += "\n\n";
+    console.log("receipt", receipt)
+    // APOS.util.PrintService.printReceipt(receipt, timestamp);
+    this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
+    console.log(receipt + 'generateReceipt receipt ');
+    console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
+  }
+
 }
