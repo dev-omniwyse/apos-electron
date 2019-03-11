@@ -26,6 +26,7 @@ import { ShiftsComponent } from './components/shifts/shifts.component'
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
 import { NgxLoadingModule } from 'ngx-loading'
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { EnvironmentComponent } from './components/environment/environment.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +47,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     DeviceconfComponent,
     ShiftSalesSummaryComponent,
     ShiftsComponent,
-    AddMagneticProductComponent 
+    AddMagneticProductComponent,
+    EnvironmentComponent 
     
   ],
   imports: [
