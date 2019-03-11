@@ -6,7 +6,7 @@
     </div>
     <div class="container-right">
         <div class="cr-r-set">
-            <h1><span class="label label-primary cr-label">${{productTotal}}</span></h1>
+            <h1><span class="label label-primary cr-label">${{productTotal/100 | number : '1.2-2'}}</span></h1>
             <div class="flex">
                 <div class="cr-left">
                     <div class="number-btns-set-3" *ngFor="let digit of numberDigits">

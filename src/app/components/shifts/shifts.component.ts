@@ -17,8 +17,8 @@ export class ShiftsComponent implements OnInit {
   zeroDigits: any = ["0", "00"]
   productTotal: any = 0;
   openShift: Boolean = true
-  hideModalPopup: Boolean = false
-
+  hideModalPopup: Boolean = false;
+  
   // mainShiftClosed: Boolean = false
 
   constructor( private formBuilder: FormBuilder,private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) { }
@@ -124,7 +124,6 @@ export class ShiftsComponent implements OnInit {
     })
   }
   ngOnInit() {
-
   }
 
 }
