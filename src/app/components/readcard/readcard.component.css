@@ -19,6 +19,16 @@ color: #fff;
 font-size: 22px;
 position: relative;
 margin: 1px 400px 10px;
+
+}
+
+.cardBtn
+.cardBtn:disabled,
+.cardBtn[disabled]{
+  background-color: #ccc;
+  border: 1px solid #999;
+  cursor: not-allowed;
+  color: #666;
 }
 
 .cardBtn img {

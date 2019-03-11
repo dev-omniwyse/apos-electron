@@ -59,7 +59,7 @@ function createWindow() {
   // win.webContents.openDevTools();
 
   // The following is optional and will open the DevTools:
-  //  win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
   win.on("closed", () => {
     win = null;
@@ -78,8 +78,8 @@ app.on("window-all-closed", () => {
 });
 
 app.on('before-quit', () => {
-    mainWindow.removeAllListeners('close');
-    mainWindow.close();
+  mainWindow.removeAllListeners('close');
+  mainWindow.close();
 });
 
 // initialize the app's main window
@@ -456,7 +456,7 @@ ipcMain.on('saveOffering', (event, offerings) => {
 
 ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
   var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
-  var result = posAppletInstance.updateCardDataSync("changecardexp",transactionDate.toString());
+  var result = posAppletInstance.updateCardDataSync("changecardexp", transactionDate.toString());
   event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 

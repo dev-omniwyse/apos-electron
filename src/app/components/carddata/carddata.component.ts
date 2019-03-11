@@ -75,6 +75,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   @Input() public Carddata;
   merchantise = [];
   merchantList: any = [];
+  areExistingProducts: any = [];
   encodeParseData: any = [];
   encodeJsonData: any = [];
   readCarddata: any = {};
@@ -83,6 +84,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   encodedProductCardData: any = [];
   currentCard: any = [];
   currentCardMerchantList: any = [];
+  currentExistingProducts: any = [];
   cardIndex: any = 0;
   carddata: any = [];
   transactionId: any = "";
@@ -105,6 +107,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.merchantList = localStorage.getItem('encodeData');
       this.productCardList = localStorage.getItem('productCardData');
       this.encodeParseData = JSON.parse(this.merchantList);
+      this.areExistingProducts = JSON.parse(localStorage.getItem('areExistingProducts'))
       this.encodedProductCardData = JSON.parse(this.productCardList);
       this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
       let item = JSON.parse(localStorage.getItem("catalogJSON"));
@@ -198,27 +201,99 @@ export class CarddataComponent implements OnInit, OnChanges {
               shiftType = shiftReportElement.shiftType;
             }
           })
-          var slotNumberStatusIndex :any = 0;
+          var slotNumberStatusIndex: any = 0;
           this.cardJson.forEach(element => {
             this.currentCardMerchantList.forEach(walletElement => {
-              var jsonWalletObj = { "transactionID": this.transactionId, "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": this.status[slotNumberStatusIndex], "slotNumber": this.slotNumber[slotNumberStatusIndex], "startDate": (walletElement.DateEffective / (1000 * 60 * 60 * 24)), "expirationDate": (walletElement.DateExpires / (1000 * 60 * 60 * 24)), "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.UnitPrice, "totalCost": this.transactionAmount, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": element.printed_id, "cardUID": element.uid, "walletTypeId": 3, "shiftType": shiftType, "timestamp": new Date().getTime() }
+              var rechargesPending = 0;
+              if (this.carddata[0].products != undefined) {
+                this.carddata[0].products.forEach(cardElement => {
+                  if (walletElement.Ticket.Group == 1 && cardElement.product_type == 1 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                    rechargesPending = cardElement.recharges_pending;
+                  }
+                });
+              }
+              var jsonWalletObj = {
+                "transactionID": this.transactionId,
+                "quantity": 1,
+                "productIdentifier": walletElement.ProductIdentifier,
+                "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
+                "ticketValue": (walletElement.Ticket.Group == 3) ? walletElement.UnitPrice : walletElement.Ticket.Value,
+                "status": this.status[slotNumberStatusIndex],
+                "slotNumber": this.slotNumber[slotNumberStatusIndex],
+                "startDate": (walletElement.DateEffective / (1000 * 60 * 60 * 24)),
+                "expirationDate": 0,//(walletElement.DateExpires / (1000 * 60 * 60 * 24)),
+                "balance": walletElement.UnitPrice,
+                "rechargesPending": rechargesPending,
+                "IsMerchandise": walletElement.IsMerchandise,
+                "IsBackendMerchandise": false,
+                "IsFareCard": false,
+                "unitPrice": walletElement.UnitPrice,
+                "totalCost": this.transactionAmount,
+                "userID": localStorage.getItem("userEmail"),
+                "shiftID": 1,
+                "fareCode": fareCode,
+                "offeringId": walletElement.OfferingId,
+                "cardPID": element.printed_id,
+                "cardUID": element.uid,
+                "walletTypeId": 3,
+                "shiftType": shiftType,
+                "timestamp": new Date().getTime()
+              }
               walletObj.push(jsonWalletObj);
               slotNumberStatusIndex++;
             });
-            var JsonObj: any = { "transactionID": this.transactionId, "cardPID": element.printed_id, "cardUID": element.uid, "quantity": (this.isNew) ? 1 : 0, "productIdentifier": JSON.parse(localStorage.getItem("smartCardProductIndentifier")), "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": element.card_expiration_date, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": false, "IsFareCard": true, "unitPrice": (this.isNew) ? unitPrice : 0, "totalCost": (this.isNew) ? unitPrice : 0, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 3, "shiftType": shiftType, "timestamp": new Date().getTime() };
+            var JsonObj: any = {
+              "transactionID": this.transactionId,
+              "cardPID": element.printed_id,
+              "cardUID": element.uid,
+              "quantity": (this.isNew) ? 1 : 0,
+              "productIdentifier": JSON.parse(localStorage.getItem("smartCardProductIndentifier")),
+              "ticketTypeId": null,
+              "ticketValue": 0,
+              "slotNumber": 0,
+              "expirationDate": element.card_expiration_date,
+              "balance": 0,
+              "IsMerchandise": false,
+              "IsBackendMerchandise": false,
+              "IsFareCard": true,
+              "unitPrice": (this.isNew) ? unitPrice : 0,
+              "totalCost": (this.isNew) ? unitPrice : 0,
+              "userID": localStorage.getItem("userEmail"),
+              "shiftID": 1,
+              "fareCode": fareCode,
+              "walletContentItems": walletObj,
+              "walletTypeId": 3,
+              "shiftType": shiftType,
+              "timestamp": new Date().getTime()
+            };
             this.JsonObjCardObj.push(JsonObj);
 
           });
           if (localStorage.getItem("paymentMethodId") == "8") {
-            var paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": localStorage.getItem("compReason") }
+            var paymentObj = {
+              "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+              "amount": this.transactionAmount,
+              "comment": localStorage.getItem("compReason")
+            }
           } else {
-            paymentObj = { "paymentMethodId": Number(localStorage.getItem("paymentMethodId")), "amount": this.transactionAmount, "comment": null }
+            paymentObj = {
+              "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+              "amount": this.transactionAmount,
+              "comment": null
+            }
           }
           var transactionObj =
           {
-            "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": this.transactionId, "transactionType": "Charge", "transactionAmount": this.transactionAmount, "salesAmount": this.transactionAmount, "taxAmount": 0,
+            "userID": localStorage.getItem("userEmail"),
+            "timestamp": new Date().getTime(),
+            "transactionID": this.transactionId,
+            "transactionType": "Charge",
+            "transactionAmount": this.transactionAmount,
+            "salesAmount": this.transactionAmount,
+            "taxAmount": 0,
             "items": this.JsonObjCardObj,
-            "payments": [paymentObj], "shiftType": shiftType
+            "payments": [paymentObj],
+            "shiftType": shiftType
           }
           console.log("transObj" + JSON.stringify(transactionObj));
           this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
@@ -255,12 +330,12 @@ export class CarddataComponent implements OnInit, OnChanges {
         console.log(data);
         this._ngZone.run(() => {
           if ((this.cardJson.length - 1) == this.cardIndex) {
-            var encodeddata:any = [];
+            var encodeddata: any = [];
             encodeddata = new Array(JSON.parse(data));
             encodeddata[0].forEach(element => {
               this.slotNumber.push(element.slotNumber);
               this.status.push(element.status);
-            });   
+            });
             this.isFromCardComponent = true;
             this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
           }
@@ -319,6 +394,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.encodedProductCardData.forEach(element => {
       if (element == this.cardJson[this.cardIndex].printed_id) {
         this.currentCardMerchantList.push(this.encodeParseData[dataIndex]);
+        this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
       }
       dataIndex++
     });
@@ -348,8 +424,18 @@ export class CarddataComponent implements OnInit, OnChanges {
     console.log("product list data", this.currentCardMerchantList);
     this.encodeJsonData = [];
     var JsonObj;
+    var currentIndex = 0;
     this.currentCardMerchantList.forEach(element => {
-      if (element.Ticket.Group == 1)
+      if (element.Ticket.Group == 1) {
+        var rechargesPending = 0;
+        if (this.currentExistingProducts[currentIndex]) {
+          this.currentCard.products.forEach(cardElement => {
+            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+              rechargesPending = (cardElement.recharges_pending + 1);
+            }
+          })
+
+        }
         JsonObj = {
           "product_type": element.Ticket.Group,
           "designator": element.Ticket.Designator,
@@ -360,19 +446,29 @@ export class CarddataComponent implements OnInit, OnChanges {
           "is_linked_to_user_profile": false,
           "type_expiration": element.Ticket.ExpirationTypeId,
           "add_time": 240,
-          "recharges_pending": 0,
+          "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
           "days": element.Ticket.Value,
           "isAccountBased": element.IsAccountBased,
           "isCardBased": element.IsCardBased
         }
+      }
       else if (element.Ticket.Group == 2) {
+        var rechargeRides = 0;
+        if (this.currentExistingProducts[currentIndex]) {
+          this.currentCard.products.forEach(cardElement => {
+            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+              rechargeRides = cardElement.recharge_rides + element.Ticket.Price;
+            }
+          })
+
+        }
         JsonObj = {
           "product_type": element.Ticket.Group,
           "designator": element.Ticket.Designator,
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
-          "remaining_rides": element.Ticket.Value,
-          "recharge_rides": 0,
+          "remaining_rides": element.Ticket.Price,
+          "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
           "threshold": 0,
           "is_linked_to_user_profile": false,
           "isAccountBased": element.IsAccountBased,
@@ -380,19 +476,28 @@ export class CarddataComponent implements OnInit, OnChanges {
         }
       }
       else if (element.Ticket.Group == 3) {
+        var remainingValue = 0;
+        if (this.currentExistingProducts[currentIndex]) {
+          this.currentCard.products.forEach(cardElement => {
+            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+              remainingValue = (cardElement.remaining_value) + (element.Ticket.Price * 100);
+            }
+          })
+
+        }
         JsonObj = {
           "product_type": element.Ticket.Group,
           "designator": element.Ticket.Designator,
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": element.Ticket.Price * 100,
+          "remaining_value": (element.Ticket.Price * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element.IsAccountBased,
           "isCardBased": element.IsCardBased
         }
       }
       this.encodeJsonData.push(JsonObj);
-
+      currentIndex++;
     });
 
     console.log(this.encodeJsonData);

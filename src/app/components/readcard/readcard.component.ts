@@ -217,14 +217,18 @@ export class ReadcardComponent implements OnInit {
                                     if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
                                         var remainingValue = "";
                                         var productName = "";
+                                        var status = cardElement.status;
                                         if (cardElement.product_type == 1)
                                             productName = "Frequent Ride"
                                         else if (cardElement.product_type == 2)
                                             productName = "Stored Ride"
                                         else if (cardElement.product_type == 3)
                                             productName = "Pay As You Go"
-                                        if (cardElement.product_type == 1)
+                                        if (cardElement.product_type == 1){
                                             remainingValue = cardElement.days + " Days";
+                                            var pendingText =  (cardElement.recharges_pending > 0)?" ("+cardElement.recharges_pending+" Pending)":"";
+                                            status = status + pendingText;
+                                        }
                                         else if (cardElement.product_type == 2)
                                             remainingValue = cardElement.remaining_rides + " Rides";
                                         else
@@ -233,7 +237,7 @@ export class ReadcardComponent implements OnInit {
 
                                             "product": productName,
                                             "description": catalogElement.Ticket.Description,
-                                            "status": cardElement.status,
+                                            "status":  status,
                                             "remainingValue": remainingValue
                                         }
                                         keepGoing = false;
@@ -391,16 +395,12 @@ export class ReadcardComponent implements OnInit {
 
                 if (element.shiftState == "3" && element.shiftType == "0") {
                     this.statusOfShiftReport = "Main Shift is Closed"
-                    this.disableCards = true
+                    this.disableCards = true 
                 } else {
                     this.disableCards = false
                 }
             })
         }
-
-
-
-
     }
 
     checkIfcardIsEmpty() {

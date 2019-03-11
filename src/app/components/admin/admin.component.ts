@@ -104,7 +104,7 @@ export class AdminComponent implements OnInit {
         //   }
         // }
         //alert(isSyncDone)
-        if (isSyncDone === false) {
+        if (isSyncDone == false) {
           // alert("inside if")
           console.log("isSyncDone", isSyncDone)
           this.intervalSyc = setInterval(() => {
@@ -113,10 +113,10 @@ export class AdminComponent implements OnInit {
               this.numOfAttempts += 1
               this.electronService.ipcRenderer.send('isSyncCompleted')
             }
-          }, 1500)
+          }, 1000)
         }
         else if (isSyncDone == true) {
-          isSyncDone = false
+          // isSyncDone = false
           clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")

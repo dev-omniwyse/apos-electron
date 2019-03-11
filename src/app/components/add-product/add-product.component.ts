@@ -93,8 +93,12 @@ export class AddProductComponent implements OnInit {
   isMagnetic = false;
   isMerchendise = false;
   terminalConfigJson: any = [];
+  areExistingProducts: any = [];
   isfromAddProduct = false;
-
+  maxRechargesPendingReached = false;
+  maxRechargeRidesReached = false;
+  maxRemainingValueReached = false;
+  maxLimitErrorMessages: String = "";
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -259,7 +263,58 @@ export class AddProductComponent implements OnInit {
     //console.log('read call', cardName)
   }
 
+  isMaxProductLengthReached(selectedItem: any) {
+    var isExistingProducts = false;
+    var isProductLimitReached = false;
+    this.currentCard.products.forEach(element => {
+      if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
+        if ((element.product_type == 1 && element.recharges_pending <= this.terminalConfigJson.MaxPendingCount) ||
+          (element.product_type == 2 && ((element.recharge_rides + selectedItem.Ticket.Value) <= 255)) ||
+          (element.product_type == 3 && ((element.remaining_value + (selectedItem.Ticket.Price * 100)) / 100) <= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
+          if (element.product_type == 1 && element.recharges_pending >= this.terminalConfigJson.MaxPendingCount) {
+            this.maxRechargesPendingReached = true;
+            this.maxLimitErrorMessages = "Max pending product limit reached.";
+            return;
+          }
+          else if (element.product_type == 2 && ((element.recharge_rides + selectedItem.Ticket.Price) >= 255)) {
+            this.maxRechargeRidesReached = true;
+            this.maxLimitErrorMessages = "Max stores ride limit reached.";
+            return;
+          }
+          else if (element.product_type == 3 && (((element.remaining_value + (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
+            this.maxRemainingValueReached = true;
+            this.maxLimitErrorMessages = "Max stored value limit reached.";
+            return;
+          }
+          isExistingProducts = true;
+          this.areExistingProducts.push(true);
+        }
+        else {
+          isExistingProducts = false;
+        }
+
+      }
+    });
+    if (!isExistingProducts) {
+      this.areExistingProducts.push(false);
+      if (this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts)
+        isProductLimitReached = true
+    }
+    return isProductLimitReached;
+  }
+
   getSelectedProductData(merch) {
+    if (this.isMaxProductLengthReached(merch)) {
+      if (this.maxRechargesPendingReached || this.maxRechargeRidesReached || this.maxRemainingValueReached) {
+        this.maxRechargesPendingReached = false;
+        this.maxRechargeRidesReached = false;
+        this.maxRemainingValueReached = false;
+        $("#maxCardLimitModal").modal('show');
+        return
+      }
+      $("#magneticCardLimitModal").modal('show');
+      return;
+    }
     this.merchantList.push(merch);
     this.productCardList.push(this.currentCard.printed_id)
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
@@ -285,6 +340,7 @@ export class AddProductComponent implements OnInit {
     var selectedIndex = this.merchantList.indexOf(merch);
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
+    this.areExistingProducts.splice(selectedIndex, 1);
   }
 
   removeMerchProduct(merch) {
@@ -308,6 +364,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('productCardData', JSON.stringify(this.productCardList));
     localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
     localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
+    localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     this.checkout = false;
   }
 
@@ -475,15 +532,70 @@ export class AddProductComponent implements OnInit {
     //Magnetic
     if (this.isMagnetic) {
       this.MagneticList.forEach(walletElement => {
-        var jsonWalletObj = { "transactionID": new Date().getTime(), "quantity": 1, "productIdentifier": walletElement.ProductIdentifier, "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId, "ticketValue": walletElement.Ticket.Value, "status": "ACTIVE", "slotNumber": 3, "startDate": walletElement.DateEffective, "expirationDate": walletElement.DateExpires, "balance": walletElement.UnitPrice, "rechargesPending": 0, "IsMerchandise": walletElement.IsMerchandise, "IsBackendMerchandise": false, "IsFareCard": false, "unitPrice": walletElement.UnitPrice, "totalCost": this.productTotal, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "offeringId": walletElement.OfferingId, "cardPID": "Magnetic 1", "cardUID": new Date().getTime(), "walletTypeId": 3, "shiftType": shiftType, "timestamp": new Date().getTime() }
+        var jsonWalletObj = {
+          "transactionID": new Date().getTime(),
+          "quantity": 1,
+          "productIdentifier": walletElement.ProductIdentifier,
+          "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
+          "ticketValue": walletElement.Ticket.Value,
+          "status": "ACTIVE",
+          "slotNumber": 3,
+          "startDate": walletElement.DateEffective,
+          "expirationDate": walletElement.DateExpires,
+          "balance": walletElement.UnitPrice,
+          "rechargesPending": 0,
+          "IsMerchandise": walletElement.IsMerchandise,
+          "IsBackendMerchandise": false,
+          "IsFareCard": false,
+          "unitPrice": walletElement.UnitPrice,
+          "totalCost": this.productTotal,
+          "userID": localStorage.getItem("userEmail"),
+          "shiftID": 1,
+          "fareCode": fareCode,
+          "offeringId": walletElement.OfferingId,
+          "cardPID": "Magnetic 1",
+          "cardUID": new Date().getTime(),
+          "walletTypeId": 3,
+          "shiftType": shiftType,
+          "timestamp": new Date().getTime()
+        }
         walletObj.push(jsonWalletObj);
       });
-      var JsonObj: any = { "transactionID": new Date().getTime(), "cardPID": "Magnetic 1", "cardUID": new Date().getTime(), "quantity": 1, "productIdentifier": JSON.parse(localStorage.getItem("magneticProductIndentifier")), "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "expirationDate": 0, "balance": 0, "IsMerchandise": false, "IsBackendMerchandise": true, "IsFareCard": true, "unitPrice": unitPrice, "totalCost": unitPrice, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": fareCode, "walletContentItems": walletObj, "walletTypeId": 10, "shiftType": shiftType, "timestamp": new Date().getTime() };
+      var JsonObj: any = {
+        "transactionID": new Date().getTime(),
+        "cardPID": "Magnetic 1",
+        "cardUID": new Date().getTime(),
+        "quantity": 1,
+        "productIdentifier": JSON.parse(localStorage.getItem("magneticProductIndentifier")),
+        "ticketTypeId": null,
+        "ticketValue": 0,
+        "slotNumber": 0,
+        "expirationDate": 0,
+        "balance": 0,
+        "IsMerchandise": false,
+        "IsBackendMerchandise": true,
+        "IsFareCard": true,
+        "unitPrice": unitPrice,
+        "totalCost": unitPrice,
+        "userID": localStorage.getItem("userEmail"),
+        "shiftID": 1,
+        "fareCode": fareCode,
+        "walletContentItems": walletObj,
+        "walletTypeId": 10,
+        "shiftType": shiftType,
+        "timestamp": new Date().getTime()
+      };
       jsonMagneticObj.push(JsonObj);
 
       var magneticTransactionObj =
       {
-        "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": new Date().getTime(), "transactionType": "Charge", "transactionAmount": this.productTotal, "salesAmount": this.productTotal, "taxAmount": 0,
+        "userID": localStorage.getItem("userEmail"),
+        "timestamp": new Date().getTime(),
+        "transactionID": new Date().getTime(),
+        "transactionType": "Charge",
+        "transactionAmount": this.productTotal,
+        "salesAmount": this.productTotal,
+        "taxAmount": 0,
         "items": jsonMagneticObj,
         "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
       }
@@ -493,12 +605,35 @@ export class AddProductComponent implements OnInit {
     // Merchandise
     else if (this.nonFare == false && this.regularRoute == true) {
       this.merchantiseList.forEach(merchandiseElement => {
-        var merchandiseObj: any = { "transactionID": new Date().getTime(), "quantity": 1, "productIdentifier": merchandiseElement.ProductIdentifier, "ticketTypeId": null, "ticketValue": 0, "slotNumber": 0, "balance": 0, "IsMerchandise": true, "IsBackendMerchandise": true, "IsFareCard": false, "unitPrice": merchandiseElement.UnitPrice, "totalCost": merchandiseElement.UnitPrice, "tax": 0, "userID": localStorage.getItem("userEmail"), "shiftID": 1, "fareCode": null, "shiftType": shiftType, "timestamp": new Date().getTime() };
+        var merchandiseObj: any = {
+          "transactionID": new Date().getTime(),
+          "quantity": 1, "productIdentifier": merchandiseElement.ProductIdentifier,
+          "ticketTypeId": null,
+          "ticketValue": 0,
+          "slotNumber": 0,
+          "balance": 0,
+          "IsMerchandise": true,
+          "IsBackendMerchandise": true,
+          "IsFareCard": false,
+          "unitPrice": merchandiseElement.UnitPrice,
+          "totalCost": merchandiseElement.UnitPrice,
+          "tax": 0, "userID": localStorage.getItem("userEmail"),
+          "shiftID": 1,
+          "fareCode": null,
+          "shiftType": shiftType,
+          "timestamp": new Date().getTime()
+        };
         jsonMerchandiseObj.push(merchandiseObj);
       });
       var merchandiseTransactionObj =
       {
-        "userID": localStorage.getItem("userEmail"), "timestamp": new Date().getTime(), "transactionID": new Date().getTime(), "transactionType": "Charge", "transactionAmount": this.productTotal, "salesAmount": this.productTotal, "taxAmount": 0,
+        "userID": localStorage.getItem("userEmail"),
+        "timestamp": new Date().getTime(),
+        "transactionID": new Date().getTime(),
+        "transactionType": "Charge",
+        "transactionAmount": this.productTotal,
+        "salesAmount": this.productTotal,
+        "taxAmount": 0,
         "items": jsonMerchandiseObj,
         "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
       }
