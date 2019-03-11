@@ -14,7 +14,7 @@ const httpOptions = {
   )
 };
 
-const apiUrl = "https://api.uat.gfcp.io/services/data-api/v1/wpf/id_card/updateExisting?tenant=CDTA&access_token=6294ffc6-1189-4803-8ddf-6a99f039f37a"
+const apiUrl = "https://api.qe.gfcp.io/services/data-api/v1/wpf/id_card/updateExisting?tenant=CDTA&access_token=6294ffc6-1189-4803-8ddf-6a99f039f37a"
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +58,7 @@ setterminalNumber(mission: string) {
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }
-    return this.http.post('https://cdta-uat.gfcp.io/login', JSON.stringify(userInfo), {
+    return this.http.post('https://cdta-qe.gfcp.io/login', JSON.stringify(userInfo), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         "accept": "application/json"

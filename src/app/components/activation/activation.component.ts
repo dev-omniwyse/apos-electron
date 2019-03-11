@@ -63,7 +63,7 @@ export class ActivationComponent implements OnInit {
                   setupCode: form.value.setupid,
                 }
                 localStorage.setItem("assetId", form.value.hardware);
-              this.electronService.ipcRenderer.send('verifycall', data, "uat")
+              this.electronService.ipcRenderer.send('verifycall', data, "qe")
               console.log('read call', event)
               }
       }

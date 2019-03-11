@@ -371,6 +371,13 @@ ipcMain.on('compensation', (event, catalog) => {
   event.sender.send('compensationResult', result);
 })
 
+ipcMain.on('printReceipt', (event, TransData, timestamp) => {
+  logger.info("printReceipt  Data", TransData)
+  var timeStamp = java.newLong(Number( timestamp));
+  var result = posAppletInstance.printReceiptSync( TransData, timeStamp);
+  logger.info("printReceipt Result data", '' + result)
+  event.sender.send('printReceiptResult', result);
+})
 
 /** ADMIN METHODS STARTS HERE*/
 
