@@ -91,6 +91,7 @@ export class AdminComponent implements OnInit {
         if (!isSyncDone) {
           console.log("isSyncDone", isSyncDone)
           timer = setTimeout(() => {
+            
             if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
               this.numOfAttempts++;
               this.electronService.ipcRenderer.send('isSyncCompleted')
