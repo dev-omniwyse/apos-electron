@@ -16,6 +16,7 @@ import {DeviceconfComponent} from './components/deviceconf/deviceconf.component'
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component'
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
+import { EnvironmentComponent } from './components/environment/environment.component';
 const routes: Routes = [
   { 
     path: '', 

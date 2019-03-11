@@ -1,16 +1,87 @@
-.shift-report-status {
-    text-align: center;
-    background-color: #fefaf7;
-    padding: 10px;
-    width: 60%;
-    margin: 0 auto 20px;
-    border-radius: 3px;
-    border: 1px dashed #f8ceb3;
-    color: #d65400;
+.login-bg {
+    background-color: #f0f3fa
 }
 
-.terminal-locked{
+.header-logo {
+    background-color: #fff;
+}
+
+.header-logo img {
+    margin: 0 auto;
+}
+
+.shift-report-status {
     text-align: center;
-    padding: 15px;
+    background-color: #d65400;
+    padding: 5px 10px;
+    width: 100%;
+    margin: 0 auto 20px;
+    color: #fff;
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.terminal-locked {
+    text-align: center;
     color: #3b80c3;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    left: 0;
+    padding: 30px;
+    font-size: 22px;
+    z-index: 9;
+    border: 1px dashed #3b80c342;
+}
+
+.login-bottom {
+    height: calc(100vh - 250px);
+    width: 50%;
+    margin: 0 auto;
+}
+
+.login-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 80%;
+    display: table;
+    text-align: center
+}
+
+.login-container input {
+    color: #333;
+    border: 0;
+    border-bottom: solid 1px #cbcbcb;
+    width: 100%;
+    padding: 14px 10px;
+    font-size: 17px;
+    font-weight: 100;
+}
+
+.login-container button {
+    width: 80%;
+    padding: 17px;
+    font-size: 23px;
+    background-color: #d65400;
+    border: 1px solid #D64900;
+    border-radius: 7px;
+    color: #fff;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 40px;
+}
+
+.login-container button:hover {
+    background-color: #D64900;
+}
+
+.login-container input::placeholder {
+    color: #B8B8B8;
+    opacity: 1;
+    /* Firefox */
 }

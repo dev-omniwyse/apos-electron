@@ -9,25 +9,34 @@ body {
 }
 
 .main-container {
+    background-color: #777777;
+    padding: 10px;
+    overflow: hidden;
+    height: calc(100vh - 75px);
+}
+
+.blue-bg-admin {
+    padding: 10px;
     background-color: #f0f3fa;
-    display: flex;
-    padding: 5px
+    overflow: hidden;
+    border-radius: 3px;
+    height: calc(100vh - 93px);
 }
 
 .container-left {
-    width: 35%;
+    width: 40%;
     float: left;
     background-color: #fff;
     border-radius: 5px;
-    margin: 0 5px;
     padding: 20px;
+    height: calc(100vh - 110px);
+    position: relative;
 }
 
 .container-right {
-    width: 65%;
+    width: 60%;
     float: left;
     background-color: #f0f3fa;
-    margin: 0 5px;
     border-radius: 5px;
     padding: 20px;
 }
@@ -188,9 +197,7 @@ body {
 
 .container-l-app {
     width: 100%;
-    background-color: #fafafa;
     padding: 20px;
-    border: 1px solid #ccc;
     min-height: 300px;
 }
 
@@ -277,8 +284,10 @@ body {
 }
 
 .cr-r-set {
-    width: 80%;
-    margin: 0 auto
+    width: 100%;
+    margin: 0 auto;
+    height: calc(100vh - 150px);
+    position: relative;
 }
 
 .tab-sets {
@@ -330,17 +339,21 @@ body {
 .main-shift-row {
     overflow: hidden;
     padding: 5px 0;
+    font-size: 18px;
+    color: #000;
 }
 
 .main-shift-head {
     border-bottom: 1px solid #ccc;
-    padding: 5px 0;
-    color: green;
+    padding: 5px;
     margin-bottom: 15px;
+    background-color: #3b80c5;
+    color: #fff;
+    font-size: 19px;
 }
 
 .hr-css {
-    border-top: 1px solid #e7e7e7;
+    border-top: 1px solid #ccc;
     margin: 2px 0;
 }
 
@@ -348,11 +361,11 @@ body {
     width: 100%;
     margin-top: 15px;
     border: 1px solid #D64900;
-    border-radius: 3px;
+    border-radius: 5px;
     background-color: #d65400;
-    padding: 15px;
+    padding: 55px 0;
     color: #fff;
-    font-size: 22px;
+    font-size: 24px;
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -360,6 +373,7 @@ body {
 
 .cr-right-btns {
     width: 100%;
+    height: 71vh;
 }
 
 .cr-right-btns button {
@@ -368,8 +382,8 @@ body {
     border: 1px solid #337ab7;
     border-radius: 5px;
     color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
+    font-size: 20px;
+    padding: 24px 15px;
     margin: 5px 0;
 }
 
@@ -378,17 +392,43 @@ body {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
+    font-size: 22px;
+    padding: 20px 85px;
+    position: relative;
+}
+
+.back-to-sales i {
+    position: absolute;
+    left: 16px;
+    top: 23px;
 }
 
 .back-sales-txt {
     margin: 20px 0 15px 0;
+    font-size: 17px;
+    color: #003c79;
 }
 
 .main-shift-heads {
-    color: #337ab7;
-    font-weight: bold;
+    color: red;
+    font-weight: 100;
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+}
+
+.apos-version {
+    font-size: 17px;
+    position: absolute;
+    bottom: 30px;
+    text-align: center;
+    width: 100%;
+    color: #000;
+}
+
+.device-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }

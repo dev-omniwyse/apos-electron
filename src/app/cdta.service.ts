@@ -58,7 +58,7 @@ setterminalNumber(mission: string) {
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }
-    return this.http.post('https://cdta-qe.gfcp.io/login', JSON.stringify(userInfo), {
+    return this.http.post('https://tarc-qe.gfcp.io/login', JSON.stringify(userInfo), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         "accept": "application/json"

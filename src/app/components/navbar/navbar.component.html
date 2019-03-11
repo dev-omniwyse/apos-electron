@@ -1,12 +1,11 @@
-<div class="header flex">
-    <div class="header-logo pull-left"><img src="assets/images/logo-header.png" /></div>
+<div class="header ">
+    <div class="header-logo pull-left">
+        <img class="pull-left" src="assets/images/logo-header.png" />
+        <div class="header-time">Time Here</div>
+    </div>
     <div class="header-info pull-right">
         <div class="login-info">
-            <!-- <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
-            <button class="pull-left" (click)="logOut();">logout</button>
-            <div class="pull-left">Menu</div> -->
             <div *ngIf="terminalNumber" class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
-            <!-- <div class="pull-left"><a href="#">logout</a></div> -->
             <div *ngIf="terminalNumber" class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>
@@ -17,7 +16,6 @@
                 </div>
             </div>
 
-            <!-- <div class="pull-left">Menu</div> -->
             <div class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">APPS <i class="fa fa-bars"></i></button>
@@ -29,6 +27,7 @@
             </div>
         </div>
     </div>
+    <div class="clearfix"></div>
 </div>
 
 <div id="status-buttons" *ngIf="hideHeader">
