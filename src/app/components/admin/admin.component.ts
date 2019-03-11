@@ -1,7 +1,9 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ɵMethodFn } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import { MethodFn } from '@angular/core/src/reflection/types';
+import { MethodCall } from '@angular/compiler';
 // import {setInterval, clearInterval} from 'timers';
 declare var $: any
 
@@ -27,7 +29,8 @@ export class AdminComponent implements OnInit {
   public deviceInfoNew: Boolean = false
   intervalSyc: any
   configData: any
-
+  SyncMethod: any
+  isCurrentSync: Boolean = false;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
@@ -79,50 +82,36 @@ export class AdminComponent implements OnInit {
       }
     });
 
-    this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, isSyncDone) => {
+    this.SyncMethod = this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, data) => {
+      console.log("data synch", data)
+      console.log("number of attempts", this.numOfAttempts)
+      var isSyncDone: boolean = Boolean(data);
+      var timer:any;
       this._ngZone.run(() => {
-        // this.numOfAttempts++;
-        // console.log(" this.numOfAttempts", this.numOfAttempts)
-        // if (isSyncDone == false) {
-        //   if (this.numOfAttempts < 10000) {
-        //     this.electronService.ipcRenderer.send('isSyncCompleted')
-        //   }
-        //   else {
-        //     $("#continueSyncModal").modal("hide")
-        //     $("#errorSyncModal").modal("show")
-        //   }
-        // } else if (isSyncDone) {
-        //   $("#continueSyncModal").modal("hide")
-        //   $("#successSyncModal").modal("show")
-        //   this.electronService.ipcRenderer.send('adminDeviceConfig')
-        //   if (this.deviceInfoNew == true) {
-        //     var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
-        //     UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
-        //     UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
-        //     localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
-        //    // $("#successSyncModal").modal("show")
-        //   }
-        // }
-        //alert(isSyncDone)
-        if (isSyncDone == false) {
-          // alert("inside if")
+        if (!isSyncDone) {
           console.log("isSyncDone", isSyncDone)
-          this.intervalSyc = setInterval(() => {
-            if (isSyncDone == false && this.numOfAttempts < 600) {
-              isSyncDone = true
-              this.numOfAttempts += 1
+          timer = setTimeout(() => {
+            if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
+              this.numOfAttempts++;
               this.electronService.ipcRenderer.send('isSyncCompleted')
             }
-          }, 1000)
+          }, 1000);
+          // this.intervalSyc = setInterval(() => {
+          //   if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
+          //     this.numOfAttempts++;
+          //     this.electronService.ipcRenderer.send('isSyncCompleted')
+          //   }
+          // }, 2000)
         }
         else if (isSyncDone == true) {
-          // isSyncDone = false
-          clearInterval(this.intervalSyc);
+          this.isCurrentSync = false;
+          clearTimeout(timer);
+         // clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
           console.log("sync has been done buddy")
-          // this.electronService.ipcRenderer.removeAllListeners("adminSyncResult");
-          // this.electronService.ipcRenderer.removeAllListeners("isSyncCompletedResult");
+          // this.electronService.ipcRenderer.removeListener("isSyncCompletedResult",this.SyncMethod);
+          // this.electronService.ipcRenderer.removeListener("adminSyncResult");
           // if (isSyncDone) {
           // this.electronService.ipcRenderer.send('adminDeviceConfig')
           // console.log("this.deviceInfoNew ", this.deviceInfoNew)
@@ -138,6 +127,7 @@ export class AdminComponent implements OnInit {
           // }
         }
         else {
+          this.isCurrentSync = false;
           console.log("Sync error");
           $("#errorSyncModal").modal("show")
         }
@@ -274,7 +264,8 @@ export class AdminComponent implements OnInit {
 
   syncData() {
     this.loading = true;
-   // this.maxLoopingCount = 600;
+    // this.maxLoopingCount = 600;
+    this.isCurrentSync = true;
     this.numOfAttempts = 0;
     $("#continueSyncModal").modal("show")
     this.electronService.ipcRenderer.send('adminSync')
