@@ -242,17 +242,23 @@ body {
     width: 31%;
     margin: 1%;
     float: left;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-2 button {
     width: 47.5%;
     margin: 1%;
     float: left;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-1 button {
     width: 97%;
     margin: 1%;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left button {
