@@ -55,7 +55,7 @@ export class VerifyComponent implements OnInit {
         assetId: localStorage.getItem("assetId"),
         password: localStorage.getItem("pass"),
       }
-    this.electronService.ipcRenderer.send('activationcall', "qe", data)
+    this.electronService.ipcRenderer.send('activationcall', "uat", data)
    }
 
 

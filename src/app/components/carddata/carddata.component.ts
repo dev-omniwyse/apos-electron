@@ -236,7 +236,7 @@ export class CarddataComponent implements OnInit, OnChanges {
                 "rechargesPending": rechargesPending,
                 "IsMerchandise": walletElement.IsMerchandise,
                 "IsBackendMerchandise": false,
-                "IsFareCard": false,
+                "IsFareCard": false, 
                 "unitPrice": walletElement.UnitPrice,
                 "totalCost": this.transactionAmount,
                 "userID": localStorage.getItem("userEmail"),

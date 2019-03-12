@@ -514,8 +514,7 @@ export class AddProductComponent implements OnInit {
       this.productTotal = digit;
       // this.productTotal+=digit
     } else
-      this.productTotal  += digit;
-      this.productTotal = this.productTotal;
+      this.productTotal += digit
 
   }
   clearDigit(digit) {
