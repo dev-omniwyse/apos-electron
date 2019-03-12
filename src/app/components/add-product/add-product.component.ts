@@ -2,6 +2,7 @@ import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import { concat } from 'rxjs/operators';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -99,6 +100,7 @@ export class AddProductComponent implements OnInit {
   maxRechargeRidesReached = false;
   maxRemainingValueReached = false;
   maxLimitErrorMessages: String = "";
+  calsifilter: boolean = false;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -230,6 +232,7 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem('transactionAmount');
     localStorage.removeItem("MerchandiseData");
     localStorage.removeItem("MagneticData");
+    this.calsifilter = false
     this.router.navigate(['/readcard'])
   }
 
@@ -363,7 +366,6 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("MagneticData", JSON.stringify(this.MagneticList));
     localStorage.setItem('productCardData', JSON.stringify(this.productCardList));
     localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
-    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     this.checkout = false;
   }
@@ -510,11 +512,24 @@ export class AddProductComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    if (this.productTotal == 0) {
-      this.productTotal = digit;
-      // this.productTotal+=digit
-    } else
-      this.productTotal += digit
+    this.productTotal  = this.productTotal*100;
+    this.productTotal += digit;
+    this.productTotal = this.productTotal/100;
+    // this.productTotal = this.productTotal + digit;
+    // this.productTotal = ""
+    //  if(this.calsifilter == false){
+    //      this.productTotal = ""
+    //      this.calsifilter = true
+
+    //  }
+    //  this.productTotal  += digit;
+    //  this.productTotal = this.productTotal;
+    // if (this.productTotal == 0) {
+    //   this.productTotal = digit/100;
+    //   // this.productTotal+=digit
+    // } else {
+    //   this.productTotal += digit
+    // }
 
   }
   clearDigit(digit) {
@@ -528,6 +543,8 @@ export class AddProductComponent implements OnInit {
     var unitPrice: any = 0;
     var fareCode: any = "";
     var shiftType: any = 0;
+    
+    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
 
     // var de
     this.productJson.forEach(catalogElement => {
@@ -616,7 +633,7 @@ export class AddProductComponent implements OnInit {
         "salesAmount": this.productTotal,
         "taxAmount": 0,
         "items": jsonMagneticObj,
-        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
+        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal}], "shiftType": shiftType
       }
       console.log("transObj" + JSON.stringify(magneticTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
