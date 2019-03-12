@@ -68,7 +68,7 @@
         <div class="" *ngFor="let merch of merchantiseList; let k = index">
             <span class="label label-default">
 
-            <div class="pull-left">{{merch.Description}} &nbsp; {{merch.UnitPrice}}</div>
+            <div class="pull-left">{{merch.quantity}} &nbsp; {{merch.Description}} &nbsp; {{merch.UnitPrice}}</div>
 
             <div class="pull-right" (click)="removeMerchProduct(merch)"><span
                 class="glyphicon glyphicon-minus-sign"></span></div>
