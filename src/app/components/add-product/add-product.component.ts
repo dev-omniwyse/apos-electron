@@ -656,7 +656,8 @@ export class AddProductComponent implements OnInit {
       this.merchantiseList.forEach(merchandiseElement => {
         var merchandiseObj: any = {
           "transactionID": new Date().getTime(),
-          "quantity": 1, "productIdentifier": merchandiseElement.ProductIdentifier,
+          "quantity": merchandiseElement.quantity, 
+          "productIdentifier": merchandiseElement.ProductIdentifier,
           "ticketTypeId": null,
           "ticketValue": 0,
           "slotNumber": 0,
