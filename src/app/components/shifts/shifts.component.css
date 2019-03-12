@@ -11,7 +11,9 @@ body {
 .main-container {
     background-color: #777777;
     display: flex;
-    padding: 5px
+    padding: 10px;
+    overflow: hidden;
+    height: calc(100vh - 75px);
 }
 
 .container-left {
@@ -21,15 +23,16 @@ body {
     border-radius: 5px;
     margin: 0 5px;
     padding: 20px;
+    position: relative;
 }
 
 .container-right {
     width: 65%;
     float: left;
-    background-color: #fff;
+    background-color: #f0f3fa;
     margin: 0 5px;
     border-radius: 5px;
-    padding: 20px;
+    padding: 35px;
 }
 
 .container-left textarea {
@@ -81,8 +84,8 @@ body {
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #333333;
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 26px;
+    padding: 20px 15px;
     width: 100%;
 }
 
@@ -217,38 +220,48 @@ body {
     width: 100%;
     display: block;
     text-align: right;
-    padding: 10px 15px;
+    padding: 20px 15px;
     border-radius: 0;
+    font-size: 35px;
+    font-weight: 100;
+    margin-bottom: 39px;
 }
 
 .cr-left {
-    flex:1 1 75%;
+    flex: 1 1 68%;
+    margin-right: 8%;
 }
 
 .cr-right {
-    flex:1 1 25%;
+    flex: 1 1 25%;
 }
 
 .cr-left .number-btns-set-3 button {
     width: 31%;
     margin: 1%;
     float: left;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-2 button {
     width: 47.5%;
     margin: 1%;
     float: left;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-1 button {
     width: 97%;
     margin: 1%;
+    font-size: 28px;
+    color: #3b80c2;
 }
 
 .cr-left button {
-    padding: 19.5px;
-    border-radius: 3px;
+    padding: 4.2vh;
+    border-radius: 6px;
     border: 1px solid #c4c4c4;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+18,fafafa+52,f7f7f7+100 */
     background: #ffffff;
@@ -270,9 +283,9 @@ body {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 16px;
     padding: 10px 15px;
     margin: 1% 0;
+    font-size: 28px
 }
 
 .cr-r-set {
@@ -318,10 +331,16 @@ body {
     color: #fff;
     font-size: 16px;
     padding: 10px 15px;
-    margin:0 5px;
+    margin: 0 5px;
     width: 50%;
 }
 
 .modal-footer {
     justify-content: center;
+}
+
+.posi-bottom {
+    position: absolute;
+    bottom: 20px;
+    width: calc(100% - 40px);
 }

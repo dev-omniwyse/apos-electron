@@ -1,7 +1,7 @@
 <div class="main-container">
     <div class="container-left">
-        <div class="btns-set">
-            <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">Cancel</button>
+        <div class="btns-set posi-bottom">
+            <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">CANCEL</button>
         </div>
     </div>
     <div class="container-right">
@@ -20,12 +20,12 @@
                     </div>
                 </div>
                 <div class="cr-right">
-                    <button data-toggle="modal" (click)="validShifts();">ENTER</button>
+                    <button data-toggle="modal" (click)="validShifts();">Enter</button>
 
                 </div>
                 <!-- Modal -->
                 <div class="modal fade" id="openShiftModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Cash Drawer is Open</h4>
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="modal fade" id="closeShiftModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Please Confirm</h4>
@@ -51,14 +51,14 @@
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">No,Cancel</button>
+                                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No, Cancel</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#confirmCashModal">Yes,Close Shift</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal fade" id="confirmCashModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Cash Drawer is Open</h4>

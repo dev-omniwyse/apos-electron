@@ -7,17 +7,20 @@ body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
 }
-ul{
-    list-style-type:none;
+
+ul {
+    list-style-type: none;
 }
+
 .main-container {
     background-color: #777777;
     display: flex;
-    padding: 5px
+    padding: 10px 5px;
+    height: calc(100vh - 75px);
 }
 
 .container-left {
-    width: 35%;
+    width: 40%;
     float: left;
     background-color: #f0f3fa;
     border-radius: 5px;
@@ -26,7 +29,7 @@ ul{
 }
 
 .container-right {
-    width: 65%;
+    width: 60%;
     float: left;
     background-color: #fff;
     margin: 0 5px;
@@ -83,9 +86,10 @@ ul{
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #333333;
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 24px;
+    padding: 22px 15px;
     width: calc(50% - 10px);
+    text-transform: uppercase;
 }
 
 .btn-orange {
@@ -93,10 +97,11 @@ ul{
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 24px;
+    padding: 22px 15px;
     width: 50%;
-    margin-left: 5px
+    margin-left: 5px;
+    text-transform: uppercase;
 }
 
 .header-l {
@@ -118,12 +123,12 @@ ul{
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #999999;
-    font-size: 20px;
-    padding: 0px 15px;
+    font-size: 22px;
+    padding: 10px 15px;
 }
 
-
-.nonFare,.regularRoute {
+.nonFare,
+.regularRoute {
     width: 50%;
     margin-left: 5px;
     background-color: #fff;
@@ -135,10 +140,13 @@ ul{
 }
 
 .btn-primary {
-    padding: 10px 15px;
+    padding: 20px 15px;
     width: 30%;
     border-radius: 5px;
     background-color: #013d79;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 100;
 }
 
 .btndefault {
@@ -149,8 +157,10 @@ ul{
     background-image: none;
     display: inline-block;
     border: 1px solid #ccc;
-    cursor: not-allowed
+    font-size: 20px;
+    cursor: not-allowed;
 }
+
 .merch-btn {
     margin: 20px 0
 }
@@ -215,7 +225,13 @@ ul{
     background-color: #fafafa;
     padding: 20px;
     border: 1px solid #ccc;
-    min-height: 300px;
+    min-height: 50vh;
+}
+
+@media (max-width: 768px) {
+    .container-l-app {
+        min-height: 40vh;
+    }
 }
 
 .container-l-app .label {
@@ -307,7 +323,8 @@ ul{
 
 .tab-sets {
     background-color: #013D7B;
-    padding: 3px;
+    padding: 10px;
+    height: calc(100vh - 195px);
 }
 
 .nav-pills>li>a {
@@ -358,4 +375,22 @@ ul{
     border-radius: 3px;
     padding: 14px;
     color: #fff;
+}
+
+.tab-sets .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 17px 2vw;
+    font-size: 1vw;
+}
+
+.flex-contain-full {
+    height: calc(100vh - 265px);
+}
+
+.flex-contain-full-w {
+    background-color: #fff;
+    height: calc(100vh - 275px);
+    padding: 10px;
+    width: 100%!important;
 }

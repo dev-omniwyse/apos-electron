@@ -8,415 +8,403 @@
   </div>
 </div> -->
 <div class="main-container">
-  <div class="container-left">
-    <div *ngIf="!isMagnetic" class="header-l">
-      <img src="assets/images/shopping-cart.svg" width="30" />
-      <button class="btn-white-top">View Card</button>
-      <button class="btn-orange" (click)="addCard()">Add Card</button>
-    </div>
-    <div>
-      <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
-      <!-- <div class="menucontainer left"> -->
-      <ul style="height:100px">
-        <li>
-          <div *ngIf="!isMagnetic">
-            <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
-              (click)=clickOnMerch()>Merch*</button>
-          </div>
-          <div *ngIf="isMagnetic">
-            <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
-              (click)=clickOnMagnetic()>Magnetic*</button>
-          </div>
-        </li>
-        <li #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
-          <button *ngIf="!isMagnetic || !isMerchendise"
-            [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
-        </li>
+    <div class="container-left">
+        <div *ngIf="!isMagnetic" class="header-l">
+            <img src="assets/images/shopping-cart.svg" width="30" />
+            <button class="btn-white-top">View Card</button>
+            <button class="btn-orange" (click)="addCard()">Add Card</button>
+        </div>
+        <div>
+            <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
+            <!-- <div class="menucontainer left"> -->
+            <ul style="height:100px">
+                <li>
+                    <div *ngIf="!isMagnetic">
+                        <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>Merch*</button>
+                    </div>
+                    <div *ngIf="isMagnetic">
+                        <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMagnetic()>Magnetic*</button>
+                    </div>
+                </li>
+                <li #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
+                    <button *ngIf="!isMagnetic || !isMerchendise" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
+                </li>
 
-      </ul>
-      <!-- </div> -->
-      <!-- <input (click)="myStyle={'margin-left': moveRight()}" [disabled]="rightdisabled" class="left" type="button" value="Move Right" /> -->
-    </div>
-    <!-- <div class="flex header-l">
+            </ul>
+            <!-- </div> -->
+            <!-- <input (click)="myStyle={'margin-left': moveRight()}" [disabled]="rightdisabled" class="left" type="button" value="Move Right" /> -->
+        </div>
+        <!-- <div class="flex header-l">
           <button class="btn-b-white">Merch</button>
           <button class="btn-b-white">{{cardJson?.printed_id}}</button>
         </div> -->
-    <div class="container-l-app">
-      <div *ngIf="!isMagnetic && !regularRoute && nonFare">
-        <div class="" *ngFor="let merch of merchantList; let j = index">
-          <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
+        <div class="container-l-app">
+            <div *ngIf="!isMagnetic && !regularRoute && nonFare">
+                <div class="" *ngFor="let merch of merchantList; let j = index">
+                    <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
 
             <div class="pull-left">{{quantityList[j]}} &nbsp; {{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
             <div class="pull-right" (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
                 class="glyphicon glyphicon-minus-sign"></span></div>
 
-          </span>
+                </span>
+            </div>
         </div>
-      </div>
 
-      <div *ngIf="isMagnetic">
-        <div class="" *ngFor="let merch of MagneticList; let j = index">
-          <span class="label label-default">
+        <div *ngIf="isMagnetic">
+            <div class="" *ngFor="let merch of MagneticList; let j = index">
+                <span class="label label-default">
 
             <div class="pull-left">1 &nbsp; {{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
             <div class="pull-right" (click)="removeMagneticProduct(merch)"><span
                 class="glyphicon glyphicon-minus-sign"></span></div>
 
-          </span>
+            </span>
         </div>
-      </div>
+    </div>
 
-      <div *ngIf="!isMagnetic && regularRoute && !nonFare">
+    <div *ngIf="!isMagnetic && regularRoute && !nonFare">
         <div class="" *ngFor="let merch of merchantiseList; let k = index">
-          <span class="label label-default">
+            <span class="label label-default">
 
             <div class="pull-left">{{quantityList[k]}} &nbsp; {{merch.Description}} &nbsp; {{merch.UnitPrice}}</div>
 
             <div class="pull-right" (click)="removeMerchProduct(merch)"><span
                 class="glyphicon glyphicon-minus-sign"></span></div>
 
-          </span>
-        </div>
-      </div>
-
+        </span>
     </div>
-    <div class="sub-total ">
-      <div class="flex">
+</div>
+
+</div>
+<div class="sub-total ">
+    <div class="flex">
         <div class="float-left">Non-fare products Subtotal</div>
         <div class="float-right">${{productTotal | number : '1.2-2'}}</div>\
 
-      </div>
-      <hr>
-      <div class="flex totals">
+    </div>
+    <hr>
+    <div class="flex totals">
         <div class="float-left">Total Due</div>
         <div class="float-right">${{productTotal | number : '1.2-2'}}</div>
-      </div>
     </div>
-    <div class="btns-set">
-      <button class="btn-white" (click)="navigateToReadCard()">Cancel</button>
-      <button class="btn-orange" (click)="productCheckout()">Checkout</button>
-    </div>
-  </div>
-  <div class="container-right" *ngIf="checkout">
+</div>
+<div class="btns-set">
+    <button class="btn-white" (click)="navigateToReadCard()">Cancel</button>
+    <button class="btn-orange" (click)="productCheckout()">Checkout</button>
+</div>
+</div>
+<div class="container-right" *ngIf="checkout">
     <div class="flex header-l add-product-head">
-      <button [ngClass]="{'btn btndefault': regularRoute , 'btn btn-primary': !regularRoute}"
-        [disabled]="regularRoute">Regular Route</button>
-      <button [ngClass]="{'btn btndefault': !regularRoute , 'btn btn-primary': regularRoute}"
-        [disabled]="nonFare">NON-FARE</button>
+        <button [ngClass]="{'btn btndefault': regularRoute , 'btn btn-primary': !regularRoute}" [disabled]="regularRoute">Regular Route</button>
+        <button [ngClass]="{'btn btndefault': !regularRoute , 'btn btn-primary': regularRoute}" [disabled]="nonFare">NON-FARE</button>
     </div>
     <div class="tab-sets">
-      <ul class="nav nav-pills" *ngIf="!regularRoute">
-        <li class="active" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
-        <li (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
-        <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
-      </ul>
-      <div class="flex flex-wrap flex-right-items" *ngIf="!regularRoute">
-        <div *ngFor="let merch of merchantise"><button class="cardBtn"
-            (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.Ticket.Price}}</button>
+        <ul class="nav nav-pills" *ngIf="!regularRoute">
+            <li class="active" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
+            <li (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
+            <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
+        </ul>
+        <div class="flex flex-wrap flex-right-items flex-contain-full" *ngIf="!regularRoute">
+            <div class="flex-contain-full-w">
+                <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.Ticket.Price}}</button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="flex flex-wrap flex-right-items" *ngIf="regularRoute">
-        <div *ngFor="let merch of merchantise"><button class="cardBtn"
-            (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button></div>
-      </div>
+        <div class="flex flex-wrap flex-right-items flex-contain-full" *ngIf="regularRoute">
+            <div class="flex-contain-full-w">
+                <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button></div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="container-right" *ngIf="!checkout">
+</div>
+<div class="container-right" *ngIf="!checkout">
     <div class="cr-r-set">
-      <h1><span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span></h1>
-      <div class="flex">
-        <div class="cr-left">
-          <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
-            <button (click)="displayDigit(digit)">{{digit}}</button>
-          </div>
-          <div class="number-btns-set-2" *ngFor="let digit of zeroDigits">
-            <button (click)="displayDigit(digit)">{{digit}}</button>
-            <!-- <button>00</button> -->
-          </div>
-          <div class="number-btns-set-1">
-            <button (click)="clearDigit(0)">Clear</button>
-          </div>
-        </div>
-        <div class="cr-right">
-          <button data-toggle="modal" data-target="#myModal">Cash</button>
-          <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
-          <button data-toggle="modal" data-target="#checkModal">Check</button>
-          <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
-          <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
-          <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
-          <button data-toggle="modal" data-target="#compModal">Comp</button>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Cash Applied</h4>
-              </div>
-
-              <div class="modal-body">
-                <p>Return change to customer</p>
-                <p>Click "OK" When cash drawer is closed</p>
-                <div class="pop-up-box">
-                  <div class="pull-left">Cash Applied </div>
-                  <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
-                  <div class="clearfix"></div>
+        <h1><span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span></h1>
+        <div class="flex">
+            <div class="cr-left">
+                <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
+                    <button (click)="displayDigit(digit)">{{digit}}</button>
                 </div>
-                <div class="pop-up-box">
-                  <div class="pull-left">Cash Back </div>
-                  <div class="pull-right">$0.00</div>
-                  <div class="clearfix"></div>
+                <div class="number-btns-set-2" *ngFor="let digit of zeroDigits">
+                    <button (click)="displayDigit(digit)">{{digit}}</button>
+                    <!-- <button>00</button> -->
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="saveTransaction(2)"
-                  data-dismiss="modal">Ok</button>
-              </div>
+                <div class="number-btns-set-1">
+                    <button (click)="clearDigit(0)">Clear</button>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="creditModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Cash Applied</h4>
-              </div>
+            <div class="cr-right">
+                <button data-toggle="modal" data-target="#myModal">Cash</button>
+                <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+                <button data-toggle="modal" data-target="#checkModal">Check</button>
+                <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
+                <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
+                <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
+                <button data-toggle="modal" data-target="#compModal">Comp</button>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Cash Applied</h4>
+                        </div>
 
-              <div class="modal-body">
-                <!-- <p>Return change to customer</p>
+                        <div class="modal-body">
+                            <p>Return change to customer</p>
+                            <p>Click "OK" When cash drawer is closed</p>
+                            <div class="pop-up-box">
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="pop-up-box">
+                                <div class="pull-left">Cash Back </div>
+                                <div class="pull-right">$0.00</div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" (click)="saveTransaction(2)" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Cash Applied</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <!-- <p>Return change to customer</p>
               <p>Click "OK" When cash drawer is closed</p> -->
-                <div class="pop-up-box">
-                  <div class="pull-left">Cash Applied </div>
-                  <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
-                  <div class="clearfix"></div>
+                            <div class="pop-up-box">
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
+                                <div class="clearfix"></div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
                 </div>
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-              </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="checkModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Check Applied</h4>
-              </div>
+            <div class="modal fade" id="checkModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Check Applied</h4>
+                        </div>
 
-              <div class="modal-body">
-                <p>Click "OK" When cash drawer is closed</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="saveTransaction(3)"
-                  data-dismiss="modal">Ok</button>
-              </div>
+                        <div class="modal-body">
+                            <p>Click "OK" When cash drawer is closed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" (click)="saveTransaction(3)" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <div class="modal fade" id="fareCardModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Are you sure you want use an existing fare card ?</h4>
-              </div>
+            <div class="modal fade" id="fareCardModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Are you sure you want use an existing fare card ?</h4>
+                        </div>
 
-              <div class="modal-body">
+                        <div class="modal-body">
 
-                <p>By continiuing you confirming that the customer has a fare card for the amount of $50.00 that you are
-                  using in place of payment</p>
-                <!-- <div class="pop-up-box">
+                            <p>By continiuing you confirming that the customer has a fare card for the amount of $50.00 that you are using in place of payment</p>
+                            <!-- <div class="pop-up-box">
                     <div class="pull-left">Cash Applied </div>
                     <div class="pull-right">${{productTotal}}</div>
                     <div class="clearfix"></div>
                   </div> -->
 
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
-                  href="#fareApplyModal">Yes</button>
-              </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#fareApplyModal">Yes</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="fareApplyModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Fare Card Applied</h4>
-              </div>
-              <p>Place the Fare Card in the drawer</p>
-              <div class="modal-body">
-                <p>Click "OK" When cash drawer is closed</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-              </div>
+            <div class="modal fade" id="fareApplyModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Fare Card Applied</h4>
+                        </div>
+                        <p>Place the Fare Card in the drawer</p>
+                        <div class="modal-body">
+                            <p>Click "OK" When cash drawer is closed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="voucherModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Are you sure you want use voucher ?</h4>
-              </div>
+            <div class="modal fade" id="voucherModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Are you sure you want use voucher ?</h4>
+                        </div>
 
-              <div class="modal-body">
+                        <div class="modal-body">
 
-                <p>By continiuing you confirming that the customer has a voucher for the amount of $50.00 that you are
-                  using in place of payment</p>
-                <!-- <div class="pop-up-box">
+                            <p>By continiuing you confirming that the customer has a voucher for the amount of $50.00 that you are using in place of payment</p>
+                            <!-- <div class="pop-up-box">
                     <div class="pull-left">Cash Applied </div>
                     <div class="pull-right">${{productTotal}}</div>
                     <div class="clearfix"></div>
                   </div> -->
 
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
-                  href="#voucherApplyModal">Yes</button>
-              </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#voucherApplyModal">Yes</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="voucherApplyModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">voucher Applied</h4>
-              </div>
-              <p>Place the Voucher in the drawer</p>
-              <div class="modal-body">
-                <p>Click "OK" When cash drawer is closed</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"
-                  (click)="saveTransaction(11)">Ok</button>
-              </div>
+            <div class="modal fade" id="voucherApplyModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">voucher Applied</h4>
+                        </div>
+                        <p>Place the Voucher in the drawer</p>
+                        <div class="modal-body">
+                            <p>Click "OK" When cash drawer is closed</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="saveTransaction(11)">Ok</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="modal fade" id="payasyougoModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
-                Pay As You Go
-              </div>
+            <div class="modal fade" id="payasyougoModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Pay As You Go
+                        </div>
 
-              <div class="modal-body">
+                        <div class="modal-body">
 
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <p>Place Card on Reader</p>
-                <button class="pay-as-you">Pay with Pay As You Go</button>
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <p>Place Card on Reader</p>
+                            <button class="pay-as-you">Pay with Pay As You Go</button>
 
-                <!-- <p>Return change to customer</p>
+                            <!-- <p>Return change to customer</p>
               <p>Click "OK" When cash drawer is closed</p> -->
-                <!-- <div class="pop-up-box">
+                            <!-- <div class="pop-up-box">
                     <div class="pull-left">Cash Applied </div>
                     <div class="pull-right">${{productTotal}}</div>
                     <div class="clearfix"></div>
                   </div> -->
 
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="modal fade" id="compModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Are you sure you want comp this sale ?</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <p>By continiuing you confirming that you want to comp this sale for amount of ${{productTotal | number : '1.2-2'}} that you are using in place of payment</p>
+                            <!-- <div class="pop-up-box">
+                    <div class="pull-left">Cash Applied </div>
+                    <div class="pull-right">${{productTotal}}</div>
+                    <div class="clearfix"></div>
+                  </div> -->
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No, Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/comp']" (click)="saveTransaction(8);">Yes,continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal fade" id="compModal" role="dialog">
-          <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-              <div class="modal-header">
+    </div>
+</div>
+<div class="modal fade" id="newCardValidationModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Are you sure you want comp this sale ?</h4>
-              </div>
-
-              <div class="modal-body">
-
-                <p>By continiuing you confirming that you want to comp this sale for amount of ${{productTotal | number : '1.2-2'}} that
-                  you are using in place of payment</p>
-                <!-- <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div> -->
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/comp']"
-                  (click)="saveTransaction(8);">Yes,continue</button>
-              </div>
+                <h4 class="modal-title">Card Already on Order</h4>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="newCardValidationModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="modal-title">Card Already on Order</h4>
-        </div>
 
-        <div class="modal-body">
-          <p>Card is already on order. Add product to that card, or remove the old card and scan a new one.</p>
+            <div class="modal-body">
+                <p>Card is already on order. Add product to that card, or remove the old card and scan a new one.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="modal fade" id="magneticCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="modal-title">Error</h4>
-        </div>
+</div>
+<div class="modal fade" id="magneticCardLimitModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
 
-        <div class="modal-body">
-          <p>Card product limit reached.</p>
+            <div class="modal-body">
+                <p>Card product limit reached.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="modal fade" id="maxCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-          <h4 class="modal-title">Error</h4>
-        </div>
+</div>
+<div class="modal fade" id="maxCardLimitModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
 
-        <div class="modal-body">
-          <p>{{maxLimitErrorMessages}}</p>
+            <div class="modal-body">
+                <p>{{maxLimitErrorMessages}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 </div>
