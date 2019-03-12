@@ -324,7 +324,19 @@ export class AddProductComponent implements OnInit {
   }
 
   getSelectedMerchProductData(merch) {
-    this.merchantiseList.push(merch);
+    console.log(merch);
+    if(this.merchantiseList.length == 0) {
+      merch.quantity = 1;
+     this.merchantiseList.push(merch);
+
+
+    } else if(this.merchantiseList.includes(merch) === true) {
+      merch.quantity++;
+    }
+    else if(this.merchantiseList.includes(merch) === false) {
+      merch.quantity = 1;
+      this.merchantiseList.push(merch);
+    }
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -347,7 +359,8 @@ export class AddProductComponent implements OnInit {
   }
 
   removeMerchProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantiseList.indexOf(merch);
     this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -543,7 +556,7 @@ export class AddProductComponent implements OnInit {
     var unitPrice: any = 0;
     var fareCode: any = "";
     var shiftType: any = 0;
-    
+
     localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
 
     // var de
