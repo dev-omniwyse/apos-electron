@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
 body {
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif!important;
 }
 
 .header {
@@ -445,4 +445,45 @@ button:disabled {
     margin: 4px;
     color: #fff;
     cursor: pointer;
+}
+
+@media (min-width: 576px) {
+    .modal-sm {
+        max-width: 600px!important;
+        width: 600px!important;
+    }
+}
+
+.modal-body {
+    font-size: 25px!important;
+    color: #000!important;
+    text-align: center!important;
+    padding: 80px 20px!important;
+}
+
+.modal-body p {
+    margin: 0!important;
+}
+
+.modal-header h4 {
+    font-size: 23px!important;
+}
+
+.modal-footer .btn-default {
+    border-radius: 16px!important;
+    font-size: 21px!important;
+    padding: 15px 35px!important;
+    margin: 0 5px!important;
+    width: inherit!important;
+}
+
+.modal-footer {
+    border-top: none!important;
+    padding: 0 15px 15px 15px!important;
+}
+
+.cancel-btn {
+    background: #fff!important;
+    color: #6e6e6e!important;
+    border: 1px solid #dedede!important;
 }
