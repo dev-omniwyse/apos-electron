@@ -1,5 +1,5 @@
 <div class="main-container doNotPrint" *ngIf="isShowCardOptions">
-	<!-- <div class="header flex">
+    <!-- <div class="header flex">
 		<div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
 		<div class="header-info pull-right">
 			<div class="login-info">
@@ -8,61 +8,58 @@
 			</div>
 		</div>
 	</div> -->
-    <div class="content-container container-padding">
-        <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
-        <div class="clearfix"></div>
-        <h1>Card | Account</h1>
+    <div class="">
+        <div class="col-md-3 full-height-l">
+            <div class="btn-tab-set">
+                <div class="btn-tab-selected">Card</div>
+                <div class="btn-tab">Account</div>
+            </div>
+            <div class="flex container-padding flex-row admin-btn pull-left">
+                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig();" [routerLink]="['/admin']">
+								Admin
+							</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
+            <div class="container-padding flex-column">
+                <button class="read-card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
+									New Fare Card
+									<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+								</button>
+                <button class="read-card-btn" [disabled]="disableCards" (click)="readCard($event);">
+									Existing Fare Card
+									<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+								</button>
+                <button class="read-card-btn" [disabled]="disableCards" (click)="nonFareProduct()">
+									Non-Fare Product
+									<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+								</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
     </div>
 
-    <div class="flex container-padding flex-column">
-        <button class="card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
-			New Fare Card
-			<img src="assets/images/arrow-pointing-to-right.svg" />
-		</button>
-        <button class="card-btn" [disabled]="disableCards" (click)="readCard($event);">
-			Existing Fare Card
-			<img src="assets/images/arrow-pointing-to-right.svg" /> 
-		</button>
-        <button class="card-btn" [disabled]="disableCards" [routerLink]="['/carddata']">
-			Non-Fare Product
-			<img src="assets/images/arrow-pointing-to-right.svg" />
-		</button>
-		<!-- <button class="card-btn"  (click)="writeCard($event)">
-			Go To Camera
-			<img src="assets/images/arrow-pointing-to-right.svg" />
-		</button> -->
-		<!-- (click)="readCard($event); getProductCatalogJSON()" -->
-	</div>
-		<!--modal-->
-		<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
-				<div class="modal-header">
-					<!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-					<h4 class="modal-title">Select Media Type</h4>
-				</div>
-				
-				<div class="modal-body">
-					<div class="flex flex-wrap flex-right-items">
-						<div>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img src="assets/images/arrow-pointing-to-right.svg" /></button>
-							<button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)" data-dismiss="modal">Magnetic Card <img src="assets/images/arrow-pointing-to-right.svg" /></button>
-						</div>
-					</div>
-				
-				</div>
-				<!-- <div class="modal-footer">
-					<button type="button" class="btn btn-default"  data-dismiss="modal">Ok</button>
-				</div> -->
-				</div>
-			</div>
-			</div>
-	<div class="flex container-padding flex-row admin-btn pull-left">
-		<button class="card-btn-orange" [routerLink]="['/admin']">
-			Admin
-			<img src="assets/images/user.svg" />
-		</button>
-	</div>
+
+
+
+    <!--modal-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <h4 class="modal-title modal-txt-h">Select Media Type</h4>
+                <div class="modal-body-in">
+                    <div class="">
+                        <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img src="assets/images/arrow-pointing-to-right.svg" /></button>
+                        <button class="cardBtn" (click)="getProductCatalogJSON(); magneticCard($event)" data-dismiss="modal">Magnetic Card <img src="assets/images/arrow-pointing-to-right.svg" /></button>
+
+                        <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- <div *ngIf="carddata.length > 0">
@@ -72,7 +69,7 @@
 
 
 <div class="main-container" *ngIf="!isShowCardOptions">
-	<!-- <div class="header flex">
+    <!-- <div class="header flex">
 		<div class="header-logo pull-left doNotPrint"><img src="assets/images/logo.jpg" /></div>
 		<div class="header-info pull-right doNotPrint">
 			<div class="login-info">
@@ -81,86 +78,109 @@
 			</div>
 		</div>
 	</div> -->
-	<div class="content-container container-padding doNotPrint">
-		<h1>Summary</h1>
-	</div>
+    <div class="content-container container-padding doNotPrint">
+        <h1>Summary</h1>
+    </div>
 
-	<div class="flex container-padding flex-row" *ngFor="let card of carddata ">
-		<div class="flex-devide">
-			<div class="flex">
-				<div class="flex-devide">
-					<p>{{card.printed_id}} - Active</p>
-					<p>Fare Code: Full</p>
-					<p>Card Exp: {{card.card_expiration_date_str}}</p>
-				</div>
-				<div class="flex-devide">
-					<p>Bonus Ride(s): 0</p>
-					<p>Next Bonus: 0/4</p>
-				</div>
-			</div>
-		</div>
+    <div class="flex container-padding flex-row" *ngFor="let card of carddata ">
+        <div class="flex-devide">
+            <div class="flex">
+                <div class="flex-devide">
+                    <p>{{card.printed_id}} - Active</p>
+                    <p>Fare Code: Full</p>
+                    <p>Card Exp: {{card.card_expiration_date_str}}</p>
+                </div>
+                <div class="flex-devide">
+                    <p>Bonus Ride(s): 0</p>
+                    <p>Next Bonus: 0/4</p>
+                </div>
+            </div>
+        </div>
 
-		<div class="flex-devide text-right">
-			<button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print Summary</button>
+        <div class="flex-devide text-right">
+            <button class="page-btns doNotPrint" (click)="printDiv()"><i class="fal fa-print"></i> Print
+				Summary</button>
 
-			<button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square"></i> Add New
+            <button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fal fa-plus-square"></i> Add
+				New
 				Product to Card</button>
-		</div>
-	</div>
+        </div>
+    </div>
 
 
-	<div class="content-container container-padding">
-		<h1></h1>
-	</div>
+    <div class="content-container container-padding">
+        <h1></h1>
+    </div>
 
-	<div class="flex container-padding flex-row">
+    <div class="flex container-padding flex-row">
 
-		<table class="table-css">
-			<tr>
-				<th>Product</th>
-				<th>Description</th>
-				<th>Status</th>
-				<th>Balance</th>
-			</tr>
-			<tr *ngFor="let product of readCardData">
-				<td>{{product.product}}</td>
-				<td>{{product.description}}</td>
-				<td>{{product.status}}</td>
-				<td>{{product.remainingValue}}</td>
-			</tr>
-			<!-- <tr>
+        <table class="table-css">
+            <tr>
+                <th>Product</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Balance</th>
+            </tr>
+            <tr *ngFor="let product of readCardData">
+                <td>{{product.product}}</td>
+                <td>{{product.description}}</td>
+                <td>{{product.status}}</td>
+                <td>{{product.remainingValue}}</td>
+            </tr>
+            <!-- <tr>
 				<td>Frequent Rider</td>
 				<td>31 Day Pass</td>
 				<td>{{product.status}}</td>
 				<td>{{product.balance}}</td>
 			</tr> -->
 
-		</table>
-	</div>
+        </table>
+    </div>
 
 
-	<div class="content-container container-padding">
-		<h1></h1>
+    <div class="content-container container-padding">
+        <h1></h1>
 
-		<div class="flex">
-			<div class="flex-devide">
-				<button class="back-btn doNotPrint" (click)="Back();"><i class="fal fa-long-arrow-left"></i> Back</button>
-			</div>
-		</div>
+        <div class="flex">
+            <div class="flex-devide">
+                <button class="back-btn doNotPrint" (click)="Back();"><i class="fal fa-long-arrow-left"></i>
+					Back</button>
+            </div>
+        </div>
 
-	</div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>{{errorMessage}}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="newCardValidateModal" role="dialog">
-	<div class="modal-dialog modal-sm">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-		  <h4 class="modal-title">Error</h4>
-		</div>
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
 
             <div class="modal-body">
-                <p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.</p>
+                <p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>

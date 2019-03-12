@@ -34,7 +34,6 @@ export class NavbarComponent implements OnInit {
     console.log("logging out");
     let shiftreportUser = localStorage.getItem("userID")
     let shiftreport = JSON.parse(localStorage.getItem("shiftReport"))
-    this.cdtaservice.setterminalNumber(undefined);
     let userData
     shiftreport.forEach(element => {
       if (element.userID == shiftreportUser) {
@@ -49,12 +48,14 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
       localStorage.removeItem("hideModalPopup")
+      this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['/login'])
     }
     else if (userData.shiftState == "3" && userData.shiftType == "1") {
       // localStorage.removeItem("shiftReport");
       // localStorage.removeItem("mainShiftClose")
       //  localStorage.removeItem("closingPausedMainShift")
+      this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['/login'])
     }
     else if (userData.shiftState != "3" && userData.shiftType == "1") {
@@ -65,6 +66,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
       localStorage.removeItem("hideModalPopup")
+      this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['/login'])
     }
     localStorage.removeItem("userEmail")

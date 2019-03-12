@@ -1,8 +1,10 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ɵMethodFn } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-
+import { MethodFn } from '@angular/core/src/reflection/types';
+import { MethodCall } from '@angular/compiler';
+// import {setInterval, clearInterval} from 'timers';
 declare var $: any
 
 @Component({
@@ -11,7 +13,7 @@ declare var $: any
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-
+  public loading: Boolean = false;
   openShift = true
   closingPausedMainShift = false
   mainShiftPaused = false
@@ -21,8 +23,14 @@ export class AdminComponent implements OnInit {
   mainshiftCloser: Boolean = false
   statusOfShiftReport: string = ""
   openingDrawerBal: Number
-
-
+  synCompleted: any
+  numOfAttempts = 0;
+  maxLoopingCount = 600;
+  public deviceInfoNew: Boolean = false
+  intervalSyc: any
+  configData: any
+  SyncMethod: any
+  isCurrentSync: Boolean = false;
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
@@ -30,6 +38,16 @@ export class AdminComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         localStorage.setItem("allSales", data)
+        this._ngZone.run(() => {
+          // this.router.navigate(['/addproduct'])
+        });
+      }
+    });
+    this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
+      console.log("sales data", data)
+      if (data != undefined && data != "") {
+        //this.show = true;
+        localStorage.setItem("paymentTypes", data)
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -54,18 +72,80 @@ export class AdminComponent implements OnInit {
     });
     this.electronService.ipcRenderer.on('adminSyncResult', (event, data) => {
       if (data != undefined && data != "") {
-        //this.show = true;
+
+        if (data == true) {
+          this.electronService.ipcRenderer.send('isSyncCompleted')
+        }
         this._ngZone.run(() => {
           //  this.router.navigate(['/addproduct'])
         });
       }
     });
+
+    this.SyncMethod = this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, data) => {
+      console.log("data synch", data)
+      console.log("number of attempts", this.numOfAttempts)
+      var isSyncDone: boolean = Boolean(data);
+      var timer:any;
+      this._ngZone.run(() => {
+        if (!isSyncDone) {
+          console.log("isSyncDone", isSyncDone)
+          timer = setTimeout(() => {
+            
+            if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
+              this.numOfAttempts++;
+              this.electronService.ipcRenderer.send('isSyncCompleted')
+            }
+          }, 1000);
+          // this.intervalSyc = setInterval(() => {
+          //   if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
+          //     this.numOfAttempts++;
+          //     this.electronService.ipcRenderer.send('isSyncCompleted')
+          //   }
+          // }, 2000)
+        }
+        else if (isSyncDone == true) {
+          this.isCurrentSync = false;
+          clearTimeout(timer);
+         // clearInterval(this.intervalSyc);
+          $("#continueSyncModal").modal("hide")
+          $("#successSyncModal").modal("show")
+          console.log("sync has been done buddy")
+          // this.electronService.ipcRenderer.removeListener("isSyncCompletedResult",this.SyncMethod);
+          // this.electronService.ipcRenderer.removeListener("adminSyncResult");
+          // if (isSyncDone) {
+          // this.electronService.ipcRenderer.send('adminDeviceConfig')
+          // console.log("this.deviceInfoNew ", this.deviceInfoNew)
+          // if (this.deviceInfoNew == true) {
+          //   var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
+          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+          //   localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
+          //  // $("#successSyncModal").modal("show")
+          // }
+          // } else {
+          //   console.log("Sync Timeout");
+          // }
+        }
+        else {
+          this.isCurrentSync = false;
+          console.log("Sync error");
+          $("#errorSyncModal").modal("show")
+        }
+      });
+    });
     this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
       if (data != undefined && data != "") {
         //this.show = true;
-        localStorage.setItem("deviceConfigData", data);
+        this.configData = JSON.parse(data);
+        this.deviceInfoNew = this.configData.LAST_SYNC_WAS_SUCCESS
+        console.log("this.deviceInfoNew", this.deviceInfoNew)
+
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
+
+          localStorage.setItem("deviceConfigData", data);
+          // this.router.navigate(['/deviceconfig'])
+
         });
       }
     });
@@ -97,6 +177,7 @@ export class AdminComponent implements OnInit {
     reliefShif.forEach(element => {
       console.log("sales report", element.shiftType, element.timeOpened, element.timeClosed)
       this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
+      this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
     });
     //console.log('read call', cardName)
   }
@@ -108,10 +189,7 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminOpenShift')
     //console.log('read call', cardName)
   }
-  adminSync(event) {
-    this.electronService.ipcRenderer.send('adminSync')
-    //console.log('read call', cardName)
-  }
+
   adminDeviceConfig() {
     this.electronService.ipcRenderer.send('adminDeviceConfig')
     //console.log('read call', cardName)
@@ -185,6 +263,16 @@ export class AdminComponent implements OnInit {
 
   }
 
+  syncData() {
+    this.loading = true;
+    // this.maxLoopingCount = 600;
+    this.isCurrentSync = true;
+    this.numOfAttempts = 0;
+    $("#continueSyncModal").modal("show")
+    this.electronService.ipcRenderer.send('adminSync')
+    //console.log('read call', cardName)
+  }
+
   ngOnInit() {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
@@ -249,9 +337,9 @@ export class AdminComponent implements OnInit {
     shiftReports.forEach(element => {
       if (element.userID == userId) {
         this.openingDrawerBal = element.openingDrawer
-      // } else if (element.shiftType == "1" && element.userID == userId) {
-      //   this.openingDrawerBal = element.openingDrawer
-       }
+        // } else if (element.shiftType == "1" && element.userID == userId) {
+        //   this.openingDrawerBal = element.openingDrawer
+      }
     });
 
     // let shift = JSON.parse(localStorage.getItem("openShift"));

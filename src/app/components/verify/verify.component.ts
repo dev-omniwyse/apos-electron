@@ -17,6 +17,8 @@ export class VerifyComponent implements OnInit {
   next: any;
   something: any;
   password:any
+  AgencyName:any
+  organization :any
   @Output() hideHeader = new EventEmitter();
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
@@ -53,7 +55,7 @@ export class VerifyComponent implements OnInit {
         assetId: localStorage.getItem("assetId"),
         password: localStorage.getItem("pass"),
       }
-    this.electronService.ipcRenderer.send('activationcall', "qe", data)
+    this.electronService.ipcRenderer.send('activationcall', "uat", data)
    }
 
 
@@ -71,8 +73,7 @@ goToNext(form: any) {
 // }
 }
   ngOnInit() {
-
-
+    this.organization = localStorage.getItem("organization")
   }
 
 }

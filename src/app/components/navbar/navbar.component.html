@@ -1,12 +1,11 @@
-<div class="header flex">
-    <div class="header-logo pull-left"><img src="assets/images/logo-header.png" /></div>
+<div class="header ">
+    <div class="header-logo pull-left">
+        <img class="pull-left" src="assets/images/logo-header.jpeg" />
+        <div class="header-time">Time Here</div>
+    </div>
     <div class="header-info pull-right">
         <div class="login-info">
-            <!-- <div class="pull-left">CDTA Admin <span>|</span> Terminal: 1258</div>
-            <button class="pull-left" (click)="logOut();">logout</button>
-            <div class="pull-left">Menu</div> -->
             <div *ngIf="terminalNumber" class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
-            <!-- <div class="pull-left"><a href="#">logout</a></div> -->
             <div *ngIf="terminalNumber" class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>
@@ -17,7 +16,6 @@
                 </div>
             </div>
 
-            <!-- <div class="pull-left">Menu</div> -->
             <div class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">APPS <i class="fa fa-bars"></i></button>
@@ -29,6 +27,7 @@
             </div>
         </div>
     </div>
+    <div class="clearfix"></div>
 </div>
 
 <div id="status-buttons" *ngIf="hideHeader">
@@ -37,7 +36,7 @@
 
         <!-- circular user icon -->
         <li>
-            <a routerLink="/setup" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" data-toggle="tab" title="personal">
+            <a routerLink="/setup" class="noclick" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" data-toggle="tab" title="personal">
                 <span class=" one">
                   Step 1
                   <div>Verify Hardware</div>
@@ -48,7 +47,7 @@
 
         <!-- circular tasks icon -->
         <li>
-            <a routerLink="/activation" routerLinkActive="active" data-toggle="tab" title="work">
+            <a routerLink="/activation" class="noclick" routerLinkActive="active" data-toggle="tab" title="work">
                 <span class=" two">
                         Step 2
                         <div>Activation Information</div>
@@ -59,7 +58,7 @@
 
         <!-- circular home icon -->
         <li>
-            <a routerLink="/verify" routerLinkActive="active" data-toggle="tab" title="address">
+            <a routerLink="/verify" class="noclick" routerLinkActive="active" data-toggle="tab" title="address">
                 <span class=" three">
                         Step 3
                         <div>Verify Organization</div>
@@ -73,23 +72,24 @@
 </div>
 
 <div class="modal fade" id="warning" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Warning</h4>
             </div>
 
             <div class="modal-body">
-                <p>You cannot log out until you've closed your shift. </p>
+                <p>You can't logout until you've closed your shift. </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" [routerLink]="['/shifts']" class="btn btn-org" data-dismiss="modal">Close Shift</button>
             </div>
         </div>
     </div>
 </div>
 <div class="modal fade" id="aboutVersion" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">APOS Version</h4>

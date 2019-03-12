@@ -1,31 +1,23 @@
-<div class="main-container">
-    <!-- <div class="header flex">
-    <div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
-    <div class="header-info pull-right"></div>
-  </div> -->
-    <div class="content-container flex full-hight">
-        <div class="login-img pull-left">
-            <div class="login-bg-img"></div>
-        </div>
-
-        <div class="login-section pull-right pos-relative">
-            <div class="login-container">
-
-                <div *ngIf="statusOfShiftReport.length != 0  " class="shift-report-status">{{statusOfShiftReport}}</div>
-                <div *ngIf="ownedByUser.length != 0 ">Main Shift Is Owned By :
-                    <strong>{{ownedByUser}}</strong>
-                </div>
-                <div *ngIf="lockedByUser.length != 0 ">Terminal Locked By :
-                    <strong>{{lockedByUser}}</strong>
-                </div>
-                <div class="alert alert-danger " *ngIf=errorMsg>
-                    <strong>Huh</strong> Please Enter valid Details
-                </div>
-
-                <input type="text" placeholder="User Name" [(ngModel)]="username" />
-                <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
-                <button class="mt20" (click)="Login()">Login</button>
+<div class="container-fluid login-bg">
+    <div class="row header-logo text-center">
+        <img src="assets/images/logo-header.jpeg" />
+    </div>
+    <div *ngIf="statusOfShiftReport.length != ''  " class="shift-report-status">{{statusOfShiftReport}}</div>
+    <div *ngIf="ownedByUser.length != '' " class="terminal-locked">Main Shift Is Owned By : {{ownedByUser}}</div>
+    <div *ngIf="lockedByUser.length != '' " class="terminal-locked">Terminal Locked By : {{lockedByUser}}</div>
+    <div class=" login-section pos-relative login-bottom">
+        <div class="login-container">
+            <div class="alert alert-danger " *ngIf="errorMsg.length != 0">
+                {{errorMsg}}
             </div>
+            <input type="text" placeholder="User Name" [(ngModel)]="username" />
+            <!-- <ngx-loading [show]="loading" [config]="{
+                                                    primaryColour: '#006ddd', 
+                                                    secondaryColour: '#ccc', 
+                                                    tertiaryColour: '#006ddd' }"></ngx-loading> -->
+            <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
+            <button class="mt20" (click)="Login()">Login</button>
         </div>
     </div>
+    <div class="clearfix"></div>
 </div>

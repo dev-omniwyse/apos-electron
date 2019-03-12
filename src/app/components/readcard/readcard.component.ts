@@ -13,7 +13,7 @@ declare var fs: any;
 declare var electron: any;
 declare var pcsc: any;
 var pcs = pcsc();
-var cardName: any = 0;
+var cardName: any = "";
 var isExistingCard = false;
 pcs.on('reader', function (reader) {
     console.log('reader', reader);
@@ -85,7 +85,8 @@ export class ReadcardComponent implements OnInit {
     event = "20+20";
     value: any;
     statusOfShiftReport: string = ""
-    disableCards: Boolean = false
+    disableCards: Boolean = false;
+    public errorMessage: String = "Cannot find encoder:";
     public logger;
     public singleImage: any
     public carddata: any = [];
@@ -95,17 +96,10 @@ export class ReadcardComponent implements OnInit {
     public show: Boolean = false;
     public x: any = 0;
     public offeringSList: any = [];
-    public isShowCardOptions:Boolean = true;
+    public isShowCardOptions: Boolean = true;
+    public isFromReadCard = false;
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
-            // alert(this.x++);
-            // var x:any = localStorage.getItem('loginCount')
-            //     if(x == null)
-            //         x = 1;
-            //     else{
-            //         x++
-            //     }
-            //     localStorage.setItem('loginCount', x)
         });
         if (this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
@@ -115,10 +109,13 @@ export class ReadcardComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
             console.log("data", data)
-            if (data != undefined && data != "") {
+            if (this.isFromReadCard && data != undefined && data != "") {
                 this.show = true;
+                this.isShowCardOptions = false;
+                this.isFromReadCard = false
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
+                    localStorage.setItem("printCardData",data)
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
                     // this.carddata = JSON.parse(item);
                     this.carddata = new Array(JSON.parse(data));
@@ -130,13 +127,35 @@ export class ReadcardComponent implements OnInit {
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
 
+        //readcardError
+
+
+        this.electronService.ipcRenderer.on('encoderError', (event, data) => {
+            this.errorMessage = data;
+            this.showErrorMessages();
+        });
+
+
+        this.electronService.ipcRenderer.on('readcardError', (event, data) => {
+            this.errorMessage = data;
+            this.showErrorMessages();
+        });
+
+
         this.electronService.ipcRenderer.on('saveOfferingResult', (event, data) => {
             if (data != undefined && data != "") {
                 console.log('Offerings Success');
             }
         });
 
-
+        this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
+            if (data != undefined && data != "") {
+                localStorage.setItem("deviceConfigData", data);
+                this._ngZone.run(() => {
+                    // this.router.navigate(['/addproduct'])
+                });
+            }
+        });
 
         this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
             if (data != undefined && data != "") {
@@ -151,6 +170,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
+                this.isShowCardOptions = false;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
@@ -177,8 +197,6 @@ export class ReadcardComponent implements OnInit {
         });
 
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
-            if(this.carddata[0] == undefined || this.carddata[0] == '' )
-                return;
             if (data != undefined && data != "") {
                 this.readCardData = [];
                 // this.show = true;
@@ -188,52 +206,67 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem('catalogJSON', JSON.stringify(data));
                     let item = JSON.parse(localStorage.getItem("catalogJSON"));
                     this.catalogData = JSON.parse(item).Offering;
+                    var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
+                    if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
+                        return;
                     var keepGoing = true;
-                    this.carddata[0].products.forEach(cardElement => {
+                    if (isMagnetic == false) {
+                        this.carddata[0].products.forEach(cardElement => {
 
-                        this.catalogData.forEach(catalogElement => {
-                            if (catalogElement.Ticket && keepGoing) {
-                                if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
-                                    var remainingValue = "";
-                                    var productName = "";
-                                    if (cardElement.product_type == 1)
-                                        productName = "Frequent Ride"
-                                    else if (cardElement.product_type == 2)
-                                        productName = "Stored Ride"
-                                    else if (cardElement.product_type == 3)
-                                        productName = "Pay As You Go"
-                                    if (cardElement.product_type == 1)
-                                        remainingValue = cardElement.days + " Days";
-                                    else if (cardElement.product_type == 2)
-                                        remainingValue = cardElement.remaining_rides + " Rides";
-                                    else
-                                        remainingValue = "$ " + cardElement.remaining_value / 100;
-                                    var jsonObject = {
+                            this.catalogData.forEach(catalogElement => {
+                                if (catalogElement.Ticket && keepGoing) {
+                                    if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
+                                        var remainingValue = "";
+                                        var productName = "";
+                                        var status = cardElement.status;
+                                        if (cardElement.product_type == 1)
+                                            productName = "Frequent Ride"
+                                        else if (cardElement.product_type == 2)
+                                            productName = "Stored Ride"
+                                        else if (cardElement.product_type == 3)
+                                            productName = "Pay As You Go"
+                                        if (cardElement.product_type == 1){
+                                            remainingValue = cardElement.days + " Days";
+                                            var pendingText =  (cardElement.recharges_pending > 0)?" ("+cardElement.recharges_pending+" Pending)":"";
+                                            status = status + pendingText;
+                                        }
+                                        else if (cardElement.product_type == 2)
+                                            remainingValue = cardElement.remaining_rides + " Rides";
+                                        else
+                                            remainingValue = "$ " + cardElement.remaining_value / 100;
+                                        var jsonObject = {
 
-                                        "product": productName,
-                                        "description": catalogElement.Ticket.Description,
-                                        "status": cardElement.status,
-                                        "remainingValue": remainingValue
+                                            "product": productName,
+                                            "description": catalogElement.Ticket.Description,
+                                            "status":  status,
+                                            "remainingValue": remainingValue
+                                        }
+                                        keepGoing = false;
+                                        this.readCardData.push(jsonObject);
+
                                     }
-                                    keepGoing = false;
-                                    this.readCardData.push(jsonObject);
-
                                 }
+                                if (catalogElement.Description === "Magnetics") {
+                                    localStorage.setItem("magneticProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
+                                }
+                                if (catalogElement.Description === "Smart Card") {
+                                    localStorage.setItem("smartCardProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
+                                }
+                            });
+                            if (keepGoing == true) {
+                                var jObject = {
+
+                                    "product": "Pay As You Go",
+                                    "description": "Frequent Rider",
+                                    "status": cardElement.status,
+                                    "balance": cardElement.balance
+                                }
+                                this.readCardData.push(jObject);
                             }
+                            keepGoing = true;
+
                         });
-                        if (keepGoing == true) {
-                            var jObject = {
-
-                                "product": "Pay As You Go",
-                                "description": "Frequent Rider",
-                                "status": cardElement.status,
-                                "balance": cardElement.balance
-                            }
-                            this.readCardData.push(jObject);
-                        }
-                        keepGoing = true;
-
-                    });
+                    }
                     console.log("pushedData --", this.readCardData)
                     if (!isExistingCard)
                         this.router.navigate(['/addproduct'])
@@ -244,25 +277,37 @@ export class ReadcardComponent implements OnInit {
 
     }
 
+    showErrorMessages() {
+        $("#errorModal").modal('show');
+    }
     /* JAVA SERVICE CALL */
 
     readCard(event) {
-        this.isShowCardOptions = false;
         isExistingCard = true;
+        this.isFromReadCard = true;
+        localStorage.setItem("isNonFareProduct", "false");
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
     }
 
     newFareCard(event) {
-        this.isShowCardOptions = false;
         localStorage.setItem("isMagnetic", "false");
+        localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
         //console.log('read call', cardName)
     }
 
+    nonFareProduct() {
+        localStorage.setItem("isNonFareProduct", "true");
+        localStorage.setItem("isMagnetic", "false");
+        this.getProductCatalogJSON();
+        this.router.navigate(['/addproduct']);
+    }
+
     magneticCard(event) {
         localStorage.setItem("isMagnetic", "true");
+        localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }
@@ -277,27 +322,31 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('catalogJson', cardName)
     }
 
+    adminDeviceConfig() {
+        this.electronService.ipcRenderer.send('adminDeviceConfig')
+        //console.log('read call', cardName)
+    }
     setOffering() {
         this.offeringSList = [];
         this.catalogData.forEach(element => {
-            if (element.Ticket != undefined && element.Ticket != "") {
-                var jsonObj:any =  {
-                    "OfferingId": element.OfferingId,
-                    "ProductIdentifier": element.ProductIdentifier,
-                    "Description": element.Description,
-                    "UnitPrice":  element.UnitPrice,
-                    "IsTaxable":  element.IsTaxable,
-                    "IsMerchandise":  element.IsMerchandise,
-                    "IsAccountBased":  element.IsAccountBased,
-                    "IsCardBased":  element.IsCardBased
-                  }
-                // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
-                 this.offeringSList.push(jsonObj);
+            // if ((element.Ticket != undefined && element.Ticket != "") || element.IsMerchandise) {
+            var jsonObj: any = {
+                "OfferingId": element.OfferingId,
+                "ProductIdentifier": element.ProductIdentifier,
+                "Description": element.Description,
+                "UnitPrice": element.UnitPrice,
+                "IsTaxable": element.IsTaxable,
+                "IsMerchandise": element.IsMerchandise,
+                "IsAccountBased": element.IsAccountBased,
+                "IsCardBased": element.IsCardBased
             }
+            // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
+            this.offeringSList.push(jsonObj);
+            // }
         });
         console.log(JSON.stringify(this.offeringSList));
         // var tempJson:string = '[{"TicketId": 3, "Description": test1},{"TicketId": 4, "Description": test1}]'
-        this.electronService.ipcRenderer.send('saveOffering', '{"data": '+JSON.stringify(this.offeringSList)+'}');
+        this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(this.offeringSList) + '}');
     }
 
     printDiv() {
@@ -314,7 +363,19 @@ export class ReadcardComponent implements OnInit {
         // this.carddata.length = 0;
     }
 
+    hideModalPop() {
+        let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+        let userId = localStorage.getItem("userID")
 
+        shiftReports.forEach(element => {
+            if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
+                localStorage.setItem("hideModalPopup", "true")
+            } else {
+                localStorage.setItem("hideModalPopup", "false")
+            }
+        })
+
+    }
 
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");
@@ -335,16 +396,12 @@ export class ReadcardComponent implements OnInit {
 
                 if (element.shiftState == "3" && element.shiftType == "0") {
                     this.statusOfShiftReport = "Main Shift is Closed"
-                    this.disableCards = true
+                    this.disableCards = true 
                 } else {
                     this.disableCards = false
                 }
             })
         }
-
-
-
-
     }
 
     checkIfcardIsEmpty() {

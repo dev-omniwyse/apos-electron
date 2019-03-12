@@ -1,0 +1,30 @@
+.env-containter {
+    padding: 15px;
+}
+
+.env-containter h2 {
+    font-size: 15px;
+    color: #003c79;
+    margin: 0 0 70px;
+}
+
+.env-containter button {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #c4c4c4;
+    margin: 15px 0;
+    color: #3b80c2;
+    padding: 46px 0;
+    font-size: 16px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fdfdfd+9,fbfbfb+50,f8f8f8+75,f6f6f6+100 */
+    background: #ffffff;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #fdfdfd 9%, #fbfbfb 50%, #f8f8f8 75%, #f6f6f6 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%, #fdfdfd 9%, #fbfbfb 50%, #f8f8f8 75%, #f6f6f6 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%, #fdfdfd 9%, #fbfbfb 50%, #f8f8f8 75%, #f6f6f6 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6', GradientType=0);
+    /* IE6-9 */
+}

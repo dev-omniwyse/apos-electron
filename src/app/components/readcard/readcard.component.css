@@ -1,54 +1,158 @@
-@media print{
-  .doNotPrint{display:none !important;}
-} 
-
-.flex{
-  display: flex
-  
+@media print {
+    .doNotPrint {
+        display: none !important;
+    }
 }
 
-.cardBtn{
-width: 250px;
-height: 65px;
-flex: 1;
-border: 1px solid #2064a7;
-border-radius: 3px;
-background-color: #3b80c3;
-padding: 30px 20px;
-color: #fff;
-font-size: 22px;
-position: relative;
-margin: 1px 400px 10px;
+.flex {
+    display: flex
+}
+
+.cardBtn {
+    width: 100%;
+    border: 1px solid #2064a7;
+    border-radius: 3px;
+    background-color: #3b80c3;
+    padding: 13px 20px;
+    color: #fff;
+    font-size: 34px;
+    position: relative;
+    margin: 1px 0 10px;
+    float: left;
+}
+
+.cardBtn .cardBtn:disabled,
+.cardBtn[disabled] {
+    background-color: #ccc;
+    border: 1px solid #999;
+    cursor: not-allowed;
+    color: #666;
 }
 
 .cardBtn img {
-position: absolute;
-width: 25px;
-right: 20px;
+    position: absolute;
+    width: 25px;
+    right: 20px;
+    top: 27px;
 }
 
-.flex-right-items div{
-width: 50%;
+.flex-right-items div {
+    width: 50%;
 }
-.flex-right-items div button{
-/* flex: 1 1 calc(48% - 15px); */
-/* max-width: calc(48% - 15px); */
-margin: 15px;
-/* width: calc(100% - 30px); */
-padding: 10px 0;
-border-radius: 7px;
 
-font-size: 1.25em;
-
+.flex-right-items div button {
+    /* flex: 1 1 calc(48% - 15px); */
+    /* max-width: calc(48% - 15px); */
+    margin: 15px;
+    /* width: calc(100% - 30px); */
+    padding: 10px 0;
+    border-radius: 7px;
+    font-size: 1.25em;
 }
 
 .shift-report-status {
     text-align: center;
-    background-color: #fefaf7;
-    padding: 10px;
-    width: 30%;
-    margin: 0 auto 50px;
+    background-color: #d65400;
+    padding: 0px 10px;
+    width: 100%;
+    margin: 13px auto 50px;
+    color: #fff;
+    font-size: 26px;
+}
+
+.read-card-btn {
+    border: 1px solid #2064a7;
     border-radius: 3px;
-    border: 1px dashed #f8ceb3;
-    color: #d65400;
+    padding: 7vh 20px;
+    font-size: 34px;
+    position: relative;
+    width: 100%;
+    margin: 10px auto;
+    background-color: #3b80c3;
+    color: #9dbfe1;
+}
+
+.read-card-btn i {
+    position: absolute;
+    width: 25px;
+    right: 20px;
+}
+
+.full-height-l {
+    height: calc(100vh - 80px);
+}
+
+.read-card-btn-orange {
+    border: 1px solid #d65400;
+    border-radius: 3px;
+    background-color: #d65400;
+    padding: 30px 48px;
+    color: #fff;
+    font-size: 22px;
+    position: absolute;
+    bottom: 10px;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    left: 50%;
+}
+
+.btn-tab-set {
+    background-color: #f8f8f8;
+    border: 1px solid #c4c4c4;
+    font-size: #3b80c2;
+}
+
+.btn-tab-set {
+    background-color: #f8f8f8;
+    border: 1px solid #c4c4c4;
+    border-radius: 3px;
+    overflow: hidden;
+    text-align: center;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.btn-tab {
+    width: 50%;
+    float: left;
+    font-size: 23px;
+    padding: 20px;
+}
+
+.btn-tab-selected {
+    background-color: #3b80c3;
+    color: #fff;
+    border-radius: 3px;
+    width: 50%;
+    float: left;
+    padding: 20px;
+    font-size: 23px;
+}
+
+button:disabled {
+    background-color: #3b80c3!important;
+    cursor: not-allowed!important;
+    border-color: #3b80c3!important;
+    color: #9dbfe1!important;
+}
+
+.modal-body-in {
+    position: relative;
+    padding: 15px;
+    font-size: 25px!important;
+    color: #000!important;
+    text-align: center!important;
+}
+
+.cancel-btn-pop {
+    border: 1px solid #d65400;
+    border-radius: 3px;
+    background-color: #d65400;
+    padding: 10px 15px;
+    color: #fff;
+    font-size: 22px;
+}
+
+.modal-txt-h {
+    padding: 25px 0 0 25px;
 }
