@@ -487,3 +487,11 @@ button:disabled {
     color: #6e6e6e!important;
     border: 1px solid #dedede!important;
 }
+
+.container-l-app {
+    width: 100%;
+    background-color: #fafafa;
+    padding: 20px;
+    border: 1px solid #ccc;
+    height: 50vh;
+}

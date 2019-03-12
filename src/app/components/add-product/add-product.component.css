@@ -60,11 +60,12 @@ ul {
     background-color: #fafafa;
     border: 1px solid #cccccc;
     padding: 10px;
-    margin: 15px 0
+    margin: 15px 0;
+    font-size: 17px;
 }
 
 .sub-total hr {
-    margin: 40px 0 20px 0
+    margin: 3vh 0 3vh 0;
 }
 
 .sub-total .totals {
@@ -171,6 +172,7 @@ ul {
 
 .flex-right-items div {
     width: 50%;
+    float: left;
 }
 
 .flex-right-items div button {
@@ -220,20 +222,6 @@ ul {
     border: 1px solid #ccc;
 }
 
-.container-l-app {
-    width: 100%;
-    background-color: #fafafa;
-    padding: 20px;
-    border: 1px solid #ccc;
-    min-height: 50vh;
-}
-
-@media (max-width: 768px) {
-    .container-l-app {
-        min-height: 40vh;
-    }
-}
-
 .container-l-app .label {
     display: block;
     text-align: left;
@@ -242,6 +230,8 @@ ul {
     color: #000;
     margin-bottom: 10px;
     overflow: hidden;
+    font-size: 16px;
+    font-weight: 100;
 }
 
 .container-l-app .label div {
@@ -393,4 +383,22 @@ ul {
     height: calc(100vh - 275px);
     padding: 10px;
     width: 100%!important;
+}
+
+@media (max-width: 600px) {
+    .container-l-app {
+        height: 30vh;
+    }
+}
+
+@media (max-width: 800px) {
+    .container-l-app {
+        height: 40vh;
+    }
+}
+
+@media screen and (min-width: 480px) {
+    body {
+        background-color: lightgreen;
+    }
 }
