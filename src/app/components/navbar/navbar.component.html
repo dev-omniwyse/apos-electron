@@ -1,11 +1,11 @@
 <div class="header ">
     <div class="header-logo pull-left">
         <img class="pull-left" src="assets/images/logo-header.jpeg" />
-        <div class="header-time">Time Here</div>
+        <div class="header-time">{{today | date:'dd-MM-yyyy hh:mm:ss a':'+0530'}}</div>
     </div>
     <div class="header-info pull-right">
         <div class="login-info">
-            <div *ngIf="terminalNumber" class="pull-left header-tx-top">APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
+            <div *ngIf="terminalNumber" class="pull-left header-tx-top">User: APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
             <div *ngIf="terminalNumber" class="pull-left">
                 <div class="dropdown">
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>

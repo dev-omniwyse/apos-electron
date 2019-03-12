@@ -4,6 +4,8 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import {formatDate } from '@angular/common';
+
 declare var $: any
 @Component({
   selector: 'app-navbar',
@@ -82,7 +84,13 @@ export class NavbarComponent implements OnInit {
     //   this.hideAndShowLogout = true
     // }
   }
-
+  // export class AppComponent  {
+  //   today= new Date();
+  //   jstoday = '';
+  //   constructor() {
+  //     this.jstoday = formatDate(this.today, 'dd-MM-yyyy hh:mm:ss a', 'en-US', '+0530');
+  //   }
+  // }
 }
 
 

@@ -14,25 +14,24 @@
             <button class="btn-white-top">View Card</button>
             <button class="btn-orange" (click)="addCard()">Add Card</button>
         </div>
-        <div>
+        <div class="btns-mag">
             <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
             <!-- <div class="menucontainer left"> -->
-            <ul style="height:100px">
-                <li>
-                    <div *ngIf="!isMagnetic">
-                        <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>Merch*</button>
-                    </div>
-                    <div *ngIf="isMagnetic">
-                        <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMagnetic()>Magnetic*</button>
-                    </div>
-                </li>
-                <li #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)">
-                    <button *ngIf="!isMagnetic || !isMerchendise" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
-                </li>
 
-            </ul>
+            <div *ngIf="!isMagnetic" class="col-md-6">
+                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>Merch*</button>
+            </div>
+            <div *ngIf="isMagnetic" class="col-md-6">
+                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMagnetic()>Magnetic*</button>
+            </div>
+
+            <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
+                <button *ngIf="!isMagnetic || !isMerchendise" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
+            </div>
+
             <!-- </div> -->
             <!-- <input (click)="myStyle={'margin-left': moveRight()}" [disabled]="rightdisabled" class="left" type="button" value="Move Right" /> -->
+            <div class="clearfix"></div>
         </div>
         <!-- <div class="flex header-l">
           <button class="btn-b-white">Merch</button>
@@ -107,11 +106,11 @@
             <li (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
             <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
         </ul>
-        <div class=" flex-wrap flex-right-items flex-contain-full-w" *ngIf="!regularRoute">
+        <div class=" flex-wrap flex-right-items flex-contain-full-w1" *ngIf="!regularRoute">
             <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.Ticket.Price}}</button>
             </div>
         </div>
-        <div class=" flex-wrap flex-right-items flex-contain-full-w" *ngIf="regularRoute">
+        <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
             <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button></div>
         </div>
     </div>

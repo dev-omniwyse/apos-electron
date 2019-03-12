@@ -126,26 +126,26 @@ ul {
 }
 
 .btn-b-white {
-    width: 50%;
+    width: 100%;
     margin-left: 5px;
     background-color: #fff;
     border: 1px solid #c3c3c3;
     border-radius: 5px;
-    color: #999999;
-    font-size: 22px;
+    color: #d65400;
+    font-size: 17px;
     padding: 10px 15px;
 }
 
 .nonFare,
 .regularRoute {
-    width: 50%;
+    width: 100%;
     margin-left: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #999999;
-    font-size: 20px;
-    padding: 0px 15px;
-    border: 2px solid #d65400
+    color: #000;
+    font-size: 17px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
 }
 
 .btn-primary {
@@ -351,6 +351,7 @@ ul {
     background-color: #003C76;
     color: #fff;
     text-align: center;
+    font-size: 18px;
 }
 
 .pop-up-box {
@@ -396,11 +397,22 @@ ul {
     height: calc(100vh - 265px);
 }
 
-.flex-contain-full-w {
+.flex-contain-full-w1 {
     background-color: #fff;
     height: calc(100vh - 245px);
     padding: 10px;
     width: 100%!important;
+}
+
+.flex-contain-full-w2 {
+    background-color: #fff;
+    height: calc(100vh - 185px);
+    padding: 10px;
+    width: 100%!important;
+}
+
+.btns-mag {
+    margin-bottom: 10px;
 }
 
 .container-l-app {
@@ -408,11 +420,12 @@ ul {
     background-color: #fafafa;
     padding: 20px;
     border: 1px solid #ccc;
+    overflow: auto
 }
 
 @media (min-width: 1425px) and (max-width: 19000px) {
     .container-l-app {
-        height: 48vh;
+        height: 47vh;
     }
 }
 
