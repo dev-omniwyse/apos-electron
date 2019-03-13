@@ -1,3 +1,16 @@
+.black-bg {
+    background-color: #777777;
+    height: calc(100vh - 75px);
+    padding: 10px;
+}
+
+.in-page-cont {
+    padding: 20px;
+    height: calc(100vh - 95px);
+    background-color: #f0f3fa;
+    border-radius: 5px;
+}
+
 .back-to-sales {
     background-color: #d65400;
     border: 1px solid #d65400;
@@ -55,4 +68,21 @@
 
 .shift-sales-head {
     margin-bottom: 20px;
+}
+
+.print-summary-white {
+    background-color: #fff;
+    border: 1px solid #dedede;
+    border-radius: 6px;
+    color: #323232;
+    font-size: 26px;
+    padding: 30px 115px;
+    text-transform: uppercase;
+}
+
+.select-clerk select {
+    padding: 10px;
+    margin-left: 20px;
+    border-radius: 3px;
+    min-width: 200px;
 }

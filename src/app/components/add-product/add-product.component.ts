@@ -2,6 +2,7 @@ import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import { concat } from 'rxjs/operators';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -99,6 +100,7 @@ export class AddProductComponent implements OnInit {
   maxRechargeRidesReached = false;
   maxRemainingValueReached = false;
   maxLimitErrorMessages: String = "";
+  calsifilter: boolean = false;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -230,6 +232,7 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem('transactionAmount');
     localStorage.removeItem("MerchandiseData");
     localStorage.removeItem("MagneticData");
+    this.calsifilter = false
     this.router.navigate(['/readcard'])
   }
 
@@ -315,13 +318,33 @@ export class AddProductComponent implements OnInit {
       $("#magneticCardLimitModal").modal('show');
       return;
     }
-    this.merchantList.push(merch);
-    this.productCardList.push(this.currentCard.printed_id)
+    if (this.merchantList.length == 0) {
+      this.merchantList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+      merch.quantity = 1;
+    } else if (this.merchantList.includes(merch) === true) {
+      merch.quantity++;
+    }
+    else if (this.merchantList.includes(merch) === false) {
+      merch.quantity = 1;
+      this.merchantiseList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+    }
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
 
   getSelectedMerchProductData(merch) {
-    this.merchantiseList.push(merch);
+    console.log(merch);
+    if (this.merchantiseList.length == 0) {
+      merch.quantity = 1;
+      this.merchantiseList.push(merch);
+    } else if (this.merchantiseList.includes(merch) === true) {
+      merch.quantity++;
+    }
+    else if (this.merchantiseList.includes(merch) === false) {
+      merch.quantity = 1;
+      this.merchantiseList.push(merch);
+    }
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -336,7 +359,8 @@ export class AddProductComponent implements OnInit {
 
 
   removeProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.Ticket.Price);
+    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(merch);
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -344,7 +368,8 @@ export class AddProductComponent implements OnInit {
   }
 
   removeMerchProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantiseList.indexOf(merch);
     this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -363,7 +388,6 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("MagneticData", JSON.stringify(this.MagneticList));
     localStorage.setItem('productCardData', JSON.stringify(this.productCardList));
     localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
-    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     this.checkout = false;
   }
@@ -510,11 +534,24 @@ export class AddProductComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    if (this.productTotal == 0) {
-      this.productTotal = digit;
-      // this.productTotal+=digit
-    } else
-      this.productTotal += digit
+    this.productTotal = this.productTotal * 100;
+    this.productTotal += digit;
+    this.productTotal = this.productTotal / 100;
+    // this.productTotal = this.productTotal + digit;
+    // this.productTotal = ""
+    //  if(this.calsifilter == false){
+    //      this.productTotal = ""
+    //      this.calsifilter = true
+
+    //  }
+    //  this.productTotal  += digit;
+    //  this.productTotal = this.productTotal;
+    // if (this.productTotal == 0) {
+    //   this.productTotal = digit/100;
+    //   // this.productTotal+=digit
+    // } else {
+    //   this.productTotal += digit
+    // }
 
   }
   clearDigit(digit) {
@@ -528,6 +565,8 @@ export class AddProductComponent implements OnInit {
     var unitPrice: any = 0;
     var fareCode: any = "";
     var shiftType: any = 0;
+
+    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
 
     // var de
     this.productJson.forEach(catalogElement => {
@@ -626,7 +665,8 @@ export class AddProductComponent implements OnInit {
       this.merchantiseList.forEach(merchandiseElement => {
         var merchandiseObj: any = {
           "transactionID": new Date().getTime(),
-          "quantity": 1, "productIdentifier": merchandiseElement.ProductIdentifier,
+          "quantity": merchandiseElement.quantity,
+          "productIdentifier": merchandiseElement.ProductIdentifier,
           "ticketTypeId": null,
           "ticketValue": 0,
           "slotNumber": 0,

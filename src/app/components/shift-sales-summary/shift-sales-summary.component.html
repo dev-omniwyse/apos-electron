@@ -1,57 +1,54 @@
-<div class="container-padding">
-    <div class="shift-sales-head">
-        <div class="pull-left shift-sales-txt">SHIFT SALES SUMMARY</div>
+<div class="black-bg">
+    <div class="container-padding in-page-cont">
+        <div class="shift-sales-head">
+            <div class="col-md-6">
+                <div class="shift-sales-txt">SHIFT SALES SUMMARY</div>
+                <div class="select-clerk">
+                    <label>Clerk: </label>
+                    <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
+                <option [ngValue]="undefined" selected>Select</option>
+                <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
+            </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pull-right"><button class="print-summary-white" (click)="printSummaryReport();"> PRINT SUMMARY</button></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
 
-        <div class="pull-right"><button class="back-to-sales" (click)="printSummaryReport();"><i class="fa fa-print"></i> Print Summary</button></div>
-        <div class="clearfix"></div>
-    </div>
 
-    <div>
-        <label>Clerk: </label>
-        <!-- <select (change)="shiftSaleSummary($event.target.value)">
-            <option value="0">--All--</option>
-            <option *ngFor="let sale of sales"  value={{sale.userEmail}}>
-                {{sale.userEmail}}
-            </option>
-        </select> -->
-        <select [(ngModel)]="selectedValues" (change)="shiftSaleSummary()">
-            <option [ngValue]="undefined" selected>Select</option>
-            <option [ngValue] ="0">--All--</option>
-            <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
-        </select>
-    </div>
-
-    <div class="shift-data-sets">
-        <div class="shift-data-set">
-            <table>
-                <tr>
-                    <th>Quanity</th>
-                    <th>Product</th>
-                    <th>Value</th>
-                </tr>
-                <tr *ngFor="let salesdetail of salesData">
-                    <td>{{salesdetail.quantity}}</td>
-                    <td>{{salesdetail.description}}</td>
-                    <td>${{salesdetail.value}}</td>
-                </tr>
-                <!-- <tr>
+        <div class="shift-data-sets">
+            <div class="shift-data-set">
+                <table>
+                    <tr>
+                        <th>Quanity</th>
+                        <th>Product</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr *ngFor="let salesdetail of salesData">
+                        <td>{{salesdetail.quantity}}</td>
+                        <td>{{salesdetail.description}}</td>
+                        <td>${{salesdetail.value}}</td>
+                    </tr>
+                    <!-- <tr>
                     <td>1</td>
                     <td>Pay As You Go</td>
                     <td>$30.00</td>
                 </tr> -->
-            </table>
-        </div>
-        <div class="shift-data-set">
-            <table>
-                <tr>
-                    <th>Payment Method</th>
-                    <th>Amount</th>
-                </tr>
-                <tr *ngFor="let salePayment of salesPaymentData">
-                    <td>{{salePayment.paymentMethod}}</td>
-                    <td>${{salePayment.paymentAmount}}</td>
-                </tr>
-                <!-- <tr>
+                </table>
+            </div>
+            <div class="shift-data-set">
+                <table>
+                    <tr>
+                        <th>Payment Method</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr *ngFor="let salePayment of salesPaymentData">
+                        <td>{{salePayment.paymentMethod}}</td>
+                        <td>${{salePayment.paymentAmount}}</td>
+                    </tr>
+                    <!-- <tr>
                     <td>Credit or Debit Card</td>
                     <td>$0.00</td>
                 </tr>
@@ -63,9 +60,11 @@
                     <td>Credit or Debit Card</td>
                     <td>$0.00</td>
                 </tr> -->
-            </table>
+                </table>
+            </div>
         </div>
+
+        <button class="print-summary-white" [routerLink]="['/admin']" (click)="hidePopUp();"> Back to Admin</button>
     </div>
 
-    <button class="back-to-sales" [routerLink]="['/admin']" (click)="hidePopUp();"><i aria-hidden="true" class="fa fa-long-arrow-left"></i> Back to Admin</button>
 </div>

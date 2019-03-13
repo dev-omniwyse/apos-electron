@@ -224,7 +224,7 @@ export class CarddataComponent implements OnInit, OnChanges {
               }
               var jsonWalletObj = {
                 "transactionID": this.transactionId,
-                "quantity": 1,
+                "quantity": walletElement.quantity,
                 "productIdentifier": walletElement.ProductIdentifier,
                 "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
                 "ticketValue": (walletElement.Ticket.Group == 3) ? walletElement.UnitPrice : walletElement.Ticket.Value,
@@ -232,12 +232,12 @@ export class CarddataComponent implements OnInit, OnChanges {
                 "slotNumber": this.slotNumber[slotNumberStatusIndex],
                 "startDate": (walletElement.DateEffective / (1000 * 60 * 60 * 24)),
                 "expirationDate": 0,//(walletElement.DateExpires / (1000 * 60 * 60 * 24)),
-                "balance": walletElement.UnitPrice,
+                "balance": (walletElement.quantity*walletElement.UnitPrice),
                 "rechargesPending": rechargesPending,
                 "IsMerchandise": walletElement.IsMerchandise,
                 "IsBackendMerchandise": false,
-                "IsFareCard": false,
-                "unitPrice": walletElement.UnitPrice,
+                "IsFareCard": false, 
+                "unitPrice": (walletElement.quantity * walletElement.UnitPrice),
                 "totalCost": this.transactionAmount,
                 "userID": localStorage.getItem("userEmail"),
                 "shiftID": 1,
@@ -463,7 +463,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "type_expiration": element.Ticket.ExpirationTypeId,
           "add_time": 240,
           "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-          "days": element.Ticket.Value,
+          "days": (element.quantity * element.Ticket.Value),
           "isAccountBased": element.IsAccountBased,
           "isCardBased": element.IsCardBased
         }
@@ -483,7 +483,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "designator": element.Ticket.Designator,
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
-          "remaining_rides": element.Ticket.Price,
+          "remaining_rides": (element.quantity * element.Ticket.Price),
           "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
           "threshold": 0,
           "is_linked_to_user_profile": false,
@@ -507,7 +507,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": (element.Ticket.Price * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "remaining_value": (element.quantity * element.Ticket.Price * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element.IsAccountBased,
           "isCardBased": element.IsCardBased
         }

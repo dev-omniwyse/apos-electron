@@ -23,20 +23,16 @@
 
 .terminal-locked {
     text-align: center;
-    color: #3b80c3;
-    position: absolute;
-    top: 0;
+    color: #000;
     width: 100%;
-    background-color: #fff;
-    left: 0;
     padding: 30px;
-    font-size: 22px;
-    z-index: 9;
-    border: 1px dashed #3b80c342;
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 100;
 }
 
 .login-bottom {
-    height: calc(100vh - 250px);
+    height: calc(100vh - 320px);
     width: 50%;
     margin: 0 auto;
 }

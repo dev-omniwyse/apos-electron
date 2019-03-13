@@ -7,17 +7,20 @@ body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
 }
-ul{
-    list-style-type:none;
+
+ul {
+    list-style-type: none;
 }
+
 .main-container {
     background-color: #777777;
     display: flex;
-    padding: 5px
+    padding: 10px 5px;
+    height: calc(100vh - 64px);
 }
 
 .container-left {
-    width: 35%;
+    width: 40%;
     float: left;
     background-color: #f0f3fa;
     border-radius: 5px;
@@ -26,7 +29,14 @@ ul{
 }
 
 .container-right {
-    width: 65%;
+    width: 60%;
+    float: left;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.container-right-calc {
+    width: 60%;
     float: left;
     background-color: #fff;
     margin: 0 5px;
@@ -56,16 +66,17 @@ ul{
 .sub-total {
     background-color: #fafafa;
     border: 1px solid #cccccc;
-    padding: 10px;
-    margin: 15px 0
+    padding: 1vh;
+    margin: 2vh 0;
+    font-size: 2vh;
 }
 
 .sub-total hr {
-    margin: 40px 0 20px 0
+    margin: 3vh 0 3vh 0;
 }
 
 .sub-total .totals {
-    font-size: 30px;
+    font-size: 3vh;
 }
 
 .btn-white-top {
@@ -74,8 +85,9 @@ ul{
     border-radius: 5px;
     color: #999999;
     font-size: 20px;
-    padding: 10px 15px;
-    width: calc(50% - 45px);
+    padding: 26px 15px;
+    width: calc(50% - 75px);
+    margin: 0 18px;
 }
 
 .btn-white {
@@ -83,9 +95,10 @@ ul{
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #333333;
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 2.5vh;
+    padding: 2.5vh 15px;
     width: calc(50% - 10px);
+    text-transform: uppercase;
 }
 
 .btn-orange {
@@ -93,10 +106,11 @@ ul{
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 2.5vh;
+    padding: 2.5vh 15px;
     width: 50%;
-    margin-left: 5px
+    margin-left: 5px;
+    text-transform: uppercase;
 }
 
 .header-l {
@@ -112,33 +126,36 @@ ul{
 }
 
 .btn-b-white {
-    width: 50%;
+    width: 100%;
     margin-left: 5px;
     background-color: #fff;
     border: 1px solid #c3c3c3;
     border-radius: 5px;
-    color: #999999;
-    font-size: 20px;
-    padding: 0px 15px;
+    color: #d65400;
+    font-size: 17px;
+    padding: 10px 15px;
 }
 
-
-.nonFare,.regularRoute {
-    width: 50%;
+.nonFare,
+.regularRoute {
+    width: 100%;
     margin-left: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #999999;
-    font-size: 20px;
-    padding: 0px 15px;
-    border: 2px solid #d65400
+    color: #000;
+    font-size: 17px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
 }
 
 .btn-primary {
-    padding: 10px 15px;
+    padding: 20px 15px;
     width: 30%;
     border-radius: 5px;
     background-color: #013d79;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 100;
 }
 
 .btndefault {
@@ -149,8 +166,10 @@ ul{
     background-image: none;
     display: inline-block;
     border: 1px solid #ccc;
-    cursor: not-allowed
+    font-size: 20px;
+    cursor: not-allowed;
 }
+
 .merch-btn {
     margin: 20px 0
 }
@@ -161,6 +180,7 @@ ul{
 
 .flex-right-items div {
     width: 50%;
+    float: left;
 }
 
 .flex-right-items div button {
@@ -210,14 +230,6 @@ ul{
     border: 1px solid #ccc;
 }
 
-.container-l-app {
-    width: 100%;
-    background-color: #fafafa;
-    padding: 20px;
-    border: 1px solid #ccc;
-    min-height: 300px;
-}
-
 .container-l-app .label {
     display: block;
     text-align: left;
@@ -226,6 +238,8 @@ ul{
     color: #000;
     margin-bottom: 10px;
     overflow: hidden;
+    font-size: 16px;
+    font-weight: 100;
 }
 
 .container-l-app .label div {
@@ -241,8 +255,11 @@ ul{
     width: 100%;
     display: block;
     text-align: right;
-    padding: 10px 15px;
+    padding: 20px 15px;
     border-radius: 0;
+    font-size: 35px;
+    font-weight: 100;
+    margin-bottom: 39px;
 }
 
 .cr-left {
@@ -259,21 +276,28 @@ ul{
     width: 31%;
     margin: 1%;
     float: left;
+    font-size: 2.4vh;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-2 button {
     width: 47.5%;
     margin: 1%;
     float: left;
+    font-size: 2.4vh;
+    color: #3b80c2;
 }
 
 .cr-left .number-btns-set-1 button {
     width: 97%;
     margin: 1%;
+    font-size: 2.4vh;
+    color: #3b80c2;
+    text-transform: uppercase;
 }
 
 .cr-left button {
-    padding: 19.5px;
+    padding: 4.2vh;
     border-radius: 3px;
     border: 1px solid #c4c4c4;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+18,fafafa+52,f7f7f7+100 */
@@ -295,8 +319,8 @@ ul{
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
+    font-size: 1.9vh;
+    padding: 2.85vh 15px;
     margin: 1% 0;
 }
 
@@ -307,7 +331,8 @@ ul{
 
 .tab-sets {
     background-color: #013D7B;
-    padding: 3px;
+    padding: 10px;
+    height: calc(100vh - 154px);
 }
 
 .nav-pills>li>a {
@@ -326,6 +351,7 @@ ul{
     background-color: #003C76;
     color: #fff;
     text-align: center;
+    font-size: 18px;
 }
 
 .pop-up-box {
@@ -359,3 +385,76 @@ ul{
     padding: 14px;
     color: #fff;
 }
+
+.tab-sets .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 17px 2vw;
+    font-size: 1vw;
+}
+
+.flex-contain-full {
+    height: calc(100vh - 225px);
+}
+
+.flex-contain-full-w1 {
+    background-color: #fff;
+    height: calc(100vh - 235px);
+    padding: 10px;
+    width: 100%!important;
+}
+
+.flex-contain-full-w2 {
+    background-color: #fff;
+    height: calc(100vh - 185px);
+    padding: 10px;
+    width: 100%!important;
+}
+
+.btns-mag {
+    margin-bottom: 1vh;
+}
+
+.container-l-app {
+    width: 100%;
+    background-color: #fafafa;
+    padding: 1.5vh;
+    border: 1px solid #ccc;
+    overflow: auto;
+    height: 53vh;
+}
+
+@media (max-width: 1550px) {
+    .btn-white,
+    .btn-orange {
+        font-size: 2.5vh;
+        padding: 1.5vh 15px;
+    }
+    .sub-total {
+        margin: 1vh 0;
+    }
+}
+
+
+/* 
+@media (min-width: 1425px) and (max-width: 19000px) {
+    .container-l-app {}
+}
+
+@media (min-width: 1230px) and (max-width: 1424px) {
+    .container-l-app {
+        height: 41vh;
+    }
+}
+
+@media (min-width: 999px) and (max-width: 1229px) {
+    .container-l-app {
+        height: 35vh;
+    }
+}
+
+@media (min-width: 301px) and (max-width: 998px) {
+    .container-l-app {
+        height: 30vh;
+    }
+} */

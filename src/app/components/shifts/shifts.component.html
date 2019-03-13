@@ -1,12 +1,12 @@
 <div class="main-container">
     <div class="container-left">
-        <div class="btns-set">
-            <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">Cancel</button>
+        <div class="btns-set posi-bottom">
+            <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">CANCEL</button>
         </div>
     </div>
     <div class="container-right">
         <div class="cr-r-set">
-            <h1><span class="label label-primary cr-label">${{productTotal}}</span></h1>
+            <h1><span class="label label-primary cr-label">${{productTotal/100 | number : '1.2-2'}}</span></h1>
             <div class="flex">
                 <div class="cr-left">
                     <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
@@ -20,18 +20,18 @@
                     </div>
                 </div>
                 <div class="cr-right">
-                    <button data-toggle="modal" (click)="validShifts();">ENTER</button>
+                    <button data-toggle="modal" (click)="validShifts();">Enter</button>
 
                 </div>
                 <!-- Modal -->
                 <div class="modal fade" id="openShiftModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Cash Drawer is Open</h4>
                             </div>
                             <div class="modal-body">
-                                <p>Please put the cash till, with the opening amount , in the cash drawer. Click "OK" when the cash drawer is closed
+                                <p>Please put the cash till, with the opening amount, in the cash drawer. Click "OK" when the cash drawer is closed
                                 </p>
                             </div>
                             <div class="modal-footer">
@@ -41,24 +41,24 @@
                     </div>
                 </div>
                 <div class="modal fade" id="closeShiftModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Please Confirm</h4>
                             </div>
                             <div class="modal-body">
-                                <p>Is $0.00 the correct amount in your cash drawer ?
+                                <p>Is ${{productTotal/100 | number : '1.2-2'}} the correct amount in your cash drawer ?
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">No,Cancel</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#confirmCashModal">Yes,Close Shift</button>
+                                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No, Cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#confirmCashModal">Yes, Close Shift</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal fade" id="confirmCashModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">Cash Drawer is Open</h4>

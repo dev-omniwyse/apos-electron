@@ -117,7 +117,7 @@
                     </div>
 
                     <div class="modal fade" id="reliefShiftModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Confirm Main Shift Relief</h4>
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="noSale" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Cash Drawer is Open</h4>
@@ -150,7 +150,7 @@
                     </div>
 
                     <div class="modal fade" id="syncCds" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Sync Data</h4>
@@ -163,14 +163,14 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">No,cancel</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)="syncData();">Yes,continue</button>
+                                    <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No, Cancel</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)="syncData();">Yes, Continue</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal fade" id="continueSyncModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Syncing With CDS</h4>
@@ -190,7 +190,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="successSyncModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Sync Success</h4>
@@ -207,7 +207,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="errorSyncModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Sync Error</h4>
@@ -224,7 +224,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="readyForSaleModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Ready For Sales ?</h4>
@@ -232,19 +232,19 @@
 
                                 <div class="modal-body">
 
-                                    <p>Main Shift Has successfully been opened . Close the window or Start Sales </p>
+                                    <p>Main shift has successfully been opened. Close the window or Start Sales </p>
 
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">No,Close Window</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes,Start Sales</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">No, Close Window</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes, Start Sales</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal fade" id="reOpenModal" role="dialog">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-sm  modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Cash Drawer is Open</h4>
