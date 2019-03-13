@@ -15,7 +15,7 @@ public terminalConfig : any
   ngOnInit() {
     this.device = localStorage.getItem("deviceConfigData");
     this.deviceConfig = new Array(JSON.parse(this.device));
-    this.terminalConfig = localStorage.getItem("terminalConfig");
+    this.terminalConfig = localStorage.getItem("terminalConfigJson");
     this.terminalData = new Array(JSON.parse(this.terminalConfig))
   }
 
