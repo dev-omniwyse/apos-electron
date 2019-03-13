@@ -327,7 +327,7 @@ export class AddProductComponent implements OnInit {
     }
     else if (this.merchantList.includes(merch) === false) {
       merch.quantity = 1;
-      this.merchantiseList.push(merch);
+      this.merchantList.push(merch);
       this.productCardList.push(this.currentCard.printed_id)
     }
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
@@ -338,7 +338,7 @@ export class AddProductComponent implements OnInit {
     if (this.merchantiseList.length == 0) {
       merch.quantity = 1;
       this.merchantiseList.push(merch);
-    } else if (this.merchantiseList.includes(merch) === true) {
+    }else if (this.merchantiseList.includes(merch) === true) {
       merch.quantity++;
     }
     else if (this.merchantiseList.includes(merch) === false) {
