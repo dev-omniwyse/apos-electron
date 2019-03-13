@@ -101,6 +101,7 @@ export class AddProductComponent implements OnInit {
   maxRemainingValueReached = false;
   maxLimitErrorMessages: String = "";
   calsifilter: boolean = false;
+  merchproductToRemove: any = {};
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -367,12 +368,20 @@ export class AddProductComponent implements OnInit {
     this.areExistingProducts.splice(selectedIndex, 1);
   }
 
-  removeMerchProduct(merch) {
-    var totalPrice = merch.UnitPrice * merch.quantity;
+  removeMerchProductConfirmation() {
+    var totalPrice = this.merchproductToRemove .UnitPrice * this.merchproductToRemove .quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantiseList.indexOf(merch);
+    var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove );
     this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
+
+  }
+
+  removeMerchProduct(merch) {
+    this.merchproductToRemove = merch
+    $("#removeMerchProductModal").modal('show');
+    
+
   }
 
   removeMagneticProduct(merch) {
