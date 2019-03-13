@@ -84,7 +84,7 @@ export class ReadcardComponent implements OnInit {
     url = '';
     event = "20+20";
     value: any;
-    statusOfShiftReport: string = ""
+    statusOfShiftReport: string = ''
     disableCards: Boolean = false;
     public errorMessage: String = "Cannot find encoder:";
     public logger;

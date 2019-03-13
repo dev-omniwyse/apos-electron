@@ -209,6 +209,7 @@ export class AdminComponent implements OnInit {
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftType == "0") {
         element.shiftState = "4";
+        localStorage.setItem("mainShiftUserLock",element.userEmail)
       }
       //element.timeOpened = new Date();
 
