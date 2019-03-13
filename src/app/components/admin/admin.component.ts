@@ -150,15 +150,15 @@ export class AdminComponent implements OnInit {
         });
       }
     });
-    this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        localStorage.setItem("terminalConfig", data);
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
+    // this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
+    //   if (data != undefined && data != "") {
+    //     //this.show = true;
+    //     localStorage.setItem("terminalConfig", data);
+    //     this._ngZone.run(() => {
+    //       // this.router.navigate(['/addproduct'])
+    //     });
+    //   }
+    // });
     this.electronService.ipcRenderer.on('adminShiftSaleSummaryResult', (event, data) => {
       if (data != undefined && data != "") {
         //this.show = true;
@@ -199,9 +199,9 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminShiftSaleSummary')
     //console.log('read call', cardName)
   }
-  getTerminalConfig() {
-    this.electronService.ipcRenderer.send('adminTerminalConfig')
-  }
+  // getTerminalConfig() {
+  //   this.electronService.ipcRenderer.send('adminTerminalConfig')
+  // }
   mainShiftPause() {
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
