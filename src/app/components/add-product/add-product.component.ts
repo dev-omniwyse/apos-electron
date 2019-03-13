@@ -101,6 +101,9 @@ export class AddProductComponent implements OnInit {
   maxRemainingValueReached = false;
   maxLimitErrorMessages: String = "";
   calsifilter: boolean = false;
+  merchproductToRemove: any = {};
+  magneticProductToRemove: any = {};
+  
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -367,19 +370,36 @@ export class AddProductComponent implements OnInit {
     this.areExistingProducts.splice(selectedIndex, 1);
   }
 
-  removeMerchProduct(merch) {
-    var totalPrice = merch.UnitPrice * merch.quantity;
+  removeMerchProductConfirmation() {
+    var totalPrice = this.merchproductToRemove .UnitPrice * this.merchproductToRemove .quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantiseList.indexOf(merch);
+    var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove );
     this.merchantiseList.splice(selectedIndex, 1);
+    this.productCardList.splice(selectedIndex, 1);
+
+  }
+
+  removeMagneticProductConfirmation() {
+      this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
+    this.MagneticList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
   }
 
+  removeMerchProduct(merch) {
+    this.merchproductToRemove = merch
+    $("#removeMerchProductModal").modal('show');
+    
+
+  }
+
   removeMagneticProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
-    var selectedIndex = this.MagneticList.indexOf(merch);
-    this.MagneticList.splice(selectedIndex, 1);
-    this.productCardList.splice(selectedIndex, 1);
+    this.magneticProductToRemove = merch
+    $("#removeMagneticProductModal").modal('show');
+    // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    // var selectedIndex = this.MagneticList.indexOf(merch);
+    // this.MagneticList.splice(selectedIndex, 1);
+    // this.productCardList.splice(selectedIndex, 1);
   }
 
   productCheckout() {
@@ -426,6 +446,7 @@ export class AddProductComponent implements OnInit {
           this.merchantise.push(element);
         }
         else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "2") {
+          // this.merchantise.push(this.newMagneticProduct);
           this.merchantise.push(element);
         }
       });
@@ -455,7 +476,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
-
+    console.log(this.merchantise)
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
@@ -481,6 +502,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
+    console.log(this.merchantise);
   }
 
   addCard() {

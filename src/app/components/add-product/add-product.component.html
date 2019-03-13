@@ -52,6 +52,7 @@
         </div>
 
         <div *ngIf="isMagnetic">
+                <span  *ngIf="isMagnetic">  FARE PRODUCTS</span>
             <div class="" *ngFor="let merch of MagneticList; let j = index">
                 <span class="label label-default">
 
@@ -64,7 +65,11 @@
         </div>
     </div>
 
+   
+
     <div *ngIf="!isMagnetic && regularRoute && !nonFare">
+        <span  *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
+       
         <div class="" *ngFor="let merch of merchantiseList; let k = index">
             <span class="label label-default">
 
@@ -76,6 +81,7 @@
         </span>
     </div>
 </div>
+
 
 </div>
 <div class="sub-total ">
@@ -236,6 +242,7 @@
                     </div>
                 </div>
             </div>
+         
             <div class="modal fade" id="fareApplyModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -398,6 +405,42 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="removeMerchProductModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Are you sure you want to delete?</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>By continuing, the "{{merchproductToRemove.Description}}" will be permanently deleted.</p>
+            </div>
+            <div class="modal-footer">
+                    <button type="button" class="btn btn-default"  data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-default" (click)="removeMerchProductConfirmation()" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="removeMagneticProductModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Are you sure you want to delete?</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>By continuing, the "{{magneticProductToRemove.Description}}" will be permanently deleted.</p>
+            </div>
+            <div class="modal-footer">
+                    <button type="button" class="btn btn-default"  data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-default" (click)="removeMagneticProductConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>

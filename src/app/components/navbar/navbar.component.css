@@ -48,3 +48,13 @@
     padding: 25px 0 25px 30px;
     font-size: 17px;
 }
+
+.btn-white {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 20px;
+    padding: 10px 15px;
+    width: calc(50% - 10px);
+}

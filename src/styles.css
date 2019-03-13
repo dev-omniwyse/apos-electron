@@ -493,3 +493,9 @@ button:disabled {
     color: #6e6e6e!important;
     border: 1px solid #dedede!important;
 }
+
+.card-btns-last {
+    padding: 31px 60px!important;
+    font-size: 23px;
+    text-transform: uppercase;
+}

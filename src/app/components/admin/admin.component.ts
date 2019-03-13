@@ -41,6 +41,7 @@ export class AdminComponent implements OnInit {
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
+        return JSON.parse(data)
       }
     });
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
@@ -91,7 +92,7 @@ export class AdminComponent implements OnInit {
         if (!isSyncDone) {
           console.log("isSyncDone", isSyncDone)
           timer = setTimeout(() => {
-            
+
             if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
               this.numOfAttempts++;
               this.electronService.ipcRenderer.send('isSyncCompleted')
@@ -149,15 +150,15 @@ export class AdminComponent implements OnInit {
         });
       }
     });
-    this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        localStorage.setItem("terminalConfig", data);
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
+    // this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
+    //   if (data != undefined && data != "") {
+    //     //this.show = true;
+    //     localStorage.setItem("terminalConfig", data);
+    //     this._ngZone.run(() => {
+    //       // this.router.navigate(['/addproduct'])
+    //     });
+    //   }
+    // });
     this.electronService.ipcRenderer.on('adminShiftSaleSummaryResult', (event, data) => {
       if (data != undefined && data != "") {
         //this.show = true;
@@ -198,9 +199,9 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminShiftSaleSummary')
     //console.log('read call', cardName)
   }
-  getTerminalConfig() {
-    this.electronService.ipcRenderer.send('adminTerminalConfig')
-  }
+  // getTerminalConfig() {
+  //   this.electronService.ipcRenderer.send('adminTerminalConfig')
+  // }
   mainShiftPause() {
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
@@ -208,6 +209,7 @@ export class AdminComponent implements OnInit {
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftType == "0") {
         element.shiftState = "4";
+        localStorage.setItem("mainShiftUserLock",element.userEmail)
       }
       //element.timeOpened = new Date();
 

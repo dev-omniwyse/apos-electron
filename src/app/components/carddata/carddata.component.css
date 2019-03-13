@@ -1,201 +1,216 @@
 @charset "utf-8";
+
 /* CSS Document */
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
-
-
-body{
-	margin: 0;font-family: 'Roboto', sans-serif;
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
-.main-container{
-	background-color: #777777;
-	display: flex;
-	padding: 5px
-}
-.container-left{
-	width: 35%;
-	float: left;
-	background-color: #f0f3fa;
-	border-radius: 5px;
-	margin: 0 5px;
-	padding: 20px;
+.main-container {
+    background-color: #777777;
+    display: flex;
+    padding: 5px
 }
 
-.container-right{
-	width: 65%;
-	float: left;
-	background-color: #fff;
-	margin: 0 5px;
-	border-radius: 5px;
-	padding: 20px;
+.container-left {
+    width: 35%;
+    float: left;
+    background-color: #f0f3fa;
+    border-radius: 5px;
+    margin: 0 5px;
+    padding: 20px;
 }
 
-.container-left textarea{
-	width: 100%;
-	border-radius: 5px;
-  font-size: 24px;
-  height: 300px;
+.container-right {
+    width: 65%;
+    float: left;
+    background-color: #fff;
+    margin: 0 5px;
+    border-radius: 5px;
+    padding: 20px;
 }
 
-.flex{
-	display: flex
-	
+.container-left textarea {
+    width: 100%;
+    border-radius: 5px;
+    font-size: 24px;
+    height: 300px;
 }
 
-.float-left{
-	margin-right: auto
+.flex {
+    display: flex
 }
 
-.float-right{
-	margin-left: auto
+.float-left {
+    margin-right: auto
 }
 
-.sub-total{
-	background-color: #fafafa;
-	border: 1px solid #cccccc;
-	padding: 10px;
-	margin: 15px 0
+.float-right {
+    margin-left: auto
 }
 
-.sub-total hr{
-	margin: 40px 0 20px 0
+.sub-total {
+    background-color: #fafafa;
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin: 15px 0
 }
 
-.sub-total .totals{
-	font-size: 30px;
-}
-.btn-white-top{
-	background-color: #fff;
-	border:1px solid #c3c3c3;
-	border-radius: 5px;
-	color: #999999;
-	font-size: 20px;
-	padding: 10px 15px;
-	width: calc(50% - 45px);
-}
-.btn-white{
-	background-color: #fff;
-	border:1px solid #c3c3c3;
-	border-radius: 5px;
-	color: #333333;
-	font-size: 20px;
-	padding: 10px 15px;
-	width: calc(50% - 10px);
+.sub-total hr {
+    margin: 40px 0 20px 0
 }
 
-.btn-orange{
-	background-color: #d65400;
-	border:1px solid #d65400;
-	border-radius: 5px;
-	color: #fff;
-	font-size: 20px;
-	padding: 10px 15px;
-	width: 50%;
-	margin-left: 5px
-}
-.header-l{
-	margin: 0 0 15px 0;
+.sub-total .totals {
+    font-size: 30px;
 }
 
-.btn-b-white{
-	background-color: #fff;
-	border:1px solid #c3c3c3;
-	border-radius: 5px;
-	color: #333333;
-	font-size: 20px;
-	padding: 10px 15px;
+.btn-white-top {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #999999;
+    font-size: 20px;
+    padding: 10px 15px;
+    width: calc(50% - 45px);
 }
 
-.merch-btn{
-	margin: 20px 0
+.btn-white {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 20px;
+    padding: 10px 15px;
+    width: calc(50% - 10px);
 }
 
-.flex-wrap{
-	  flex-flow: row wrap;
-
+.btn-orange {
+    background-color: #d65400;
+    border: 1px solid #d65400;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 15px;
+    width: 50%;
+    margin-left: 5px
 }
 
-.flex-right-items button{
-	flex: 1 1 calc(48% - 15px);
-	/* max-width: calc(48% - 15px); */
-	margin: 15px;
-	padding: 10px 0;
-	border-radius: 7px;
-	color: #3b80c3;
-	font-size: 24px;
-	border: 1px solid #c4c4c4;
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+18,fafafa+52,f7f7f7+100 */
-background: #ffffff; /* Old browsers */
-background: -moz-linear-gradient(top, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top, #ffffff 0%,#fcfcfc 18%,#fafafa 52%,#f7f7f7 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom, #ffffff 0%,#fcfcfc 18%,#fafafa 52%,#f7f7f7 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */
+.header-l {
+    margin: 0 0 15px 0;
 }
 
-.container-right h1{
-	margin: 0 0 10px;
-	padding: 0;
-	font-size: 24px;
-	color: #d65400
+.btn-b-white {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 20px;
+    padding: 10px 15px;
 }
 
-.cardBtn{
-  width: 250px;
-  height: 80px;
+.merch-btn {
+    margin: 20px 0
 }
 
-.encode-card-set{
-	margin: 5px 5px 140px 5px;
-	border-radius: 3px;
-	background-color: #fff;
-	padding: 10px;
+.flex-wrap {
+    flex-flow: row wrap;
 }
 
-.encode-card-set h2{
-	font-size: 18px;
+.flex-right-items button {
+    flex: 1 1 calc(48% - 15px);
+    /* max-width: calc(48% - 15px); */
+    margin: 15px;
+    padding: 10px 0;
+    border-radius: 7px;
+    color: #3b80c3;
+    font-size: 24px;
+    border: 1px solid #c4c4c4;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+18,fafafa+52,f7f7f7+100 */
+    background: #ffffff;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
+    /* IE6-9 */
 }
 
-.encode-card-set-block{
-	background-color: #3b80c3;
-	padding: 15px;
-	overflow: hidden;
+.container-right h1 {
+    margin: 0 0 10px;
+    padding: 0;
+    font-size: 24px;
+    color: #d65400
 }
 
-.encode-card-set-block .glyphicon-credit-card{
-	font-size: 205px;
+.cardBtn {
+    width: 250px;
+    height: 80px;
+}
+
+.encode-card-set {
+    margin: 5px 5px 140px 5px;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 10px;
+}
+
+.encode-card-set h2 {
+    font-size: 18px;
+}
+
+.encode-card-set-block {
+    background-color: #3b80c3;
+    padding: 15px;
+    overflow: hidden;
+}
+
+.encode-card-set-block .glyphicon-credit-card {
+    font-size: 250px;
     color: #fff;
     margin-right: 15px;
 }
 
-.encode-card-txt h2{font-size: 24px; color: #fff}
+.encode-card-txt h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+}
 
-.encode-card-txt h3{font-size: 16px; color: #fff}
+.encode-card-txt h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 53px;
+}
 
-.encode-end{
-	background-color: #d65400;
-	color: #fff
+.encode-end {
+    background-color: #d65400;
+    color: #fff
 }
 
 .modal-header {
-	padding: 15px;
-	border-bottom: 1px solid #e5e5e5;
-	background-color: #003C76;
-	color: #fff;
-	text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background-color: #003C76;
+    color: #fff;
+    text-align: center;
 }
 
 .modal-footer .btn-default {
-	background-color: #d65400;
-	border: 1px solid #d65400;
-	border-radius: 5px;
-	color: #fff;
-	font-size: 16px;
-	padding: 10px 15px;
-	margin: 0 5px;
-	width: 50%;
+    background-color: #d65400;
+    border: 1px solid #d65400;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 0 5px;
+    width: 50%;
 }
 
 .modal-footer {
-	justify-content: center;
+    justify-content: center;
 }

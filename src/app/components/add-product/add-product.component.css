@@ -84,8 +84,8 @@ ul {
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #999999;
-    font-size: 20px;
-    padding: 26px 15px;
+    font-size: 2.2vh;
+    padding: 2.5vh 15px;
     width: calc(50% - 75px);
     margin: 0 18px;
 }
@@ -421,7 +421,7 @@ ul {
     padding: 1.5vh;
     border: 1px solid #ccc;
     overflow: auto;
-    height: 53vh;
+    height: 44vh;
 }
 
 @media (max-width: 1550px) {

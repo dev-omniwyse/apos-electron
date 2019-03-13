@@ -2,9 +2,9 @@
     <div class="row header-logo text-center">
         <img src="assets/images/logo-header.jpeg" />
     </div>
-    <div *ngIf="statusOfShiftReport.length != ''  " class="shift-report-status">{{statusOfShiftReport}}</div>
-    <div *ngIf="ownedByUser.length != '' " class="terminal-locked">Main Shift Is Owned By : {{ownedByUser}}</div>
-    <div *ngIf="lockedByUser.length != '' " class="terminal-locked">Terminal Locked By : {{lockedByUser}}</div>
+    <div *ngIf="statusOfShiftReportBoolean" class="shift-report-status">{{statusOfShiftReport}}</div>
+    <div *ngIf="ownedByUserBoolean" class="terminal-locked">Main Shift Is Owned By : {{ownedByUser}}</div>
+    <div *ngIf="lockedByUserBoolean" class="terminal-locked">Terminal Locked By : {{lockedByUser}}</div>
     <div class=" login-section pos-relative login-bottom">
         <div class="login-container">
             <div class="alert alert-danger " *ngIf="errorMsg.length != 0">
