@@ -1,5 +1,5 @@
-.dev-container-padding {
-    height: calc(100vh - 75px);
+.dev-container-padding,
+body {
     background-color: #f0f3fa;
 }
 
@@ -8,8 +8,8 @@
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 26px;
-    padding: 25px 35px;
+    font-size: 2.2vh;
+    padding: 2.2vh 35px;
 }
 
 .shift-data-sets {
@@ -32,8 +32,8 @@
 .shift-data-set table td,
 .shift-data-set table th {
     border: 1px solid #f0f3fa;
-    padding: 13px;
-    font-size: 18px;
+    padding: 1vh;
+    font-size: 2vh;
     color: #003c79;
 }
 
