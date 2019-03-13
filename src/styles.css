@@ -9,7 +9,8 @@ body {
 }
 
 .header-logo img {
-    padding: 20px 0 5px 20px
+    padding: 12px 0 12px 20px;
+    width: 148px;
 }
 
 .img-responsive {

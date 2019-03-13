@@ -16,7 +16,7 @@ ul {
     background-color: #777777;
     display: flex;
     padding: 10px 5px;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 64px);
 }
 
 .container-left {
@@ -66,9 +66,9 @@ ul {
 .sub-total {
     background-color: #fafafa;
     border: 1px solid #cccccc;
-    padding: 10px;
-    margin: 15px 0;
-    font-size: 17px;
+    padding: 1vh;
+    margin: 2vh 0;
+    font-size: 2vh;
 }
 
 .sub-total hr {
@@ -76,7 +76,7 @@ ul {
 }
 
 .sub-total .totals {
-    font-size: 30px;
+    font-size: 3vh;
 }
 
 .btn-white-top {
@@ -95,8 +95,8 @@ ul {
     border: 1px solid #c3c3c3;
     border-radius: 5px;
     color: #333333;
-    font-size: 24px;
-    padding: 22px 15px;
+    font-size: 2.5vh;
+    padding: 2.5vh 15px;
     width: calc(50% - 10px);
     text-transform: uppercase;
 }
@@ -106,8 +106,8 @@ ul {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 24px;
-    padding: 22px 15px;
+    font-size: 2.5vh;
+    padding: 2.5vh 15px;
     width: 50%;
     margin-left: 5px;
     text-transform: uppercase;
@@ -276,7 +276,7 @@ ul {
     width: 31%;
     margin: 1%;
     float: left;
-    font-size: 28px;
+    font-size: 2.4vh;
     color: #3b80c2;
 }
 
@@ -284,14 +284,14 @@ ul {
     width: 47.5%;
     margin: 1%;
     float: left;
-    font-size: 28px;
+    font-size: 2.4vh;
     color: #3b80c2;
 }
 
 .cr-left .number-btns-set-1 button {
     width: 97%;
     margin: 1%;
-    font-size: 28px;
+    font-size: 2.4vh;
     color: #3b80c2;
     text-transform: uppercase;
 }
@@ -319,7 +319,7 @@ ul {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 22px;
+    font-size: 1.9vh;
     padding: 2.85vh 15px;
     margin: 1% 0;
 }
@@ -332,7 +332,7 @@ ul {
 .tab-sets {
     background-color: #013D7B;
     padding: 10px;
-    height: calc(100vh - 165px);
+    height: calc(100vh - 154px);
 }
 
 .nav-pills>li>a {
@@ -394,12 +394,12 @@ ul {
 }
 
 .flex-contain-full {
-    height: calc(100vh - 265px);
+    height: calc(100vh - 225px);
 }
 
 .flex-contain-full-w1 {
     background-color: #fff;
-    height: calc(100vh - 245px);
+    height: calc(100vh - 235px);
     padding: 10px;
     width: 100%!important;
 }
@@ -412,21 +412,33 @@ ul {
 }
 
 .btns-mag {
-    margin-bottom: 10px;
+    margin-bottom: 1vh;
 }
 
 .container-l-app {
     width: 100%;
     background-color: #fafafa;
-    padding: 20px;
+    padding: 1.5vh;
     border: 1px solid #ccc;
-    overflow: auto
+    overflow: auto;
+    height: 53vh;
 }
 
-@media (min-width: 1425px) and (max-width: 19000px) {
-    .container-l-app {
-        height: 47vh;
+@media (max-width: 1550px) {
+    .btn-white,
+    .btn-orange {
+        font-size: 2.5vh;
+        padding: 1.5vh 15px;
     }
+    .sub-total {
+        margin: 1vh 0;
+    }
+}
+
+
+/* 
+@media (min-width: 1425px) and (max-width: 19000px) {
+    .container-l-app {}
 }
 
 @media (min-width: 1230px) and (max-width: 1424px) {
@@ -445,4 +457,4 @@ ul {
     .container-l-app {
         height: 30vh;
     }
-}
+} */

@@ -41,6 +41,7 @@ export class AdminComponent implements OnInit {
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
+        return JSON.parse(data)
       }
     });
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
@@ -91,7 +92,7 @@ export class AdminComponent implements OnInit {
         if (!isSyncDone) {
           console.log("isSyncDone", isSyncDone)
           timer = setTimeout(() => {
-            
+
             if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
               this.numOfAttempts++;
               this.electronService.ipcRenderer.send('isSyncCompleted')
