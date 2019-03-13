@@ -102,6 +102,8 @@ export class AddProductComponent implements OnInit {
   maxLimitErrorMessages: String = "";
   calsifilter: boolean = false;
   merchproductToRemove: any = {};
+  magneticProductToRemove: any = {};
+  
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -377,6 +379,13 @@ export class AddProductComponent implements OnInit {
 
   }
 
+  removeMagneticProductConfirmation() {
+      this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
+    this.MagneticList.splice(selectedIndex, 1);
+    this.productCardList.splice(selectedIndex, 1);
+  }
+
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
     $("#removeMerchProductModal").modal('show');
@@ -385,10 +394,12 @@ export class AddProductComponent implements OnInit {
   }
 
   removeMagneticProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
-    var selectedIndex = this.MagneticList.indexOf(merch);
-    this.MagneticList.splice(selectedIndex, 1);
-    this.productCardList.splice(selectedIndex, 1);
+    this.magneticProductToRemove = merch
+    $("#removeMagneticProductModal").modal('show');
+    // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    // var selectedIndex = this.MagneticList.indexOf(merch);
+    // this.MagneticList.splice(selectedIndex, 1);
+    // this.productCardList.splice(selectedIndex, 1);
   }
 
   productCheckout() {
@@ -435,6 +446,7 @@ export class AddProductComponent implements OnInit {
           this.merchantise.push(element);
         }
         else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "2") {
+          // this.merchantise.push(this.newMagneticProduct);
           this.merchantise.push(element);
         }
       });
@@ -464,7 +476,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
-
+    console.log(this.merchantise)
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
@@ -490,6 +502,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
+    console.log(this.merchantise);
   }
 
   addCard() {
