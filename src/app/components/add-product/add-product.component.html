@@ -42,7 +42,7 @@
                 <div class="" *ngFor="let merch of merchantList; let j = index">
                     <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
 
-            <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
+            <div class="pull-left">{{merch.quantity}} &nbsp; {{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
             <div class="pull-right" (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
                 class="glyphicon glyphicon-minus-sign"></span></div>

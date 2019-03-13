@@ -318,22 +318,30 @@ export class AddProductComponent implements OnInit {
       $("#magneticCardLimitModal").modal('show');
       return;
     }
-    this.merchantList.push(merch);
-    this.productCardList.push(this.currentCard.printed_id)
+    if (this.merchantList.length == 0) {
+      this.merchantList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+      merch.quantity = 1;
+    } else if (this.merchantList.includes(merch) === true) {
+      merch.quantity++;
+    }
+    else if (this.merchantList.includes(merch) === false) {
+      merch.quantity = 1;
+      this.merchantiseList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+    }
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
 
   getSelectedMerchProductData(merch) {
     console.log(merch);
-    if(this.merchantiseList.length == 0) {
+    if (this.merchantiseList.length == 0) {
       merch.quantity = 1;
-     this.merchantiseList.push(merch);
-
-
-    } else if(this.merchantiseList.includes(merch) === true) {
+      this.merchantiseList.push(merch);
+    } else if (this.merchantiseList.includes(merch) === true) {
       merch.quantity++;
     }
-    else if(this.merchantiseList.includes(merch) === false) {
+    else if (this.merchantiseList.includes(merch) === false) {
       merch.quantity = 1;
       this.merchantiseList.push(merch);
     }
@@ -351,7 +359,8 @@ export class AddProductComponent implements OnInit {
 
 
   removeProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.Ticket.Price);
+    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(merch);
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -525,9 +534,9 @@ export class AddProductComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    this.productTotal  = this.productTotal*100;
+    this.productTotal = this.productTotal * 100;
     this.productTotal += digit;
-    this.productTotal = this.productTotal/100;
+    this.productTotal = this.productTotal / 100;
     // this.productTotal = this.productTotal + digit;
     // this.productTotal = ""
     //  if(this.calsifilter == false){
@@ -646,7 +655,7 @@ export class AddProductComponent implements OnInit {
         "salesAmount": this.productTotal,
         "taxAmount": 0,
         "items": jsonMagneticObj,
-        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal}], "shiftType": shiftType
+        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
       }
       console.log("transObj" + JSON.stringify(magneticTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
@@ -656,7 +665,7 @@ export class AddProductComponent implements OnInit {
       this.merchantiseList.forEach(merchandiseElement => {
         var merchandiseObj: any = {
           "transactionID": new Date().getTime(),
-          "quantity": merchandiseElement.quantity, 
+          "quantity": merchandiseElement.quantity,
           "productIdentifier": merchandiseElement.ProductIdentifier,
           "ticketTypeId": null,
           "ticketValue": 0,

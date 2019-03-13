@@ -18,7 +18,7 @@
             <h2>Please place card {{currentCard?.printed_id}} on the reader.</h2>
             <h2>The following products will be added.</h2>
             <div *ngFor="let merch of currentCardMerchantList">
-                <h3>{{merch.Ticket.Description}} - {{merch.Ticket.Price}}</h3>
+                <h3>{{merch.quantity}} &nbsp; {{merch.Ticket.Description}} - {{merch.Ticket.Price}}</h3>
             </div>
         </div>
 
