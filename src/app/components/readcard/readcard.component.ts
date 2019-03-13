@@ -308,7 +308,7 @@ export class ReadcardComponent implements OnInit {
         localStorage.setItem("isMagnetic", "true");
         localStorage.setItem("isNonFareProduct", "false");
         this.getProductCatalogJSON();
-        // this.router.navigate(['/addproduct'])
+        this.router.navigate(['/addproduct'])
         // this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }
