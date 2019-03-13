@@ -2,7 +2,7 @@
     <div class="shift-sales-head">
         <div class="pull-left shift-sales-txt">SHIFT SALES SUMMARY</div>
 
-        <div class="pull-right"><button class="back-to-sales"><i class="fa fa-print"></i> Print Summary</button></div>
+        <div class="pull-right"><button class="back-to-sales" (click)="printSummaryReport();"><i class="fa fa-print"></i> Print Summary</button></div>
         <div class="clearfix"></div>
     </div>
 
@@ -14,9 +14,9 @@
                 {{sale.userEmail}}
             </option>
         </select> -->
-        <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
+        <select [(ngModel)]="selectedValues" (change)="shiftSaleSummary()">
             <option [ngValue]="undefined" selected>Select</option>
-            <!-- <option [ngValue] ="0">--All--</option> -->
+            <option [ngValue] ="0">--All--</option>
             <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
         </select>
     </div>
