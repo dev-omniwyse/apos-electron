@@ -170,7 +170,6 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
-                this.isShowCardOptions = false;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
