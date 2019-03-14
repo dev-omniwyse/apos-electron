@@ -9,7 +9,7 @@
 </div> -->
 <div class="main-container">
     <div class="container-left">
-        <div *ngIf="!isMagnetic" class="header-l">
+        <div class="header-l">
             <img src="assets/images/shopping-cart.svg" width="30" />
             <button class="btn-white-top">View Card</button>
             <button class="btn-orange" (click)="addCard()">Add Card</button>
@@ -18,14 +18,14 @@
             <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
             <!-- <div class="menucontainer left"> -->
 
-            <div *ngIf="!isMagnetic" class="col-md-6">
+            <div  class="col-md-6">
                 <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>Merch*</button>
             </div>
-            <div *ngIf="isMagnetic" class="col-md-6">
-                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMagnetic()>Magnetic*</button>
+            <div  class="col-md-6" *ngFor="let magnetic of magneticCardList;let i = index" (click)="clickOnMagnetic(i)">
+                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" >{{magnetic.name}}</button>
             </div>
 
-            <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
+            <div *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
                 <button *ngIf="!isMagnetic || !isMerchendise" [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
             </div>
 
@@ -51,10 +51,10 @@
             </div>
         </div>
 
-        <div *ngIf="isMagnetic">
-                <span  *ngIf="isMagnetic">  FARE PRODUCTS</span>
+        <div *ngIf="isMagnetic  && !regularRoute && nonFare">
+                <!-- <span  *ngIf="isMagnetic">  FARE PRODUCTS</span> -->
             <div class="" *ngFor="let merch of MagneticList; let j = index">
-                <span class="label label-default">
+                <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
 
             <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
@@ -67,7 +67,7 @@
 
    
 
-    <div *ngIf="!isMagnetic && regularRoute && !nonFare">
+    <div *ngIf="isMerchendise && regularRoute && !nonFare">
         <span  *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
        
         <div class="" *ngFor="let merch of merchantiseList; let k = index">
@@ -441,6 +441,23 @@
             <div class="modal-footer">
                     <button type="button" class="btn btn-default"  data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeMagneticProductConfirmation()" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addCardModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <h4 class="modal-title modal-txt-h">Select Media Type</h4>
+            <div class="modal-body-in">
+                <div class="">
+                    <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img
+                            src="assets/images/arrow-pointing-to-right.svg" /></button>
+                    <button class="cardBtn" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card <img
+                            src="assets/images/arrow-pointing-to-right.svg" /></button>
+
+                    <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
