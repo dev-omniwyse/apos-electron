@@ -106,6 +106,7 @@ export class AddProductComponent implements OnInit {
   magneticCardList: any = [];
   magneticIds: any = [];
   currentMagneticIndex: any = 0;
+
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -302,6 +303,7 @@ export class AddProductComponent implements OnInit {
             this.maxLimitErrorMessages = "Max stored value limit reached.";
             return;
           }
+          // cardElement.recharges_pending
           isExistingProducts = true;
           this.areExistingProducts.push(true);
         }
@@ -313,7 +315,9 @@ export class AddProductComponent implements OnInit {
     });
     if (!isExistingProducts) {
       this.areExistingProducts.push(false);
-      if (this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts)
+      if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts) || (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts))
+        isProductLimitReached = true
+      if(selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)
         isProductLimitReached = true
     }
     return isProductLimitReached;
@@ -385,6 +389,7 @@ export class AddProductComponent implements OnInit {
     var totalPrice = merch.UnitPrice * merch.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(merch);
+    merch.quantity = 0;
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);

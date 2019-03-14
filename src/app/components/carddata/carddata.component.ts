@@ -97,8 +97,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   isCorrectCardPlaced = false;
   isFromEncode = false;
   executeIpcRendererOn: any = true;
-  slotNumber: any = [];
-  status: any = [];
+  encodeddata: any = [];
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -139,7 +138,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         this.isFromCardComponent = false;
         this._ngZone.run(() => {
           localStorage.setItem("readCardData", JSON.stringify(data));
-          localStorage.setItem("printCardData",data)
+          localStorage.setItem("printCardData", data)
           this.carddata = new Array(JSON.parse(data));
           console.log('this.carddata', this.carddata);
           this.electronService.ipcRenderer.send('generateSequenceNumber');
@@ -215,29 +214,50 @@ export class CarddataComponent implements OnInit, OnChanges {
           this.cardJson.forEach(element => {
             this.currentCardMerchantList.forEach(walletElement => {
               var rechargesPending = 0;
+              var balance = 0;
+              var existingBalance = 0;
+              var slotNumber = 0;
               if (this.carddata[0].products != undefined) {
                 this.carddata[0].products.forEach(cardElement => {
                   if (walletElement.Ticket.Group == 1 && cardElement.product_type == 1 && (walletElement.Ticket.Designator == cardElement.designator)) {
                     rechargesPending = cardElement.recharges_pending;
+                  } else if(walletElement.Ticket.Group == 2 && cardElement.product_type == 2 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                    existingBalance = cardElement.remaining_rides;
+                  } else if (walletElement.Ticket.Group == 3 && cardElement.product_type == 3 && (walletElement.Ticket.Designator == cardElement.designator)){
+                    existingBalance = cardElement.remaining_value / 100;
                   }
                 });
+                if (walletElement.Ticket.Group == 1) {
+                  balance = walletElement.Ticket.Value;
+                }else if(walletElement.Ticket.Group == 2){
+                  balance = existingBalance ;//+ (walletElement.quantity * walletElement.Ticket.Value);
+                }
+                else{
+                  balance =  existingBalance ; //+ (walletElement.quantity * walletElement.Ticket.Value);
+                }
               }
+              this.encodeddata[0].forEach(element => {
+                if (walletElement.Ticket.Group == element.product_type && (walletElement.Ticket.Designator == element.designator)) {
+                  slotNumber = element.slotNumber;
+                  status = element.status;
+                }
+              });
               var jsonWalletObj = {
                 "transactionID": this.transactionId,
                 "quantity": walletElement.quantity,
                 "productIdentifier": walletElement.ProductIdentifier,
                 "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
                 "ticketValue": (walletElement.Ticket.Group == 3) ? walletElement.UnitPrice : walletElement.Ticket.Value,
-                "status": this.status[slotNumberStatusIndex],
-                "slotNumber": this.slotNumber[slotNumberStatusIndex],
-                "startDate": (walletElement.DateEffective / (1000 * 60 * 60 * 24)),
+                "status": status,
+                "slotNumber": slotNumber,
+                "startDate": 0, //(walletElement.DateEffective / (1000 * 60 * 60 * 24)),
                 "expirationDate": 0,//(walletElement.DateExpires / (1000 * 60 * 60 * 24)),
-                "balance": (walletElement.quantity*walletElement.UnitPrice),
+                "balance": balance,
                 "rechargesPending": rechargesPending,
                 "IsMerchandise": walletElement.IsMerchandise,
                 "IsBackendMerchandise": false,
-                "IsFareCard": false, 
-                "unitPrice": (walletElement.quantity * walletElement.UnitPrice),
+                "IsFareCard": false,
+                "unitPrice": walletElement.UnitPrice,
                 "totalCost": this.transactionAmount,
                 "userID": localStorage.getItem("userEmail"),
                 "shiftID": 1,
@@ -344,14 +364,12 @@ export class CarddataComponent implements OnInit, OnChanges {
         console.log(data);
         this._ngZone.run(() => {
           if ((this.cardJson.length - 1) == this.cardIndex) {
-            var encodeddata: any = [];
-            encodeddata = new Array(JSON.parse(data));
-            encodeddata[0].forEach(element => {
-              this.slotNumber.push(element.slotNumber);
-              this.status.push(element.status);
-            });
+            this.encodeddata = new Array(JSON.parse(data));
             this.isFromCardComponent = true;
-            this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
+            if (this.isNew)
+              this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
+            else
+              this.electronService.ipcRenderer.send('readSmartcard', cardName)
           }
           else {
             this.cardIndex++;
@@ -400,7 +418,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   checkIsCardNew() {
-    this.isNew = (this.currentCard.products.length == 1 && (this.currentCard.products[0].product_type == 3)) ? true : false;
+    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
   }
 
   populatCurrentCardEncodedData() {
@@ -450,23 +468,43 @@ export class CarddataComponent implements OnInit, OnChanges {
               rechargesPending = (cardElement.recharges_pending + 1);
             }
           })
-
         }
-        JsonObj = {
-          "product_type": element.Ticket.Group,
-          "designator": element.Ticket.Designator,
-          "ticket_id": element.Ticket.TicketId,
-          "designator_details": 0,
-          "start_date_epoch_days": element.Ticket.DateStartEpochDays,
-          "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
-          "is_linked_to_user_profile": false,
-          "type_expiration": element.Ticket.ExpirationTypeId,
-          "add_time": 240,
-          "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-          "days": (element.quantity * element.Ticket.Value),
-          "isAccountBased": element.IsAccountBased,
-          "isCardBased": element.IsCardBased
+        // var internalJsonArray:any = [];
+        for (let index = 0; index < element.quantity; index++) {
+          var internalJsonObj = {
+            "product_type": element.Ticket.Group,
+            "designator": element.Ticket.Designator,
+            "ticket_id": element.Ticket.TicketId,
+            "designator_details": 0,
+            "start_date_epoch_days": element.Ticket.DateStartEpochDays,
+            "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
+            "is_linked_to_user_profile": false,
+            "type_expiration": element.Ticket.ExpirationTypeId,
+            "add_time": 240,
+            "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
+            "days": (element.Ticket.Value),
+            "isAccountBased": element.IsAccountBased,
+            "isCardBased": element.IsCardBased
+          }
+          this.encodeJsonData.push(internalJsonObj);
+          // internalJsonArray.push(internalJsonObj);
         }
+        // JsonObj = JSON.stringify(internalJsonArray);
+        // JsonObj = {
+        //   "product_type": element.Ticket.Group,
+        //   "designator": element.Ticket.Designator,
+        //   "ticket_id": element.Ticket.TicketId,
+        //   "designator_details": 0,
+        //   "start_date_epoch_days": element.Ticket.DateStartEpochDays,
+        //   "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
+        //   "is_linked_to_user_profile": false,
+        //   "type_expiration": element.Ticket.ExpirationTypeId,
+        //   "add_time": 240,
+        //   "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
+        //   "days": (element.Ticket.Value),
+        //   "isAccountBased": element.IsAccountBased,
+        //   "isCardBased": element.IsCardBased
+        // }
       }
       else if (element.Ticket.Group == 2) {
         var rechargeRides = 0;
@@ -483,7 +521,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "designator": element.Ticket.Designator,
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
-          "remaining_rides": (element.quantity * element.Ticket.Price),
+          "remaining_rides": (element.quantity * element.Ticket.Value),
           "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
           "threshold": 0,
           "is_linked_to_user_profile": false,
@@ -507,13 +545,16 @@ export class CarddataComponent implements OnInit, OnChanges {
           "ticket_id": element.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": (element.quantity * element.Ticket.Price * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "remaining_value": (element.quantity * element.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element.IsAccountBased,
           "isCardBased": element.IsCardBased
         }
       }
-      this.encodeJsonData.push(JsonObj);
+      if (element.Ticket.Group != 1){
+        this.encodeJsonData.push(JsonObj);
+      }
       currentIndex++;
+
     });
 
     console.log(this.encodeJsonData);
@@ -833,7 +874,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     receipt += "\n\n             Current Card Balance\n\n";
     var cardStore = JSON.parse(localStorage.getItem("printCardData"));
-    
+
 
 
     var receiptWidth = 44;

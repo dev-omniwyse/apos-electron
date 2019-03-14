@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
   hideHeader = true;
   terminalNumber: any = undefined;
   hideAndShowLogout : Boolean 
+  today = new Date();
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
