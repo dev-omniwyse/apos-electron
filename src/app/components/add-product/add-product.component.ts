@@ -103,7 +103,10 @@ export class AddProductComponent implements OnInit {
   calsifilter: boolean = false;
   merchproductToRemove: any = {};
   magneticProductToRemove: any = {};
-  
+  magneticCardList: any = [];
+  magneticIds: any = [];
+  currentMagneticIndex: any = 0;
+
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -122,6 +125,14 @@ export class AddProductComponent implements OnInit {
       }
       else
         this.frequentRide();
+
+      if (this.isMagnetic) {
+        var magnetic = {
+          "name": "Magnetic" + " " + (this.magneticCardList.length + 1),
+          "id": (this.magneticCardList.length + 1)
+        }
+        this.magneticCardList.push(magnetic)
+      }
       // this.cardsList.toArray()[0].nativeElement.classList.add('isActive');
     });
     var readCardListener = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
@@ -292,6 +303,7 @@ export class AddProductComponent implements OnInit {
             this.maxLimitErrorMessages = "Max stored value limit reached.";
             return;
           }
+          // cardElement.recharges_pending
           isExistingProducts = true;
           this.areExistingProducts.push(true);
         }
@@ -303,7 +315,9 @@ export class AddProductComponent implements OnInit {
     });
     if (!isExistingProducts) {
       this.areExistingProducts.push(false);
-      if (this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts)
+      if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts) || (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts))
+        isProductLimitReached = true
+      if(selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)
         isProductLimitReached = true
     }
     return isProductLimitReached;
@@ -341,7 +355,7 @@ export class AddProductComponent implements OnInit {
     if (this.merchantiseList.length == 0) {
       merch.quantity = 1;
       this.merchantiseList.push(merch);
-    }else if (this.merchantiseList.includes(merch) === true) {
+    } else if (this.merchantiseList.includes(merch) === true) {
       merch.quantity++;
     }
     else if (this.merchantiseList.includes(merch) === false) {
@@ -352,11 +366,21 @@ export class AddProductComponent implements OnInit {
   }
 
   getSelectedMagneticProductData(merch) {
-    if (this.MagneticList.length == 1) {
-      $("#magneticCardLimitModal").modal('show');
+    // if (this.MagneticList.length == 1) {
+    //   $("#magneticCardLimitModal").modal('show');
+    //   return;
+    // }
+    var elementExists = false;
+    this.magneticIds.forEach(element => {
+      if (element == this.currentMagneticIndex) {
+        $("#magneticCardLimitModal").modal('show');
+        elementExists = true;
+      }
+    });
+    if (elementExists)
       return;
-    }
     this.MagneticList.push(merch);
+    this.magneticIds.push(this.currentMagneticIndex);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -365,31 +389,33 @@ export class AddProductComponent implements OnInit {
     var totalPrice = merch.UnitPrice * merch.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(merch);
+    merch.quantity = 0;
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);
   }
 
   removeMerchProductConfirmation() {
-    var totalPrice = this.merchproductToRemove .UnitPrice * this.merchproductToRemove .quantity;
+    var totalPrice = this.merchproductToRemove.UnitPrice * this.merchproductToRemove.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove );
+    var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove);
     this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
 
   }
 
   removeMagneticProductConfirmation() {
-      this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
     var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
     this.MagneticList.splice(selectedIndex, 1);
+    this.magneticIds.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
   }
 
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
     $("#removeMerchProductModal").modal('show');
-    
+
 
   }
 
@@ -413,9 +439,12 @@ export class AddProductComponent implements OnInit {
   }
 
   selectCard(index: any) {
+    this.isMagnetic = false;
+    localStorage.setItem("isMagnetic", 'false');
     this.selectedIdx = index;
     this.nonFare = true;
     this.regularRoute = false;
+    this.isMerchendise = false;
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
     // this.cardsList.toArray()[index].nativeElement.setStyle('color','red');
@@ -506,8 +535,28 @@ export class AddProductComponent implements OnInit {
   }
 
   addCard() {
+    $("#addCardModal").modal('show');
+
+  }
+
+  newFareCard() {
+    // this.isMagnetic = false;
+    // localStorage.setItem("isMagnetic", 'false');
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName)
+  }
+
+  magneticCard() {
+
+    var magnetic = {
+      "name": "Magnetic" + " " + (this.magneticCardList.length + 1),
+      "id": (this.magneticCardList.length + 1)
+    }
+    this.magneticCardList.push(magnetic);
+    this.isMagnetic = true;
+    this.isMerchendise = false;
+    localStorage.setItem("isMagnetic", 'true');
+    this.frequentRide();
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -518,7 +567,15 @@ export class AddProductComponent implements OnInit {
 
   // }
 
-  clickOnMagnetic() {
+  clickOnMagnetic(index: any) {
+    this.isMagnetic = true;
+    this.nonFare = true;
+    this.regularRoute = false;
+    this.isMerchendise = false;
+    localStorage.setItem("isMerchendise", 'false');
+    localStorage.setItem("isMagnetic", 'true');
+    this.currentMagneticIndex = index;
+    (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     // console.log('clicked on Magnetic')
     // // this.nonFare = false;
     // // this.regularRoute = true;
@@ -543,8 +600,11 @@ export class AddProductComponent implements OnInit {
     console.log('clicked on merch')
     this.nonFare = false;
     this.regularRoute = true;
+    this.isMerchendise = true;
     this.merchantise = [];
+    this.isMagnetic = false;
     localStorage.setItem("isMerchandise", "true");
+    localStorage.setItem("isMagnetic", 'false');
     this.productJson.forEach(element => {
       if ((null == element.Ticket || undefined == element.Ticket) && (element.IsMerchandise)) {
         this.merchantise.push(element);
