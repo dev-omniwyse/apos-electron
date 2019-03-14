@@ -98,11 +98,14 @@ export class ShiftsComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    if (this.productTotal == 0) {
-      this.productTotal = digit;
-      // this.productTotal+=digit
-    } else
-      this.productTotal += digit
+    this.productTotal = this.productTotal * 100;
+    this.productTotal += digit;
+    this.productTotal = this.productTotal / 100;
+    // if (this.productTotal == 0) {
+    //   this.productTotal = digit;
+    //   // this.productTotal+=digit
+    // } else
+    //   this.productTotal += digit
 
   }
   clearDigit(digit) {
