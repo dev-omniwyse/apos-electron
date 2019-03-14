@@ -372,7 +372,13 @@ export class ReadcardComponent implements OnInit {
             if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
                 localStorage.setItem("hideModalPopup", "true")
             } else {
-                localStorage.setItem("hideModalPopup", "false")
+                if(localStorage.getItem("shiftReopenedByMainUser") == "true"){
+
+                    localStorage.setItem("hideModalPopup", "true") 
+                  }else{
+                    localStorage.setItem("hideModalPopup", "false")
+                  }
+              //  localStorage.setItem("hideModalPopup", "false")
             }
         })
 
@@ -395,10 +401,16 @@ export class ReadcardComponent implements OnInit {
                         this.statusOfShiftReport = "Main Shift is Paused"
                     }
 
-                if (element.shiftState == "3" && element.shiftType == "0") {
+                if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
                     this.statusOfShiftReport = "Main Shift is Closed"
                     this.disableCards = true 
-                } else {
+                } else if(element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
+                    this.disableCards = true
+                }else if(element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")){
+                    this.disableCards = true
+                }else if(localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")){
+                    this.disableCards = true
+                }else{
                     this.disableCards = false
                 }
             })

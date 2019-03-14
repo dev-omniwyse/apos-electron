@@ -87,7 +87,7 @@ export class AdminComponent implements OnInit {
       console.log("data synch", data)
       console.log("number of attempts", this.numOfAttempts)
       var isSyncDone: boolean = Boolean(data);
-      var timer:any;
+      var timer: any;
       this._ngZone.run(() => {
         if (!isSyncDone) {
           console.log("isSyncDone", isSyncDone)
@@ -108,7 +108,7 @@ export class AdminComponent implements OnInit {
         else if (isSyncDone == true) {
           this.isCurrentSync = false;
           clearTimeout(timer);
-         // clearInterval(this.intervalSyc);
+          // clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
           console.log("sync has been done buddy")
@@ -209,17 +209,14 @@ export class AdminComponent implements OnInit {
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftType == "0") {
         element.shiftState = "4";
-        localStorage.setItem("mainShiftUserLock",element.userEmail)
+        localStorage.setItem("mainShiftUserLock", element.userEmail)
+        //var disableUntilReopenShift = true
+        localStorage.setItem("disableUntilReOpenShift", "true")
       }
-      //element.timeOpened = new Date();
 
-
-      //jhbhdgfvasghd
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-    //  this.mainShiftPaused = true
-    // localStorage.setItem("mainShiftPaused", this.mainShiftPaused.toString())
-    // localStorage.removeItem("openShift")
+
     this.router.navigate(['/login'])
 
   }
@@ -229,11 +226,6 @@ export class AdminComponent implements OnInit {
   }
 
   reOpenShift() {
-    // this.mainShiftPaused = false
-    // this.openShift = false
-    // this.mainShiftPaused = false
-    // localStorage.removeItem("mainShiftClosed")
-    // localStorage.removeItem("mainShiftPaused")
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
@@ -245,11 +237,12 @@ export class AdminComponent implements OnInit {
         this.shiftState = "0"
         this.shiftType = "0"
         element.timeOpened = new Date().getTime();
+        localStorage.setItem("disableUntilReOpenShift", "false")
       }
 
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-
+    localStorage.setItem("shiftReopenedByMainUser", "true")
   }
   hideModalPop() {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
@@ -259,7 +252,18 @@ export class AdminComponent implements OnInit {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
       } else {
-        localStorage.setItem("hideModalPopup", "false")
+        // if((element.shiftState == "4"|| element.shiftState == "0") && element.userID == userId){
+        //   localStorage.setItem("hideModalPopup", "true") 
+        // }else{
+        //   localStorage.setItem("hideModalPopup", "false")
+        // }
+        if(localStorage.getItem("shiftReopenedByMainUser") == "true"){
+
+          localStorage.setItem("hideModalPopup", "true") 
+        }else{
+          localStorage.setItem("hideModalPopup", "false")
+        }
+        
       }
     })
 
@@ -280,12 +284,7 @@ export class AdminComponent implements OnInit {
     let userId = localStorage.getItem("userID")
 
     shiftReports.forEach(element => {
-      // if(element.userThatClosedShift != "" && element.userThatClosedShift != undefined  && element.shiftType != "1" && element.userID == userId){
-      //   this.shiftType = "0"
-      //   this.shiftState = "3"
-      //    this.mainshiftCloser = false
-      //   //this.closingPausedMainShift = false
-      // }else
+
       if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift")) {
         this.closingPausedMainShift = true
         this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"

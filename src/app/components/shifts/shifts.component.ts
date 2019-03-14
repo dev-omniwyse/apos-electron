@@ -18,10 +18,10 @@ export class ShiftsComponent implements OnInit {
   productTotal: any = 0;
   openShift: Boolean = true
   hideModalPopup: Boolean = false;
-  
+
   // mainShiftClosed: Boolean = false
 
-  constructor( private formBuilder: FormBuilder,private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) { }
+  constructor(private formBuilder: FormBuilder, private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) { }
 
   cashDrawer() {
     //this.openShift = false
@@ -33,6 +33,7 @@ export class ShiftsComponent implements OnInit {
         element.shiftState = "0";
         element.openingDrawer = this.productTotal
         element.timeOpened = new Date().getTime();
+        localStorage.setItem("disableUntilReOpenShift", "false")
       }
       localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     });
@@ -58,13 +59,13 @@ export class ShiftsComponent implements OnInit {
       })
     }
     shiftStore.forEach(element => {
-     
+
       if (element.userID == shiftreportUser) {
         element.shiftState = "3";
         element.timeClosed = new Date().getTime();
         element.closingDrawer = this.productTotal
         if (element.userID == shiftreportUser && element.shiftType == "1") {
-
+         
         } else {
           localStorage.setItem("mainShiftClose", mainShiftClose)
 
@@ -73,7 +74,7 @@ export class ShiftsComponent implements OnInit {
       //element.timeOpened = new Date();
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-
+    localStorage.setItem("disableUntilReOpenShift", "true")
     this.router.navigate(["/admin"])
   }
   validShifts() {
@@ -124,6 +125,7 @@ export class ShiftsComponent implements OnInit {
     })
   }
   ngOnInit() {
+
   }
 
 }
