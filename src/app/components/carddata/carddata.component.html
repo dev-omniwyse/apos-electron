@@ -18,7 +18,7 @@
             <h2>Please place card {{currentCard?.printed_id}} on the reader.</h2>
             <h2>The following products will be added.</h2>
             <div *ngFor="let merch of currentCardMerchantList">
-                <h3>{{merch.Ticket.Description}} - {{merch.Ticket.Price}}</h3>
+                <h3>{{merch.quantity}} &nbsp; {{merch.Ticket.Description}} - {{merch.Ticket.Price}}</h3>
             </div>
         </div>
 
@@ -83,6 +83,6 @@
 </div>
 
 <div class="form-group  form-wiz">
-    <button class="pull-left btn btn-outline-rounded btn-default" (click)="navigateToReadCard()"> Cancel</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end" (click)="checkCorrectCard()"> Encode Card </button>
+    <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="navigateToReadCard()"> CANCEL</button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>

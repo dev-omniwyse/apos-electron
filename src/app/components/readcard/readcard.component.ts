@@ -84,7 +84,7 @@ export class ReadcardComponent implements OnInit {
     url = '';
     event = "20+20";
     value: any;
-    statusOfShiftReport: string = ""
+    statusOfShiftReport: string = ''
     disableCards: Boolean = false;
     public errorMessage: String = "Cannot find encoder:";
     public logger;
@@ -170,7 +170,6 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
-                this.isShowCardOptions = false;
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
@@ -308,7 +307,9 @@ export class ReadcardComponent implements OnInit {
     magneticCard(event) {
         localStorage.setItem("isMagnetic", "true");
         localStorage.setItem("isNonFareProduct", "false");
-        this.electronService.ipcRenderer.send('magneticcard', cardName)
+        this.getProductCatalogJSON();
+        this.router.navigate(['/addproduct'])
+        // this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }
 

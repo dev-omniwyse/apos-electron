@@ -59,11 +59,11 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    win.webContents.openDevTools()
+    //  win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
-    });
+    }); 
 }
 
 //camera access code
@@ -393,6 +393,26 @@ ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endT
     logger.info("adminSalesPaymentMethod", '' + result)
 
     event.sender.send('adminSalesPaymentResult', result);
+})
+
+ipcMain.on('printSummaryReport', (event, drawerReport, productsReport, userID, AllUsers) => {
+  logger.info("print summary report",drawerReport, productsReport);
+  var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID, AllUsers);
+  logger.info("printSummaryReportResult", '' + result)
+  event.sender.send('printSummaryReportResult', result);
+})
+ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
+  var date = java.newLong(Number(datevalue));
+  logger.info("printReceiptHeader data", filter, datavalue)
+  var result = posAppletInstance.printReceiptHeaderSync(filter, date );
+  logger.info("printReceiptHeader", '' + result)
+  event.sender.send('printReceiptHeaderResult', result);
+})
+ipcMain.on('printSummaryPaymentsReport', (event, paymentReport) => {
+  logger.info("paymentReport",paymentReport)
+  var result = posAppletInstance.printSummaryPaymentsReportSync(paymentReport);
+  logger.info("printSummaryPaymentsReport", '' + result)
+  event.sender.send('printSummaryPaymentsReportResult', result);
 })
 
 ipcMain.on('adminCloseShift', (event, catalog) => {

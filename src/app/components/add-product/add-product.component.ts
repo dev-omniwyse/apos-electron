@@ -101,6 +101,9 @@ export class AddProductComponent implements OnInit {
   maxRemainingValueReached = false;
   maxLimitErrorMessages: String = "";
   calsifilter: boolean = false;
+  merchproductToRemove: any = {};
+  magneticProductToRemove: any = {};
+  
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -318,22 +321,30 @@ export class AddProductComponent implements OnInit {
       $("#magneticCardLimitModal").modal('show');
       return;
     }
-    this.merchantList.push(merch);
-    this.productCardList.push(this.currentCard.printed_id)
+    if (this.merchantList.length == 0) {
+      this.merchantList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+      merch.quantity = 1;
+    } else if (this.merchantList.includes(merch) === true) {
+      merch.quantity++;
+    }
+    else if (this.merchantList.includes(merch) === false) {
+      merch.quantity = 1;
+      this.merchantList.push(merch);
+      this.productCardList.push(this.currentCard.printed_id)
+    }
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
 
   getSelectedMerchProductData(merch) {
     console.log(merch);
-    if(this.merchantiseList.length == 0) {
+    if (this.merchantiseList.length == 0) {
       merch.quantity = 1;
-     this.merchantiseList.push(merch);
-
-
-    } else if(this.merchantiseList.includes(merch) === true) {
+      this.merchantiseList.push(merch);
+    }else if (this.merchantiseList.includes(merch) === true) {
       merch.quantity++;
     }
-    else if(this.merchantiseList.includes(merch) === false) {
+    else if (this.merchantiseList.includes(merch) === false) {
       merch.quantity = 1;
       this.merchantiseList.push(merch);
     }
@@ -351,26 +362,44 @@ export class AddProductComponent implements OnInit {
 
 
   removeProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.Ticket.Price);
+    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(merch);
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);
   }
 
-  removeMerchProduct(merch) {
-    var totalPrice = merch.UnitPrice * merch.quantity;
+  removeMerchProductConfirmation() {
+    var totalPrice = this.merchproductToRemove .UnitPrice * this.merchproductToRemove .quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantiseList.indexOf(merch);
+    var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove );
     this.merchantiseList.splice(selectedIndex, 1);
+    this.productCardList.splice(selectedIndex, 1);
+
+  }
+
+  removeMagneticProductConfirmation() {
+      this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
+    this.MagneticList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
   }
 
+  removeMerchProduct(merch) {
+    this.merchproductToRemove = merch
+    $("#removeMerchProductModal").modal('show');
+    
+
+  }
+
   removeMagneticProduct(merch) {
-    this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
-    var selectedIndex = this.MagneticList.indexOf(merch);
-    this.MagneticList.splice(selectedIndex, 1);
-    this.productCardList.splice(selectedIndex, 1);
+    this.magneticProductToRemove = merch
+    $("#removeMagneticProductModal").modal('show');
+    // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    // var selectedIndex = this.MagneticList.indexOf(merch);
+    // this.MagneticList.splice(selectedIndex, 1);
+    // this.productCardList.splice(selectedIndex, 1);
   }
 
   productCheckout() {
@@ -417,6 +446,7 @@ export class AddProductComponent implements OnInit {
           this.merchantise.push(element);
         }
         else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "2") {
+          // this.merchantise.push(this.newMagneticProduct);
           this.merchantise.push(element);
         }
       });
@@ -446,7 +476,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
-
+    console.log(this.merchantise)
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
@@ -472,6 +502,7 @@ export class AddProductComponent implements OnInit {
         this.merchantise.push(element);
       }
     });
+    console.log(this.merchantise);
   }
 
   addCard() {
@@ -525,9 +556,9 @@ export class AddProductComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    this.productTotal  = this.productTotal*100;
+    this.productTotal = this.productTotal * 100;
     this.productTotal += digit;
-    this.productTotal = this.productTotal/100;
+    this.productTotal = this.productTotal / 100;
     // this.productTotal = this.productTotal + digit;
     // this.productTotal = ""
     //  if(this.calsifilter == false){
@@ -646,7 +677,7 @@ export class AddProductComponent implements OnInit {
         "salesAmount": this.productTotal,
         "taxAmount": 0,
         "items": jsonMagneticObj,
-        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal}], "shiftType": shiftType
+        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
       }
       console.log("transObj" + JSON.stringify(magneticTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
@@ -656,7 +687,7 @@ export class AddProductComponent implements OnInit {
       this.merchantiseList.forEach(merchandiseElement => {
         var merchandiseObj: any = {
           "transactionID": new Date().getTime(),
-          "quantity": merchandiseElement.quantity, 
+          "quantity": merchandiseElement.quantity,
           "productIdentifier": merchandiseElement.ProductIdentifier,
           "ticketTypeId": null,
           "ticketValue": 0,
