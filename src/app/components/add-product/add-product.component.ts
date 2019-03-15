@@ -113,7 +113,7 @@ export class AddProductComponent implements OnInit {
   smartCardSubTotal: any = 0;
   magneticCardSubTotal: any = 0;
   merchentiseSubTotal: any = 0;
-  subTotal:any = 0;
+  subTotal: any = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -352,7 +352,7 @@ export class AddProductComponent implements OnInit {
       this.productCardList.push(this.currentCard.printed_id)
     }
 
-    this.displaySmartCardsSubtotal(this.merchantList);
+    this.displaySmartCardsSubtotal(this.merchantList, false);
 
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
@@ -389,7 +389,7 @@ export class AddProductComponent implements OnInit {
       return;
     this.MagneticList.push(merch);
     this.magneticIds.push(this.currentMagneticIndex);
-    this.displayMagneticsSubtotal(this.MagneticList);
+    this.displayMagneticsSubtotal(this.MagneticList, false);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -408,15 +408,15 @@ export class AddProductComponent implements OnInit {
 
   removeSmartCardProductConfirmation() {
 
-    var totalPrice =  this.smartCradProductToRemove.UnitPrice *  this.smartCradProductToRemove.quantity;
+    var totalPrice = this.smartCradProductToRemove.UnitPrice * this.smartCradProductToRemove.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    this.smartCardSubTotal =  this.smartCardSubTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantList.indexOf( this.smartCradProductToRemove );
+    this.smartCardSubTotal = this.smartCardSubTotal - parseFloat(totalPrice.toString());
+    var selectedIndex = this.merchantList.indexOf(this.smartCradProductToRemove);
     this.smartCradProductToRemove.quantity = 0;
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);
-    this.displaySmartCardsSubtotal(this.merchantList);
+    this.displaySmartCardsSubtotal(this.merchantList, false);
 
   }
 
@@ -432,12 +432,12 @@ export class AddProductComponent implements OnInit {
 
   removeMagneticProductConfirmation() {
     this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
-    this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat (this.magneticProductToRemove.UnitPrice);
+    this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
     var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
     this.MagneticList.splice(selectedIndex, 1);
     this.magneticIds.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
-    this.displaySmartCardsSubtotal(this.MagneticList);
+    this.displaySmartCardsSubtotal(this.MagneticList, false);
   }
 
   removeMerchProduct(merch) {
@@ -475,8 +475,8 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
-    this.displaySmartCardsSubtotal(this.merchantList);
- 
+    this.displaySmartCardsSubtotal(this.merchantList, false);
+
     // this.cardsList.toArray()[index].nativeElement.setStyle('color','red');
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -577,7 +577,7 @@ export class AddProductComponent implements OnInit {
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
-    localStorage.setItem("isMerchendise","false");
+    localStorage.setItem("isMerchendise", "false");
   }
 
   magneticCard() {
@@ -587,11 +587,12 @@ export class AddProductComponent implements OnInit {
       "id": (this.magneticCardList.length + 1)
     }
     this.magneticCardList.push(magnetic);
+    // this.magneticIds[j] == currentMagneticIndex
     this.isMagnetic = true;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'true');
-    localStorage.setItem("isMerchendise","false");
-    this.frequentRide();
+    localStorage.setItem("isMerchendise", "false");
+    this.clickOnMagnetic(magnetic.id)
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -610,7 +611,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchendise", 'false');
     localStorage.setItem("isMagnetic", 'true');
     this.currentMagneticIndex = index;
-    this.displayMagneticsSubtotal(this.MagneticList);
+    this.displayMagneticsSubtotal(this.MagneticList, false);
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     // console.log('clicked on Magnetic')
     // // this.nonFare = false;
@@ -672,25 +673,35 @@ export class AddProductComponent implements OnInit {
     // }
 
   }
-  displaySmartCardsSubtotal(products: any) {
+  displaySmartCardsSubtotal(products: any, isTotalList) {
     var index = 0;
     this.subTotal = 0;
     products.forEach(element => {
-      if(this.productCardList[index] == this.currentCard.printed_id){
-        this.subTotal = this.subTotal + (element.quantity*parseFloat(element.Ticket.Price));
+      if (isTotalList) {
+        this.subTotal = this.subTotal + (element.quantity * parseFloat(element.Ticket.Price));
+      }
+      else {
+        if (this.magneticIds[index] == this.currentMagneticIndex) {
+          this.subTotal = this.subTotal + (element.quantity * parseFloat(element.Ticket.Price));
+        }
       }
       index++;
     });
-  
+
     // return this.subTotal;
   }
 
-  displayMagneticsSubtotal(products: any) {
+  displayMagneticsSubtotal(products: any, isTotalList) {
     var index = 0;
     this.subTotal = 0;
     products.forEach(element => {
-      if(this.magneticIds[index] == this.currentMagneticIndex){
+      if (isTotalList) {
         this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
+      }
+      else {
+        if (this.magneticIds[index] == this.currentMagneticIndex) {
+          this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
+        }
       }
       index++;
     });
@@ -714,9 +725,6 @@ export class AddProductComponent implements OnInit {
     var unitPrice: any = 0;
     var fareCode: any = "";
     var shiftType: any = 0;
-
-    localStorage.setItem('transactionAmount', JSON.stringify(this.productTotal));
-
     // var de
     this.productJson.forEach(catalogElement => {
       if ((null == catalogElement.Ticket) &&
@@ -738,6 +746,7 @@ export class AddProductComponent implements OnInit {
     })
     //Magnetic
     if (this.MagneticList.length > 0) {
+      this.displayMagneticsSubtotal(this.merchantList,true)
       this.MagneticList.forEach(walletElement => {
         var jsonWalletObj = {
           "transactionID": new Date().getTime(),
@@ -755,7 +764,7 @@ export class AddProductComponent implements OnInit {
           "IsBackendMerchandise": false,
           "IsFareCard": false,
           "unitPrice": walletElement.UnitPrice,
-          "totalCost": this.productTotal,
+          "totalCost": this.subTotal,
           "userID": localStorage.getItem("userEmail"),
           "shiftID": 1,
           "fareCode": fareCode,
@@ -800,11 +809,11 @@ export class AddProductComponent implements OnInit {
         "timestamp": new Date().getTime(),
         "transactionID": new Date().getTime(),
         "transactionType": "Charge",
-        "transactionAmount": this.productTotal,
-        "salesAmount": this.productTotal,
+        "transactionAmount": this.subTotal,
+        "salesAmount": this.subTotal,
         "taxAmount": 0,
         "items": jsonMagneticObj,
-        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
+        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.subTotal }], "shiftType": shiftType
       }
       console.log("transObj" + JSON.stringify(magneticTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
@@ -839,16 +848,18 @@ export class AddProductComponent implements OnInit {
         "timestamp": new Date().getTime(),
         "transactionID": new Date().getTime(),
         "transactionType": "Charge",
-        "transactionAmount": this.productTotal,
-        "salesAmount": this.productTotal,
+        "transactionAmount": this.merchentiseSubTotal,
+        "salesAmount": this.merchentiseSubTotal,
         "taxAmount": 0,
         "items": jsonMerchandiseObj,
-        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.productTotal }], "shiftType": shiftType
+        "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.merchentiseSubTotal }], "shiftType": shiftType
       }
       console.log("transObj" + JSON.stringify(merchandiseTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
     }
     if (this.merchantList.length > 0) {
+      this.displaySmartCardsSubtotal(this.merchantList, true)
+      localStorage.setItem('transactionAmount', JSON.stringify(this.subTotal));
       if (paymentMethodId == "8") {
         localStorage.setItem("paymentMethodId", paymentMethodId)
         this.router.navigate(['/comp'])
