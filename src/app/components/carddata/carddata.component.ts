@@ -356,7 +356,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
       // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    });
+    }); 
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {

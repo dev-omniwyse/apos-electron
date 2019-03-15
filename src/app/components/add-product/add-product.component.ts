@@ -746,7 +746,7 @@ export class AddProductComponent implements OnInit {
     })
     //Magnetic
     if (this.MagneticList.length > 0) {
-      this.displayMagneticsSubtotal(this.merchantList,true)
+      this.displayMagneticsSubtotal(this.merchantList, true)
       this.MagneticList.forEach(walletElement => {
         var jsonWalletObj = {
           "transactionID": new Date().getTime(),
