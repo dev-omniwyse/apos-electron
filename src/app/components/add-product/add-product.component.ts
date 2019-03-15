@@ -165,19 +165,16 @@ export class AddProductComponent implements OnInit {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          localStorage.removeItem('encodeData');
-          localStorage.removeItem('productCardData');
-          localStorage.removeItem("cardsData");
-          localStorage.removeItem("readCardData");
-          this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-          this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-          this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
-          this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-          this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-          this.router.navigate(['/readcard'])
+          if (this.merchantList.length == 0) {
+            localStorage.removeItem('encodeData');
+            localStorage.removeItem('productCardData');
+            localStorage.removeItem("cardsData");
+            localStorage.removeItem("readCardData");
+            this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+            this.router.navigate(['/readcard'])
+          }
         });
       }
-      this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     });
 
     this.electronService.ipcRenderer.on('creditOrDebitResult', (event, data) => {
@@ -256,7 +253,7 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
   }
 
 
@@ -322,7 +319,7 @@ export class AddProductComponent implements OnInit {
       this.areExistingProducts.push(false);
       if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts) || (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts))
         isProductLimitReached = true
-      if(selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)
+      if (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)
         isProductLimitReached = true
     }
     return isProductLimitReached;
@@ -699,7 +696,7 @@ export class AddProductComponent implements OnInit {
       }
     })
     //Magnetic
-    if (this.isMagnetic) {
+    if (this.MagneticList.length > 0) {
       this.MagneticList.forEach(walletElement => {
         var jsonWalletObj = {
           "transactionID": new Date().getTime(),
@@ -772,7 +769,7 @@ export class AddProductComponent implements OnInit {
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
     }
     // Merchandise
-    else if (this.nonFare == false && this.regularRoute == true) {
+    if (this.merchantiseList.length > 0) {
       this.merchantiseList.forEach(merchandiseElement => {
         var merchandiseObj: any = {
           "transactionID": new Date().getTime(),
@@ -810,7 +807,7 @@ export class AddProductComponent implements OnInit {
       console.log("transObj" + JSON.stringify(merchandiseTransactionObj));
       this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
     }
-    else {
+    if (this.merchantList.length > 0) {
       if (paymentMethodId == "8") {
         localStorage.setItem("paymentMethodId", paymentMethodId)
         this.router.navigate(['/comp'])
