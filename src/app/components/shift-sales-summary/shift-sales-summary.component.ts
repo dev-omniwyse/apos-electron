@@ -703,6 +703,8 @@ export class ShiftSalesSummaryComponent implements OnInit {
       }
 
       productsReport += spacer + currentProductSum;
+
+      
       
 
       var costText = '$' + parseFloat(productValue).toFixed(2);
