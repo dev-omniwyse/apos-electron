@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { concat } from 'rxjs/operators';
 import { parse } from 'url';
+import { element } from '@angular/core/src/render3';
+import { forEach } from '@angular/router/src/utils/collection';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -111,7 +113,7 @@ export class AddProductComponent implements OnInit {
   smartCardSubTotal: any = 0;
   magneticCardSubTotal: any = 0;
   merchentiseSubTotal: any = 0;
-
+  subTotal:any = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -349,7 +351,9 @@ export class AddProductComponent implements OnInit {
       this.merchantList.push(merch);
       this.productCardList.push(this.currentCard.printed_id)
     }
-    this.smartCardSubTotal = this.smartCardSubTotal + parseFloat(merch.Ticket.Price);
+
+    this.displaySmartCardsSubtotal(this.merchantList);
+
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
 
@@ -385,7 +389,7 @@ export class AddProductComponent implements OnInit {
       return;
     this.MagneticList.push(merch);
     this.magneticIds.push(this.currentMagneticIndex);
-    this.magneticCardSubTotal = this.magneticCardSubTotal + parseFloat(merch.UnitPrice);
+    this.displayMagneticsSubtotal(this.MagneticList);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -469,6 +473,8 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
+    this.displaySmartCardsSubtotal(this.merchantList);
+ 
     // this.cardsList.toArray()[index].nativeElement.setStyle('color','red');
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -602,6 +608,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchendise", 'false');
     localStorage.setItem("isMagnetic", 'true');
     this.currentMagneticIndex = index;
+    this.displayMagneticsSubtotal(this.MagneticList);
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     // console.log('clicked on Magnetic')
     // // this.nonFare = false;
@@ -629,6 +636,7 @@ export class AddProductComponent implements OnInit {
     this.regularRoute = true;
     this.isMerchendise = true;
     this.isMagnetic = false;
+    this.merchantise = [];
     localStorage.setItem("isMerchandise", "true");
     localStorage.setItem("isMagnetic", 'false');
     this.productJson.forEach(element => {
@@ -662,6 +670,37 @@ export class AddProductComponent implements OnInit {
     // }
 
   }
+  displaySmartCardsSubtotal(products: any) {
+    var index = 0;
+    this.subTotal = 0;
+    products.forEach(element => {
+      if(this.productCardList[index] == this.currentCard.printed_id){
+        this.subTotal = this.subTotal + (element.quantity*parseFloat(element.Ticket.Price));
+      }
+      index++;
+    });
+  
+    // return this.subTotal;
+  }
+
+  displayMagneticsSubtotal(products: any) {
+    var index = 0;
+    this.subTotal = 0;
+    products.forEach(element => {
+      if(this.magneticIds[index] == this.currentMagneticIndex){
+        this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
+      }
+      index++;
+    });
+  }
+
+  // displaySmartCardSubtotal(products: any) {
+
+  //   price[index].forEach(element => {
+  //     this.magneticCardSubTotal = this.magneticCardSubTotal
+  //   });
+  // }
+
   clearDigit(digit) {
     console.log("numberDigits", digit);
     this.productTotal = digit
