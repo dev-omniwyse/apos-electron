@@ -3,6 +3,7 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { concat } from 'rxjs/operators';
+import { parse } from 'url';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -103,9 +104,13 @@ export class AddProductComponent implements OnInit {
   calsifilter: boolean = false;
   merchproductToRemove: any = {};
   magneticProductToRemove: any = {};
+  smartCradProductToRemove: any = {};
   magneticCardList: any = [];
   magneticIds: any = [];
   currentMagneticIndex: any = 0;
+  smartCardSubTotal: any = 0;
+  magneticCardSubTotal: any = 0;
+  merchentiseSubTotal: any = 0;
 
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
@@ -347,6 +352,7 @@ export class AddProductComponent implements OnInit {
       this.merchantList.push(merch);
       this.productCardList.push(this.currentCard.printed_id)
     }
+    this.smartCardSubTotal = this.smartCardSubTotal + parseFloat(merch.Ticket.Price);
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
   }
 
@@ -362,6 +368,7 @@ export class AddProductComponent implements OnInit {
       merch.quantity = 1;
       this.merchantiseList.push(merch);
     }
+    this.merchentiseSubTotal = this.merchentiseSubTotal + parseFloat(merch.UnitPrice);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -381,23 +388,40 @@ export class AddProductComponent implements OnInit {
       return;
     this.MagneticList.push(merch);
     this.magneticIds.push(this.currentMagneticIndex);
+    this.magneticCardSubTotal = this.magneticCardSubTotal + parseFloat(merch.UnitPrice);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
 
   removeProduct(merch) {
-    var totalPrice = merch.UnitPrice * merch.quantity;
+    this.smartCradProductToRemove = merch;
+    $("#removeSmartCardProductModal").modal('show');
+    // var totalPrice = merch.UnitPrice * merch.quantity;
+    // this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
+    // var selectedIndex = this.merchantList.indexOf(merch);
+    // merch.quantity = 0;
+    // this.merchantList.splice(selectedIndex, 1);
+    // this.productCardList.splice(selectedIndex, 1);
+    // this.areExistingProducts.splice(selectedIndex, 1);
+  }
+
+  removeSmartCardProductConfirmation() {
+
+    var totalPrice =  this.smartCradProductToRemove.UnitPrice *  this.smartCradProductToRemove.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    var selectedIndex = this.merchantList.indexOf(merch);
-    merch.quantity = 0;
+    this.smartCardSubTotal =  this.smartCardSubTotal - parseFloat(totalPrice.toString());
+    var selectedIndex = this.merchantList.indexOf( this.smartCradProductToRemove );
+    this.smartCradProductToRemove.quantity = 0;
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);
+
   }
 
   removeMerchProductConfirmation() {
     var totalPrice = this.merchproductToRemove.UnitPrice * this.merchproductToRemove.quantity;
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
+    this.merchentiseSubTotal = this.merchentiseSubTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantiseList.indexOf(this.merchproductToRemove);
     this.merchantiseList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -406,6 +430,7 @@ export class AddProductComponent implements OnInit {
 
   removeMagneticProductConfirmation() {
     this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat (this.magneticProductToRemove.UnitPrice);
     var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
     this.MagneticList.splice(selectedIndex, 1);
     this.magneticIds.splice(selectedIndex, 1);
@@ -543,7 +568,11 @@ export class AddProductComponent implements OnInit {
     // this.isMagnetic = false;
     // localStorage.setItem("isMagnetic", 'false');
     this.isfromAddProduct = true;
-    this.electronService.ipcRenderer.send('readSmartcard', cardName)
+    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+    this.isMagnetic = false;
+    this.isMerchendise = false;
+    localStorage.setItem("isMagnetic", 'false');
+    localStorage.setItem("isMerchendise","false");
   }
 
   magneticCard() {
@@ -556,6 +585,7 @@ export class AddProductComponent implements OnInit {
     this.isMagnetic = true;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'true');
+    localStorage.setItem("isMerchendise","false");
     this.frequentRide();
   }
 
@@ -601,7 +631,6 @@ export class AddProductComponent implements OnInit {
     this.nonFare = false;
     this.regularRoute = true;
     this.isMerchendise = true;
-    this.merchantise = [];
     this.isMagnetic = false;
     localStorage.setItem("isMerchandise", "true");
     localStorage.setItem("isMagnetic", 'false');
