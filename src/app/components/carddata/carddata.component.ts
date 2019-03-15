@@ -221,19 +221,19 @@ export class CarddataComponent implements OnInit, OnChanges {
                 this.carddata[0].products.forEach(cardElement => {
                   if (walletElement.Ticket.Group == 1 && cardElement.product_type == 1 && (walletElement.Ticket.Designator == cardElement.designator)) {
                     rechargesPending = cardElement.recharges_pending;
-                  } else if(walletElement.Ticket.Group == 2 && cardElement.product_type == 2 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                  } else if (walletElement.Ticket.Group == 2 && cardElement.product_type == 2 && (walletElement.Ticket.Designator == cardElement.designator)) {
                     existingBalance = cardElement.remaining_rides;
-                  } else if (walletElement.Ticket.Group == 3 && cardElement.product_type == 3 && (walletElement.Ticket.Designator == cardElement.designator)){
+                  } else if (walletElement.Ticket.Group == 3 && cardElement.product_type == 3 && (walletElement.Ticket.Designator == cardElement.designator)) {
                     existingBalance = cardElement.remaining_value / 100;
                   }
                 });
                 if (walletElement.Ticket.Group == 1) {
                   balance = walletElement.Ticket.Value;
-                }else if(walletElement.Ticket.Group == 2){
-                  balance = existingBalance ;//+ (walletElement.quantity * walletElement.Ticket.Value);
+                } else if (walletElement.Ticket.Group == 2) {
+                  balance = existingBalance;//+ (walletElement.quantity * walletElement.Ticket.Value);
                 }
-                else{
-                  balance =  existingBalance ; //+ (walletElement.quantity * walletElement.Ticket.Value);
+                else {
+                  balance = existingBalance; //+ (walletElement.quantity * walletElement.Ticket.Value);
                 }
               }
               this.encodeddata[0].forEach(element => {
@@ -356,7 +356,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
       // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    });
+    }); 
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {
@@ -364,7 +364,11 @@ export class CarddataComponent implements OnInit, OnChanges {
         console.log(data);
         this._ngZone.run(() => {
           if ((this.cardJson.length - 1) == this.cardIndex) {
-            this.encodeddata = new Array(JSON.parse(data));
+            var resultObj: any = [];
+            resultObj = new Array(JSON.parse(data));
+            resultObj.forEach(element => {
+              this.encodeddata.push(element);
+            });
             this.isFromCardComponent = true;
             if (this.isNew)
               this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
@@ -550,7 +554,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "isCardBased": element.IsCardBased
         }
       }
-      if (element.Ticket.Group != 1){
+      if (element.Ticket.Group != 1) {
         this.encodeJsonData.push(JsonObj);
       }
       currentIndex++;

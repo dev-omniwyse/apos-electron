@@ -131,7 +131,7 @@ ul {
     background-color: #fff;
     border: 1px solid #c3c3c3;
     border-radius: 5px;
-    color: #d65400;
+    color: #000;
     font-size: 2vh;
     padding: 1.2vh 15px;
 }
@@ -142,7 +142,7 @@ ul {
     margin-left: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #000;
+    color: #d65400;
     font-size: 2vh;
     padding: 1.2vh 15px;
     border: 1px solid #ccc;
@@ -462,3 +462,51 @@ ul {
         height: 30vh;
     }
 } */
+
+
+.cardBtn {
+    width: 100%;
+    border: 1px solid #2064a7;
+    border-radius: 3px;
+    background-color: #3b80c3;
+    padding: 13px 20px;
+    color: #fff;
+    font-size: 34px;
+    position: relative;
+    margin: 1px 0 10px;
+    float: left;
+}
+
+.cardBtn .cardBtn:disabled,
+.cardBtn[disabled] {
+    background-color: #ccc;
+    border: 1px solid #999;
+    cursor: not-allowed;
+    color: #666;
+}
+.modal-body-in {
+    position: relative;
+    padding: 15px;
+    font-size: 25px!important;
+    color: #000!important;
+    text-align: center!important;
+}
+
+.cancel-btn-pop {
+    border: 1px solid #d65400;
+    border-radius: 3px;
+    background-color: #d65400;
+    padding: 10px 15px;
+    color: #fff;
+    font-size: 22px;
+}
+
+.modal-txt-h {
+    padding: 25px 0 0 25px;
+}
+.cardBtn img {
+    position: absolute;
+    width: 25px;
+    right: 20px;
+    top: 27px;
+}
