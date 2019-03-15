@@ -160,6 +160,9 @@ export class AddProductComponent implements OnInit {
           }
           else {
             this.cardJson.push(JSON.parse(data));
+            this.currentCard = this.cardJson[this.cardJson.length-1]
+            this.selectedProductCategoryIndex = 0;
+            this.selectCard(this.cardJson.length-1);
           }
         });
       }
@@ -582,22 +585,10 @@ export class AddProductComponent implements OnInit {
   newFareCard() {
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
-
-    var smartCard = {
-      "name": "Smart" + " " + (this.smartCradList.length + 1),
-      "id": (this.smartCradList.length)
-    }
-    this.smartCradList.push(smartCard);
-
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
-    this.currentCard = this.cardJson[smartCard.id]
-
-    this.selectedProductCategoryIndex = 0;
-    this.selectCard(smartCard.id);
-    
   }
 
   magneticCard() {
