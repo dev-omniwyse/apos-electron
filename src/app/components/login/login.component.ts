@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     carddata: any
     shiftType: any
     shiftState: any
-   public statusOfShiftReport: string = ''
+   public statusOfShiftReport: string 
    public hideAndShowLogout: Boolean = false
    public lockedByUser: string = ''
    public ownedByUser: string = ''
@@ -36,8 +36,8 @@ export class LoginComponent implements OnInit {
             shiftID: "0",
             shiftType: "",
             shiftState: "3",
-            openingDrawer: "0.00",
-            closingDrawer: "0.00",
+            openingDrawer: 0.00,
+            closingDrawer: 0.00,
             initialOpeningTime: 0,
             timeOpened: 0,
             timeClosed: 0,
@@ -116,8 +116,8 @@ export class LoginComponent implements OnInit {
                         shiftID: "0",
                         shiftType: "1",
                         shiftState: "3",
-                        openingDrawer: "0.00",
-                        closingDrawer: "0.00",
+                        openingDrawer: 0.00,
+                        closingDrawer: 0.00,
                         initialOpeningTime: 0,
                         timeOpened: 0,
                         timeClosed: 0,

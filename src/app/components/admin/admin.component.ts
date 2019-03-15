@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { MethodFn } from '@angular/core/src/reflection/types';
 import { MethodCall } from '@angular/compiler';
+// import { ConsoleReporter } from 'jasmine';
 // import {setInterval, clearInterval} from 'timers';
 declare var $: any
 
@@ -22,7 +23,10 @@ export class AdminComponent implements OnInit {
   mainShiftReOpen: Boolean = false
   mainshiftCloser: Boolean = false
   statusOfShiftReport: string = ""
-  openingDrawerBal: Number
+  openingDrawerBal: any = 0
+  expectedCash: any = 0
+  actualCash: any = 0
+  overShort: any = 0
   synCompleted: any
   numOfAttempts = 0;
   maxLoopingCount = 600;
@@ -31,13 +35,28 @@ export class AdminComponent implements OnInit {
   configData: any
   SyncMethod: any
   isCurrentSync: Boolean = false;
+  public fareTotal: any = 0
+  public nonFareTotal: any = 0
+  public fareAndNonFareTotal: any = 0
+
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
       console.log("sales data", data)
       if (data != undefined && data != "") {
         //this.show = true;
+        JSON.parse(data).forEach(element => {
+          // if (element.userID == localStorage.getItem("userId")) {
+               if (element.isMerchandise == 0) {
+                   this.fareTotal = this.fareTotal + element.value
+               } else if (element.isMerchandise == 1) {
+                   this.nonFareTotal = this.nonFareTotal + element.value
+               }
+               this.fareAndNonFareTotal = this.fareTotal + this.nonFareTotal
+           
+       });
         localStorage.setItem("allSales", data)
+
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -46,9 +65,24 @@ export class AdminComponent implements OnInit {
     });
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
       console.log("sales data", data)
-      if (data != undefined && data != "") {
+      if (data != undefined && data.length != 0) {
         //this.show = true;
+        JSON.parse(data).forEach(element => {
+          if (element.paymentMethod == "CASH") {
+              console.log("CASH PAYMENTS", element.paymentAmount, this.expectedCash)
+
+              this.expectedCash = Number(this.expectedCash) + element.paymentAmount
+              
+              console.log("CASH fareAndNonFareTotal", this.actualCash ,this.expectedCash)
+
+              this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
+
+          }
+         
+      });
         localStorage.setItem("paymentTypes", data)
+
+
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
         });
@@ -112,21 +146,7 @@ export class AdminComponent implements OnInit {
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
           console.log("sync has been done buddy")
-          // this.electronService.ipcRenderer.removeListener("isSyncCompletedResult",this.SyncMethod);
-          // this.electronService.ipcRenderer.removeListener("adminSyncResult");
-          // if (isSyncDone) {
-          // this.electronService.ipcRenderer.send('adminDeviceConfig')
-          // console.log("this.deviceInfoNew ", this.deviceInfoNew)
-          // if (this.deviceInfoNew == true) {
-          //   var UpdateDeviceConfig = JSON.parse(localStorage.getItem("deviceConfigData"))
-          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
-          //   UpdateDeviceConfig.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
-          //   localStorage.setItem("deviceConfigData", UpdateDeviceConfig)
-          //  // $("#successSyncModal").modal("show")
-          // }
-          // } else {
-          //   console.log("Sync Timeout");
-          // }
+       
         }
         else {
           this.isCurrentSync = false;
@@ -186,6 +206,12 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminCloseShift')
     //console.log('read call', cardName)
   }
+  // openMainshiftStatus(){
+  //   this.setShiftStatus = "OPEN SHIFT"
+  //   this.setShiftText = "Enterthe total opening amount in the till and Tap 'Enter' "
+  //   localStorage.setItem("setShiftStatus", this.setShiftStatus)
+  //   localStorage.setItem("setShiftText",this.setShiftText)
+  // }
   adminOpenShift(event) {
     this.electronService.ipcRenderer.send('adminOpenShift')
     //console.log('read call', cardName)
@@ -257,13 +283,13 @@ export class AdminComponent implements OnInit {
         // }else{
         //   localStorage.setItem("hideModalPopup", "false")
         // }
-        if(localStorage.getItem("shiftReopenedByMainUser") == "true"){
+        if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
 
-          localStorage.setItem("hideModalPopup", "true") 
-        }else{
+          localStorage.setItem("hideModalPopup", "true")
+        } else {
           localStorage.setItem("hideModalPopup", "false")
         }
-        
+
       }
     })
 
@@ -284,8 +310,12 @@ export class AdminComponent implements OnInit {
     let userId = localStorage.getItem("userID")
 
     shiftReports.forEach(element => {
+      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "false") {
+        this.closingPausedMainShift = true
+        this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
 
-      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift")) {
+      }else
+      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
         this.closingPausedMainShift = true
         this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
       } else
@@ -336,29 +366,25 @@ export class AdminComponent implements OnInit {
     });
 
     shiftReports.forEach(element => {
-      if (element.userID == userId) {
-        this.openingDrawerBal = element.openingDrawer
-        // } else if (element.shiftType == "1" && element.userID == userId) {
-        //   this.openingDrawerBal = element.openingDrawer
+      if (element.userID == localStorage.getItem("userID")) {
+        if (element.openingDrawer != undefined && element.openingDrawer != "") {
+          this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
+          this.expectedCash = this.openingDrawerBal
+        
+        }
+        if (element.closingDrawer != undefined && element.closingDrawer != "") {
+          this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
+        }
+        this.overShort = (this.actualCash - this.expectedCash).toFixed(2)
+        if(element.initialOpeningTime != 0 ){
+          this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
+          console.log("element.initialOpeningTime, element.timeClosed",element.initialOpeningTime, element.timeClosed)
+          this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
+        }
+       
       }
+
     });
-
-    // let shift = JSON.parse(localStorage.getItem("openShift"));
-    // if (shift != undefined || shift != null) {
-    //   this.openShift = false
-    //   $("#readyForSaleModal").modal('show');
-    // }
-    // else if (localStorage.getItem("mainShiftClosed") == "true") {
-    //   this.mainShiftClosed = true
-    // } else
-    //   if (localStorage.getItem("mainShiftPaused") == "true") {
-    //     this.mainShiftPaused = true
-    //     this.mainShiftClosed = false
-    //   }
-    //   else {
-    //     this.openShift = true
-
-    //   }
 
   }
 

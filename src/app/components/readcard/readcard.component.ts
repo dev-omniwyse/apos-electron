@@ -98,6 +98,12 @@ export class ReadcardComponent implements OnInit {
     public offeringSList: any = [];
     public isShowCardOptions: Boolean = true;
     public isFromReadCard = false;
+    public fareTotal: any = 0
+    public nonFareTotal: any = 0
+    public fareAndNonFareTotal: any = 0
+    adminSales = []
+    salesPayments = []
+
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
         });
@@ -115,7 +121,7 @@ export class ReadcardComponent implements OnInit {
                 this.isFromReadCard = false
                 this._ngZone.run(() => {
                     localStorage.setItem("readCardData", JSON.stringify(data));
-                    localStorage.setItem("printCardData",data)
+                    localStorage.setItem("printCardData", data)
                     // let item = JSON.parse(localStorage.getItem("readCardData"));
                     // this.carddata = JSON.parse(item);
                     this.carddata = new Array(JSON.parse(data));
@@ -195,6 +201,8 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
+      
+
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
             if (data != undefined && data != "") {
                 this.readCardData = [];
@@ -224,9 +232,9 @@ export class ReadcardComponent implements OnInit {
                                             productName = "Stored Ride"
                                         else if (cardElement.product_type == 3)
                                             productName = "Pay As You Go"
-                                        if (cardElement.product_type == 1){
+                                        if (cardElement.product_type == 1) {
                                             remainingValue = cardElement.days + " Days";
-                                            var pendingText =  (cardElement.recharges_pending > 0)?" ("+cardElement.recharges_pending+" Pending)":"";
+                                            var pendingText = (cardElement.recharges_pending > 0) ? " (" + cardElement.recharges_pending + " Pending)" : "";
                                             status = status + pendingText;
                                         }
                                         else if (cardElement.product_type == 2)
@@ -237,7 +245,7 @@ export class ReadcardComponent implements OnInit {
 
                                             "product": productName,
                                             "description": catalogElement.Ticket.Description,
-                                            "status":  status,
+                                            "status": status,
                                             "remainingValue": remainingValue
                                         }
                                         keepGoing = false;
@@ -372,17 +380,19 @@ export class ReadcardComponent implements OnInit {
             if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
                 localStorage.setItem("hideModalPopup", "true")
             } else {
-                if(localStorage.getItem("shiftReopenedByMainUser") == "true"){
+                if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
 
-                    localStorage.setItem("hideModalPopup", "true") 
-                  }else{
+                    localStorage.setItem("hideModalPopup", "true")
+                } else {
                     localStorage.setItem("hideModalPopup", "false")
-                  }
-              //  localStorage.setItem("hideModalPopup", "false")
+                }
+                //  localStorage.setItem("hideModalPopup", "false")
             }
         })
 
     }
+
+   
 
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");
@@ -403,14 +413,14 @@ export class ReadcardComponent implements OnInit {
 
                 if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
                     this.statusOfShiftReport = "Main Shift is Closed"
-                    this.disableCards = true 
-                } else if(element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
                     this.disableCards = true
-                }else if(element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")){
+                } else if (element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
                     this.disableCards = true
-                }else if(localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")){
+                } else if (element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
                     this.disableCards = true
-                }else{
+                } else if (localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")) {
+                    this.disableCards = true
+                } else {
                     this.disableCards = false
                 }
             })
