@@ -23,13 +23,13 @@
                     (click)=clickOnMerch()>Merch*</button>
             </div>
             <div *ngFor="let magnetic of magneticCardList;let j = index" (click)="clickOnMagnetic(j)" class="col-md-6">
-                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
+                <button [ngClass]="{'nonFare': currentMagneticIndex == j && isMagnetic,'btn-b-white': isMagnetic || !isMagnetic || currentMagneticIndex == 0 || currentMagneticIndex == j}"
                     >{{magnetic.name}}</button>
             </div>
             <div>
                 <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
                     <button
-                        [ngClass]="{'regularRoute': selectedIdx == i && !regularRoute,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !regularRoute || regularRoute}">{{cards?.printed_id}}</button>
+                        [ngClass]="{'regularRoute': selectedIdx == i && !isMagnetic && !isMerchendise,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !isMagnetic || isMagnetic || isMerchendise || !isMerchendise}">{{cards?.printed_id}}</button>
                 </div>
             </div>
 

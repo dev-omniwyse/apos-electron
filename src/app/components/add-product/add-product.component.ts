@@ -416,6 +416,7 @@ export class AddProductComponent implements OnInit {
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
     this.areExistingProducts.splice(selectedIndex, 1);
+    this.displaySmartCardsSubtotal(this.merchantList);
 
   }
 
@@ -436,6 +437,7 @@ export class AddProductComponent implements OnInit {
     this.MagneticList.splice(selectedIndex, 1);
     this.magneticIds.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
+    this.displaySmartCardsSubtotal(this.MagneticList);
   }
 
   removeMerchProduct(merch) {
