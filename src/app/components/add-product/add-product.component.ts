@@ -113,6 +113,7 @@ export class AddProductComponent implements OnInit {
   smartCardSubTotal: any = 0;
   magneticCardSubTotal: any = 0;
   merchentiseSubTotal: any = 0;
+  smartCradList: any = [];
   subTotal: any = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
@@ -136,10 +137,12 @@ export class AddProductComponent implements OnInit {
       if (this.isMagnetic) {
         var magnetic = {
           "name": "Magnetic" + " " + (this.magneticCardList.length + 1),
-          "id": (this.magneticCardList.length + 1)
+          "id": (this.magneticCardList.length)
         }
         this.magneticCardList.push(magnetic)
       }
+
+     
       // this.cardsList.toArray()[0].nativeElement.classList.add('isActive');
     });
     var readCardListener = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
@@ -228,6 +231,14 @@ export class AddProductComponent implements OnInit {
         });
       }
     });
+
+    if (!this.isMagnetic && !this.isMerchendise) {
+      var smartCard = {
+         "name": "Smart" + " " + (this.smartCradList.length + 1),
+        "id": (this.smartCradList.length)
+        }
+        this.smartCradList.push(smartCard)
+     }
   }
 
   ngOnInit() {
@@ -477,7 +488,6 @@ export class AddProductComponent implements OnInit {
     this.currentCard = this.cardJson[index];
     this.displaySmartCardsSubtotal(this.merchantList, false);
 
-    // this.cardsList.toArray()[index].nativeElement.setStyle('color','red');
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
 
@@ -570,21 +580,31 @@ export class AddProductComponent implements OnInit {
   }
 
   newFareCard() {
-    // this.isMagnetic = false;
-    // localStorage.setItem("isMagnetic", 'false');
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
+
+    var smartCard = {
+      "name": "Smart" + " " + (this.smartCradList.length + 1),
+      "id": (this.smartCradList.length)
+    }
+    this.smartCradList.push(smartCard);
+
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
+    this.currentCard = this.cardJson[smartCard.id]
+
+    this.selectedProductCategoryIndex = 0;
+    this.selectCard(smartCard.id);
+    
   }
 
   magneticCard() {
 
     var magnetic = {
       "name": "Magnetic" + " " + (this.magneticCardList.length + 1),
-      "id": (this.magneticCardList.length + 1)
+      "id": (this.magneticCardList.length)
     }
     this.magneticCardList.push(magnetic);
     // this.magneticIds[j] == currentMagneticIndex
@@ -592,6 +612,7 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'true');
     localStorage.setItem("isMerchendise", "false");
+    this.selectedProductCategoryIndex = 0
     this.clickOnMagnetic(magnetic.id)
   }
 
