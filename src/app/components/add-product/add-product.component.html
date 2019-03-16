@@ -43,7 +43,7 @@
           <button class="btn-b-white">{{cardJson?.printed_id}}</button>
         </div> -->
         <div class="container-l-app">
-            <div *ngIf="!isMerchendise && !isMagnetic">
+            <div *ngIf="!isMagnetic && !isMerchendise">
                 <div class="" *ngFor="let merch of merchantList; let j = index">
                     <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
 

@@ -1,5 +1,8 @@
 <div class="main-container">
     <div class="container-left">
+        <div>{{setShiftStatus}}</div><br/>
+        <div *ngIf="expectedCash != 0 ">Expecting Cash Total:   ${{expectedCash}}</div><br/>
+        <div> {{setShiftText}}</div>
         <div class="btns-set posi-bottom">
             <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">CANCEL</button>
         </div>
@@ -31,11 +34,13 @@
                                 <h4 class="modal-title">Cash Drawer is Open</h4>
                             </div>
                             <div class="modal-body">
-                                <p>Please put the cash till, with the opening amount, in the cash drawer. Click "OK" when the cash drawer is closed
+                                <p>Please put the cash till, with the opening amount, in the cash drawer. Click "OK"
+                                    when the cash drawer is closed
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cashDrawer();">Ok</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"
+                                    (click)="cashDrawer();">Ok</button>
                             </div>
                         </div>
                     </div>
@@ -51,8 +56,10 @@
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No, Cancel</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#confirmCashModal">Yes, Close Shift</button>
+                                <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No,
+                                    Cancel</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                    href="#confirmCashModal">Yes, Close Shift</button>
                             </div>
                         </div>
                     </div>
@@ -68,7 +75,8 @@
                                 </p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="mainShiftClose();">Ok</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"
+                                    (click)="mainShiftClose();">Ok</button>
                             </div>
                         </div>
                     </div>
