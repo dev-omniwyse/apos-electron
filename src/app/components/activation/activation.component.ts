@@ -16,7 +16,8 @@ export class ActivationComponent implements OnInit {
   workType: string;
   form: any;
   password:any
-  organization : string
+  organization : string;
+  environment: string = "";
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
   //   this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
@@ -28,6 +29,7 @@ export class ActivationComponent implements OnInit {
   //         });
   //     }
   // });
+  this.environment = localStorage.getItem('environment');
   this.electronService.ipcRenderer.on('verifyCallResult', (event, data) => {
     if (data != undefined && data != "") {
       this._ngZone.run(() => {
@@ -63,7 +65,7 @@ export class ActivationComponent implements OnInit {
                   setupCode: form.value.setupid,
                 }
                 localStorage.setItem("assetId", form.value.hardware);
-              this.electronService.ipcRenderer.send('verifycall', data, "uat")
+              this.electronService.ipcRenderer.send('verifycall', data, this.environment)
               console.log('read call', event)
               }
       }

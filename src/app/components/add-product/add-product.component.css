@@ -131,7 +131,7 @@ ul {
     background-color: #fff;
     border: 1px solid #c3c3c3;
     border-radius: 5px;
-    color: #d65400;
+    color: #000;
     font-size: 2vh;
     padding: 1.2vh 15px;
 }
@@ -142,7 +142,7 @@ ul {
     margin-left: 5px;
     background-color: #fff;
     border-radius: 5px;
-    color: #000;
+    color: #d65400;
     font-size: 2vh;
     padding: 1.2vh 15px;
     border: 1px solid #ccc;
