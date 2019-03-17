@@ -115,6 +115,8 @@ export class AddProductComponent implements OnInit {
   merchentiseSubTotal: any = 0;
   smartCradList: any = [];
   subTotal: any = 0;
+  viewCardData: any = []
+  cardProductData:any = []
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -245,6 +247,10 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
+    let item = JSON.parse(localStorage.getItem("readCardData"))
+    this.viewCardData = new Array(JSON.parse(item))
+    this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
+    console.log("viewCardData",this.viewCardData)
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
