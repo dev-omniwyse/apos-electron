@@ -11,8 +11,73 @@
     <div class="container-left">
         <div class="header-l">
             <img src="assets/images/shopping-cart.svg" width="30" />
-            <button [disabled]="isMagnetic" class="btn-white-top">View Card</button>
+            <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
+            <button  [disabled]="isMagnetic"  data-toggle="modal" data-target = "#viewCard" class="btn-white-top">View Card</button>
+
             <button class="btn-orange" (click)="addCard()">Add Card</button>
+        </div>
+        <div class="modal fade" id="viewCard" role="dialog">
+            <div class="modal-dialog modal-sm  modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                        <h4 class="modal-title">Card Summary</h4>
+                    </div>
+    
+                    <div class="modal-body">
+                        
+                        <div  *ngFor="let card of viewCardData ">
+                            <div class="flex-devide">
+                                <div class="flex">
+                                    <div class="flex-devide">
+
+                                        <p>{{card.printed_id}} - Active</p>
+                                        <p>Fare Code: Full</p>
+                                        <p>Card Exp: {{card.card_expiration_date_str}}</p>
+                                    </div>
+                                    <div class="flex-devide">
+                                        <p>Bonus Ride(s): 0</p>
+                                        <p>Next Bonus: 0/4</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    
+                        <div class="content-container container-padding">
+                            <h1></h1>
+                        </div>
+                    
+                        <div class="flex container-padding flex-row">
+                    
+                            <table class="table-css">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Balance</th>
+                                </tr>
+                                <tr *ngFor="let product of cardProductData">
+                                    <td>{{product.product}}</td>
+                                    <td>{{product.description}}</td>
+                                    <td>{{product.status}}</td>
+                                    <td>{{product.remainingValue}}</td>
+                                </tr>
+                                <!-- <tr>
+                                    <td>Frequent Rider</td>
+                                    <td>31 Day Pass</td>
+                                    <td>{{product.status}}</td>
+                                    <td>{{product.balance}}</td>
+                                </tr> -->
+                    
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="btns-mag">
             <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->

@@ -115,6 +115,8 @@ export class AddProductComponent implements OnInit {
   merchentiseSubTotal: any = 0;
   smartCradList: any = [];
   subTotal: any = 0;
+  viewCardData: any = []
+  cardProductData:any = []
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -245,6 +247,10 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
+    let item = JSON.parse(localStorage.getItem("readCardData"))
+    this.viewCardData = new Array(JSON.parse(item))
+    this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
+    console.log("viewCardData",this.viewCardData)
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -301,6 +307,7 @@ export class AddProductComponent implements OnInit {
   isMaxProductLengthReached(selectedItem: any) {
     var isExistingProducts = false;
     var isProductLimitReached = false;
+    var existingQuantity = 0;
     this.currentCard.products.forEach(element => {
       if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
         if ((element.product_type == 1 && element.recharges_pending <= this.terminalConfigJson.MaxPendingCount) ||
@@ -311,7 +318,7 @@ export class AddProductComponent implements OnInit {
             this.maxLimitErrorMessages = "Max pending product limit reached.";
             return;
           }
-          else if (element.product_type == 2 && ((element.recharge_rides + selectedItem.Ticket.Price) >= 255)) {
+          else if (element.product_type == 2 && ((element.recharge_rides + selectedItem.Ticket.Value) >= 255)) {
             this.maxRechargeRidesReached = true;
             this.maxLimitErrorMessages = "Max stores ride limit reached.";
             return;
@@ -323,6 +330,12 @@ export class AddProductComponent implements OnInit {
           }
           // cardElement.recharges_pending
           isExistingProducts = true;
+          if (element.product_type == 1) {
+            existingQuantity = element.recharges_pending;
+          }
+          else if (element.product_type == 2) {
+            existingQuantity = (element.remaining_rides / selectedItem.Ticket.Value);
+          }
           this.areExistingProducts.push(true);
         }
         else {
@@ -331,12 +344,24 @@ export class AddProductComponent implements OnInit {
 
       }
     });
+    if (selectedItem.quantity == undefined) {
+      selectedItem.quantity = 0;
+    }
     if (!isExistingProducts) {
       this.areExistingProducts.push(false);
-      if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts) || (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts))
+      if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts) || (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)) {
         isProductLimitReached = true
-      if (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts)
+      }
+      if (selectedItem.quantity == this.terminalConfigJson.NumberOfProducts) {
         isProductLimitReached = true
+      }
+    } else {
+      if (selectedItem.Ticket.Group == 1 && ((existingQuantity + (selectedItem.quantity + 1)) > this.terminalConfigJson.MaxPendingCount)) {
+        isProductLimitReached = true
+      }
+      else if (selectedItem.Ticket.Group == 2 && ((existingQuantity + (selectedItem.quantity + 1)) > 4)) {
+        isProductLimitReached = true;
+      }
     }
     return isProductLimitReached;
   }
@@ -426,6 +451,7 @@ export class AddProductComponent implements OnInit {
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     this.smartCardSubTotal = this.smartCardSubTotal - parseFloat(totalPrice.toString());
     var selectedIndex = this.merchantList.indexOf(this.smartCradProductToRemove);
+    this.merchantList[selectedIndex].quantity = 0;
     this.smartCradProductToRemove.quantity = 0;
     this.merchantList.splice(selectedIndex, 1);
     this.productCardList.splice(selectedIndex, 1);
@@ -693,7 +719,7 @@ export class AddProductComponent implements OnInit {
         this.subTotal = this.subTotal + (element.quantity * parseFloat(element.Ticket.Price));
       }
       else {
-        if (this.magneticIds[index] == this.currentMagneticIndex) {
+        if (this.productCardList[index] == this.currentCard.printed_id) {
           this.subTotal = this.subTotal + (element.quantity * parseFloat(element.Ticket.Price));
         }
       }

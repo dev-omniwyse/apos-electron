@@ -12,70 +12,75 @@ import { VerifyComponent } from './components/verify/verify.component';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { CompComponent } from './components/comp/comp.component';
 import { AdminComponent } from './components/admin/admin.component';
-import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
+import { DeviceconfComponent } from './components/deviceconf/deviceconf.component';
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component'
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
 import { EnvironmentComponent } from './components/environment/environment.component';
 const routes: Routes = [
-  { 
-    path: '', 
-    redirectTo: '/setup', 
+  {
+    path: '',
+    redirectTo: '/environment',
     pathMatch: 'full'
-   },
-
-   { 
-    path: 'setup', 
-    component: SetupComponent 
-  },
-  { 
-    path: 'activation', 
-    component: ActivationComponent 
-  },
-  { 
-    path: 'verify', 
-    component: VerifyComponent 
   },
 
-   { 
-    path: 'login', 
-    component: LoginComponent 
+  {
+    path: 'environment',
+    component: EnvironmentComponent
   },
-  { 
+
+  {
+    path: 'setup',
+    component: SetupComponent
+  },
+  {
+    path: 'activation',
+    component: ActivationComponent
+  },
+  {
+    path: 'verify',
+    component: VerifyComponent
+  },
+
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
     path: 'readcard',
     component: ReadcardComponent
   },
-  { 
+  {
     path: 'camera',
     component: CameraComponent
   },
 
-  { 
+  {
     path: 'carddata',
     component: CarddataComponent
   },
   {
-    path:'addproduct',
+    path: 'addproduct',
     component: AddProductComponent
   },
   {
-    path:"comp",
+    path: "comp",
     component: CompComponent
   },
   {
-    path:"admin",
+    path: "admin",
     component: AdminComponent
   },
   {
-    path:"deviceconfig",
+    path: "deviceconfig",
     component: DeviceconfComponent
   },
   {
-    path:"shift_sales",
+    path: "shift_sales",
     component: ShiftSalesSummaryComponent
   },
   {
-    path:"shifts",
+    path: "shifts",
     component: ShiftsComponent
   },
   {
