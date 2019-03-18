@@ -20,10 +20,13 @@ import { EnvironmentComponent } from './components/environment/environment.compo
 const routes: Routes = [
   { 
     path: '', 
-    redirectTo: '/setup', 
+    redirectTo: '/environment', 
     pathMatch: 'full'
    },
-
+   {
+     path: 'environment',
+     component: EnvironmentComponent
+   },
    { 
     path: 'setup', 
     component: SetupComponent 
