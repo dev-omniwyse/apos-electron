@@ -72,7 +72,7 @@ export class AdminComponent implements OnInit {
             console.log("CASH PAYMENTS", element.paymentAmount, this.expectedCash)
 
             this.expectedCash = Number(this.expectedCash) + element.paymentAmount
-
+            this.expectedCash = this.expectedCash.toFixed(2)
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
@@ -197,13 +197,13 @@ export class AdminComponent implements OnInit {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
     reliefShif.forEach(element => {
       console.log("sales report", element.shiftType, element.timeOpened, element.timeClosed)
-      if(element.userID == localStorage.getItem("userID")){
+      if (element.userID == localStorage.getItem("userID")) {
         this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
-        this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)  
-      }else{
-        
+        this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
+      } else {
+
       }
-         });
+    });
     //console.log('read call', cardName)
   }
   adminCloseShift(event) {
@@ -273,7 +273,9 @@ export class AdminComponent implements OnInit {
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     localStorage.setItem("shiftReopenedByMainUser", "true")
+    localStorage.setItem("hideModalPopup" , "true")
   }
+
   hideModalPop() {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
@@ -282,13 +284,8 @@ export class AdminComponent implements OnInit {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
       } else {
-        // if((element.shiftState == "4"|| element.shiftState == "0") && element.userID == userId){
-        //   localStorage.setItem("hideModalPopup", "true") 
-        // }else{
-        //   localStorage.setItem("hideModalPopup", "false")
-        // }
+      
         if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
-
           localStorage.setItem("hideModalPopup", "true")
         } else {
           localStorage.setItem("hideModalPopup", "false")
