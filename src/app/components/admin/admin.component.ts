@@ -47,14 +47,14 @@ export class AdminComponent implements OnInit {
         //this.show = true;
         JSON.parse(data).forEach(element => {
           // if (element.userID == localStorage.getItem("userId")) {
-               if (element.isMerchandise == 0) {
-                   this.fareTotal = this.fareTotal + element.value
-               } else if (element.isMerchandise == 1) {
-                   this.nonFareTotal = this.nonFareTotal + element.value
-               }
-               this.fareAndNonFareTotal = this.fareTotal + this.nonFareTotal
-           
-       });
+          if (element.isMerchandise == 0) {
+            this.fareTotal = this.fareTotal + element.value
+          } else if (element.isMerchandise == 1) {
+            this.nonFareTotal = this.nonFareTotal + element.value
+          }
+          this.fareAndNonFareTotal = this.fareTotal + this.nonFareTotal
+
+        });
         localStorage.setItem("allSales", data)
 
         this._ngZone.run(() => {
@@ -69,17 +69,17 @@ export class AdminComponent implements OnInit {
         //this.show = true;
         JSON.parse(data).forEach(element => {
           if (element.paymentMethod == "CASH") {
-              console.log("CASH PAYMENTS", element.paymentAmount, this.expectedCash)
+            console.log("CASH PAYMENTS", element.paymentAmount, this.expectedCash)
 
-              this.expectedCash = Number(this.expectedCash) + element.paymentAmount
-              
-              console.log("CASH fareAndNonFareTotal", this.actualCash ,this.expectedCash)
+            this.expectedCash = Number(this.expectedCash) + element.paymentAmount
 
-              this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
+            console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
+
+            this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
 
           }
-         
-      });
+
+        });
         localStorage.setItem("paymentTypes", data)
 
 
@@ -146,7 +146,7 @@ export class AdminComponent implements OnInit {
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
           console.log("sync has been done buddy")
-       
+
         }
         else {
           this.isCurrentSync = false;
@@ -314,55 +314,55 @@ export class AdminComponent implements OnInit {
         this.closingPausedMainShift = true
         this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
 
-      }else
-      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
-        this.closingPausedMainShift = true
-        this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
       } else
-        if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
-          this.shiftType = "0"
-          this.shiftState = "3"
-          this.mainshiftCloser = true
-          this.statusOfShiftReport = "Main Shift is Closed"
-          localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+        if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
+          this.closingPausedMainShift = true
+          this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
         } else
-          if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0") {
+          if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
             this.shiftType = "0"
             this.shiftState = "3"
+            this.mainshiftCloser = true
             this.statusOfShiftReport = "Main Shift is Closed"
             localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+          } else
+            if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0") {
+              this.shiftType = "0"
+              this.shiftState = "3"
+              this.statusOfShiftReport = "Main Shift is Closed"
+              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
-          } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
-            this.shiftState = "0"
-            this.shiftType = "0"
+            } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
+              this.shiftState = "0"
+              this.shiftType = "0"
 
-            this.statusOfShiftReport = "Main Shift is Opened"
-            if (localStorage.getItem("hideModalPopup") == "true") {
-              $("#readyForSaleModal").modal('hide');
-            } else {
-              $("#readyForSaleModal").modal('show');
+              this.statusOfShiftReport = "Main Shift is Opened"
+              if (localStorage.getItem("hideModalPopup") == "true") {
+                $("#readyForSaleModal").modal('hide');
+              } else {
+                $("#readyForSaleModal").modal('show');
+              }
+
+            } else if (element.shiftState == "4" && element.userID == userId && element.shiftType == "0") {
+              this.shiftType = "0"
+              this.shiftState = "4"
+              this.statusOfShiftReport = "Main Shift is Paused"
+              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+            } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
+              this.shiftType = "1"
+              this.shiftState = "3"
+
+              this.statusOfShiftReport = "Main Shift is Paused "
+            } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
+              this.shiftType = "1";
+              this.shiftState = "0"
+              if (localStorage.getItem("hideModalPopup") == "true") {
+                $("#readyForSaleModal").modal('hide');
+              } else {
+                $("#readyForSaleModal").modal('show');
+              }
+              this.statusOfShiftReport = "Relief Shift is Opened"
             }
-
-          } else if (element.shiftState == "4" && element.userID == userId && element.shiftType == "0") {
-            this.shiftType = "0"
-            this.shiftState = "4"
-            this.statusOfShiftReport = "Main Shift is Paused"
-            localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
-          } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
-            this.shiftType = "1"
-            this.shiftState = "3"
-
-            this.statusOfShiftReport = "Main Shift is Paused "
-          } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
-            this.shiftType = "1";
-            this.shiftState = "0"
-            if (localStorage.getItem("hideModalPopup") == "true") {
-              $("#readyForSaleModal").modal('hide');
-            } else {
-              $("#readyForSaleModal").modal('show');
-            }
-            this.statusOfShiftReport = "Relief Shift is Opened"
-          }
     });
 
     shiftReports.forEach(element => {
@@ -370,18 +370,18 @@ export class AdminComponent implements OnInit {
         if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
-        
+
         }
         if (element.closingDrawer != undefined && element.closingDrawer != "") {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
         }
         this.overShort = (this.actualCash - this.expectedCash).toFixed(2)
-        if(element.initialOpeningTime != 0 ){
+        if (element.initialOpeningTime != 0) {
           this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
-          console.log("element.initialOpeningTime, element.timeClosed",element.initialOpeningTime, element.timeClosed)
+          console.log("element.initialOpeningTime, element.timeClosed", element.initialOpeningTime, element.timeClosed)
           this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
         }
-       
+
       }
 
     });

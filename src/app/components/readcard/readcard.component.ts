@@ -272,11 +272,13 @@ export class ReadcardComponent implements OnInit {
                                 }
                                 this.readCardData.push(jObject);
                             }
+                            
                             keepGoing = true;
 
                         });
                     }
                     console.log("pushedData --", this.readCardData)
+                    localStorage.setItem("cardProductData",JSON.stringify(this.readCardData))
                     if (!isExistingCard)
                         this.router.navigate(['/addproduct'])
                 });

@@ -16,7 +16,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
   selectedValues: any
   salesData: any
   salesPaymentData: any
-
+  public totalSold: any = 0
   constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
@@ -34,9 +34,12 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
       console.log("sales data", data)
-      if (data != undefined && data != "") {
+      if (data != undefined && data.length != 0) {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
+        JSON.parse(data).forEach(element => {
+          this.totalSold = this.totalSold + element.paymentAmount
+        });
         this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])

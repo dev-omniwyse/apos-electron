@@ -19,5 +19,38 @@
             <button class="mt20" (click)="Login()">Login</button>
         </div>
     </div>
+    <div class="modal fade" id="emptyLogin" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Authentication</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>Username and Password Should not be Empty</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorLogin" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Error</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>Invalid Login Details</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="clearfix"></div>
 </div>
