@@ -4,6 +4,7 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-verify',
@@ -19,6 +20,7 @@ export class VerifyComponent implements OnInit {
   password:any
   AgencyName:any
   organization :any
+  environment="";
   @Output() hideHeader = new EventEmitter();
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
@@ -34,6 +36,7 @@ export class VerifyComponent implements OnInit {
     //     });
     //   }
     // });
+    this.environment = localStorage.getItem('environment');
         this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
           
         if (data != undefined && data != "") {
@@ -55,7 +58,7 @@ export class VerifyComponent implements OnInit {
         assetId: localStorage.getItem("assetId"),
         password: localStorage.getItem("pass"),
       }
-    this.electronService.ipcRenderer.send('activationcall', "uat", data)
+    this.electronService.ipcRenderer.send('activationcall', this.environment, data)
    }
 
 
