@@ -567,6 +567,10 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
+    if(this.productTotal == 0){
+      $("#productTotalWarningModal").modal('show');
+      return;
+    }
     var index = 0;
     this.merchantList.forEach(element => {
       element.quantity = this.quantityList[index];
