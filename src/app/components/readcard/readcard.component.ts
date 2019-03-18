@@ -182,10 +182,13 @@ export class ReadcardComponent implements OnInit {
                     console.log('this.carddata', this.carddata);
                     if (this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)) {
                         this.getProductCatalogJSON();
-                        this.router.navigate(['/addproduct']);
+                        var timer = setTimeout(() => {
+                            this.router.navigate(['/addproduct']);
+                            clearTimeout(timer);
+                        }, 1000); 
                     } else {
                         this.carddata.length = [];
-                        $("#newCardValida teModal").modal('show');
+                        $("#newCardValidateModal").modal('show');
                     }
                 });
             }
@@ -196,7 +199,7 @@ export class ReadcardComponent implements OnInit {
                 //this.show = true;
                 this._ngZone.run(() => {
                     this.getProductCatalogJSON();
-                    this.router.navigate(['/addproduct'])
+                    // this.router.navigate(['/addproduct'])
                 });
             }
         });
@@ -279,8 +282,12 @@ export class ReadcardComponent implements OnInit {
                     }
                     console.log("pushedData --", this.readCardData)
                     localStorage.setItem("cardProductData",JSON.stringify(this.readCardData))
-                    if (!isExistingCard)
-                        this.router.navigate(['/addproduct'])
+                    if (!isExistingCard){
+                        var timer = setTimeout(() => {
+                            this.router.navigate(['/addproduct']);
+                            clearTimeout(timer);
+                          }, 1000);
+                    }
                 });
             }
             this.setOffering();
@@ -306,21 +313,28 @@ export class ReadcardComponent implements OnInit {
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
-        //console.log('read call', cardName)
     }
 
     nonFareProduct() {
         localStorage.setItem("isNonFareProduct", "true");
         localStorage.setItem("isMagnetic", "false");
         this.getProductCatalogJSON();
-        this.router.navigate(['/addproduct']);
+        var timer = setTimeout(() => {
+            this.router.navigate(['/addproduct']);
+            clearTimeout(timer);
+          }, 1000); 
+        // this.router.navigate(['/addproduct']);
     }
 
     magneticCard(event) {
         localStorage.setItem("isMagnetic", "true");
         localStorage.setItem("isNonFareProduct", "false");
         this.getProductCatalogJSON();
-        this.router.navigate(['/addproduct'])
+        var timer = setTimeout(() => {
+            this.router.navigate(['/addproduct']);
+            clearTimeout(timer);
+          }, 1000);
+        // this.router.navigate(['/addproduct'])
         // this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
     }

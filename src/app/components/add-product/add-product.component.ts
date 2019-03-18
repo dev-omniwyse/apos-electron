@@ -362,7 +362,9 @@ export class AddProductComponent implements OnInit {
 
       }
     });
+    var quantityCount = 0;
     var productCount = 0;
+    var isQuantityReached = false;
     if (!isExistingProducts) {
       this.areExistingProducts.push(false);
       if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts)) {
@@ -370,13 +372,23 @@ export class AddProductComponent implements OnInit {
       }
       for (let index = 0; index < this.merchantList.length; index++) {
         const product = this.merchantList[index];
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index]) {
-          productCount++;
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
+          quantityCount = this.quantityList[index];
         }
       }
+      if (quantityCount >= this.terminalConfigJson.NumberOfProducts) {
+        isProductLimitReached = true;
+      }
+      this.productCardList.forEach(element => {
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+          productCount++;
+        }
+      });
       if (productCount >= this.terminalConfigJson.NumberOfProducts) {
         isProductLimitReached = true;
       }
+
+
 
     } else {
       var existingProductCount = 0;
@@ -390,6 +402,15 @@ export class AddProductComponent implements OnInit {
         isProductLimitReached = true
       }
       else if (selectedItem.Ticket.Group == 2 && ((existingQuantity + existingProductCount + 1) > 4)) {
+        isProductLimitReached = true;
+      }
+      
+      this.productCardList.forEach(element => {
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+          productCount++;
+        }
+      });
+      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
         isProductLimitReached = true;
       }
     }
