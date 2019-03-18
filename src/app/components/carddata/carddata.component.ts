@@ -175,160 +175,168 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var sequenceNumberListener: any = this.electronService.ipcRenderer.on('generateSequenceNumberSyncResult', (event, data) => {
-      console.log("data", data)
-      if (data != undefined && data != "") {
-        this._ngZone.run(() => {
-          this.transactionId = data;
-          var cardsjson: any = [];
-          var unitPrice: any = 0;
-          var fareCode: any = "";
-          var walletObj: any = [];
-          var shiftType: any = 0;
-          // var de
-          // get unit price for ticket
-          this.catalogJson.forEach(catalogElement => {
-            if ((null == catalogElement.Ticket) &&
-              (false == catalogElement.IsMerchandise) &&
-              (null != catalogElement.WalletType)) {
-              if (catalogElement.WalletType.WalletTypeId == 3) {
-                unitPrice = catalogElement.UnitPrice;
+      try {
+        console.log("data", data)
+        if (data != undefined && data != "") {
+          this._ngZone.run(() => {
+            this.transactionId = data;
+            var cardsjson: any = [];
+            var unitPrice: any = 0;
+            var fareCode: any = "";
+            var walletObj: any = [];
+            var shiftType: any = 0;
+            // var de
+            // get unit price for ticket
+            this.catalogJson.forEach(catalogElement => {
+              if ((null == catalogElement.Ticket) &&
+                (false == catalogElement.IsMerchandise) &&
+                (null != catalogElement.WalletType)) {
+                if (catalogElement.WalletType.WalletTypeId == 3) {
+                  unitPrice = catalogElement.UnitPrice;
+                }
               }
-            }
-          });
-          // get farecode from terminal config
-          this.terminalConfigJson.Farecodes.forEach(terminalConfigElement => {
-            if (this.currentCard.user_profile == terminalConfigElement.FareCodeId) {
-              fareCode = terminalConfigElement.Description;
-            }
-          });
+            });
+            // get farecode from terminal config
+            this.terminalConfigJson.Farecodes.forEach(terminalConfigElement => {
+              if (this.currentCard.user_profile == terminalConfigElement.FareCodeId) {
+                fareCode = terminalConfigElement.Description;
+              }
+            });
 
-          // get shiftType from ShiftReport
-          var shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-          var userId = localStorage.getItem("userID")
-          shiftReports.forEach(shiftReportElement => {
-            if (shiftReportElement.userID == userId) {
-              shiftType = shiftReportElement.shiftType;
-            }
-          })
-          var slotNumberStatusIndex: any = 0;
-          this.cardJson.forEach(element => {
-            this.currentCardMerchantList.forEach(walletElement => {
-              var rechargesPending = 0;
-              var balance = 0;
-              var existingBalance = 0;
-              var slotNumber = 0;
-              if (this.carddata[0].products != undefined) {
-                this.carddata[0].products.forEach(cardElement => {
-                  if (walletElement.Ticket.Group == 1 && cardElement.product_type == 1 && (walletElement.Ticket.Designator == cardElement.designator)) {
-                    rechargesPending = cardElement.recharges_pending;
-                  } else if (walletElement.Ticket.Group == 2 && cardElement.product_type == 2 && (walletElement.Ticket.Designator == cardElement.designator)) {
-                    existingBalance = cardElement.remaining_rides;
-                  } else if (walletElement.Ticket.Group == 3 && cardElement.product_type == 3 && (walletElement.Ticket.Designator == cardElement.designator)) {
-                    existingBalance = cardElement.remaining_value / 100;
+            // get shiftType from ShiftReport
+            var shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
+            var userId = localStorage.getItem("userID")
+            shiftReports.forEach(shiftReportElement => {
+              if (shiftReportElement.userID == userId) {
+                shiftType = shiftReportElement.shiftType;
+              }
+            })
+            var slotNumberStatusIndex: any = 0;
+            this.cardJson.forEach(element => {
+              this.currentCardMerchantList.forEach(walletElement => {
+                var rechargesPending = 0;
+                var balance = 0;
+                var existingBalance = 0;
+                var slotNumber = 0;
+                if (this.carddata[0].products != undefined) {
+                  this.carddata[0].products.forEach(cardElement => {
+                    if (walletElement.Ticket.Group == 1 && cardElement.product_type == 1 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                      rechargesPending = cardElement.recharges_pending;
+                    } else if (walletElement.Ticket.Group == 2 && cardElement.product_type == 2 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                      existingBalance = cardElement.remaining_rides;
+                    } else if (walletElement.Ticket.Group == 3 && cardElement.product_type == 3 && (walletElement.Ticket.Designator == cardElement.designator)) {
+                      existingBalance = cardElement.remaining_value / 100;
+                    }
+                  });
+                  if (walletElement.Ticket.Group == 1) {
+                    balance = walletElement.Ticket.Value;
+                  } else if (walletElement.Ticket.Group == 2) {
+                    balance = existingBalance;//+ (walletElement.quantity * walletElement.Ticket.Value);
+                  }
+                  else {
+                    balance = existingBalance; //+ (walletElement.quantity * walletElement.Ticket.Value);
+                  }
+                }
+                this.encodeddata[0].forEach(element => {
+                  if (walletElement.Ticket.Group == element.product_type && (walletElement.Ticket.Designator == element.designator)) {
+                    slotNumber = element.slotNumber;
+                    status = element.status;
                   }
                 });
-                if (walletElement.Ticket.Group == 1) {
-                  balance = walletElement.Ticket.Value;
-                } else if (walletElement.Ticket.Group == 2) {
-                  balance = existingBalance;//+ (walletElement.quantity * walletElement.Ticket.Value);
+                var jsonWalletObj = {
+                  "transactionID": this.transactionId,
+                  "quantity": walletElement.quantity,
+                  "productIdentifier": walletElement.ProductIdentifier,
+                  "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
+                  "ticketValue": (walletElement.Ticket.Group == 3) ? walletElement.UnitPrice : walletElement.Ticket.Value,
+                  "status": status,
+                  "slotNumber": slotNumber,
+                  "startDate": 0, //(walletElement.DateEffective / (1000 * 60 * 60 * 24)),
+                  "expirationDate": 0,//(walletElement.DateExpires / (1000 * 60 * 60 * 24)),
+                  "balance": balance,
+                  "rechargesPending": rechargesPending,
+                  "IsMerchandise": walletElement.IsMerchandise,
+                  "IsBackendMerchandise": false,
+                  "IsFareCard": false,
+                  "unitPrice": walletElement.UnitPrice,
+                  "totalCost": this.transactionAmount,
+                  "userID": localStorage.getItem("userEmail"),
+                  "shiftID": 1,
+                  "fareCode": fareCode,
+                  "offeringId": walletElement.OfferingId,
+                  "cardPID": element.printed_id,
+                  "cardUID": element.uid,
+                  "walletTypeId": 3,
+                  "shiftType": shiftType,
+                  "timestamp": new Date().getTime()
                 }
-                else {
-                  balance = existingBalance; //+ (walletElement.quantity * walletElement.Ticket.Value);
-                }
-              }
-              this.encodeddata[0].forEach(element => {
-                if (walletElement.Ticket.Group == element.product_type && (walletElement.Ticket.Designator == element.designator)) {
-                  slotNumber = element.slotNumber;
-                  status = element.status;
-                }
+                walletObj.push(jsonWalletObj);
+                slotNumberStatusIndex++;
               });
-              var jsonWalletObj = {
+              var JsonObj: any = {
                 "transactionID": this.transactionId,
-                "quantity": walletElement.quantity,
-                "productIdentifier": walletElement.ProductIdentifier,
-                "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
-                "ticketValue": (walletElement.Ticket.Group == 3) ? walletElement.UnitPrice : walletElement.Ticket.Value,
-                "status": status,
-                "slotNumber": slotNumber,
-                "startDate": 0, //(walletElement.DateEffective / (1000 * 60 * 60 * 24)),
-                "expirationDate": 0,//(walletElement.DateExpires / (1000 * 60 * 60 * 24)),
-                "balance": balance,
-                "rechargesPending": rechargesPending,
-                "IsMerchandise": walletElement.IsMerchandise,
+                "cardPID": element.printed_id,
+                "cardUID": element.uid,
+                "quantity": (this.isNew) ? 1 : 0,
+                "productIdentifier": JSON.parse(localStorage.getItem("smartCardProductIndentifier")),
+                "ticketTypeId": null,
+                "ticketValue": 0,
+                "slotNumber": 0,
+                "expirationDate": element.card_expiration_date,
+                "balance": 0,
+                "IsMerchandise": false,
                 "IsBackendMerchandise": false,
-                "IsFareCard": false,
-                "unitPrice": walletElement.UnitPrice,
-                "totalCost": this.transactionAmount,
+                "IsFareCard": true,
+                "unitPrice": (this.isNew) ? unitPrice : 0,
+                "totalCost": (this.isNew) ? unitPrice : 0,
                 "userID": localStorage.getItem("userEmail"),
                 "shiftID": 1,
                 "fareCode": fareCode,
-                "offeringId": walletElement.OfferingId,
-                "cardPID": element.printed_id,
-                "cardUID": element.uid,
+                "walletContentItems": walletObj,
                 "walletTypeId": 3,
                 "shiftType": shiftType,
                 "timestamp": new Date().getTime()
-              }
-              walletObj.push(jsonWalletObj);
-              slotNumberStatusIndex++;
-            });
-            var JsonObj: any = {
-              "transactionID": this.transactionId,
-              "cardPID": element.printed_id,
-              "cardUID": element.uid,
-              "quantity": (this.isNew) ? 1 : 0,
-              "productIdentifier": JSON.parse(localStorage.getItem("smartCardProductIndentifier")),
-              "ticketTypeId": null,
-              "ticketValue": 0,
-              "slotNumber": 0,
-              "expirationDate": element.card_expiration_date,
-              "balance": 0,
-              "IsMerchandise": false,
-              "IsBackendMerchandise": false,
-              "IsFareCard": true,
-              "unitPrice": (this.isNew) ? unitPrice : 0,
-              "totalCost": (this.isNew) ? unitPrice : 0,
-              "userID": localStorage.getItem("userEmail"),
-              "shiftID": 1,
-              "fareCode": fareCode,
-              "walletContentItems": walletObj,
-              "walletTypeId": 3,
-              "shiftType": shiftType,
-              "timestamp": new Date().getTime()
-            };
-            this.JsonObjCardObj.push(JsonObj);
+              };
+              this.JsonObjCardObj.push(JsonObj);
 
+            });
+            if (localStorage.getItem("paymentMethodId") == "8") {
+              var paymentObj = {
+                "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+                "amount": this.transactionAmount,
+                "comment": localStorage.getItem("compReason")
+              }
+            } else {
+              paymentObj = {
+                "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+                "amount": this.transactionAmount,
+                "comment": null
+              }
+            }
+            var transactionObj =
+            {
+              "userID": localStorage.getItem("userEmail"),
+              "timestamp": new Date().getTime(),
+              "transactionID": this.transactionId,
+              "transactionType": "Charge",
+              "transactionAmount": this.transactionAmount,
+              "salesAmount": this.transactionAmount,
+              "taxAmount": 0,
+              "items": this.JsonObjCardObj,
+              "payments": [paymentObj],
+              "shiftType": shiftType
+            }
+            console.log("transObj" + JSON.stringify(transactionObj));
+            localStorage.setItem("transObj", JSON.stringify(transactionObj))
+            this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
           });
-          if (localStorage.getItem("paymentMethodId") == "8") {
-            var paymentObj = {
-              "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
-              "amount": this.transactionAmount,
-              "comment": localStorage.getItem("compReason")
-            }
-          } else {
-            paymentObj = {
-              "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
-              "amount": this.transactionAmount,
-              "comment": null
-            }
-          }
-          var transactionObj =
-          {
-            "userID": localStorage.getItem("userEmail"),
-            "timestamp": new Date().getTime(),
-            "transactionID": this.transactionId,
-            "transactionType": "Charge",
-            "transactionAmount": this.transactionAmount,
-            "salesAmount": this.transactionAmount,
-            "taxAmount": 0,
-            "items": this.JsonObjCardObj,
-            "payments": [paymentObj],
-            "shiftType": shiftType
-          }
-          console.log("transObj" + JSON.stringify(transactionObj));
-          localStorage.setItem("transObj", JSON.stringify(transactionObj))
-          this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
-        });
+        }
+        else {
+          $("#encodeErrorModal").modal('show');
+        }
+      }
+      catch (e) {
+        $("#encodeErrorModal").modal('show');
       }
       // this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
     });
@@ -337,26 +345,14 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          alert("Encoding Successfull");
-          var timestamp = new Date().getTime();
-          this.generateReceipt(timestamp);
-          localStorage.removeItem('encodeData');
-          localStorage.removeItem('productCardData');
-          localStorage.removeItem("cardsData");
-          localStorage.removeItem("catalogJSON");
-          localStorage.removeItem("readCardData");
-          this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-          this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-          this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
-          this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-          this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-          this.electronService.ipcRenderer.removeAllListeners("updateCardDataResult");
-          this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-          this.router.navigate(['/readcard'])
+          $("#encodeSuccessModal").modal('show');
+          // alert("Encoding Successfull");
         });
+      } else {
+        $("#encodeErrorModal").modal('show');
       }
       // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    }); 
+    });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
       if (data != undefined && data != "") {
@@ -383,10 +379,28 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
       else {
-        //  $("#encodeModal").modal('show');
+        $("#encodeErrorModal").modal('show');
       }
     });
 
+  }
+
+  navigateToDashboard() {
+    var timestamp = new Date().getTime();
+    this.generateReceipt(timestamp);
+    localStorage.removeItem('encodeData');
+    localStorage.removeItem('productCardData');
+    localStorage.removeItem("cardsData");
+    localStorage.removeItem("catalogJSON");
+    localStorage.removeItem("readCardData");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+    this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("updateCardDataResult");
+    this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
+    this.router.navigate(['/readcard'])
   }
 
   printDiv() {
@@ -459,114 +473,119 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   encodeCard() {
-    console.log("product list data", this.currentCardMerchantList);
-    this.encodeJsonData = [];
-    var JsonObj;
-    var currentIndex = 0;
-    this.currentCardMerchantList.forEach(element => {
-      if (element.Ticket.Group == 1) {
-        var rechargesPending = 0;
-        if (this.currentExistingProducts[currentIndex]) {
-          this.currentCard.products.forEach(cardElement => {
-            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-              rechargesPending = (cardElement.recharges_pending + 1);
+    try {
+      console.log("product list data", this.currentCardMerchantList);
+      this.encodeJsonData = [];
+      var JsonObj;
+      var currentIndex = 0;
+      this.currentCardMerchantList.forEach(element => {
+        if (element.Ticket.Group == 1) {
+          var rechargesPending = 0;
+          if (this.currentExistingProducts[currentIndex]) {
+            this.currentCard.products.forEach(cardElement => {
+              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+                rechargesPending = (cardElement.recharges_pending + 1);
+              }
+            })
+          }
+          // var internalJsonArray:any = [];
+          for (let index = 0; index < element.quantity; index++) {
+            var internalJsonObj = {
+              "product_type": element.Ticket.Group,
+              "designator": element.Ticket.Designator,
+              "ticket_id": element.Ticket.TicketId,
+              "designator_details": 0,
+              "start_date_epoch_days": element.Ticket.DateStartEpochDays,
+              "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
+              "is_linked_to_user_profile": false,
+              "type_expiration": element.Ticket.ExpirationTypeId,
+              "add_time": 240,
+              "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
+              "days": (element.Ticket.Value),
+              "isAccountBased": element.IsAccountBased,
+              "isCardBased": element.IsCardBased
             }
-          })
+            this.encodeJsonData.push(internalJsonObj);
+            // internalJsonArray.push(internalJsonObj);
+          }
+          // JsonObj = JSON.stringify(internalJsonArray);
+          // JsonObj = {
+          //   "product_type": element.Ticket.Group,
+          //   "designator": element.Ticket.Designator,
+          //   "ticket_id": element.Ticket.TicketId,
+          //   "designator_details": 0,
+          //   "start_date_epoch_days": element.Ticket.DateStartEpochDays,
+          //   "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
+          //   "is_linked_to_user_profile": false,
+          //   "type_expiration": element.Ticket.ExpirationTypeId,
+          //   "add_time": 240,
+          //   "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
+          //   "days": (element.Ticket.Value),
+          //   "isAccountBased": element.IsAccountBased,
+          //   "isCardBased": element.IsCardBased
+          // }
         }
-        // var internalJsonArray:any = [];
-        for (let index = 0; index < element.quantity; index++) {
-          var internalJsonObj = {
+        else if (element.Ticket.Group == 2) {
+          var rechargeRides = 0;
+          if (this.currentExistingProducts[currentIndex]) {
+            this.currentCard.products.forEach(cardElement => {
+              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+                rechargeRides = cardElement.recharge_rides + element.Ticket.Price;
+              }
+            })
+
+          }
+          JsonObj = {
             "product_type": element.Ticket.Group,
             "designator": element.Ticket.Designator,
             "ticket_id": element.Ticket.TicketId,
             "designator_details": 0,
-            "start_date_epoch_days": element.Ticket.DateStartEpochDays,
-            "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
+            "remaining_rides": (element.quantity * element.Ticket.Value),
+            "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
+            "threshold": 0,
             "is_linked_to_user_profile": false,
-            "type_expiration": element.Ticket.ExpirationTypeId,
-            "add_time": 240,
-            "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-            "days": (element.Ticket.Value),
             "isAccountBased": element.IsAccountBased,
             "isCardBased": element.IsCardBased
           }
-          this.encodeJsonData.push(internalJsonObj);
-          // internalJsonArray.push(internalJsonObj);
         }
-        // JsonObj = JSON.stringify(internalJsonArray);
-        // JsonObj = {
-        //   "product_type": element.Ticket.Group,
-        //   "designator": element.Ticket.Designator,
-        //   "ticket_id": element.Ticket.TicketId,
-        //   "designator_details": 0,
-        //   "start_date_epoch_days": element.Ticket.DateStartEpochDays,
-        //   "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
-        //   "is_linked_to_user_profile": false,
-        //   "type_expiration": element.Ticket.ExpirationTypeId,
-        //   "add_time": 240,
-        //   "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-        //   "days": (element.Ticket.Value),
-        //   "isAccountBased": element.IsAccountBased,
-        //   "isCardBased": element.IsCardBased
-        // }
-      }
-      else if (element.Ticket.Group == 2) {
-        var rechargeRides = 0;
-        if (this.currentExistingProducts[currentIndex]) {
-          this.currentCard.products.forEach(cardElement => {
-            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-              rechargeRides = cardElement.recharge_rides + element.Ticket.Price;
-            }
-          })
+        else if (element.Ticket.Group == 3) {
+          var remainingValue = 0;
+          if (this.currentExistingProducts[currentIndex]) {
+            this.currentCard.products.forEach(cardElement => {
+              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
+                remainingValue = (cardElement.remaining_value) + (element.Ticket.Price * 100);
+              }
+            })
 
+          }
+          JsonObj = {
+            "product_type": element.Ticket.Group,
+            "designator": element.Ticket.Designator,
+            "ticket_id": element.Ticket.TicketId,
+            "designator_details": 0,
+            "is_linked_to_user_profile": false,
+            "remaining_value": (element.quantity * element.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+            "isAccountBased": element.IsAccountBased,
+            "isCardBased": element.IsCardBased
+          }
         }
-        JsonObj = {
-          "product_type": element.Ticket.Group,
-          "designator": element.Ticket.Designator,
-          "ticket_id": element.Ticket.TicketId,
-          "designator_details": 0,
-          "remaining_rides": (element.quantity * element.Ticket.Value),
-          "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
-          "threshold": 0,
-          "is_linked_to_user_profile": false,
-          "isAccountBased": element.IsAccountBased,
-          "isCardBased": element.IsCardBased
+        if (element.Ticket.Group != 1) {
+          this.encodeJsonData.push(JsonObj);
         }
-      }
-      else if (element.Ticket.Group == 3) {
-        var remainingValue = 0;
-        if (this.currentExistingProducts[currentIndex]) {
-          this.currentCard.products.forEach(cardElement => {
-            if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-              remainingValue = (cardElement.remaining_value) + (element.Ticket.Price * 100);
-            }
-          })
+        currentIndex++;
 
-        }
-        JsonObj = {
-          "product_type": element.Ticket.Group,
-          "designator": element.Ticket.Designator,
-          "ticket_id": element.Ticket.TicketId,
-          "designator_details": 0,
-          "is_linked_to_user_profile": false,
-          "remaining_value": (element.quantity * element.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
-          "isAccountBased": element.IsAccountBased,
-          "isCardBased": element.IsCardBased
-        }
-      }
-      if (element.Ticket.Group != 1) {
-        this.encodeJsonData.push(JsonObj);
-      }
-      currentIndex++;
+      });
 
-    });
-
-    console.log(this.encodeJsonData);
-    this.checkIsCardNew();
-    if (this.isNew)
-      this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id, 1, 0, 0, this.encodeJsonData);
-    else
-      this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id, this.encodeJsonData);
+      console.log(this.encodeJsonData);
+      this.checkIsCardNew();
+      if (this.isNew)
+        this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id, 1, 0, 0, this.encodeJsonData);
+      else
+        this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id, this.encodeJsonData);
+    }
+    catch{
+      $("#encodeErrorModal").modal('show');
+    }
   }
 
   generateReceipt(timestamp) {

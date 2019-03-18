@@ -48,14 +48,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Error</h4>
+                    <h4 class="modal-title">Error!</h4>
                 </div>
 
                 <div class="modal-body">
-                    <p>Error encoding card!</p>
+                    <p>Error encoding card. Please try again</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                        (click)="navigateToDashboard()">Ok</button>
                 </div>
             </div>
         </div>
@@ -66,14 +67,33 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Success</h4>
+                    <h4 class="modal-title">Success!</h4>
                 </div>
 
                 <div class="modal-body">
-                    <p>Encoding Done Successfully.</p>
+                    <p>Card encoded successfully.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                        (click)="navigateToDashboard()">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="encodeErrorModal" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                    <h4 class="modal-title">Error!</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>Error encoding card. Please try again</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="navigateToDashboard()">Ok</button>
                 </div>
             </div>
         </div>
@@ -83,6 +103,8 @@
 </div>
 
 <div class="form-group  form-wiz">
-    <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="navigateToReadCard()"> CANCEL</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
+    <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="navigateToReadCard()">
+        CANCEL</button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last"
+        (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>
