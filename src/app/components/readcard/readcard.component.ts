@@ -185,7 +185,7 @@ export class ReadcardComponent implements OnInit {
                         this.router.navigate(['/addproduct']);
                     } else {
                         this.carddata.length = [];
-                        $("#newCardValidateModal").modal('show');
+                        $("#newCardValida teModal").modal('show');
                     }
                 });
             }
