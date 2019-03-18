@@ -197,9 +197,13 @@ export class AdminComponent implements OnInit {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
     reliefShif.forEach(element => {
       console.log("sales report", element.shiftType, element.timeOpened, element.timeClosed)
-      this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
-      this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
-    });
+      if(element.userID == localStorage.getItem("userID")){
+        this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
+        this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)  
+      }else{
+        
+      }
+         });
     //console.log('read call', cardName)
   }
   adminCloseShift(event) {
