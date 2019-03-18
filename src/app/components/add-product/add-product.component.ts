@@ -119,7 +119,7 @@ export class AddProductComponent implements OnInit {
   magneticCardCost: any = 0;
   quantityList: any = [];
   viewCardData: any = []
-  cardProductData:any = []
+  cardProductData: any = []
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -132,7 +132,11 @@ export class AddProductComponent implements OnInit {
       console.log(this.productJson);
       this.readCarddata = JSON.parse(localStorage.getItem("readCardData"));
       this.cardJson.push(JSON.parse(this.readCarddata));
-      this.currentCard = JSON.parse(this.readCarddata);
+      if(this.cardJson[0] == null){
+        this.cardJson = []; 
+      }else{
+        this.currentCard = JSON.parse(this.readCarddata);
+      }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
       console.log(this.readCarddata);
       if (this.isMerchendise) {
@@ -147,6 +151,8 @@ export class AddProductComponent implements OnInit {
           "id": (this.magneticCardList.length)
         }
         this.magneticCardList.push(magnetic)
+        // this.isfromAddProduct = true;
+        // this.electronService.ipcRenderer.send('readSmartcard', cardName);
       }
 
 
@@ -262,7 +268,7 @@ export class AddProductComponent implements OnInit {
     let item = JSON.parse(localStorage.getItem("readCardData"))
     this.viewCardData = new Array(JSON.parse(item))
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
-    console.log("viewCardData",this.viewCardData)
+    console.log("viewCardData", this.viewCardData)
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -567,7 +573,7 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if(this.productTotal == 0){
+    if (this.productTotal == 0) {
       $("#productTotalWarningModal").modal('show');
       return;
     }

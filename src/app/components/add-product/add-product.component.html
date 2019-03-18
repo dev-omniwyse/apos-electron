@@ -112,7 +112,7 @@
         <div class="container-l-app">
             <div *ngIf="!isMagnetic && !isMerchendise">
                 <span class="label label-default">
-                    <div class="pull-left">1 Card : {{currentCard.printed_id}} &nbsp; ${{smartCardCost}}</div>
+                    <div class="pull-left">1 Card : {{currentCard?.printed_id}}</div>
 
                     <div class="pull-right" (click)="removeSmartCard()"><span
                             class="glyphicon glyphicon-minus-sign"></span></div>
@@ -601,7 +601,7 @@
             <div class="modal-content">
                 <h4 class="modal-title modal-txt-h">Are you sure you want to delete?</h4>
                 <div class="modal-body">
-                    <p>By continuing, you will remove card {{currentCard.printed_id}}.</p>
+                    <p>By continuing, you will remove card {{currentCard?.printed_id}}.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
