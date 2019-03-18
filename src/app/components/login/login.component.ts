@@ -157,7 +157,12 @@ export class LoginComponent implements OnInit {
 
         localStorage.removeItem("mainShiftClosed")
         localStorage.removeItem("mainShiftClose")
-        if (localStorage.getItem("shiftReport") != undefined) {
+
+        if(localStorage.getItem("shiftReport") == null) {
+            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
+            this.statusOfShiftReportBoolean = true
+            this.statusOfShiftReport = "Main Shift is Closed" 
+        }else if(localStorage.getItem("shiftReport") != null) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
             shiftReports.forEach(element => {
@@ -191,10 +196,7 @@ export class LoginComponent implements OnInit {
                     }
             })
         }
-
-        else {
-            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
-        }
+       
 
 
 

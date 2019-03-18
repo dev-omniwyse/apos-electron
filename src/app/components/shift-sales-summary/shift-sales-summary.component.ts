@@ -34,6 +34,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
       console.log("sales data", data)
+      this.totalSold = 0
       if (data != undefined && data.length != 0) {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
@@ -135,6 +136,10 @@ export class ShiftSalesSummaryComponent implements OnInit {
     // localStorage.setItem("hideModalPopup",this.hideModalPopup.toString())
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
+
+    if(localStorage.getItem("closingPausedMainShift") == "true"){
+      localStorage.setItem("closingPausedMainShift", "false")
+    }
     shiftReports.forEach(element => {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")

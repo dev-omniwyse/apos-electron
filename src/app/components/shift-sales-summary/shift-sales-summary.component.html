@@ -5,7 +5,7 @@
                 <div class="shift-sales-txt">SHIFT SALES SUMMARY</div>
                 <div class="select-clerk">
                     <label>Clerk: </label>
-                    <select [(ngModel)]="selectedValue" (change)="shiftSaleSummary()">
+                    <select [(ngModel)]="selectedValues" (change)="shiftSaleSummary()">
                 <option [ngValue]="undefined" selected>Select</option>
                 <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
             </select>

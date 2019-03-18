@@ -254,9 +254,11 @@ export class ReadcardComponent implements OnInit {
                                     }
                                 }
                                 if (catalogElement.Description === "Magnetics") {
+                                    localStorage.setItem("magneticCardCost", catalogElement.UnitPrice);
                                     localStorage.setItem("magneticProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
                                 }
                                 if (catalogElement.Description === "Smart Card") {
+                                    localStorage.setItem("smartCardCost", catalogElement.UnitPrice);
                                     localStorage.setItem("smartCardProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
                                 }
                             });
