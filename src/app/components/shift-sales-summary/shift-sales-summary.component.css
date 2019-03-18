@@ -80,6 +80,17 @@
     text-transform: uppercase;
 }
 
+.totalSold {
+    background-color: #fff;
+    border: 1px solid #dedede;
+    border-radius: 6px;
+    color: #323232;
+    font-size: 26px;
+    padding: 30px 115px;
+    text-transform: uppercase;
+    
+}
+
 .select-clerk select {
     padding: 10px;
     margin-left: 20px;

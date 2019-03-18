@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { CdtaService } from '../../cdta.service';
 import { ElectronService } from 'ngx-electron';
 
+declare var $: any
+
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -34,7 +36,7 @@ export class LoginComponent implements OnInit {
             userEmail: "",
             userID: "",
             shiftID: "0",
-            shiftType: "",
+            shiftType: "0",
             shiftState: "3",
             openingDrawer: 0.00,
             closingDrawer: 0.00,
@@ -126,11 +128,7 @@ export class LoginComponent implements OnInit {
                     shiftStore.push(newShiftReport)
                 }
                 localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-                // if (previousOpenShif == "false") {
-                //     localStorage.removeItem("openShift")
-                // }
-
-
+               
                 this._ngZone.run(() => {
                     // this.carddata = new Array(JSON.parse(data));
                     // console.log('this.carddata', this.carddata);
@@ -138,13 +136,15 @@ export class LoginComponent implements OnInit {
                 });
             } else {
                 this.loading = false
-                this.errorMsg = " Please Enter valid Details"
+                $("#errorLogin").modal("show")
+                //this.errorMsg = " Please Enter valid Details"
 
             }
         });
     }
 
     ngOnInit() {
+        
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
             password: ['', Validators.required]
@@ -157,7 +157,12 @@ export class LoginComponent implements OnInit {
 
         localStorage.removeItem("mainShiftClosed")
         localStorage.removeItem("mainShiftClose")
-        if (localStorage.getItem("shiftReport") != undefined) {
+
+        if(localStorage.getItem("shiftReport") == null) {
+            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
+            this.statusOfShiftReportBoolean = true
+            this.statusOfShiftReport = "Main Shift is Closed" 
+        }else if(localStorage.getItem("shiftReport") != null) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
             shiftReports.forEach(element => {
@@ -167,6 +172,7 @@ export class LoginComponent implements OnInit {
                 } else
                     if (element.shiftState == "3" && element.shiftType == "0") {
                         this.statusOfShiftReportBoolean = true
+
                         this.statusOfShiftReport = "Main Shift is Closed"
                     }
                     else if (element.shiftState == "4" && element.shiftType == "0") {
@@ -190,10 +196,7 @@ export class LoginComponent implements OnInit {
                     }
             })
         }
-
-        else {
-            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
-        }
+       
 
 
 
@@ -253,7 +256,8 @@ export class LoginComponent implements OnInit {
             password: this.password
         }
         if (user.username == undefined || user.password == undefined) {
-            return this.errorMsg = " Username Or Password Shouldn't be Empty"
+           return $("#emptyLogin").modal("show")
+           // return this.errorMsg = " Username Or Password Shouldn't be Empty"
         } else {
             //this.loading = true;
             this.electronService.ipcRenderer.send('logincall', user)
