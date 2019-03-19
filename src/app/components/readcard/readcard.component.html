@@ -87,7 +87,7 @@
             <div class="flex">
                 <div class="flex-devide">
                     <p>{{card.printed_id}} - Active</p>
-                    <p>Fare Code: Full</p>
+                    <p>Fare Code: {{cardType}}</p>
                     <p>Card Exp: {{card.card_expiration_date_str}}</p>
                 </div>
                 <div class="flex-devide">
@@ -160,7 +160,7 @@
             </div>
 
             <div class="modal-body">
-                <p>{{errorMessage}}
+                <p>Failed to read card contents
                 </p>
             </div>
             <div class="modal-footer">

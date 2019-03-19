@@ -101,6 +101,7 @@ export class ReadcardComponent implements OnInit {
     public fareTotal: any = 0
     public nonFareTotal: any = 0
     public fareAndNonFareTotal: any = 0
+    public cardType: any = "";
     adminSales = []
     salesPayments = []
 
@@ -126,6 +127,11 @@ export class ReadcardComponent implements OnInit {
                     // this.carddata = JSON.parse(item);
                     this.carddata = new Array(JSON.parse(data));
                     //  this.carddataProducts = this.carddata.products;
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if(this.carddata[0].user_profile == element.FareCodeId){
+                            this.cardType = element.Description;
+                        }
+                    });
                     console.log('this.carddata', this.carddata);
                     this.getProductCatalogJSON();
                 });
@@ -185,7 +191,7 @@ export class ReadcardComponent implements OnInit {
                         var timer = setTimeout(() => {
                             this.router.navigate(['/addproduct']);
                             clearTimeout(timer);
-                        }, 1000); 
+                        }, 1000);
                     } else {
                         this.carddata.length = [];
                         $("#newCardValidateModal").modal('show');
@@ -204,7 +210,7 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-      
+
 
         this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
             if (data != undefined && data != "") {
@@ -228,7 +234,7 @@ export class ReadcardComponent implements OnInit {
                                     if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
                                         var remainingValue = "";
                                         var productName = "";
-                                        var status = cardElement.status;
+                                        var status = "Active";//cardElement.status;
                                         if (cardElement.product_type == 1)
                                             productName = "Frequent Ride"
                                         else if (cardElement.product_type == 2)
@@ -275,18 +281,18 @@ export class ReadcardComponent implements OnInit {
                                 }
                                 this.readCardData.push(jObject);
                             }
-                            
+
                             keepGoing = true;
 
                         });
                     }
                     console.log("pushedData --", this.readCardData)
-                    localStorage.setItem("cardProductData",JSON.stringify(this.readCardData))
-                    if (!isExistingCard){
+                    localStorage.setItem("cardProductData", JSON.stringify(this.readCardData))
+                    if (!isExistingCard) {
                         var timer = setTimeout(() => {
                             this.router.navigate(['/addproduct']);
                             clearTimeout(timer);
-                          }, 1000);
+                        }, 1000);
                     }
                 });
             }
@@ -322,7 +328,7 @@ export class ReadcardComponent implements OnInit {
         var timer = setTimeout(() => {
             this.router.navigate(['/addproduct']);
             clearTimeout(timer);
-          }, 1000); 
+        }, 1000);
         // this.router.navigate(['/addproduct']);
     }
 
@@ -333,7 +339,7 @@ export class ReadcardComponent implements OnInit {
         var timer = setTimeout(() => {
             this.router.navigate(['/addproduct']);
             clearTimeout(timer);
-          }, 1000);
+        }, 1000);
         // this.router.navigate(['/addproduct'])
         // this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
@@ -410,7 +416,7 @@ export class ReadcardComponent implements OnInit {
 
     }
 
-   
+
 
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");
