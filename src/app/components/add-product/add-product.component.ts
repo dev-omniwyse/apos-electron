@@ -132,9 +132,9 @@ export class AddProductComponent implements OnInit {
       console.log(this.productJson);
       this.readCarddata = JSON.parse(localStorage.getItem("readCardData"));
       this.cardJson.push(JSON.parse(this.readCarddata));
-      if(this.cardJson[0] == null){
-        this.cardJson = []; 
-      }else{
+      if (this.cardJson[0] == null) {
+        this.cardJson = [];
+      } else {
         this.currentCard = JSON.parse(this.readCarddata);
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
@@ -362,7 +362,9 @@ export class AddProductComponent implements OnInit {
 
       }
     });
+    var quantityCount = 0;
     var productCount = 0;
+    var isQuantityReached = false;
     if (!isExistingProducts) {
       this.areExistingProducts.push(false);
       if ((this.currentCard.products.length == this.terminalConfigJson.NumberOfProducts)) {
@@ -370,13 +372,23 @@ export class AddProductComponent implements OnInit {
       }
       for (let index = 0; index < this.merchantList.length; index++) {
         const product = this.merchantList[index];
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index]) {
-          productCount++;
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
+          quantityCount = this.quantityList[index];
         }
       }
+      if (quantityCount >= this.terminalConfigJson.NumberOfProducts) {
+        isProductLimitReached = true;
+      }
+      this.productCardList.forEach(element => {
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+          productCount++;
+        }
+      });
       if (productCount >= this.terminalConfigJson.NumberOfProducts) {
         isProductLimitReached = true;
       }
+
+
 
     } else {
       var existingProductCount = 0;
@@ -390,6 +402,15 @@ export class AddProductComponent implements OnInit {
         isProductLimitReached = true
       }
       else if (selectedItem.Ticket.Group == 2 && ((existingQuantity + existingProductCount + 1) > 4)) {
+        isProductLimitReached = true;
+      }
+      
+      this.productCardList.forEach(element => {
+        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+          productCount++;
+        }
+      });
+      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
         isProductLimitReached = true;
       }
     }
@@ -559,8 +580,6 @@ export class AddProductComponent implements OnInit {
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
     $("#removeMerchProductModal").modal('show');
-
-
   }
 
   removeMagneticProduct(merch) {
@@ -580,6 +599,7 @@ export class AddProductComponent implements OnInit {
     var index = 0;
     this.merchantList.forEach(element => {
       element.quantity = this.quantityList[index];
+      index++;
     });
     localStorage.setItem('encodeData', JSON.stringify(this.merchantList));
     localStorage.setItem("MerchandiseData", JSON.stringify(this.merchantiseList));
@@ -775,7 +795,7 @@ export class AddProductComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    this.productTotal = this.productTotal * 100;
+    this.productTotal = Math.round(this.productTotal * 100);
     this.productTotal += digit;
     this.productTotal = this.productTotal / 100;
     // this.productTotal = this.productTotal + digit;
@@ -918,63 +938,77 @@ export class AddProductComponent implements OnInit {
       })
       //Magnetic
       if (this.MagneticList.length > 0) {
-        this.displayMagneticsSubtotal(this.MagneticList, true)
-        this.MagneticList.forEach(walletElement => {
-          var jsonWalletObj = {
+        this.displayMagneticsSubtotal(this.MagneticList, true);
+        var magneticIndex = 0;
+        var currentMagneticCardList: any = [];
+        this.magneticCardList.forEach(magneticCardElement => {
+          walletObj = [];
+          // jsonMagneticObj = [];
+          currentMagneticCardList = [];
+          var loopIndex = 0;
+          this.MagneticList.forEach(listElement => {
+            if(this.magneticIds[loopIndex] == magneticIndex){
+              currentMagneticCardList.push(listElement);
+            }
+            loopIndex++;
+          });
+          currentMagneticCardList.forEach(walletElement => {
+            var jsonWalletObj = {
+              "transactionID": new Date().getTime(),
+              "quantity": 1,
+              "productIdentifier": walletElement.ProductIdentifier,
+              "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
+              "ticketValue": walletElement.Ticket.Value,
+              "status": "ACTIVE",
+              "slotNumber": 3,
+              "startDate": walletElement.DateEffective,
+              "expirationDate": walletElement.DateExpires,
+              "balance": walletElement.UnitPrice,
+              "rechargesPending": 0,
+              "IsMerchandise": walletElement.IsMerchandise,
+              "IsBackendMerchandise": false,
+              "IsFareCard": false,
+              "unitPrice": walletElement.UnitPrice,
+              "totalCost": this.subTotal,
+              "userID": localStorage.getItem("userEmail"),
+              "shiftID": 1,
+              "fareCode": fareCode,
+              "offeringId": walletElement.OfferingId,
+              "cardPID": "Magnetic 1",
+              "cardUID": new Date().getTime(),
+              "walletTypeId": 3,
+              "shiftType": shiftType,
+              "timestamp": new Date().getTime()
+            }
+            walletObj.push(jsonWalletObj);
+          });
+          var JsonObj: any = {
             "transactionID": new Date().getTime(),
+            "cardPID": magneticCardElement.name,
+            "cardUID": new Date().getTime(),
             "quantity": 1,
-            "productIdentifier": walletElement.ProductIdentifier,
-            "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
-            "ticketValue": walletElement.Ticket.Value,
-            "status": "ACTIVE",
-            "slotNumber": 3,
-            "startDate": walletElement.DateEffective,
-            "expirationDate": walletElement.DateExpires,
-            "balance": walletElement.UnitPrice,
-            "rechargesPending": 0,
-            "IsMerchandise": walletElement.IsMerchandise,
-            "IsBackendMerchandise": false,
-            "IsFareCard": false,
-            "unitPrice": walletElement.UnitPrice,
-            "totalCost": this.subTotal,
+            "productIdentifier": JSON.parse(localStorage.getItem("magneticProductIndentifier")),
+            "ticketTypeId": null,
+            "ticketValue": 0,
+            "slotNumber": 0,
+            "expirationDate": 0,
+            "balance": 0,
+            "IsMerchandise": false,
+            "IsBackendMerchandise": true,
+            "IsFareCard": true,
+            "unitPrice": unitPrice,
+            "totalCost": unitPrice,
             "userID": localStorage.getItem("userEmail"),
             "shiftID": 1,
             "fareCode": fareCode,
-            "offeringId": walletElement.OfferingId,
-            "cardPID": "Magnetic 1",
-            "cardUID": new Date().getTime(),
-            "walletTypeId": 3,
+            "walletContentItems": walletObj,
+            "walletTypeId": 10,
             "shiftType": shiftType,
             "timestamp": new Date().getTime()
-          }
-          walletObj.push(jsonWalletObj);
+          };
+          jsonMagneticObj.push(JsonObj);
+          magneticIndex++;
         });
-        var JsonObj: any = {
-          "transactionID": new Date().getTime(),
-          "cardPID": "Magnetic 1",
-          "cardUID": new Date().getTime(),
-          "quantity": 1,
-          "productIdentifier": JSON.parse(localStorage.getItem("magneticProductIndentifier")),
-          "ticketTypeId": null,
-          "ticketValue": 0,
-          "slotNumber": 0,
-          "expirationDate": 0,
-          "balance": 0,
-          "IsMerchandise": false,
-          "IsBackendMerchandise": true,
-          "IsFareCard": true,
-          "unitPrice": unitPrice,
-          "totalCost": unitPrice,
-          "userID": localStorage.getItem("userEmail"),
-          "shiftID": 1,
-          "fareCode": fareCode,
-          "walletContentItems": walletObj,
-          "walletTypeId": 10,
-          "shiftType": shiftType,
-          "timestamp": new Date().getTime()
-        };
-        jsonMagneticObj.push(JsonObj);
-
         var magneticTransactionObj =
         {
           "userID": localStorage.getItem("userEmail"),

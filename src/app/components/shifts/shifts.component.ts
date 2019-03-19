@@ -101,7 +101,7 @@ export class ShiftsComponent implements OnInit {
 
   displayDigit(digit) {
     console.log("numberDigits", digit);
-    this.productTotal = this.productTotal * 100;
+    this.productTotal = Math.round(this.productTotal * 100);
     this.productTotal += digit;
     this.productTotal = this.productTotal / 100;
     // if (this.productTotal == 0) {
@@ -122,13 +122,12 @@ export class ShiftsComponent implements OnInit {
     if(localStorage.getItem("closingPausedMainShift") == "true"){
       localStorage.setItem("closingPausedMainShift", "false")
     }
-   
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
     shiftReports.forEach(element => {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
-      } else {
+      } else if (element.shiftState == 3 && element.userID == localStorage.getItem("userID")){
         localStorage.setItem("hideModalPopup", "false")
       }
     })

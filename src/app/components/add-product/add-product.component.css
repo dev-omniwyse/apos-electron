@@ -510,3 +510,8 @@ ul {
     right: 20px;
     top: 27px;
 }
+
+.modal-custom{
+    width: 90%!important;
+    max-width: 90%!important;
+}
