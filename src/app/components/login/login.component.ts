@@ -214,7 +214,7 @@ export class LoginComponent implements OnInit {
         if (this.loginForm.invalid) {
             return;
         }
-
+        console.log("cdtaService")
         // this.loading = true;
         this.cdtaservice.login(this.f.username.value, this.f.password.value)
             .subscribe((data: any) => {
@@ -259,6 +259,7 @@ export class LoginComponent implements OnInit {
            return $("#emptyLogin").modal("show")
            // return this.errorMsg = " Username Or Password Shouldn't be Empty"
         } else {
+            console.log("main.js" + user)
             //this.loading = true;
             this.electronService.ipcRenderer.send('logincall', user)
         }
