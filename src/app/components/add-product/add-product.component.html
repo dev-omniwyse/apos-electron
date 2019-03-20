@@ -146,7 +146,7 @@
                     <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
                         <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
 
-                        <div class="pull-right" (click)="removeMagneticProduct(merch)"><span
+                        <div class="pull-right" (click)="removeMagneticProduct(merch,j)"><span
                                 class="glyphicon glyphicon-minus-sign"></span></div>
 
                     </span>

@@ -122,6 +122,8 @@ export class AddProductComponent implements OnInit {
   cardProductData: any = [];
   productCheckOut: boolean = false;
   isNew: boolean = false;
+  magneticId: any =0;
+  currentMagneticProductId: any = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -189,6 +191,7 @@ export class AddProductComponent implements OnInit {
             this.cardJson.push(JSON.parse(data));
             this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
+           
             this.selectCard(this.cardJson.length - 1);
           }
         });
@@ -579,10 +582,13 @@ export class AddProductComponent implements OnInit {
   removeMagneticProductConfirmation() {
     this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
     this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
-    var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
-    this.MagneticList.splice(selectedIndex, 1);
-    this.magneticIds.splice(selectedIndex, 1);
-    this.displayMagneticsSubtotal(this.MagneticList, false);
+    if(this.magneticIds[this.magneticId] == this.magneticCardList[this.magneticId].id) {
+      var selectedIndex = this.currentMagneticProductId;
+      this.MagneticList.splice(selectedIndex, 1);
+      this.magneticIds.splice(selectedIndex, 1);
+      this.displayMagneticsSubtotal(this.MagneticList, false);
+    }
+   
   }
 
   removeMerchProduct(merch) {
@@ -590,8 +596,9 @@ export class AddProductComponent implements OnInit {
     $("#removeMerchProductModal").modal('show');
   }
 
-  removeMagneticProduct(merch) {
-    this.magneticProductToRemove = merch
+  removeMagneticProduct(merch,j) {
+    this.magneticProductToRemove = merch;
+    this.currentMagneticProductId = j;
     $("#removeMagneticProductModal").modal('show');
     // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
     // var selectedIndex = this.MagneticList.indexOf(merch);
@@ -776,6 +783,7 @@ export class AddProductComponent implements OnInit {
   // }
 
   clickOnMagnetic(index: any) {
+    this.magneticId = index;
     this.isMagnetic = true;
     this.nonFare = true;
     this.regularRoute = false;
