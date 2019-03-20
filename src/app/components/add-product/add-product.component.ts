@@ -119,7 +119,9 @@ export class AddProductComponent implements OnInit {
   magneticCardCost: any = 0;
   quantityList: any = [];
   viewCardData: any = []
-  cardProductData: any = []
+  cardProductData: any = [];
+  productCheckOut: boolean = false;
+  isNew: boolean = false;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -136,9 +138,11 @@ export class AddProductComponent implements OnInit {
         this.cardJson = [];
       } else {
         this.currentCard = JSON.parse(this.readCarddata);
+        console.log("currentCard" + JSON.stringify(this.currentCard));
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
       console.log(this.readCarddata);
+      this.checkIsCardNew();
       if (this.isMerchendise) {
         this.clickOnMerch();
       }
@@ -151,8 +155,18 @@ export class AddProductComponent implements OnInit {
           "id": (this.magneticCardList.length)
         }
         this.magneticCardList.push(magnetic)
+        // this.productTotal = this.productTotal + parseFloat(this.magneticCardCost);
+        // this.displayMagneticsSubtotal(this.MagneticList, false);
         // this.isfromAddProduct = true;
         // this.electronService.ipcRenderer.send('readSmartcard', cardName);
+      }
+
+      if (!this.isMagnetic && !this.isMerchendise) {
+        if (this.isNew) {
+          this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
+          this.displaySmartCardsSubtotal(this.merchantList, false);
+        }
+
       }
 
 
@@ -255,13 +269,7 @@ export class AddProductComponent implements OnInit {
       }
     });
 
-    if (!this.isMagnetic && !this.isMerchendise) {
-      var smartCard = {
-        "name": "Smart" + " " + (this.smartCradList.length + 1),
-        "id": (this.smartCradList.length)
-      }
-      this.smartCradList.push(smartCard)
-    }
+
   }
 
   ngOnInit() {
@@ -351,9 +359,9 @@ export class AddProductComponent implements OnInit {
           if (element.product_type == 1) {
             existingQuantity = element.recharges_pending;
           }
-          else if (element.product_type == 2) {
-            existingQuantity = (element.remaining_rides / selectedItem.Ticket.Value);
-          }
+          // else if (element.product_type == 2) {
+          //   existingQuantity = (element.remaining_rides / selectedItem.Ticket.Value);
+          // }
           this.areExistingProducts.push(true);
         }
         else {
@@ -372,7 +380,7 @@ export class AddProductComponent implements OnInit {
       }
       for (let index = 0; index < this.merchantList.length; index++) {
         const product = this.merchantList[index];
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
+        if (selectedItem.Ticket.Group == 1 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
           quantityCount = this.quantityList[index];
         }
       }
@@ -380,11 +388,11 @@ export class AddProductComponent implements OnInit {
         isProductLimitReached = true;
       }
       this.productCardList.forEach(element => {
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+        if (selectedItem.Ticket.Group == 1 && this.currentCard.printed_id == element) {
           productCount++;
         }
       });
-      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
+      if (productCount >= this.terminalConfigJson.NumberOfProducts && quantityCount == 0) {
         isProductLimitReached = true;
       }
 
@@ -401,18 +409,7 @@ export class AddProductComponent implements OnInit {
       if (selectedItem.Ticket.Group == 1 && ((existingQuantity + existingProductCount + 1) > this.terminalConfigJson.MaxPendingCount)) {
         isProductLimitReached = true
       }
-      else if (selectedItem.Ticket.Group == 2 && ((existingQuantity + existingProductCount + 1) > 4)) {
-        isProductLimitReached = true;
-      }
-      
-      this.productCardList.forEach(element => {
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
-          productCount++;
-        }
-      });
-      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
-        isProductLimitReached = true;
-      }
+
     }
     // check if max products count reached
     // for (let index1 = 0; index1 < this.merchantList.length; index1++) {
@@ -596,6 +593,8 @@ export class AddProductComponent implements OnInit {
       $("#productTotalWarningModal").modal('show');
       return;
     }
+    this.productCheckOut = true;
+
     var index = 0;
     this.merchantList.forEach(element => {
       element.quantity = this.quantityList[index];
@@ -610,6 +609,16 @@ export class AddProductComponent implements OnInit {
     this.checkout = false;
   }
 
+  cancelCheckout() {
+    $("#cancelCheckoutModal").modal('show');
+  }
+
+  cancelCheckOutConfirmation() {
+    this.productCheckOut = false;
+    this.checkout = true;
+
+  }
+
   selectCard(index: any) {
     this.isMagnetic = false;
     localStorage.setItem("isMagnetic", 'false');
@@ -620,6 +629,11 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
     this.displaySmartCardsSubtotal(this.merchantList, false);
+    this.checkIsCardNew();
+    if (this.isNew) {
+      this.displaySmartCardsSubtotal(this.merchantList, false);
+      // this.productTotal = this.productTotal+parseFloat(this.smartCardCost);
+    }
 
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -719,6 +733,10 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
+    if (this.isNew) {
+      this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
+
+    }
   }
 
   magneticCard() {
@@ -735,6 +753,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchendise", "false");
     this.selectedProductCategoryIndex = 0
     this.clickOnMagnetic(magnetic.id)
+    // this.productTotal = this.productTotal + parseFloat(this.magneticCardCost);
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -829,7 +848,11 @@ export class AddProductComponent implements OnInit {
       }
       index++;
     });
+    this.checkIsCardNew()
+    if (this.isNew) {
+      this.subTotal = this.subTotal + parseFloat(this.smartCardCost);
 
+    }
     // return this.subTotal;
   }
 
@@ -847,6 +870,7 @@ export class AddProductComponent implements OnInit {
       }
       index++;
     });
+    // this.subTotal = this.subTotal + parseFloat(this.magneticCardCost);
   }
 
   navigateToDashboard() {
@@ -871,6 +895,10 @@ export class AddProductComponent implements OnInit {
     $("#magneticCardRemove").modal('show');
   }
 
+  checkIsCardNew() {
+    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
+  }
+
   removeSmartCardConfirmation() {
     for (let index = 0; index < this.merchantList.length; index++) {
       const element = this.merchantList[index];
@@ -879,6 +907,11 @@ export class AddProductComponent implements OnInit {
         this.removeSmartCardProductConfirmation(index);
         index--;
       }
+    }
+    this.checkIsCardNew();
+    if (this.isNew) {
+      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
+
     }
     this.displaySmartCardsSubtotal(this.merchantList, false);
     this.cardJson.splice(this.selectedIdx, 1);
@@ -894,6 +927,7 @@ export class AddProductComponent implements OnInit {
         index--;
       }
     }
+    // this.productTotal = this.productTotal - parseFloat(this.magneticCardCost);
     this.displayMagneticsSubtotal(this.MagneticList, false);
     var index = 0;
     this.magneticCardList.forEach(element => {
@@ -922,7 +956,7 @@ export class AddProductComponent implements OnInit {
         if ((null == catalogElement.Ticket) &&
           (false == catalogElement.IsMerchandise) &&
           (null != catalogElement.WalletType)) {
-          if (catalogElement.WalletType.WalletTypeId == 3) {
+          if (catalogElement.WalletType.WalletTypeId == 10) {
             unitPrice = catalogElement.WalletType.UnitPrice;
           }
         }
@@ -947,7 +981,7 @@ export class AddProductComponent implements OnInit {
           currentMagneticCardList = [];
           var loopIndex = 0;
           this.MagneticList.forEach(listElement => {
-            if(this.magneticIds[loopIndex] == magneticIndex){
+            if (this.magneticIds[loopIndex] == magneticIndex) {
               currentMagneticCardList.push(listElement);
             }
             loopIndex++;
@@ -974,7 +1008,7 @@ export class AddProductComponent implements OnInit {
               "shiftID": 1,
               "fareCode": fareCode,
               "offeringId": walletElement.OfferingId,
-              "cardPID": "Magnetic 1",
+              "cardPID": magneticCardElement.name,
               "cardUID": new Date().getTime(),
               "walletTypeId": 3,
               "shiftType": shiftType,
@@ -996,8 +1030,8 @@ export class AddProductComponent implements OnInit {
             "IsMerchandise": false,
             "IsBackendMerchandise": true,
             "IsFareCard": true,
-            "unitPrice": unitPrice,
-            "totalCost": unitPrice,
+            "unitPrice": this.magneticCardCost,
+            "totalCost": this.magneticCardCost,
             "userID": localStorage.getItem("userEmail"),
             "shiftID": 1,
             "fareCode": fareCode,

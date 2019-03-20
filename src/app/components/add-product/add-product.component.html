@@ -15,7 +15,7 @@
             <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top">View
                 Card</button>
 
-            <button class="btn-orange" (click)="addCard()">Add Card</button>
+            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">Add Card</button>
         </div>
         <div class="modal fade" id="viewCard" role="dialog">
             <div class="modal-dialog modal-custom  modal-dialog-centered">
@@ -112,7 +112,8 @@
         <div class="container-l-app">
             <div *ngIf="!isMagnetic && !isMerchendise">
                 <span class="label label-default">
-                    <div class="pull-left">1 Card : {{currentCard?.printed_id}}</div>
+                    <div class="pull-left" *ngIf="!isNew">1 Card : {{currentCard?.printed_id}}</div>
+                    <div class="pull-left" *ngIf="isNew">1 Card : {{currentCard?.printed_id}} &nbsp; ${{smartCardCost}}</div>
 
                     <div class="pull-right" (click)="removeSmartCard()"><span
                             class="glyphicon glyphicon-minus-sign"></span></div>
@@ -134,7 +135,7 @@
 
             <div *ngIf="isMagnetic">
                 <span class="label label-default">
-                    <div class="pull-left">1 New Magnetics &nbsp; ${{magneticCardCost}}</div>
+                    <div class="pull-left">1 New Magnetics</div>
 
                     <div class="pull-right" (click)="removeMagneticCard()"><span
                             class="glyphicon glyphicon-minus-sign"></span></div>
@@ -195,8 +196,9 @@
             </div>
         </div>
         <div class="btns-set">
-            <button class="btn-white" (click)="navigateToReadCard()">Cancel</button>
-            <button class="btn-orange" (click)="productCheckout()">Checkout</button>
+            <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
+            <button class="btn-orange" (click)="productCheckout()"  *ngIf="!productCheckOut">Checkout</button>
+            <button class="btn-white"  *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
         </div>
     </div>
     <div class="container-right" *ngIf="checkout">
@@ -657,6 +659,25 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="cancelCheckoutModal" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                    <h4 class="modal-title">Are you sure you want to cancel the checkout?</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p>By continiuing,any payment methods that have been applied will be canceled.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-default" (click)="cancelCheckOutConfirmation()"
+                        data-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>
