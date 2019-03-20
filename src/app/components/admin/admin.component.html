@@ -7,33 +7,33 @@
                     <div class="main-shift-head">Shift Report</div>
                     <div class="main-shift-row">
                         <div class="pull-left">Fare Sold Total</div>
-                        <div class="pull-right">${{fareTotal}}</div>
+                        <div class="pull-right">${{fareTotal | number : '1.2-2'}}</div>
                     </div>
                     <div class="main-shift-row">
                         <div class="pull-left">Non Fare Products Sold Total</div>
-                        <div class="pull-right">${{nonFareTotal}}</div>
+                        <div class="pull-right">${{nonFareTotal | number : '1.2-2'}}</div>
                     </div>
                     <hr class="hr-css">
                     <div class="main-shift-row">
                         <div class="pull-left">Total Sold </div>
-                        <div class="pull-right">${{fareAndNonFareTotal}}</div>
+                        <div class="pull-right">${{fareAndNonFareTotal | number : '1.2-2'}}</div>
                     </div>
                     <br/>
                     <div class="main-shift-row">
                         <div class="pull-left">Opening Drawer</div>
-                        <div class="pull-right">${{openingDrawerBal}}</div>
+                        <div class="pull-right">${{openingDrawerBal | number : '1.2-2'}}</div>
                     </div>
                     <div class="main-shift-row">
                         <div class="pull-left">Expected Cash</div>
-                        <div class="pull-right">${{expectedCash}}</div>
+                        <div class="pull-right">${{expectedCash | number : '1.2-2'}}</div>
                     </div>
                     <div class="main-shift-row">
                         <div class="pull-left">Actual Cash</div>
-                        <div class="pull-right">${{actualCash}}</div>
+                        <div class="pull-right">${{actualCash | number : '1.2-2'}}</div>
                     </div>
                     <div class="main-shift-row">
                         <div class="pull-left">Over/Short</div>
-                        <div class="pull-right">${{overShort}}</div>
+                        <div class="pull-right">${{overShort | number : '1.2-2'}}</div>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                       NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                         <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
-                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
 
                         <button data-toggle="modal" data-target="#syncCds">
@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="modal-body">
-                                    <p>Remove the till from the cash drawer, Click ok to Continue </p>
+                                    <p>Remove the till from the cash drawer. Click "OK" to Continue </p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="mainShiftPause();">Ok</button>
@@ -289,7 +289,7 @@
                       NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                         <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
-                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
 
                         <button data-toggle="modal" data-target="#syncCds">
