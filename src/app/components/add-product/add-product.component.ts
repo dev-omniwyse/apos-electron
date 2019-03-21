@@ -64,6 +64,10 @@ pcs.on('reader', function (reader) {
   });
 });
 
+// $(document).ready(function(){
+
+// });
+
 pcs.on('error', function (err) {
   console.log('PCSC error', err.message);
 });
@@ -124,6 +128,11 @@ export class AddProductComponent implements OnInit {
   isNew: boolean = false;
   magneticId: any =0;
   currentMagneticProductId: any = 0;
+  productButtons = [{"id":0,"name": "Merch *"},{"id": 1, "name":"004623"}, {"id":2, "name": "Magnetic 1"}, {"id":3, "name": "Magnetic 2"}, {"id":4, "name": "Magnetic 3"}];
+  page: number = 1;
+  slideConfig = {"slidesToShow": 2, dots:true,   "infinite": false,
+  "autoplay": false,   "prevArrow": false, "slidesToScroll": 2,
+  "nextArrow": false};
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
@@ -275,7 +284,14 @@ export class AddProductComponent implements OnInit {
    
   }
 
+
+  
   ngOnInit() {
+    $('.multiple-items').slick({
+      slidesToShow: 2,
+      dots:true,
+      centerMode: false,
+      });
     let item = JSON.parse(localStorage.getItem("readCardData"))
     this.viewCardData = new Array(JSON.parse(item))
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))

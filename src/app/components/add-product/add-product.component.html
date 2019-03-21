@@ -83,10 +83,24 @@
             </div>
         </div>
         <div class="btns-mag">
+            <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig" >
+                <div ngxSlickItem *ngFor="let button of productButtons" class="slide">
+                    <div class="col-md-6">
+                        <button class="btn-white-slide">{{button.name}}</button>
+                    </div>
+                </div>
+            </ngx-slick>
+
+            <!-- <div *ngFor="let button of productButtons| paginate: { itemsPerPage: 2, currentPage: page }; let i = index">
+                <div class="col-md-6">
+                    <button class="btn-b-white" >{{button.name}}</button>
+                </div>
+            </div>
+            <pagination-controls (pageChange)="page = $event"></pagination-controls> -->
             <!-- <input (click)="myStyle={'margin-left': moveLeft()}" [disabled]="leftdisabled" class="left" type="button" value="Move Left" /> -->
             <!-- <div class="menucontainer left"> -->
-
-            <div class="col-md-6">
+            
+             <div class="col-md-6">
                 <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
                     (click)=clickOnMerch()>Merch*</button>
             </div>

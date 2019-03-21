@@ -56,12 +56,15 @@
     "jquery": "^3.3.1",
     "ngx-electron": "^2.1.1",
     "ngx-loading": "^3.0.1",
+    "ngx-slick": "^0.2.1",
     "ngx-spinner": "^7.0.0",
     "node-gyp": "^3.8.0",
     "pcsclite": "^0.6.0",
     "popper.js": "^1.14.6",
+    "primeng": "^7.1.0",
     "rebuild": "^0.1.2",
     "rxjs": "~6.3.3",
+    "slick-carousel": "^1.8.1",
     "timers": "^0.1.1",
     "tslib": "^1.9.0",
     "webcamjs": "^1.0.25",
@@ -70,7 +73,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.12.0",
     "@angular/cli": "~7.2.1",
-    "@angular/compiler-cli": "~7.2.0",
+    "@angular/compiler-cli": "^7.2.10",
     "@angular/language-service": "~7.2.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
@@ -82,6 +85,7 @@
     "electron-rebuild": "^1.8.2",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
+    "java": "^0.11.0",
     "karma": "~3.1.1",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
@@ -92,7 +96,6 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2",
-    "java": "^0.11.0"
+    "typescript": "~3.2.2"
   }
 }

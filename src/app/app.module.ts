@@ -27,6 +27,7 @@ import { AddMagneticProductComponent } from './components/add-magnetic-product/a
 import { NgxLoadingModule } from 'ngx-loading'
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { EnvironmentComponent } from './components/environment/environment.component';
+import { SlickModule } from 'ngx-slick';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +49,8 @@ import { EnvironmentComponent } from './components/environment/environment.compo
     ShiftSalesSummaryComponent,
     ShiftsComponent,
     AddMagneticProductComponent,
-    EnvironmentComponent 
+    EnvironmentComponent
+   
     
   ],
   imports: [
@@ -59,7 +61,8 @@ import { EnvironmentComponent } from './components/environment/environment.compo
     ReactiveFormsModule,
     FormsModule,
     NgxSpinnerModule,
-    NgxLoadingModule.forRoot({})
+    NgxLoadingModule.forRoot({}),
+    SlickModule.forRoot()
   ],
   providers: [CdtaService],
   bootstrap: [AppComponent]
