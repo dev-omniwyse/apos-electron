@@ -76,6 +76,7 @@ export class AdminComponent implements OnInit {
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
+            this.overShort = Math.abs(this.overShort)
 
           }
 
@@ -273,7 +274,7 @@ export class AdminComponent implements OnInit {
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     localStorage.setItem("shiftReopenedByMainUser", "true")
-    localStorage.setItem("hideModalPopup" , "true")
+    localStorage.setItem("hideModalPopup", "true")
   }
 
   hideModalPop() {
@@ -284,7 +285,7 @@ export class AdminComponent implements OnInit {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
       } else {
-      
+
         if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
           localStorage.setItem("hideModalPopup", "true")
         } else {
@@ -331,6 +332,13 @@ export class AdminComponent implements OnInit {
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
+              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+              //   this.mainshiftCloser = true
+              // } else {
+              //   this.shiftType = "0"
+              //   this.shiftState = "3"
+              //  this.statusOfShiftReport = "Main Shift is Closed "
+              // }
               localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
@@ -352,7 +360,13 @@ export class AdminComponent implements OnInit {
             } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1"
               this.shiftState = "3"
-
+              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+              //   this.mainshiftCloser = true
+              // } else {
+              //   this.shiftType = "1"
+              //   this.shiftState = "3"
+              //  this.statusOfShiftReport = "Main Shift is Paused "
+              // }
               this.statusOfShiftReport = "Main Shift is Paused "
             } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1";
@@ -377,6 +391,8 @@ export class AdminComponent implements OnInit {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
         }
         this.overShort = (this.actualCash - this.expectedCash).toFixed(2)
+        this.overShort = Math.abs(this.overShort)
+        
         if (element.initialOpeningTime != 0) {
           this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
           console.log("element.initialOpeningTime, element.timeClosed", element.initialOpeningTime, element.timeClosed)

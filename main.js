@@ -56,10 +56,11 @@ function createWindow() {
     );
 
     //added this line to open developer tools for debugging
+    
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    //  win.webContents.openDevTools()
+      win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -395,6 +396,25 @@ ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endT
     event.sender.send('adminSalesPaymentResult', result);
 })
 
+ipcMain.on('salesData', (event, shiftType, startTime, endTime) => {
+    // var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
+    // var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
+    //  logger.info('sales call', shiftType, startTime.toString(), endTime.toString())
+    var S = java.newLong(Number(startTime / 1000));
+    var E = java.newLong(Number(endTime / 1000));
+    var result = posAppletInstance.getSalesreportSync(shiftType, S, E);
+    logger.info("salesData Result", '' + result)
+
+    event.sender.send('salesDataResult', result);
+})
+ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3) => {
+    var S = java.newLong(Number(startTime / 1000));
+    var E = java.newLong(Number(endTime / 1000));
+    var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
+    logger.info("paymentsData Result", '' + result)
+
+    event.sender.send('paymentsDataResult', result);
+})
 ipcMain.on('printSummaryReport', (event, drawerReport, productsReport, userID, AllUsers) => {
   logger.info("print summary report",drawerReport, productsReport);
   var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID, AllUsers);
