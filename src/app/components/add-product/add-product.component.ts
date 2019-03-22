@@ -173,11 +173,11 @@ export class AddProductComponent implements OnInit {
       }
 
       if (!this.isMagnetic && !this.isMerchendise) {
-        if(this.isNew) {
+        if (this.isNew) {
           this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
           this.displaySmartCardsSubtotal(this.merchantList, false);
         }
-   
+
       }
 
 
@@ -281,7 +281,7 @@ export class AddProductComponent implements OnInit {
       }
     });
 
-   
+
   }
 
 
@@ -378,9 +378,9 @@ export class AddProductComponent implements OnInit {
           if (element.product_type == 1) {
             existingQuantity = element.recharges_pending;
           }
-          else if (element.product_type == 2) {
-            existingQuantity = (element.remaining_rides / selectedItem.Ticket.Value);
-          }
+          // else if (element.product_type == 2) {
+          //   existingQuantity = (element.remaining_rides / selectedItem.Ticket.Value);
+          // }
           this.areExistingProducts.push(true);
         }
         else {
@@ -399,7 +399,7 @@ export class AddProductComponent implements OnInit {
       }
       for (let index = 0; index < this.merchantList.length; index++) {
         const product = this.merchantList[index];
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
+        if (selectedItem.Ticket.Group == 1 && this.currentCard.printed_id == this.productCardList[index] && selectedItem.OfferingId == this.merchantList[index].OfferingId) {
           quantityCount = this.quantityList[index];
         }
       }
@@ -407,11 +407,11 @@ export class AddProductComponent implements OnInit {
         isProductLimitReached = true;
       }
       this.productCardList.forEach(element => {
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
+        if (selectedItem.Ticket.Group == 1 && this.currentCard.printed_id == element) {
           productCount++;
         }
       });
-      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
+      if (productCount >= this.terminalConfigJson.NumberOfProducts && quantityCount == 0) {
         isProductLimitReached = true;
       }
 
@@ -428,18 +428,7 @@ export class AddProductComponent implements OnInit {
       if (selectedItem.Ticket.Group == 1 && ((existingQuantity + existingProductCount + 1) > this.terminalConfigJson.MaxPendingCount)) {
         isProductLimitReached = true
       }
-      else if (selectedItem.Ticket.Group == 2 && ((existingQuantity + existingProductCount + 1) > 4)) {
-        isProductLimitReached = true;
-      }
 
-      this.productCardList.forEach(element => {
-        if (selectedItem.Ticket.Group != 3 && this.currentCard.printed_id == element) {
-          productCount++;
-        }
-      });
-      if (productCount >= this.terminalConfigJson.NumberOfProducts) {
-        isProductLimitReached = true;
-      }
     }
     // check if max products count reached
     // for (let index1 = 0; index1 < this.merchantList.length; index1++) {
@@ -506,7 +495,7 @@ export class AddProductComponent implements OnInit {
       this.merchantList.push(merch);
       this.productCardList.push(this.currentCard.printed_id)
     }
-    
+
     this.displaySmartCardsSubtotal(this.merchantList, false);
 
     this.productTotal = this.productTotal + parseFloat(merch.Ticket.Price);
@@ -664,7 +653,7 @@ export class AddProductComponent implements OnInit {
     this.currentCard = this.cardJson[index];
     this.displaySmartCardsSubtotal(this.merchantList, false);
     this.checkIsCardNew();
-    if(this.isNew) {
+    if (this.isNew) {
       this.displaySmartCardsSubtotal(this.merchantList, false);
       // this.productTotal = this.productTotal+parseFloat(this.smartCardCost);
     }
@@ -767,8 +756,8 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
-    if(this.isNew){
-    this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
+    if (this.isNew) {
+      this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
 
     }
   }
@@ -884,8 +873,8 @@ export class AddProductComponent implements OnInit {
       index++;
     });
     this.checkIsCardNew()
-    if(this.isNew) {
-    this.subTotal = this.subTotal + parseFloat(this.smartCardCost);
+    if (this.isNew) {
+      this.subTotal = this.subTotal + parseFloat(this.smartCardCost);
 
     }
     // return this.subTotal;
@@ -944,8 +933,8 @@ export class AddProductComponent implements OnInit {
       }
     }
     this.checkIsCardNew();
-    if(this.isNew) {
-    this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
+    if (this.isNew) {
+      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
 
     }
     this.displaySmartCardsSubtotal(this.merchantList, false);
