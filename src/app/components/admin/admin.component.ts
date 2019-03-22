@@ -274,7 +274,7 @@ export class AdminComponent implements OnInit {
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     localStorage.setItem("shiftReopenedByMainUser", "true")
-    localStorage.setItem("hideModalPopup" , "true")
+    localStorage.setItem("hideModalPopup", "true")
   }
 
   hideModalPop() {
@@ -285,7 +285,7 @@ export class AdminComponent implements OnInit {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
       } else {
-      
+
         if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
           localStorage.setItem("hideModalPopup", "true")
         } else {
@@ -332,6 +332,13 @@ export class AdminComponent implements OnInit {
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
+              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+              //   this.mainshiftCloser = true
+              // } else {
+              //   this.shiftType = "0"
+              //   this.shiftState = "3"
+              //  this.statusOfShiftReport = "Main Shift is Closed "
+              // }
               localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
@@ -353,7 +360,13 @@ export class AdminComponent implements OnInit {
             } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1"
               this.shiftState = "3"
-
+              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+              //   this.mainshiftCloser = true
+              // } else {
+              //   this.shiftType = "1"
+              //   this.shiftState = "3"
+              //  this.statusOfShiftReport = "Main Shift is Paused "
+              // }
               this.statusOfShiftReport = "Main Shift is Paused "
             } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1";

@@ -54,7 +54,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
-        alert("printSummaryReport Done")
+        alert("print Summary Report Done")
         console.log("printSummaryReport Done", data)
         //  this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
@@ -747,7 +747,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
     // console.log(paymentsStore);
     // var expectedCashInDrawer = paymentsStore.sum('amount');
     paymentsStore.forEach(element => {
-      if (element.paymentMethodId == "CASH") {
+      if (element.paymentMethod == "CASH") {
         expectedCashInDrawer = expectedCashInDrawer + element.paymentAmount
       }
     });
