@@ -6,6 +6,9 @@ import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { Observable } from 'rxjs';
+import { FareCardService } from 'src/app/services/Farecard.service';
+import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
+import { Globals } from 'src/app/global';
 declare var $: any;
 declare var WebCamera: any;
 declare var dialog: any;
@@ -105,7 +108,7 @@ export class ReadcardComponent implements OnInit {
     adminSales = []
     salesPayments = []
 
-    constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
+    constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
         });
         if (this.electronService.isElectronApp) {
@@ -186,16 +189,22 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
                     console.log('this.carddata', this.carddata);
-                    if (this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)) {
+                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                    // if (this.carddata[0].products.length == 1 && (this.carddata[0].products[0].product_type == 3)) {
                         this.getProductCatalogJSON();
+                        let shoppingCart = FareCardService.getInstance.addSmartCard(this.globals.globalCart.shoppingCart, this.carddata[0], item.Offering);
+                        ShoppingCartService.getInstance.shoppingCart = null;
+                        console.log(shoppingCart);
+                        debugger;
+                        localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
                         var timer = setTimeout(() => {
                             this.router.navigate(['/addproduct']);
                             clearTimeout(timer);
                         }, 1000);
-                    } else {
-                        this.carddata.length = [];
-                        $("#newCardValidateModal").modal('show');
-                    }
+                    // } else {
+                        // this.carddata.length = [];
+                        // $("#newCardValidateModal").modal('show');
+                    // }
                 });
             }
         });
@@ -205,6 +214,13 @@ export class ReadcardComponent implements OnInit {
                 //this.show = true;
                 this._ngZone.run(() => {
                     this.getProductCatalogJSON();
+                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                    console.log(this.globals.globalCart.shoppingCart);
+                    let shoppingCart = new FareCardService().addMagneticsCard(this.globals.globalCart.shoppingCart, item.Offering);
+                    ShoppingCartService.getInstance.shoppingCart = null;
+                    localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
+                    console.log(shoppingCart);
+                    debugger;
                     // this.router.navigate(['/addproduct'])
                 });
             }
@@ -316,12 +332,20 @@ export class ReadcardComponent implements OnInit {
     }
 
     newFareCard(event) {
+        localStorage.removeItem('shoppingCart');
+        ShoppingCartService.getInstance.shoppingCart = null;
+        this.globals.globalCart.shoppingCart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "false");
         this.electronService.ipcRenderer.send('newfarecard', cardName)
     }
 
     nonFareProduct() {
+        localStorage.removeItem('shoppingCart');
+        ShoppingCartService.getInstance.shoppingCart = null;
+        this.globals.globalCart.shoppingCart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        
         localStorage.setItem("isNonFareProduct", "true");
         localStorage.setItem("isMagnetic", "false");
         this.getProductCatalogJSON();
@@ -333,9 +357,15 @@ export class ReadcardComponent implements OnInit {
     }
 
     magneticCard(event) {
+        ShoppingCartService.getInstance.shoppingCart = null;
+        this.globals.globalCart.shoppingCart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();        
         localStorage.setItem("isMagnetic", "true");
         localStorage.setItem("isNonFareProduct", "false");
         this.getProductCatalogJSON();
+        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+        let shoppingCart = FareCardService.getInstance.addMagneticsCard(this.globals.globalCart.shoppingCart, item.Offering);
+        ShoppingCartService.getInstance.shoppingCart = null;
+        localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
         var timer = setTimeout(() => {
             this.router.navigate(['/addproduct']);
             clearTimeout(timer);

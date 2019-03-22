@@ -6,6 +6,10 @@ import { concat } from 'rxjs/operators';
 import { parse } from 'url';
 import { element } from '@angular/core/src/render3';
 import { forEach } from '@angular/router/src/utils/collection';
+import { FareCardService } from 'src/app/services/Farecard.service';
+import { Globals } from 'src/app/global';
+import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
+import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -84,7 +88,9 @@ export class AddProductComponent implements OnInit {
   payPricing: any = [];
   cardJson: any = [];
   productJson: any = [];
+  shoppingcart: any = [];
   readCarddata: any = {};
+  carddata: any = [];
   numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   zeroDigits: any = ["0", "00"]
   saveTransactionData: any;
@@ -120,10 +126,14 @@ export class AddProductComponent implements OnInit {
   quantityList: any = [];
   viewCardData: any = []
   cardProductData: any = [];
+  walletLineCart: any =[];
   productCheckOut: boolean = false;
   isNew: boolean = false;
+  slideConfig = {"slidesToShow": 2, dots:true,   "infinite": false,
+  "autoplay": false,   "prevArrow": false, "slidesToScroll": 2,
+  "nextArrow": false};
   @ViewChildren('cardsList') cardsList;
-  constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
+  constructor(private cdtaService: CdtaService,private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
@@ -177,6 +187,14 @@ export class AddProductComponent implements OnInit {
       if (this.isfromAddProduct && data != undefined && data != "") {
         this.isfromAddProduct = false;
         this._ngZone.run(() => {
+          localStorage.setItem("readCardData", JSON.stringify(data));
+          this.carddata = new Array(JSON.parse(data));
+         let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+         let newshoppingCart= JSON.parse(localStorage.getItem('shoppingCart'));
+         let shoppingCart = FareCardService.getInstance.addSmartCard(newshoppingCart, this.carddata[0], item.Offering);
+         debugger;
+         ShoppingCartService.getInstance.shoppingCart = null;
+         console.log(shoppingCart);
           this.cardJson.forEach(element => {
             if (element.printed_id == JSON.parse(data).printed_id) {
               isDuplicateCard = true;
@@ -190,6 +208,8 @@ export class AddProductComponent implements OnInit {
             this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
             this.selectCard(this.cardJson.length - 1);
+            localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
+            this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
           }
         });
       }
@@ -277,6 +297,10 @@ export class AddProductComponent implements OnInit {
     this.viewCardData = new Array(JSON.parse(item))
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
+    this.shoppingcart =JSON.parse(localStorage.getItem("shoppingCart"));
+    console.log(this.shoppingcart);
+    
+    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length-1]);
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -671,27 +695,29 @@ export class AddProductComponent implements OnInit {
   frequentRide() {
     this.selectedProductCategoryIndex = 0;
     this.merchantise = [];
-    this.productJson.forEach(element => {
-      var isCorrectType = false;
-      if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-        element.Ticket.WalletType.forEach(walletElement => {
-          if (this.isMagnetic) {
-            if (walletElement.WalletTypeId == 10)
-              isCorrectType = true;
-          }
-          else {
-            if (walletElement.WalletTypeId == 3)
-              isCorrectType = true;
-          }
-        });
-      }
-      if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
-        this.merchantise.push(element);
-      }
-      else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "1") {
-        this.merchantise.push(element);
-      }
-    });
+    // this.productJson.forEach(element => {
+    //   var isCorrectType = false;
+    //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
+    //     element.Ticket.WalletType.forEach(walletElement => {
+    //       if (this.isMagnetic) {
+    //         if (walletElement.WalletTypeId == 10)
+    //           isCorrectType = true;
+    //       }
+    //       else {
+    //         if (walletElement.WalletTypeId == 3)
+    //           isCorrectType = true;
+    //       }
+    //     });
+    //   }
+    //   if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
+    //     this.merchantise.push(element);
+    //   }
+    //   else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "1") {
+    //     this.merchantise.push(element);
+    //   }
+    // });
+  
+
     console.log(this.merchantise)
   }
   payValue() {
@@ -754,6 +780,15 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 0
     this.clickOnMagnetic(magnetic.id)
     // this.productTotal = this.productTotal + parseFloat(this.magneticCardCost);
+
+    //new code
+
+    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+    let newshoppingCart= JSON.parse(localStorage.getItem('shoppingCart'));
+    let shoppingCart = FareCardService.getInstance.addMagneticsCard(newshoppingCart, item.Offering);
+    ShoppingCartService.getInstance.shoppingCart = null;
+    localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
+    this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -793,7 +828,14 @@ export class AddProductComponent implements OnInit {
 
     // });
   }
-
+  activeWallet(item) {
+    console.log(item);
+    this.walletLineCart = item;
+    //frequentRider
+    //storedRide
+    //PayAsYouGo
+    // FilterOfferings.getInstance.filterOfferings(offeringJSON, ticketGroup,  ticketTypeId, walletLineItem);
+  }
   clickOnMerch() {
     console.log('clicked on merch')
     this.nonFare = false;
