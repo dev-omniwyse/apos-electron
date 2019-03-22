@@ -76,6 +76,7 @@ export class AdminComponent implements OnInit {
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
+            this.overShort = Math.abs(this.overShort)
 
           }
 
@@ -377,6 +378,7 @@ export class AdminComponent implements OnInit {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
         }
         this.overShort = (this.actualCash - this.expectedCash).toFixed(2)
+        this.overShort = Math.abs(this.overShort)
         if (element.initialOpeningTime != 0) {
           this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed)
           console.log("element.initialOpeningTime, element.timeClosed", element.initialOpeningTime, element.timeClosed)
