@@ -46,8 +46,11 @@ export class ShoppingCartService {
         // localStorage.setItem('shoppingCart', JSON.stringify(this._shoppingCart));
     }
 
-    getWalletContentsForGivenUID(shoppingCart, activePID) {
+    getWalletContentsForGivenUID(shoppingCart, activePID, activeUID) {
         let walletContents = null;
+        if(null == activePID){
+            activePID = activeUID;
+        }
         let walletLineItems = null == shoppingCart._walletLineItem ? [] : shoppingCart._walletLineItem;
         //refactor..
         for (let i = 0; i < walletLineItems.length; i++) {
@@ -90,15 +93,22 @@ export class ShoppingCartService {
         return total;
     }
 
-    removeProduct(shoppingCart, selectedItem){
+    /**
+     * 
+     * @param shoppingCart 
+     * @param walletLineItem 
+     * @param selectedItem 
+     * @param isWallet this is a flag check to verify wallet Or Not
+     */
+    removeItem(shoppingCart, walletLineItem,selectedItem, isWallet){
 
-        let flag = this.isGivenItemIsAWallet(selectedItem);
         let index = -1;
-        if(flag){
-            index = this.getIndexOfWalletLineItem(shoppingCart, selectedItem);
-            shoppingCart.splice();
+        if(isWallet){
+            index = this.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
+            shoppingCart.splice(index, 1);
         } else {
             index = this.getIndexOfWalletContent(shoppingCart, selectedItem);
+            walletLineItem._walletContents.splice(index, 1);
         }
         // array.splic0e(index, 1);
     }
@@ -118,7 +128,7 @@ export class ShoppingCartService {
     getIndexOfWalletContent(shoppingCart, item){
 
         let index = -1;
-        // this.getWalletContentsForGivenUID();
+        index = this.getWalletContentsForGivenUID(shoppingCart, null,item._cardUID);
         return index;
     }
     isGivenItemIsAWallet(item){
