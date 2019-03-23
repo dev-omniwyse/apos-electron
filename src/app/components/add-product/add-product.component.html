@@ -1,20 +1,19 @@
 <!-- <div class="header flex">
-  <div class="header-logo pull-left"><img src="assets/images/logo.jpg"/></div>
-  <div class="header-info pull-right">
-    <div class="login-info">
-      <div>CDTA Admin <span>|</span> Terminal: 1258</div>
-      <div><a href="#">logout</a></div>
-    </div>
-  </div>
-</div> -->
+   <div class="header-logo pull-left"><img src="assets/images/logo.jpg"/></div>
+   <div class="header-info pull-right">
+     <div class="login-info">
+       <div>CDTA Admin <span>|</span> Terminal: 1258</div>
+       <div><a href="#">logout</a></div>
+     </div>
+   </div>
+   </div> -->
 <div class="main-container">
     <div class="container-left">
         <div class="header-l">
             <img src="assets/images/shopping-cart.svg" width="30" />
             <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
             <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top">View
-                Card</button>
-
+              Card</button>
             <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">Add Card</button>
         </div>
         <div class="modal fade" id="viewCard" role="dialog">
@@ -24,14 +23,11 @@
                         <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                         <h4 class="modal-title">Card Summary</h4>
                     </div>
-
                     <div class="modal-body">
-
                         <div *ngFor="let card of viewCardData ">
                             <div class="flex-devide">
                                 <div class="flex">
                                     <div class="flex-devide">
-
                                         <p>{{card?.printed_id}} - Active</p>
                                         <p>Fare Code: Full</p>
                                         <p>Card Exp: {{card?.card_expiration_date_str}}</p>
@@ -43,14 +39,10 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="content-container container-padding">
                             <h1></h1>
                         </div>
-
                         <div class="flex container-padding flex-row">
-
                             <table class="table-css">
                                 <tr>
                                     <th>Product</th>
@@ -65,12 +57,11 @@
                                     <td>{{product.remainingValue}}</td>
                                 </tr>
                                 <!-- <tr>
-                                    <td>Frequent Rider</td>
-                                    <td>31 Day Pass</td>
-                                    <td>{{product.status}}</td>
-                                    <td>{{product.balance}}</td>
+                                <td>Frequent Rider</td>
+                                <td>31 Day Pass</td>
+                                <td>{{product.status}}</td>
+                                <td>{{product.balance}}</td>
                                 </tr> -->
-
                             </table>
                         </div>
                     </div>
@@ -80,11 +71,8 @@
                 </div>
             </div>
         </div>
-
         <!-- new code  -->
-
         <div class="btns-mag">
-
             <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
                 <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem" class="slide">
                     <div class="col-md-6">
@@ -93,122 +81,109 @@
                 </div>
             </ngx-slick>
             <!-- <div class="col-md-6" *ngFor="let item of shoppingcart._walletLineItem">
-                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>{{item._cardPID}}</button>
-            </div> -->
+                 <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>{{item._cardPID}}</button>
+                 </div> -->
         </div>
         <!-- <div class="btns-mag">
-  
-
-            <div class="col-md-6">
-                <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
-                    (click)=clickOnMerch()>Merch*</button>
-            </div>
-            <div *ngFor="let magnetic of magneticCardList;let j = index" (click)="clickOnMagnetic(magnetic.id)"
-                class="col-md-6">
-                <button
-                    [ngClass]="{'nonFare': currentMagneticIndex == magnetic.id && isMagnetic,'btn-b-white': isMagnetic || !isMagnetic || currentMagneticIndex == 0 || currentMagneticIndex == magnetic.id}">{{magnetic.name}}</button>
-            </div>
-            <div>
-                <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
-                    <button
-                        [ngClass]="{'regularRoute': selectedIdx == i && !isMagnetic && !isMerchendise ,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !isMagnetic || !isMerchendise }">{{cards?.printed_id}}</button>
-                </div>
-            </div>
-
-
-           
-            <div class="clearfix"></div>
-        </div> -->
+              <div class="col-md-6">
+                  <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
+                      (click)=clickOnMerch()>Merch*</button>
+              </div>
+              <div *ngFor="let magnetic of magneticCardList;let j = index" (click)="clickOnMagnetic(magnetic.id)"
+                  class="col-md-6">
+                  <button
+                      [ngClass]="{'nonFare': currentMagneticIndex == magnetic.id && isMagnetic,'btn-b-white': isMagnetic || !isMagnetic || currentMagneticIndex == 0 || currentMagneticIndex == magnetic.id}">{{magnetic.name}}</button>
+              </div>
+              <div>
+                  <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
+                      <button
+                          [ngClass]="{'regularRoute': selectedIdx == i && !isMagnetic && !isMerchendise ,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !isMagnetic || !isMerchendise }">{{cards?.printed_id}}</button>
+                  </div>
+              </div>
+              
+              
+              
+              <div class="clearfix"></div>
+              </div> -->
         <!-- <div class="flex header-l">
-          <button class="btn-b-white">Merch</button>
-          <button class="btn-b-white">{{cardJson?.printed_id}}</button>
-        </div> -->
+              <button class="btn-b-white">Merch</button>
+              <button class="btn-b-white">{{cardJson?.printed_id}}</button>
+              </div> -->
         <div class="container-l-app">
             <div>
                 <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
+                <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >1 Card : {{currentWalletLineItem?._cardPID}} &nbsp; ${{currentWalletLineItem?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeSmartCard()"><span
-                            class="glyphicon glyphicon-minus-sign"></span></div>
-
+                    <div class="pull-right" (click)="removeSmartCard()">
+                       <span class="glyphicon glyphicon-minus-sign"></span>
+            </div>
             </span>
-            <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index"> 
-                               
+            <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeSmartCard()"><span
-                            class="glyphicon glyphicon-minus-sign"></span></div>
+                    <div class="pull-right" (click)="removeSmartCard(item)"><span
+                       class="glyphicon glyphicon-minus-sign"></span></div>
         </span>
-        <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
-
-        <div class="" *ngFor="let merch of merchantList; let j = index">
+        <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
             <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
-
-                        <div class="pull-left">{{quantityList[j]}} &nbsp; {{merch.Description}} &nbsp;
-                            {{merch.Ticket.Price}}</div>
-
-                        <div class="pull-right"
-                            (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
-                                class="glyphicon glyphicon-minus-sign"></span></div>
-
+                       <div class="pull-left">{{quantityList[j]}} &nbsp; {{merch.Description}} &nbsp;
+                          {{merch.Ticket.Price}}
+                       </div>
+                       <div class="pull-right"
+                          (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
+                          class="glyphicon glyphicon-minus-sign"></span></div>
         </span>
+    </div> -->
     </div>
-</div>
-<!-- 
-    <div *ngIf="isMagnetic">
-        <span class="label label-default">
-                    <div class="pull-left">1 New Magnetics</div>
-
-                    <div class="pull-right" (click)="removeMagneticCard()"><span
-                            class="glyphicon glyphicon-minus-sign"></span></div>
-
-    </span>
-    <div class="" *ngFor="let merch of MagneticList; let j = index">
-
-        <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
-                        <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
-
-                        <div class="pull-right" (click)="removeMagneticProduct(merch)"><span
-                                class="glyphicon glyphicon-minus-sign"></span></div>
-
-    </span>
-</div>
-</div> -->
-
-
-<!-- <div *ngIf="isMerchendise">
-    <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
-
-    <div class="" *ngFor="let merch of merchantiseList; let k = index">
-        <span class="label label-default">
-
-
-                        <div class="pull-left">{{merch.quantity}} &nbsp; {{merch.Description}} &nbsp;
-                            {{merch.UnitPrice}}</div>
-
-                        <div class="pull-right" (click)="removeMerchProduct(merch)"><span
-                                class="glyphicon glyphicon-minus-sign"></span></div>
-
-    </span>
-</div>
-</div> -->
-
-
+    <!-- 
+                 <div *ngIf="isMagnetic">
+                     <span class="label label-default">
+                                 <div class="pull-left">1 New Magnetics</div>
+                 
+                                 <div class="pull-right" (click)="removeMagneticCard()"><span
+                                         class="glyphicon glyphicon-minus-sign"></span></div>
+                 
+                 </span>
+                 <div class="" *ngFor="let merch of MagneticList; let j = index">
+                 
+                     <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
+                                     <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
+                 
+                                     <div class="pull-right" (click)="removeMagneticProduct(merch)"><span
+                                             class="glyphicon glyphicon-minus-sign"></span></div>
+                 
+                 </span>
+                 </div>
+                 </div> -->
+    <!-- <div *ngIf="isMerchendise">
+                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
+                 
+                 <div class="" *ngFor="let merch of merchantiseList; let k = index">
+                     <span class="label label-default">
+                 
+                 
+                                     <div class="pull-left">{{merch.quantity}} &nbsp; {{merch.Description}} &nbsp;
+                                         {{merch.UnitPrice}}</div>
+                 
+                                     <div class="pull-right" (click)="removeMerchProduct(merch)"><span
+                                             class="glyphicon glyphicon-minus-sign"></span></div>
+                 
+                 </span>
+                 </div>
+                 </div> -->
 </div>
 <div class="sub-total ">
     <div class="flex" *ngIf="isMagnetic">
         <div class="float-left">Fare Products Subtotal</div>
         <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
-
     </div>
     <div class="flex" *ngIf="isMerchendise">
         <div class="float-left">Non-fare Products Subtotal</div>
         <div class="float-right">${{merchentiseSubTotal | number : '1.2-2'}}</div>
-
     </div>
     <div class="flex" *ngIf="!isMerchendise && !isMagnetic">
         <div class="float-left">Fare Products Subtotal</div>
         <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
-
     </div>
     <hr>
     <div class="flex totals">
@@ -237,11 +212,12 @@
             <div *ngFor="let merch of merchantise">
                 <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
                 <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
-
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
-            <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
+            <div *ngFor="let merch of merchantise">
+                <!-- <button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+                <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
             </div>
         </div>
     </div>
@@ -279,7 +255,6 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Cash Applied</h4>
                         </div>
-
                         <div class="modal-body">
                             <p>Return change to customer</p>
                             <p>Click "OK" When cash drawer is closed</p>
@@ -307,16 +282,14 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Cash Applied</h4>
                         </div>
-
                         <div class="modal-body">
                             <!-- <p>Return change to customer</p>
-              <p>Click "OK" When cash drawer is closed</p> -->
+                                <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
                                 <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -331,7 +304,6 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Check Applied</h4>
                         </div>
-
                         <div class="modal-body">
                             <p>Click "OK" When cash drawer is closed</p>
                         </div>
@@ -341,7 +313,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal fade" id="fareCardModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -349,16 +320,13 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Are you sure you want use an existing fare card ?</h4>
                         </div>
-
                         <div class="modal-body">
-
                             <p>By continiuing you confirming that the customer has a fare card for the amount of $50.00 that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div> -->
-
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal}}</div>
+                                <div class="clearfix"></div>
+                                </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
@@ -367,7 +335,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal fade" id="fareApplyModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -392,16 +359,13 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Are you sure you want use voucher ?</h4>
                         </div>
-
                         <div class="modal-body">
-
                             <p>By continiuing you confirming that the customer has a voucher for the amount of ${{productTotal | number : '1.2-2'}} that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div> -->
-
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal}}</div>
+                                <div class="clearfix"></div>
+                                </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
@@ -433,21 +397,17 @@
                         <div class="modal-header">
                             Pay As You Go
                         </div>
-
                         <div class="modal-body">
-
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <p>Place Card on Reader</p>
                             <button class="pay-as-you">Pay with Pay As You Go</button>
-
                             <!-- <p>Return change to customer</p>
-              <p>Click "OK" When cash drawer is closed</p> -->
+                                <p>Click "OK" When cash drawer is closed</p> -->
                             <!-- <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div> -->
-
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal}}</div>
+                                <div class="clearfix"></div>
+                                </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -462,16 +422,13 @@
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Are you sure you want comp this sale ?</h4>
                         </div>
-
                         <div class="modal-body">
-
                             <p>By continiuing you confirming that you want to comp this sale for amount of ${{productTotal | number : '1.2-2'}} that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
-                    <div class="pull-left">Cash Applied </div>
-                    <div class="pull-right">${{productTotal}}</div>
-                    <div class="clearfix"></div>
-                  </div> -->
-
+                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-right">${{productTotal}}</div>
+                                <div class="clearfix"></div>
+                                </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">No, Cancel</button>
@@ -490,7 +447,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Card Already on Order</h4>
             </div>
-
             <div class="modal-body">
                 <p>Card is already on order. Add product to that card, or remove the old card and scan a new one.
                 </p>
@@ -508,7 +464,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Error</h4>
             </div>
-
             <div class="modal-body">
                 <p>Card product limit reached.</p>
             </div>
@@ -525,7 +480,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Error</h4>
             </div>
-
             <div class="modal-body">
                 <p>{{maxLimitErrorMessages}}</p>
             </div>
@@ -542,7 +496,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
-
             <div class="modal-body">
                 <p>By continuing, the "{{merchproductToRemove.Description}}" will be permanently deleted.</p>
             </div>
@@ -560,7 +513,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
-
             <div class="modal-body">
                 <p>By continuing, the "{{magneticProductToRemove.Description}}" will be permanently deleted.</p>
             </div>
@@ -578,7 +530,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
-
             <div class="modal-body">
                 <p>By continuing, the "{{smartCradProductToRemove.Description}}" will be permanently deleted.</p>
             </div>
@@ -596,10 +547,9 @@
             <div class="modal-body-in">
                 <div class="">
                     <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img
-                                src="assets/images/arrow-pointing-to-right.svg" /></button>
+                          src="assets/images/arrow-pointing-to-right.svg" /></button>
                     <button class="cardBtn" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card <img
-                                src="assets/images/arrow-pointing-to-right.svg" /></button>
-
+                          src="assets/images/arrow-pointing-to-right.svg" /></button>
                     <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -641,7 +591,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Error!</h4>
             </div>
-
             <div class="modal-body">
                 <p>Error occured. Please try again</p>
             </div>
@@ -658,7 +607,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Error!</h4>
             </div>
-
             <div class="modal-body">
                 <p>Total Due Should not be zero. Please add Products</p>
             </div>
@@ -675,7 +623,6 @@
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to cancel the checkout?</h4>
             </div>
-
             <div class="modal-body">
                 <p>By continiuing,any payment methods that have been applied will be canceled.</p>
             </div>
