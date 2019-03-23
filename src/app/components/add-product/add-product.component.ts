@@ -488,8 +488,14 @@ export class AddProductComponent implements OnInit {
     $("#maxCardLimitModal").modal('show');
     return;
   }
-    let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
-    localStorage.setItem('shoppingCart', JSON.stringify(response));
+
+  this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
+    this.getSubTotal(this.currentWalletLineItem);
+    this.getTotalDue(this.shoppingcart);
+
+    // let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
+    // localStorage.setItem('shoppingCart', JSON.stringify(response));
+    
   }
 
   // getSelectedProductData(merch) {

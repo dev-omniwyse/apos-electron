@@ -73,7 +73,6 @@
         </div>
         <!-- new code  -->
         <div class="btns-mag">
-            {{shoppingcart._walletLineItem | json}}
             <!-- <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
                 <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem; let i = index" class="slide">
                     <div class="col-md-6">
@@ -82,8 +81,8 @@
                 </div>
             </ngx-slick> -->
             <div class="col-md-6" *ngFor="let item of shoppingcart._walletLineItem">
-                    <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
-                 </div>
+                <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
+            </div>
         </div>
         <!-- <div class="btns-mag">
               <div class="col-md-6">
@@ -174,12 +173,12 @@
                  </div> -->
 </div>
 <div class="sub-total ">
-    <div class="flex" >
+    <div class="flex">
         <div class="float-left" *ngIf="!isMerchendise">Fare Products Subtotal</div>
         <div class="float-left" *ngIf="isMerchendise">Non - Fare Products Subtotal</div>
         <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
     </div>
- 
+
     <hr>
     <div class="flex totals">
         <div class="float-left">Total Due</div>
