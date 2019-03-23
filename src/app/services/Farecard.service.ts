@@ -31,18 +31,21 @@ export class FareCardService {
     addFareProduct(shoppingCart, offering, walletLineItem) {
 
         // FareCardService.getInstance.getWalletContentsForGivenUID(walletLineItem.cardPID);
-        let walletContents = walletLineItem.walletContents;
+        let indexOfWalletInShoppingCart = ShoppingCartService.getInstance.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
+        let walletContents = walletLineItem._walletContents;
         console.log("Found Walletcontents for this cardUID are :");
-        let index = FareCardService.getInstance.isExistingOfferingForThisWallet(offering, walletContents);
+        let index = FareCardService.getInstance.getWalletContentIndexForOffering(offering, walletContents);
         if (-1 != index) {
             console.log("Is Existing Offering? increase qunatity.");
             walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering, walletContents, index);
+            shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents = walletContents;
+            walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents;
         } else {
             console.log("adding wallet content..");
             let walletContent = new WalletContent();
 
             walletContent.cardUID = walletLineItem._cardUID;
-            walletContent.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(shoppingCart, walletLineItem._cardPID);
+            walletContent.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(walletLineItem);
             walletContent.offering = offering;
             walletContent.unitPrice = offering.UnitPrice;
             walletContent.description = offering.Description;
@@ -53,24 +56,18 @@ export class FareCardService {
             walletContent.startDate = 0;
             walletContent.expirationDate = 0;
             walletContent.rechargesPending = 0;
-
-            walletContents.push(walletContent);
-
+            shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents.push(walletContent);
+            walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents
         }
-        shoppingCart._walletContents = walletContents;
+
         return shoppingCart;
     }
 
-    isExistingOfferingForThisWallet(offering, walletContents) {
+    getWalletContentIndexForOffering(offering, walletContents) {
         let index = -1;
-        for (let a = 0; a < walletContents.length; a++) {
-            for(let offer of walletContents[a]._offering){
-                if (offer._offeringId == offering.offeringId) {
-                    index = a;
-                    break;
-                }                
-            }
-            if( -1 != index){
+        for (let wcIndex = 0; wcIndex < walletContents.length; wcIndex++) {
+            if (walletContents[wcIndex]._offering.OfferingId == offering.OfferingId) {
+                index = wcIndex;
                 break;
             }
         }
@@ -84,7 +81,7 @@ export class FareCardService {
         walletContents[index]._unitPrice = walletContents[index]._unitPrice + offering.UnitPrice;
         walletContents[index]._quantity = walletContents[index]._quantity + 1;
         return walletContents;
-    }    
+    }
 
     //add smart card data - WalletLineItem
     addSmartCard(shoppingCart, readCardJSON, offeringJSONArray) {

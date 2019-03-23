@@ -106,7 +106,7 @@ export class ShoppingCartService {
     getIndexOfWalletLineItem(shoppingCart, item){
         let index = -1;
         let wallet = shoppingCart._walletLineItem;
-        for(let i=0; i<wallet.length.length;i++){
+        for(let i=0; i<wallet.length;i++){
             if(wallet[i]._cardPID == item._cardPID){
                 index = i;
                 break;

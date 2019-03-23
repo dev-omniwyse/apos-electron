@@ -33,9 +33,9 @@ export class Utils {
         return nextMaxSequenceNumber;
     }
 
-    generateSequenceNumberForWalletContent(shoppingCart, cardPID) {
+    generateSequenceNumberForWalletContent(walletLineItem) {
 
-        let walletContents = ShoppingCartService.getInstance.getWalletContentsForGivenUID(shoppingCart, cardPID);
+        let walletContents = walletLineItem._walletContents;
         let seqNumber = walletContents.length + 1;
         return seqNumber;
     }

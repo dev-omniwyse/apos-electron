@@ -127,12 +127,17 @@ export class AddProductComponent implements OnInit {
   quantityList: any = [];
   viewCardData: any = []
   cardProductData: any = [];
-  walletLineCart: any =[];
+  
   productCheckOut: boolean = false;
   isNew: boolean = false;
   slideConfig = {"slidesToShow": 2, dots:true,   "infinite": false,
   "autoplay": false,   "prevArrow": false, "slidesToScroll": 2,
   "nextArrow": false};
+
+
+
+  currentWalletLineItem: any =[];
+
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService?: CdtaService,private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
@@ -199,7 +204,6 @@ export class AddProductComponent implements OnInit {
          let newshoppingCart= JSON.parse(localStorage.getItem('shoppingCart'));
          let shoppingCart = FareCardService.getInstance.addSmartCard(newshoppingCart, this.carddata[0], item.Offering);
          
-         debugger;
          ShoppingCartService.getInstance.shoppingCart = null;
          console.log(shoppingCart);
           this.cardJson.forEach(element => {
@@ -471,6 +475,14 @@ export class AddProductComponent implements OnInit {
     return isProductLimitReached;
   }
 
+  addProductToWallet(product) {
+    console.log(product);
+    console.log(this.shoppingcart);
+    let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
+    console.log(response);
+    console.log(this.currentWalletLineItem);
+    localStorage.setItem('shoppingCart', JSON.stringify(response));
+  }
   getSelectedProductData(merch) {
     if (this.isMaxProductLengthReached(merch)) {
       if (this.maxRechargesPendingReached || this.maxRechargeRidesReached || this.maxRemainingValueReached) {
@@ -674,7 +686,7 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 1;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.walletLineCart);
+    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
     console.log(list);
     // this.cdtaService.getJSON().subscribe(data => {
     //   var i = 0;
@@ -707,7 +719,7 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.walletLineCart);
+    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
     // this.productJson.forEach(element => {
     //   var isCorrectType = false;
     //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
@@ -737,7 +749,7 @@ export class AddProductComponent implements OnInit {
     this.selectedProductCategoryIndex = 2;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.walletLineCart);
+    let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
     console.log(list);
     // this.productJson.forEach(element => {
     //   var isCorrectType = false;
@@ -846,9 +858,7 @@ export class AddProductComponent implements OnInit {
     // });
   }
   activeWallet(item) {
-    console.log(item);
-    this.walletLineCart = item;
-    debugger;
+    this.currentWalletLineItem = item;
 
     if(this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
       this.isMerchendise = true;
