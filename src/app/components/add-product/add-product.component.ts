@@ -127,6 +127,7 @@ export class AddProductComponent implements OnInit {
   quantityList: any = [];
   viewCardData: any = []
   cardProductData: any = [];
+  totalDue: any = [];
   
   productCheckOut: boolean = false;
   isNew: boolean = false;
@@ -476,12 +477,9 @@ export class AddProductComponent implements OnInit {
   }
 
   addProductToWallet(product) {
-    console.log(product);
-    console.log(this.shoppingcart);
     let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
-    console.log(response);
-    console.log(this.currentWalletLineItem);
     localStorage.setItem('shoppingCart', JSON.stringify(response));
+    this.getSubTotal(this.currentWalletLineItem)
   }
   getSelectedProductData(merch) {
     if (this.isMaxProductLengthReached(merch)) {
@@ -859,7 +857,8 @@ export class AddProductComponent implements OnInit {
   }
   activeWallet(item) {
     this.currentWalletLineItem = item;
-
+    this.getTotalDue(this.shoppingcart);
+    
     if(this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
       this.isMerchendise = true;
       this.clickOnMerch();
@@ -870,7 +869,7 @@ export class AddProductComponent implements OnInit {
       this.regularRoute = false;
       this.isMerchendise = false;
       (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
-   
+      this.getSubTotal(this.currentWalletLineItem);
     }
     //frequentRider
     //storedRide
@@ -919,6 +918,19 @@ export class AddProductComponent implements OnInit {
     // }
 
   }
+
+  getSubTotal(currentWalletLineItem) {
+    this.subTotal = ShoppingCartService.getInstance.getSubTotalForCardUID(currentWalletLineItem);
+    console.log(this.subTotal);
+  
+  }
+
+  getTotalDue(shoppingCart) {
+    this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
+    console.log(this.totalDue);
+  }
+
+
   displaySmartCardsSubtotal(products: any, isTotalList) {
     var index = 0;
     this.subTotal = 0;
