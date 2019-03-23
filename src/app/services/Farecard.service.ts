@@ -139,7 +139,7 @@ export class FareCardService {
         walletLineItem.description = Constants.MERCHANDISE_TEXT;
         walletLineItem.walletTypeId = MediaType.MERCHANDISE_ID;
         walletLineItem.cardPID = Constants.MERCHANDISE_TEXT;
-
+        walletLineItem.walletContents = [];
 
         shoppingCart._walletLineItem.push(walletLineItem);
         return shoppingCart;
