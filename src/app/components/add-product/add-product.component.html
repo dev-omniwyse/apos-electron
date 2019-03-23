@@ -124,15 +124,18 @@
           <button class="btn-b-white">{{cardJson?.printed_id}}</button>
         </div> -->
         <div class="container-l-app">
-            <div *ngIf="!isMagnetic && !isMerchendise">
-                <span class="label label-default">
-                    <div class="pull-left" *ngIf="!isNew">1 Card : {{currentCard?.printed_id}}</div>
-                    <div class="pull-left" *ngIf="isNew">1 Card : {{currentCard?.printed_id}} &nbsp; ${{smartCardCost}}</div>
+            <div>
+                    <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
+                <span class="label label-default" *ngIf="!isMerchendise">
+                    <!-- <div class="pull-left" *ngIf="!isNew">1 Card : {{walletLineCart?._cardPID}}</div> -->
+                    <div class="pull-left" >1 Card : {{walletLineCart?._cardPID}} &nbsp; ${{walletLineCart?._unitPrice}}</div>
 
                     <div class="pull-right" (click)="removeSmartCard()"><span
                             class="glyphicon glyphicon-minus-sign"></span></div>
 
             </span>
+            <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
+
             <div class="" *ngFor="let merch of merchantList; let j = index">
                 <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
 
@@ -146,7 +149,7 @@
             </span>
         </div>
     </div>
-
+<!-- 
     <div *ngIf="isMagnetic">
         <span class="label label-default">
                     <div class="pull-left">1 New Magnetics</div>
@@ -165,10 +168,10 @@
 
     </span>
 </div>
-</div>
+</div> -->
 
 
-<div *ngIf="isMerchendise">
+<!-- <div *ngIf="isMerchendise">
     <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
 
     <div class="" *ngFor="let merch of merchantiseList; let k = index">
@@ -183,7 +186,7 @@
 
     </span>
 </div>
-</div>
+</div> -->
 
 
 </div>
@@ -227,7 +230,7 @@
             <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
         </ul>
         <div class=" flex-wrap flex-right-items flex-contain-full-w1" *ngIf="!regularRoute">
-            <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.Ticket.Price}}</button>
+            <div *ngFor="let merch of merchantise"><button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">

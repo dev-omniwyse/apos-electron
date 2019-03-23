@@ -1,4 +1,5 @@
 import { ShoppingCart } from "../models/ShoppingCart";
+import { WalletLineItem } from '../models/WalletLineItem';
 
 export class ShoppingCartService {
 
@@ -45,28 +46,86 @@ export class ShoppingCartService {
         // localStorage.setItem('shoppingCart', JSON.stringify(this._shoppingCart));
     }
 
-    // setCart(data){
-    //     localStorage.setItem('shoppingCart', JSON.stringify(data));
-    // }
+    getWalletContentsForGivenUID(shoppingCart, activePID) {
+        let walletContents = null;
+        let walletLineItems = null == shoppingCart._walletLineItem ? [] : shoppingCart._walletLineItem;
+        //refactor..
+        for (let i = 0; i < walletLineItems.length; i++) {
+            if (walletLineItems[i].cardPID == activePID) {
+                walletContents = walletLineItems[i].walletContents;
+                break;
+            }
+        }
+        return walletContents;
+    }
 
-    // getCart() {
+    getWalletLineItemForCardPID(shoppingCart, cardPID) {
+        let walletLineItem = null;
+        for (let i = 0; i < shoppingCart._walletLineItem.length; i++) {
+            if (shoppingCart._walletLineItem[i].cardUID == cardPID) {
+                walletLineItem = shoppingCart._walletLineItem[i];
+                break;
+            }
+        }
+        return walletLineItem;
+    }
 
-    //     let item =  JSON.parse(localStorage.getItem('shoppingCart'));
-        
-    //     return item;
-    // }
     
-    // clearCart() {
-    //     localStorage.removeItem('shoppingCart');
-    //     this.emptyCart();
-    // }
+    getSubTotalForCardUID(walletLineItem) {
+        let subTotal = 0;
+        subTotal += walletLineItem._unitPrice;
+        for(let item of walletLineItem._walletContents){
+            subTotal += item._unitPrice;      
+        }
 
-    // emptyCart(){
-    //     this._shoppingCart = null;
-    // }
+        return subTotal;
+    }
 
+    getGrandTotal(shoppingCart){
 
+        let total = 0;
+        for(let item of shoppingCart._walletLineItem) {
+            total += this.getSubTotalForCardUID(item);
+        }
+        return total;
+    }
 
-    
+    removeProduct(shoppingCart, selectedItem){
 
+        let flag = this.isGivenItemIsAWallet(selectedItem);
+        let index = -1;
+        if(flag){
+            index = this.getIndexOfWalletLineItem(shoppingCart, selectedItem);
+            shoppingCart.splice();
+        } else {
+            index = this.getIndexOfWalletContent(shoppingCart, selectedItem);
+        }
+        // array.splic0e(index, 1);
+    }
+
+    getIndexOfWalletLineItem(shoppingCart, item){
+        let index = -1;
+        let wallet = shoppingCart._walletLineItem;
+        for(let i=0; i<wallet.length.length;i++){
+            if(wallet[i]._cardPID == item._cardPID){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    getIndexOfWalletContent(shoppingCart, item){
+
+        let index = -1;
+        // this.getWalletContentsForGivenUID();
+        return index;
+    }
+    isGivenItemIsAWallet(item){
+
+        if ( item instanceof WalletLineItem ) {
+            return true;
+        }
+        return false;
+    }
 }

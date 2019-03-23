@@ -33,7 +33,7 @@ export class FareCardService {
         // FareCardService.getInstance.getWalletContentsForGivenUID(walletLineItem.cardPID);
         let walletContents = walletLineItem.walletContents;
         console.log("Found Walletcontents for this cardUID are :");
-        let index = FareCardService.getInstance.isExistingOfferingForThisWallet(offering, walletContents)
+        let index = FareCardService.getInstance.isExistingOfferingForThisWallet(offering, walletContents);
         if (-1 != index) {
             console.log("Is Existing Offering? increase qunatity.");
             walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering, walletContents, index);
@@ -41,8 +41,8 @@ export class FareCardService {
             console.log("adding wallet content..");
             let walletContent = new WalletContent();
 
-            walletContent.cardUID = walletLineItem.cardUID;
-            walletContent.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(shoppingCart, walletLineItem.cardPID);
+            walletContent.cardUID = walletLineItem._cardUID;
+            walletContent.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(shoppingCart, walletLineItem._cardPID);
             walletContent.offering = offering;
             walletContent.unitPrice = offering.UnitPrice;
             walletContent.description = offering.Description;
@@ -64,8 +64,13 @@ export class FareCardService {
     isExistingOfferingForThisWallet(offering, walletContents) {
         let index = -1;
         for (let a = 0; a < walletContents.length; a++) {
-            if (walletContents[a].offering.offeringId == offering.offeringId) {
-                index = a;
+            for(let offer of walletContents[a]._offering){
+                if (offer._offeringId == offering.offeringId) {
+                    index = a;
+                    break;
+                }                
+            }
+            if( -1 != index){
                 break;
             }
         }
@@ -76,24 +81,10 @@ export class FareCardService {
         console.log("request for updating wallet contents");
         console.log("Index of duplicate element is :" + index);
         // walletContents[index].sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(walletContents.cardPID);
-        walletContents[index].unitPrice = walletContents[index].unitPrice + offering.UnitPrice;
-        walletContents[index].quantity = walletContents[index].quantity + 1;
+        walletContents[index]._unitPrice = walletContents[index]._unitPrice + offering.UnitPrice;
+        walletContents[index]._quantity = walletContents[index]._quantity + 1;
         return walletContents;
-    }
-
-    getWalletContentsForGivenUID(shoppingCart, activePID) {
-        let walletContents = null;
-        let walletLineItems = null == shoppingCart._walletLineItem ? [] : shoppingCart._walletLineItem;
-        //refactor..
-        for (let i = 0; i < walletLineItems.length; i++) {
-            if (walletLineItems[i].cardPID == activePID) {
-                walletContents = walletLineItems[i].walletContents;
-                break;
-            }
-        }
-        return walletContents;
-    }
-
+    }    
 
     //add smart card data - WalletLineItem
     addSmartCard(shoppingCart, readCardJSON, offeringJSONArray) {
@@ -206,18 +197,6 @@ export class FareCardService {
         shoppingCart._walletLineItem.push(walletLineItem);
 
         return shoppingCart;
-    }
-
-
-    getWalletLineItemForCardUID(shoppingCart, cardUID) {
-        let walletLineItem = null;
-        for (let i = 0; i < shoppingCart._walletLineItem.length; i++) {
-            if (shoppingCart._walletLineItem[i].cardUID == cardUID) {
-                walletLineItem = shoppingCart._walletLineItem[i];
-                break;
-            }
-        }
-        return walletLineItem;
     }
 
     //list of walletLinItems

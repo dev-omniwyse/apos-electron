@@ -35,7 +35,7 @@ export class Utils {
 
     generateSequenceNumberForWalletContent(shoppingCart, cardPID) {
 
-        let walletContents = FareCardService.getInstance.getWalletContentsForGivenUID(shoppingCart, cardPID);
+        let walletContents = ShoppingCartService.getInstance.getWalletContentsForGivenUID(shoppingCart, cardPID);
         let seqNumber = walletContents.length + 1;
         return seqNumber;
     }

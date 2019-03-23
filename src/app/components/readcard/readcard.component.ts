@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { FareCardService } from 'src/app/services/Farecard.service';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { Globals } from 'src/app/global';
+import { AddProductComponent } from '../add-product/add-product.component';
 declare var $: any;
 declare var WebCamera: any;
 declare var dialog: any;

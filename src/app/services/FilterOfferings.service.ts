@@ -16,7 +16,7 @@ export class FilterOfferings {
         FilterOfferings._filterService = this;
     }
 
-    filterOfferings(offeringJSON, ticketGroup,  ticketTypeId, walletLineItem){
+    filterFareOfferings(offeringJSON, ticketGroup,  ticketTypeId, walletLineItem){
 
         let filteredProducts = [];
         for (let item of offeringJSON) {
@@ -31,17 +31,17 @@ export class FilterOfferings {
                         let fareCodeMatch = false;
     
                         for (let i =0; i < item.Ticket.WalletType.length; i++) {
-                            if (walletLineItem.walletTypeId == item.Ticket.WalletType[i].WalletTypeId) {
+                            if (walletLineItem._walletTypeId == item.Ticket.WalletType[i].WalletTypeId) {
                                 walletTypeMatch = true;
                             }
                         }
                         
-                        if(walletLineItem.walletTypeId  === MediaType.MAGNETIC_ID) {
+                        if(walletLineItem._walletTypeId  === MediaType.MAGNETIC_ID) {
                             // Display all farecodes for Magnetics
                             fareCodeMatch = true;
                         } else {
                             for (let i =0; i < item.Ticket.FareCode.length; i++) {
-                                if (walletLineItem.farecodeID == item.Ticket.FareCode[i].FareCodeId) {
+                                if (walletLineItem._fareCodeId == item.Ticket.FareCode[i].FareCodeId) {
                                     fareCodeMatch = true;
                                 }
                             }
@@ -57,5 +57,17 @@ export class FilterOfferings {
 
         return filteredProducts;
         
+    }
+
+    filterNonFareOfferings(offeringJSON){
+
+        let filteredNonFareProducts = [];
+        for(let item of offeringJSON) {
+            if (true == item.IsMerchandise) {
+                filteredNonFareProducts.push(item);
+            }
+        }
+        
+        return filteredNonFareProducts;
     }
 }
