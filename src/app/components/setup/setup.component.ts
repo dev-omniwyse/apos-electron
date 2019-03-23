@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { ElectronService } from 'ngx-electron';
 import { CdtaService } from 'src/app/cdta.service';
+import {environment} from '../../../environments/environment'
 @Component({
   selector: 'app-setup',
   templateUrl: './setup.component.html',
@@ -15,8 +16,11 @@ export class SetupComponent implements OnInit {
     form: any;
     showView = false;
     isFromSetup = false;
+    isProduction: boolean;
     constructor(private route: ActivatedRoute,private router: Router, private cdtaservice: CdtaService, private electronService:ElectronService,private _ngZone: NgZone,private ref: ChangeDetectorRef, private http: HttpClient) {
-    
+        console.log(environment.production)
+        this.isProduction = environment.production;
+
         // this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
         //     if (data != undefined && data != "" && this.isFromSetup) {
         //         this.isFromSetup = false;
@@ -36,7 +40,15 @@ export class SetupComponent implements OnInit {
     ngOnInit() {
         this.cdtaservice.announceHeaderShowHide("showHeader");
         this.isFromSetup = true;
-        //this.electronService.ipcRenderer.send("switchlogincall");
+        if(this.isProduction) {
+            localStorage.clear()
+        } else {
+            var environment = localStorage.getItem('environment');
+            localStorage.clear();
+
+            localStorage.setItem('environment', environment);
+        }
+     
     }
 
     ngOnChanges(){
