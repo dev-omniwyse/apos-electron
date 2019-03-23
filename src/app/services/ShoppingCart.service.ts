@@ -100,17 +100,18 @@ export class ShoppingCartService {
      * @param selectedItem 
      * @param isWallet this is a flag check to verify wallet Or Not
      */
-    removeItem(shoppingCart, walletLineItem,selectedItem, isWallet){
+    removeItem(shoppingCart, walletLineItem, selectedItem, isWallet){
 
         let index = -1;
         if(isWallet){
             index = this.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
-            shoppingCart.splice(index, 1);
+            shoppingCart._walletLineItem.splice(index, 1);
+            
         } else {
             index = this.getIndexOfWalletContent(shoppingCart, selectedItem);
             walletLineItem._walletContents.splice(index, 1);
         }
-        // array.splic0e(index, 1);
+        return shoppingCart;
     }
 
     getIndexOfWalletLineItem(shoppingCart, item){

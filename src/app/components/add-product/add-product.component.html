@@ -73,16 +73,17 @@
         </div>
         <!-- new code  -->
         <div class="btns-mag">
-            <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
-                <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem" class="slide">
+            {{shoppingcart._walletLineItem | json}}
+            <!-- <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+                <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem; let i = index" class="slide">
                     <div class="col-md-6">
                         <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
                     </div>
                 </div>
-            </ngx-slick>
-            <!-- <div class="col-md-6" *ngFor="let item of shoppingcart._walletLineItem">
-                 <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}" (click)=clickOnMerch()>{{item._cardPID}}</button>
-                 </div> -->
+            </ngx-slick> -->
+            <div class="col-md-6" *ngFor="let item of shoppingcart._walletLineItem">
+                    <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
+                 </div>
         </div>
         <!-- <div class="btns-mag">
               <div class="col-md-6">
@@ -115,13 +116,13 @@
                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >1 Card : {{currentWalletLineItem?._cardPID}} &nbsp; ${{currentWalletLineItem?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeSmartCard()">
+                    <div class="pull-right" (click)="removeCurrentWalletLineItem()">
                        <span class="glyphicon glyphicon-minus-sign"></span>
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeSmartCard(item)"><span
+                    <div class="pull-right" (click)="removeProduct(item)"><span
                        class="glyphicon glyphicon-minus-sign"></span></div>
         </span>
         <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
@@ -173,22 +174,16 @@
                  </div> -->
 </div>
 <div class="sub-total ">
-    <div class="flex" *ngIf="isMagnetic">
-        <div class="float-left">Fare Products Subtotal</div>
+    <div class="flex" >
+        <div class="float-left" *ngIf="!isMerchendise">Fare Products Subtotal</div>
+        <div class="float-left" *ngIf="isMerchendise">Non - Fare Products Subtotal</div>
         <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
     </div>
-    <div class="flex" *ngIf="isMerchendise">
-        <div class="float-left">Non-fare Products Subtotal</div>
-        <div class="float-right">${{merchentiseSubTotal | number : '1.2-2'}}</div>
-    </div>
-    <div class="flex" *ngIf="!isMerchendise && !isMagnetic">
-        <div class="float-left">Fare Products Subtotal</div>
-        <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
-    </div>
+ 
     <hr>
     <div class="flex totals">
         <div class="float-left">Total Due</div>
-        <div class="float-right">${{productTotal | number : '1.2-2'}}</div>
+        <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
     </div>
 </div>
 <div class="btns-set">
@@ -523,7 +518,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="removeSmartCardProductModal" role="dialog">
+<div class="modal fade" id="removeProductModal" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -531,7 +526,7 @@
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
             <div class="modal-body">
-                <p>By continuing, the "{{smartCradProductToRemove.Description}}" will be permanently deleted.</p>
+                <p>By continuing, the "{{productToRemove._description}}" will be permanently deleted.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
@@ -556,16 +551,16 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="smartCardRemove" role="dialog">
+<div class="modal fade" id="currentCardRemove" role="dialog">
     <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
             <h4 class="modal-title modal-txt-h">Are you sure you want to delete?</h4>
             <div class="modal-body">
-                <p>By continuing, you will remove card {{currentCard?.printed_id}}.</p>
+                <p>By continuing, you will remove card {{currentWalletLineItem?._cardPID}}.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-default" (click)="removeSmartCardConfirmation()" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-default" (click)="removeCurrentWalletLineItemConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>
