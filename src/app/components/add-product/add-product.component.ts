@@ -113,7 +113,7 @@ export class AddProductComponent implements OnInit {
   calsifilter: boolean = false;
   merchproductToRemove: any = {};
   magneticProductToRemove: any = {};
-  smartCradProductToRemove: any = {};
+  productToRemove: any = {};
   magneticCardList: any = [];
   magneticIds: any = [];
   currentMagneticIndex: any = 0;
@@ -128,19 +128,23 @@ export class AddProductComponent implements OnInit {
   viewCardData: any = []
   cardProductData: any = [];
   totalDue: any = [];
-  
+
   productCheckOut: boolean = false;
   isNew: boolean = false;
-  slideConfig = {"slidesToShow": 2, dots:true,   "infinite": false,
-  "autoplay": false,   "prevArrow": false, "slidesToScroll": 2,
-  "nextArrow": false};
+  isWallet: boolean = false;
+  currentWalletsSummary: any = [];
+  slideConfig = {
+    "slidesToShow": 1, dots: true, "infinite": false,
+    "autoplay": false, "prevArrow": false, "slidesToScroll": 2,
+    "nextArrow": false
+  };
 
 
 
-  currentWalletLineItem: any =[];
+  currentWalletLineItem: any = [];
 
   @ViewChildren('cardsList') cardsList;
-  constructor(private cdtaService?: CdtaService,private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+  constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
@@ -159,16 +163,16 @@ export class AddProductComponent implements OnInit {
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
       console.log(this.readCarddata);
-      if(!this.isMagnetic) {
-      this.checkIsCardNew();
+      if (!this.isMagnetic) {
+        this.checkIsCardNew();
       }
       if (this.isMerchendise) {
         this.clickOnMerch();
       }
       else
         // this.frequentRide();
-    this.shoppingcart =JSON.parse(localStorage.getItem("shoppingCart"));
-    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length-1]);
+      this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+      this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
 
 
       // if (this.isMagnetic) {
@@ -201,12 +205,9 @@ export class AddProductComponent implements OnInit {
         this._ngZone.run(() => {
           localStorage.setItem("readCardData", JSON.stringify(data));
           this.carddata = new Array(JSON.parse(data));
-         let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-         let newshoppingCart= JSON.parse(localStorage.getItem('shoppingCart'));
-         let shoppingCart = FareCardService.getInstance.addSmartCard(newshoppingCart, this.carddata[0], item.Offering);
-         
-         ShoppingCartService.getInstance.shoppingCart = null;
-         console.log(shoppingCart);
+          let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+
+          ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
             if (element.printed_id == JSON.parse(data).printed_id) {
               isDuplicateCard = true;
@@ -220,9 +221,8 @@ export class AddProductComponent implements OnInit {
             this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
             this.selectCard(this.cardJson.length - 1);
-            localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
-            this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
-            this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length-1])
+            this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+            this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1])
           }
         });
       }
@@ -310,7 +310,7 @@ export class AddProductComponent implements OnInit {
     this.viewCardData = new Array(JSON.parse(item))
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
-    this.shoppingcart =JSON.parse(localStorage.getItem("shoppingCart"));
+    this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
@@ -477,9 +477,9 @@ export class AddProductComponent implements OnInit {
   }
 
   addProductToWallet(product) {
-    let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
-    localStorage.setItem('shoppingCart', JSON.stringify(response));
-    this.getSubTotal(this.currentWalletLineItem)
+    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
+    this.getSubTotal(this.currentWalletLineItem);
+    this.getTotalDue(this.shoppingcart);
   }
   getSelectedProductData(merch) {
     if (this.isMaxProductLengthReached(merch)) {
@@ -560,9 +560,32 @@ export class AddProductComponent implements OnInit {
   }
 
 
-  removeProduct(merch) {
-    this.smartCradProductToRemove = merch;
-    $("#removeSmartCardProductModal").modal('show');
+  removeCurrentWalletLineItem() {
+     $("#currentCardRemove").modal('show');
+  }
+
+  removeCurrentWalletLineItemConfirmation() {
+    // localStorage.removeItem('c')
+    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, null , true);
+    //this.shoppingcart._walletLineItem = cart._walletLineItem;
+    //check for zero length
+    this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
+    console.log(this.shoppingcart);
+    if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
+      this.isMerchendise = true
+    }
+    this.getSubTotal(this.currentWalletLineItem);
+    this.getTotalDue(this.shoppingcart);
+
+    
+  }
+
+  
+
+
+  removeProduct(product) {
+    this.productToRemove = product;
+    $("#removeProductModal").modal('show');
     // var totalPrice = merch.UnitPrice * merch.quantity;
     // this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     // var selectedIndex = this.merchantList.indexOf(merch);
@@ -579,12 +602,12 @@ export class AddProductComponent implements OnInit {
     } else {
       for (let index1 = 0; index1 < this.merchantList.length; index1++) {
         const element = this.merchantList[index1];
-        if (this.currentCard.printed_id == this.productCardList[index1] && element.OfferingId == this.smartCradProductToRemove.OfferingId) {
+        if (this.currentCard.printed_id == this.productCardList[index1] && element.OfferingId == this.productToRemove.OfferingId) {
           itemIndex = index1;
         }
       }
     }
-    var totalPrice = this.smartCradProductToRemove.UnitPrice * this.quantityList[itemIndex];
+    var totalPrice = this.productToRemove.UnitPrice * this.quantityList[itemIndex];
     this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
     this.smartCardSubTotal = this.smartCardSubTotal - parseFloat(totalPrice.toString());
     // var selectedIndex = this.merchantList.indexOf(this.smartCradProductToRemove);
@@ -739,7 +762,7 @@ export class AddProductComponent implements OnInit {
     //     this.merchantise.push(element);
     //   }
     // });
-  
+
     console.log(list);
     this.merchantise = list;
   }
@@ -810,12 +833,10 @@ export class AddProductComponent implements OnInit {
     //new code
 
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-    let newshoppingCart= JSON.parse(localStorage.getItem('shoppingCart'));
-    let shoppingCart = FareCardService.getInstance.addMagneticsCard(newshoppingCart, item.Offering);
+
+    this.shoppingcart = FareCardService.getInstance.addMagneticsCard(this.shoppingcart, item.Offering);
     ShoppingCartService.getInstance.shoppingCart = null;
-    localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
-    this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
-    this.activeWallet(shoppingCart._walletLineItem[shoppingCart._walletLineItem.length-1]);
+    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -857,19 +878,19 @@ export class AddProductComponent implements OnInit {
   }
   activeWallet(item) {
     this.currentWalletLineItem = item;
+    this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-    
-    if(this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
+
+    if (this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
       this.isMerchendise = true;
       this.clickOnMerch();
-      
+
     }
     else {
       this.nonFare = true;
       this.regularRoute = false;
       this.isMerchendise = false;
       (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
-      this.getSubTotal(this.currentWalletLineItem);
     }
     //frequentRider
     //storedRide
@@ -922,7 +943,7 @@ export class AddProductComponent implements OnInit {
   getSubTotal(currentWalletLineItem) {
     this.subTotal = ShoppingCartService.getInstance.getSubTotalForCardUID(currentWalletLineItem);
     console.log(this.subTotal);
-  
+
   }
 
   getTotalDue(shoppingCart) {
@@ -1000,7 +1021,7 @@ export class AddProductComponent implements OnInit {
     for (let index = 0; index < this.merchantList.length; index++) {
       const element = this.merchantList[index];
       if (this.productCardList[index] == this.currentCard.printed_id) {
-        this.smartCradProductToRemove = element;
+        this.productToRemove = element;
         this.removeSmartCardProductConfirmation(index);
         index--;
       }
