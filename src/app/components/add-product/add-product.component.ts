@@ -166,7 +166,7 @@ export class AddProductComponent implements OnInit {
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
       console.log(this.readCarddata);
       if (!this.isMagnetic) {
-        this.checkIsCardNew();
+        // this.checkIsCardNew();
       }
       if (this.isMerchendise) {
         this.clickOnMerch();
@@ -192,7 +192,7 @@ export class AddProductComponent implements OnInit {
       if (!this.isMagnetic && !this.isMerchendise) {
         if (this.isNew) {
           this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-          this.displaySmartCardsSubtotal(this.merchantList, false);
+          // this.displaySmartCardsSubtotal(this.merchantList, false);
         }
 
       }
@@ -572,7 +572,7 @@ export class AddProductComponent implements OnInit {
       return;
     this.MagneticList.push(merch);
     this.magneticIds.push(this.currentMagneticIndex);
-    this.displayMagneticsSubtotal(this.MagneticList, false);
+    // this.displayMagneticsSubtotal(this.MagneticList, false);
     this.productTotal = this.productTotal + parseFloat(merch.UnitPrice)
   }
 
@@ -603,24 +603,13 @@ export class AddProductComponent implements OnInit {
   removeProduct(product) {
     this.productToRemove = product;
     $("#removeProductModal").modal('show');
-    // var totalPrice = merch.UnitPrice * merch.quantity;
-    // this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    // var selectedIndex = this.merchantList.indexOf(merch);
-    // merch.quantity = 0;
-    // this.merchantList.splice(selectedIndex, 1);
-    // this.productCardList.splice(selectedIndex, 1);
-    // this.areExistingProducts.splice(selectedIndex, 1);
   }
 
   removeProductConfirmation(index) {
-    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, null , false);
-    //this.shoppingcart._walletLineItem = cart._walletLineItem;
-    //check for zero length
+    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, this.productToRemove , false);
     this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
-    // console.log(this.shoppingcart);
-    // if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
-    //   this.isMerchendise = true
-    // }
+ 
+    debugger;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
   }
@@ -633,28 +622,6 @@ export class AddProductComponent implements OnInit {
     this.merchantiseList.splice(selectedIndex, 1);
   }
 
-  removeMagneticProductConfirmation() {
-    this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
-    this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
-    var selectedIndex = this.MagneticList.indexOf(this.magneticProductToRemove);
-    this.MagneticList.splice(selectedIndex, 1);
-    this.magneticIds.splice(selectedIndex, 1);
-    this.displayMagneticsSubtotal(this.MagneticList, false);
-  }
-
-  removeMerchProduct(merch) {
-    this.merchproductToRemove = merch
-    $("#removeMerchProductModal").modal('show');
-  }
-
-  removeMagneticProduct(merch) {
-    this.magneticProductToRemove = merch
-    $("#removeMagneticProductModal").modal('show');
-    // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
-    // var selectedIndex = this.MagneticList.indexOf(merch);
-    // this.MagneticList.splice(selectedIndex, 1);
-    // this.productCardList.splice(selectedIndex, 1);
-  }
 
   productCheckout() {
     if (this.productTotal == 0) {
@@ -696,12 +663,8 @@ export class AddProductComponent implements OnInit {
     this.isMerchendise = false;
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
-    this.displaySmartCardsSubtotal(this.merchantList, false);
-    this.checkIsCardNew();
-    if (this.isNew) {
-      this.displaySmartCardsSubtotal(this.merchantList, false);
-      // this.productTotal = this.productTotal+parseFloat(this.smartCardCost);
-    }
+    // this.displaySmartCardsSubtotal(this.merchantList, false);
+  
 
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -859,7 +822,6 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchendise", 'false');
     localStorage.setItem("isMagnetic", 'true');
     this.currentMagneticIndex = index;
-    this.displayMagneticsSubtotal(this.MagneticList, false);
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     // console.log('clicked on Magnetic')
     // // this.nonFare = false;
@@ -955,115 +917,6 @@ export class AddProductComponent implements OnInit {
     console.log(this.totalDue);
   }
 
-
-  displaySmartCardsSubtotal(products: any, isTotalList) {
-    var index = 0;
-    this.subTotal = 0;
-    products.forEach(element => {
-      if (isTotalList) {
-        this.subTotal = this.subTotal + (this.quantityList[index] * parseFloat(element.Ticket.Price));
-      }
-      else {
-        if (this.productCardList[index] == this.currentCard.printed_id) {
-          this.subTotal = this.subTotal + (this.quantityList[index] * parseFloat(element.Ticket.Price));
-        }
-      }
-      index++;
-    });
-    this.checkIsCardNew()
-    if (this.isNew) {
-      this.subTotal = this.subTotal + parseFloat(this.smartCardCost);
-
-    }
-    // return this.subTotal;
-  }
-
-  displayMagneticsSubtotal(products: any, isTotalList) {
-    var index = 0;
-    this.subTotal = 0;
-    products.forEach(element => {
-      if (isTotalList) {
-        this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
-      }
-      else {
-        if (this.magneticIds[index] == this.currentMagneticIndex) {
-          this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
-        }
-      }
-      index++;
-    });
-    // this.subTotal = this.subTotal + parseFloat(this.magneticCardCost);
-  }
-
-  navigateToDashboard() {
-    localStorage.removeItem('encodeData');
-    localStorage.removeItem('productCardData');
-    localStorage.removeItem("cardsData");
-    localStorage.removeItem("readCardData");
-    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-    this.router.navigate(['/readcard'])
-  }
-
-  clearDigit(digit) {
-    console.log("numberDigits", digit);
-    this.productTotal = digit
-  }
-
-  removeSmartCard() {
-    $("#smartCardRemove").modal('show');
-  }
-
-  removeMagneticCard() {
-    $("#magneticCardRemove").modal('show');
-  }
-
-  checkIsCardNew() {
-    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
-  }
-
-  removeSmartCardConfirmation() {
-    for (let index = 0; index < this.merchantList.length; index++) {
-      const element = this.merchantList[index];
-      if (this.productCardList[index] == this.currentCard.printed_id) {
-        this.productToRemove = element;
-        // this.removeSmartCardProductConfirmation(index);
-        index--;
-      }
-    }
-    this.checkIsCardNew();
-    if (this.isNew) {
-      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
-
-    }
-    this.displaySmartCardsSubtotal(this.merchantList, false);
-    this.cardJson.splice(this.selectedIdx, 1);
-    this.clickOnMerch();
-  }
-
-  removeMagneticCardConfirmation() {
-    for (let index = 0; index < this.MagneticList.length; index++) {
-      const element = this.MagneticList[index];
-      if (this.magneticIds[index] == this.currentMagneticIndex) {
-        this.magneticProductToRemove = element;
-        this.removeMagneticProductConfirmation();
-        index--;
-      }
-    }
-    // this.productTotal = this.productTotal - parseFloat(this.magneticCardCost);
-    this.displayMagneticsSubtotal(this.MagneticList, false);
-    var index = 0;
-    this.magneticCardList.forEach(element => {
-      if (element.id == this.currentMagneticIndex) {
-        this.magneticCardList.splice(index, 1);
-        this.clickOnMerch();
-        return;
-      }
-      index++;
-    });
-    this.clickOnMerch();
-  }
-
-
   saveTransaction(paymentMethodId) {
     try {
       localStorage.setItem("paymentMethodId", paymentMethodId)
@@ -1094,7 +947,7 @@ export class AddProductComponent implements OnInit {
       })
       //Magnetic
       if (this.MagneticList.length > 0) {
-        this.displayMagneticsSubtotal(this.MagneticList, true);
+        // this.displayMagneticsSubtotal(this.MagneticList, true);
         var magneticIndex = 0;
         var currentMagneticCardList: any = [];
         this.magneticCardList.forEach(magneticCardElement => {
@@ -1222,7 +1075,7 @@ export class AddProductComponent implements OnInit {
         this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
       }
       if (this.merchantList.length > 0 && this.MagneticList.length == 0 && this.merchantiseList.length == 0) {
-        this.displaySmartCardsSubtotal(this.merchantList, true)
+        // this.displaySmartCardsSubtotal(this.merchantList, true)
         localStorage.setItem('transactionAmount', JSON.stringify(this.subTotal));
         if (paymentMethodId == "8") {
           localStorage.setItem("paymentMethodId", paymentMethodId)
