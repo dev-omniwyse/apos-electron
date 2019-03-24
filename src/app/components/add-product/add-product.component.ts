@@ -595,30 +595,17 @@ export class AddProductComponent implements OnInit {
     // this.areExistingProducts.splice(selectedIndex, 1);
   }
 
-  removeSmartCardProductConfirmation(index) {
-    var itemIndex = 0;
-    if (index >= 0) {
-      itemIndex = index;
-    } else {
-      for (let index1 = 0; index1 < this.merchantList.length; index1++) {
-        const element = this.merchantList[index1];
-        if (this.currentCard.printed_id == this.productCardList[index1] && element.OfferingId == this.productToRemove.OfferingId) {
-          itemIndex = index1;
-        }
-      }
-    }
-    var totalPrice = this.productToRemove.UnitPrice * this.quantityList[itemIndex];
-    this.productTotal = this.productTotal - parseFloat(totalPrice.toString());
-    this.smartCardSubTotal = this.smartCardSubTotal - parseFloat(totalPrice.toString());
-    // var selectedIndex = this.merchantList.indexOf(this.smartCradProductToRemove);
-    // this.merchantList[itemIndex].quantity = 0;
-    // this.smartCradProductToRemove.quantity = 0;
-    this.merchantList.splice(itemIndex, 1);
-    this.productCardList.splice(itemIndex, 1);
-    this.quantityList.splice(itemIndex, 1);
-    this.areExistingProducts.splice(itemIndex, 1);
-    this.displaySmartCardsSubtotal(this.merchantList, false);
-
+  removeProductConfirmation(index) {
+    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, null , false);
+    //this.shoppingcart._walletLineItem = cart._walletLineItem;
+    //check for zero length
+    this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
+    // console.log(this.shoppingcart);
+    // if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
+    //   this.isMerchendise = true
+    // }
+    this.getSubTotal(this.currentWalletLineItem);
+    this.getTotalDue(this.shoppingcart);
   }
 
   removeMerchProductConfirmation() {
@@ -1022,7 +1009,7 @@ export class AddProductComponent implements OnInit {
       const element = this.merchantList[index];
       if (this.productCardList[index] == this.currentCard.printed_id) {
         this.productToRemove = element;
-        this.removeSmartCardProductConfirmation(index);
+        // this.removeSmartCardProductConfirmation(index);
         index--;
       }
     }
