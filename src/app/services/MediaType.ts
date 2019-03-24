@@ -6,7 +6,8 @@ export enum MediaType {
 
 export enum Constants {
     MERCHANDISE_TEXT = "Merch*",
-    MAGNETICS_TEXT = "Magnetic "
+    MAGNETICS_TEXT = "Magnetic ",
+    CHARGE = "Charge"
 }
 
 export enum TICKET_GROUP {
