@@ -18,7 +18,17 @@ export class Utils {
         }
         Utils._utilService = this;
     }
-    
+
+    removeWalletFromLocalStore(cardJSON, walletLineItem) {
+        let newCardJSON = null;
+        
+        for(let item of cardJSON) {
+
+            // if(item.){
+
+            // }
+        }
+    }
     generateSequenceNumberForWalletLineItem(shoppingCart) {
         let currentMaxSequenceNumber = 0;
         var cart = shoppingCart;
@@ -39,25 +49,25 @@ export class Utils {
         let seqNumber = walletContents.length + 1;
         return seqNumber;
     }
-   
+
     //product limits - 
 
-    genearateMagneticSequenceNumber(shoppingCart){
+    genearateMagneticSequenceNumber(shoppingCart) {
         let currentSequence = 0;
-        for(let item of shoppingCart._walletLineItem) {
+        for (let item of shoppingCart._walletLineItem) {
 
-            if(item._walletTypeId == MediaType.MAGNETIC_ID){
+            if (item._walletTypeId == MediaType.MAGNETIC_ID) {
                 currentSequence++;
             }
         }
 
-        return  ( currentSequence + 1 );
+        return (currentSequence + 1);
     }
 
-    getActiveWalletLineItem(cart){
+    getActiveWalletLineItem(cart) {
 
-        let lastIndex = cart._walletLineItem.length-1;
-        
+        let lastIndex = cart._walletLineItem.length - 1;
+
         return cart[lastIndex];
     }
 }

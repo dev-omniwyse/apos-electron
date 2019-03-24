@@ -12,6 +12,7 @@ import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { Utils } from 'src/app/services/Utils.service';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -19,9 +20,6 @@ var cardName: any;
 var isExistingCard = false;
 
 pcs.on('reader', function (reader) {
-  console.log('reader', reader);
-  console.log('New reader detected', reader.name);
-
   reader.on('error', function (err) {
     console.log('Error(', this.name, '):', err.message);
   });
@@ -398,15 +396,15 @@ export class AddProductComponent implements OnInit {
 
   isMagneticProductLimitReached() {
     let canAddProduct = false;
-    
+
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
         if (this.currentWalletLineItem._walletContents.length == 1) {
           canAddProduct = true;
         }
+    }
+    return canAddProduct;
   }
-  return canAddProduct;
-}
 
   isMagneticProduct() {
     let canAddProduct = false;
@@ -427,33 +425,148 @@ export class AddProductComponent implements OnInit {
     return canAddProduct;
   }
 
+
+
   isTotalproductCountForCardreached(selectedItem: any) {
     var canAddProduct = false
-    if( this.isMerchendiseProduct() )
+    if (this.isMerchendiseProduct())
       return true
 
     if (this.isMagneticProduct()) {
-       if (this.isMagneticProductLimitReached())
-         return false;
+      if (this.isMagneticProductLimitReached())
+        return false;
       return true;
     }
-    this.currentWalletLineItem._walletContents.forEach(walletContent => {
-      if (canAddProduct)
-        return;
-      if (walletContent.offering.OfferingId == selectedItem.OfferingId) {
-        canAddProduct = true;
+
+    // this.currentWalletLineItem._walletContents.forEach(walletContent => {
+    //   if (canAddProduct)
+    //     return;
+    //   if (walletContent.offering.OfferingId == selectedItem.OfferingId) {
+    //     canAddProduct = true;
+    //   }
+    // })
+
+    // if (canAddProduct)
+    //   return canAddProduct;
+
+    let currentProductCount = this.getProductCountFromExistingCard(selectedItem)
+    if (currentProductCount > 4) {
+      canAddProduct = false;
+      return canAddProduct;
+    }
+     
+    if (this.isFrequentProduct(selectedItem)) {
+      if (this.isCounttReachedForFrequentRide(selectedItem))
+        return true;
+      return false;
+    }
+
+    if (this.isStoreRideProduct(selectedItem)) {
+      if (this.isCounttReachedForStoreRide(selectedItem))
+        return true;
+      return false;
+    }
+
+    if (this.isPayAsYouGoProduct(selectedItem)) {
+      if (this.isCounttReachedForPayAsYouGo(selectedItem))
+        return true;
+      return false;
+    }
+
+
+
+
+    return canAddProduct;
+  }
+
+
+  isFrequentProduct(selectedItem) {
+    if (selectedItem.Ticket.Group == 1)
+      return true;
+  }
+
+  isCounttReachedForFrequentRide(selectProduct: any) {
+    var canAddFrequentRideBool: Boolean = false;
+
+    var existingProductCount = 0;
+
+    this.currentCard.products.forEach(product => {
+      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+        existingProductCount = product.recharges_pending;
       }
     })
 
-    if (canAddProduct)
-      return canAddProduct;
-    let currentProductCount = this.getProductCountFromExistingCard(selectedItem)
-    if (!canAddProduct && (currentProductCount <= 4)) {
-      canAddProduct = true;
-      return canAddProduct;
-    }
-    return canAddProduct;
+    this.currentWalletLineItem._walletContents.forEach(walletContent => {
+      if (walletContent._offering.Ticket.Group == selectProduct.Ticket.Group && walletContent._offering.OfferingId == selectProduct.OfferingId) {
+        existingProductCount = walletContent._quantity;
+      }
+    })
+
+    if ((existingProductCount + 1) <= (this.terminalConfigJson.MaxPendingCount + 1))
+      canAddFrequentRideBool = true;
+    else
+      canAddFrequentRideBool = false;
+    return canAddFrequentRideBool
   }
+
+  isStoreRideProduct(selectedItem) {
+    if (selectedItem.Ticket.Group == 2)
+      return true;
+  }
+
+  isCounttReachedForStoreRide(selectProduct: any) {
+    var canAddStoreRideBool: Boolean = false;
+
+    var remainingRides = 0;
+
+    this.currentCard.products.forEach(product => {
+      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+        remainingRides = remainingRides + product.remaining_rides;
+      }
+    })
+
+    this.currentWalletLineItem._walletContents.forEach(walletContent => {
+      if (walletContent._offering.Ticket.Group == selectProduct.Ticket.Group && walletContent._offering.OfferingId == selectProduct.OfferingId) {
+        remainingRides = remainingRides + (walletContent._quantity * walletContent._offering.Ticket.Value);
+      }
+    })
+
+    if ((remainingRides + selectProduct.Ticket.Value) <= 255)
+      canAddStoreRideBool = true;
+    else
+      canAddStoreRideBool = false;
+    return canAddStoreRideBool
+  }
+
+  isPayAsYouGoProduct(selectedItem) {
+    if (selectedItem.Ticket.Group == 3)
+      return true;
+  }
+
+  isCounttReachedForPayAsYouGo(selectProduct: any) {
+    var canAddPayAsYouGoBool: Boolean = false;
+
+    var remainingValue = 0;
+
+    this.currentCard.products.forEach(product => {
+      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+        remainingValue = remainingValue + product.remaining_value;
+      }
+    })
+
+    this.currentWalletLineItem._walletContents.forEach(walletContent => {
+      if (walletContent._offering.Ticket.Group == selectProduct.Ticket.Group && walletContent._offering.Ticket.Designator == selectProduct.Ticket.Designator) {
+        remainingValue = remainingValue + (walletContent._quantity * walletContent._offering.Ticket.Value);
+      }
+    })
+
+    if ((remainingValue + selectProduct.Ticket.Value) <= 200)
+      canAddPayAsYouGoBool = true;
+    else
+      canAddPayAsYouGoBool = false;
+    return canAddPayAsYouGoBool
+  }
+
 
   getProductCountFromExistingCard(selectProduct: any) {
     var productMap = new Map();
@@ -543,18 +656,18 @@ export class AddProductComponent implements OnInit {
   // }
 
 
-   getProductLimitMessage(){
-     let message = "Limit Reached"
+  getProductLimitMessage() {
+    let message = "Limit Reached"
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
         message = "Cannot Add more than one Product"
         break;
       case MediaType.SMART_CARD_ID:
-      message = "Cannot Add more than 4 products (Existing + New)"
+        message = "Cannot Add more than 4 products (Existing + New)"
         break;
     }
     return message
-   }
+  }
 
   addProductToWallet(product) {
     if (!this.isTotalproductCountForCardreached(product)) {
@@ -562,6 +675,7 @@ export class AddProductComponent implements OnInit {
       $("#maxCardLimitModal").modal('show');
       return;
     }
+
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
@@ -657,10 +771,8 @@ export class AddProductComponent implements OnInit {
   removeCurrentWalletLineItemConfirmation() {
     // localStorage.removeItem('c')
     this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, null, true);
-    //this.shoppingcart._walletLineItem = cart._walletLineItem;
-    //check for zero length
+    // Utils.getInstance.removeWalletFromLocalStore(this.cardJson, );
     this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
-    console.log(this.shoppingcart);
     if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
       this.isMerchendise = true
     }
@@ -678,13 +790,12 @@ export class AddProductComponent implements OnInit {
     $("#removeProductModal").modal('show');
   }
 
-  removeProductConfirmation(index) {
-    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, this.productToRemove , false);
-    this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
- 
-    debugger;
+  removeProductConfirmation() {
+    this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, this.productToRemove, false);
+    this.currentWalletLineItem = this.currentWalletLineItem;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.productToRemove = null;
   }
 
   removeMerchProductConfirmation() {
@@ -737,7 +848,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchandise", "false");
     this.currentCard = this.cardJson[index];
     // this.displaySmartCardsSubtotal(this.merchantList, false);
-  
+
 
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -748,7 +859,6 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
-    console.log(list);
     // this.cdtaService.getJSON().subscribe(data => {
     //   var i = 0;
     //   this.productJson.forEach(element => {
@@ -803,7 +913,6 @@ export class AddProductComponent implements OnInit {
     //   }
     // });
 
-    console.log(list);
     this.merchantise = list;
   }
   payValue() {
@@ -811,7 +920,6 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
-    console.log(list);
     // this.productJson.forEach(element => {
     //   var isCorrectType = false;
     //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
@@ -896,24 +1004,6 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMagnetic", 'true');
     this.currentMagneticIndex = index;
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
-    // console.log('clicked on Magnetic')
-    // // this.nonFare = false;
-    // // this.regularRoute = true;
-    // this.merchantise = [];
-    // this.productJson.forEach(element => { // hardcoded to 10 later need to put in constants file
-    //   var isMagnetic = false;
-    //   if(element.Ticket != undefined && element.Ticket.WalletType != undefined){
-    //     element.Ticket.WalletType.forEach(walletElement => {
-    //       if(walletElement.WalletTypeId == 10)
-    //       isMagnetic = true;
-    //     });
-    //   }
-    //   if (undefined != element.Ticket && undefined != element.Ticket.WalletType && isMagnetic) {
-    //     this.merchantise.push(element);
-    //   }
-    //   console.log(this.merchantise)
-
-    // });
   }
   activeWallet(item) {
     this.currentWalletLineItem = item;
@@ -937,7 +1027,6 @@ export class AddProductComponent implements OnInit {
     // FilterOfferings.getInstance.filterOfferings(offeringJSON, ticketGroup,  ticketTypeId, walletLineItem);
   }
   clickOnMerch() {
-    console.log('clicked on merch')
     this.nonFare = false;
     this.regularRoute = true;
     this.isMerchendise = true;
@@ -947,17 +1036,9 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMagnetic", 'false');
     let list = FilterOfferings.getInstance.filterNonFareOfferings(this.productJson);
     this.merchantise = list;
-    // this.productJson.forEach(element => {
-    //   if ((null == element.Ticket || undefined == element.Ticket) && (element.IsMerchandise)) {
-    //     this.merchantise.push(element);
-    //   }
-    //   console.log(this.merchantise)
-
-    // });
   }
 
   displayDigit(digit) {
-    console.log("numberDigits", digit);
     this.productTotal = Math.round(this.productTotal * 100);
     this.productTotal += digit;
     this.productTotal = this.productTotal / 100;
@@ -981,13 +1062,10 @@ export class AddProductComponent implements OnInit {
 
   getSubTotal(currentWalletLineItem) {
     this.subTotal = ShoppingCartService.getInstance.getSubTotalForCardUID(currentWalletLineItem);
-    console.log(this.subTotal);
-
   }
 
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
-    console.log(this.totalDue);
   }
 
   saveTransaction(paymentMethodId) {
@@ -1104,7 +1182,6 @@ export class AddProductComponent implements OnInit {
           "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.subTotal }], "shiftType": shiftType
         }
         this.MagneticList = [];
-        console.log("transObj" + JSON.stringify(magneticTransactionObj));
         this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
       }
       // Merchandise
@@ -1144,7 +1221,6 @@ export class AddProductComponent implements OnInit {
           "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.merchentiseSubTotal }], "shiftType": shiftType
         }
         this.merchantiseList = [];
-        console.log("transObj" + JSON.stringify(merchandiseTransactionObj));
         this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
       }
       if (this.merchantList.length > 0 && this.MagneticList.length == 0 && this.merchantiseList.length == 0) {

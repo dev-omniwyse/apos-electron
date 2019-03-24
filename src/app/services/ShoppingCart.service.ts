@@ -46,16 +46,13 @@ export class ShoppingCartService {
         // localStorage.setItem('shoppingCart', JSON.stringify(this._shoppingCart));
     }
 
-    getWalletContentsForGivenUID(shoppingCart, activePID, activeUID) {
-        let walletContents = null;
-        if(null == activePID){
-            activePID = activeUID;
-        }
+    getWalletContentsForGivenUID(shoppingCart, activeUID) {
+        let walletContents = null;        
         let walletLineItems = null == shoppingCart._walletLineItem ? [] : shoppingCart._walletLineItem;
         //refactor..
         for (let i = 0; i < walletLineItems.length; i++) {
-            if (walletLineItems[i].cardPID == activePID) {
-                walletContents = walletLineItems[i].walletContents;
+            if (walletLineItems[i]._cardUID == activeUID) {
+                walletContents = walletLineItems[i]._walletContents;
                 break;
             }
         }
@@ -65,7 +62,7 @@ export class ShoppingCartService {
     getWalletLineItemForCardPID(shoppingCart, cardPID) {
         let walletLineItem = null;
         for (let i = 0; i < shoppingCart._walletLineItem.length; i++) {
-            if (shoppingCart._walletLineItem[i].cardUID == cardPID) {
+            if (shoppingCart._walletLineItem[i]._cardUID == cardPID) {
                 walletLineItem = shoppingCart._walletLineItem[i];
                 break;
             }
@@ -108,8 +105,16 @@ export class ShoppingCartService {
             shoppingCart._walletLineItem.splice(index, 1);
             
         } else {
-            index = this.getIndexOfWalletContent(shoppingCart, selectedItem);
-            walletLineItem._walletContents.splice(index, 1);
+            let walletContents = walletLineItem._walletContents;
+            for(let indexOfOffering = 0; indexOfOffering < walletContents.length; indexOfOffering++) {
+                if(walletContents[indexOfOffering].offering.OfferingId == selectedItem.offering.OfferingId){
+                    index = indexOfOffering;
+                    break;
+                }
+            }
+            walletContents.splice(index, 1);
+            walletLineItem._walletContents = walletContents;
+            walletLineItem = shoppingCart._walletLineItem;
         }
         return shoppingCart;
     }
@@ -129,7 +134,7 @@ export class ShoppingCartService {
     getIndexOfWalletContent(shoppingCart, item){
 
         let index = -1;
-        index = this.getWalletContentsForGivenUID(shoppingCart, null,item._cardUID);
+        index = this.getWalletContentsForGivenUID(shoppingCart, item._cardUID);
         return index;
     }
     isGivenItemIsAWallet(item){

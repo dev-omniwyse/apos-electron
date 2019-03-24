@@ -80,8 +80,11 @@
                     </div>
                 </div>
             </ngx-slick> -->
-            <div class="col-md-6" *ngFor="let item of shoppingcart._walletLineItem">
-                <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
+
+            <div class="slide" *ngFor="let item of shoppingcart._walletLineItem">
+                <div class="col-md-6">
+                    <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
+                </div>
             </div>
         </div>
         <!-- <div class="btns-mag">
@@ -483,11 +486,10 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="removeMerchProductModal" role="dialog">
+<!-- <div class="modal fade" id="removeMerchProductModal" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
             <div class="modal-body">
@@ -499,12 +501,11 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="removeMagneticProductModal" role="dialog">
+</div> -->
+<!-- <div class="modal fade" id="removeMagneticProductModal" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
             <div class="modal-body">
@@ -516,7 +517,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <div class="modal fade" id="removeProductModal" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -525,11 +526,11 @@
                 <h4 class="modal-title">Are you sure you want to delete?</h4>
             </div>
             <div class="modal-body">
-                <p>By continuing, the "{{productToRemove._description}}" will be permanently deleted.</p>
+                <p>By continuing, the "{{productToRemove?.description}}" will be permanently deleted.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-default" (click)="removeProductConfirmation(-1)" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-default" (click)="removeProductConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>

@@ -171,7 +171,7 @@ ul {
 
 .slide:last-child button {
     width: 25vh;
-    margin-left: 5px;
+    /* margin-left: 5px; */
     background-color: #fff;
     border-radius: 5px;
     color: #d65400;
