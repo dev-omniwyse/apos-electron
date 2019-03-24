@@ -138,6 +138,10 @@ export class ReadcardComponent implements OnInit {
                     });
                     console.log('this.carddata', this.carddata);
                     this.getProductCatalogJSON();
+                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                    let shoppingCart = FareCardService.getInstance.addSmartCard(this.globals.globalCart.shoppingCart, this.carddata[0], item.Offering);
+                    ShoppingCartService.getInstance.shoppingCart = null;
+                    console.log(shoppingCart);
                 });
             }
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
