@@ -1,3 +1,4 @@
+import { Transaction } from '../models/Transaction';
 
 export class TransactionService {
     private static _transactionService = new TransactionService();
@@ -15,7 +16,16 @@ export class TransactionService {
         TransactionService._transactionService = this;
     }
 
-    saveTransaction(shoppingCart){
-        
+    saveTransaction(shoppingCart) {
+
+        let walletLineItem = shoppingCart._walletLineItem;
+        for (let wallet of walletLineItem) {
+            let transactionItem = new Transaction();
+
+            transactionItem.$transactionID = new Date().getTime().toString();
+            // transactionItem.tra
+        }
+
+
     }
 }
