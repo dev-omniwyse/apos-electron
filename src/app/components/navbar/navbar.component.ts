@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
   terminalNumber: any = undefined;
   hideAndShowLogout : Boolean 
   today = new Date();
+  versionDate = new Date();
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
@@ -75,9 +76,21 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem("userEmail")
   }
 
+  navigateToGenfare(){
+    var urlToNavigate = "https://tarc-"+localStorage.getItem("environment")+".gfcp.io";
+    this.electronService.ipcRenderer.send('navigateToGenfare',urlToNavigate);
+    // var shell = require('electron').shell;
+    // event.preventDefault();
+    // shell.openExternal("https://github.com");
+    // window.open('https://github.com', '_blank', 'nodeIntegration=no')  
+  }
+
   ngOnInit() {
     let item = localStorage.getItem("header");
-
+    setInterval(() => {
+      this.today = new Date();
+      }, 1000); 
+    
     // if( localStorage.getItem("hideAndShowLogout") == undefined){
     //   this.hideAndShowLogout = false
     //   localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())

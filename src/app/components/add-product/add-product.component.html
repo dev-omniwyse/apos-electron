@@ -113,7 +113,8 @@
             <div *ngIf="!isMagnetic && !isMerchendise">
                 <span class="label label-default">
                     <div class="pull-left" *ngIf="!isNew">1 Card : {{currentCard?.printed_id}}</div>
-                    <div class="pull-left" *ngIf="isNew">1 Card : {{currentCard?.printed_id}} &nbsp; ${{smartCardCost}}</div>
+                    <div class="pull-left" *ngIf="isNew">1 Card : {{currentCard?.printed_id}} &nbsp; ${{smartCardCost}}
+                    </div>
 
                     <div class="pull-right" (click)="removeSmartCard()"><span
                             class="glyphicon glyphicon-minus-sign"></span></div>
@@ -197,8 +198,8 @@
         </div>
         <div class="btns-set">
             <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
-            <button class="btn-orange" (click)="productCheckout()"  *ngIf="!productCheckOut">Checkout</button>
-            <button class="btn-white"  *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
+            <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
+            <button class="btn-white" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
         </div>
     </div>
     <div class="container-right" *ngIf="checkout">
@@ -244,7 +245,7 @@
                 </div>
                 <div class="cr-right">
                     <button data-toggle="modal" data-target="#myModal">Cash</button>
-                    <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+                    <button data-toggle="modal" data-target="#creditCardModal" creditModal>Credit or Debit Card</button>
                     <button data-toggle="modal" data-target="#checkModal">Check</button>
                     <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
                     <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
@@ -281,7 +282,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="creditModal" role="dialog">
+                <div class="modal fade" id="creditCardModal" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -300,11 +301,47 @@
 
                             </div>
                             <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                    href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="creditCardApplyModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                                <h4 class="modal-title">Continue Transaction</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Please continue transaction on pinpad</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelPinPadTransaction()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="creditCardErrorModal" role="dialog">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                                <h4 class="modal-title"> Error </h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Error sending transaction to pinpad</p>
+                            </div>
+                            <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal fade" id="checkModal" role="dialog">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">

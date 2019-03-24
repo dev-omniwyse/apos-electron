@@ -123,15 +123,14 @@ export class AddProductComponent implements OnInit {
   productCheckOut: boolean = false;
   isNew: boolean = false;
   isProductLimitReached = false;
+  numOfAttempts = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
       this.smartCardCost = localStorage.getItem("smartCardCost")
-      this.smartCardCost = 10;
       this.magneticCardCost = localStorage.getItem("magneticCardCost")
-      this.magneticCardCost = 5;
       let item = JSON.parse(localStorage.getItem("catalogJSON"));
       this.productJson = JSON.parse(item).Offering;
       console.log(this.productJson);
@@ -220,6 +219,40 @@ export class AddProductComponent implements OnInit {
 
         $("#encodeErrorModal").modal('show');
 
+      }
+    });
+
+    var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionStatusResult', (event, data) => {
+      if (data != undefined && data != "") {
+        if (data != 1 && this.numOfAttempts < 600) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          $("#creditCardApplyModal").modal("hide")
+          this.electronService.ipcRenderer.send('getPinpadTransactionData')
+        }
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionDataResult', (event, data) => {
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data); 
+        this.saveTransaction(9);
+      }
+    });
+
+    this.electronService.ipcRenderer.on('cancelPinpadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        $("#creditCardApplyModal").modal("hide")
       }
     });
 
@@ -960,10 +993,9 @@ export class AddProductComponent implements OnInit {
       }
     }
     // this.checkIsCardNew();
-    // if (this.isNew) {
-    //   this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
-
-    // }
+    if (this.isNew) {
+      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
+    }
     this.displaySmartCardsSubtotal(this.merchantList, false);
     this.cardJson.splice(this.selectedIdx, 1);
     this.clickOnMerch();
@@ -1168,4 +1200,16 @@ export class AddProductComponent implements OnInit {
     }
 
   }
+
+  doPinPadTransaction() {
+    this.numOfAttempts = 0;
+    $("#creditCardModal").modal("hide")
+    $("#creditCardApplyModal").modal("show")
+    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.productTotal*100));
+  }
+
+  cancelPinPadTransaction(){
+    this.electronService.ipcRenderer.send('cancelPinpadTransaction');
+  }
+
 }
