@@ -128,10 +128,18 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     var updateCardDataListener: any = this.electronService.ipcRenderer.on('updateCardDataResult', (event, data) => {
       if (data != undefined && data != "" && this.isFromCardComponent) {
+        this.electronService.ipcRenderer.send('processAutoLoad',cardName)
+        // this.electronService.ipcRenderer.send('readSmartcard', cardName)
+      }
+    });
+
+    this.electronService.ipcRenderer.on('autoLoadResult', (event, data) => {
+      if (data != undefined && data != "") {
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
       }
-
     });
+
+
     var readcardListener: any = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "" && this.isFromCardComponent && this.executeIpcRendererOn) {
@@ -369,7 +377,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             if (this.isNew)
               this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
             else
-              this.electronService.ipcRenderer.send('readSmartcard', cardName)
+              this.electronService.ipcRenderer.send('processAutoLoad',cardName)
           }
           else {
             this.cardIndex++;
