@@ -145,6 +145,8 @@ export class AddProductComponent implements OnInit {
 
   isProductLimitReached = false;
   numOfAttempts = 0;
+  magneticId: any =0;
+  currentMagneticProductId: any = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
@@ -224,6 +226,7 @@ export class AddProductComponent implements OnInit {
             this.cardJson.push(JSON.parse(data));
             this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
+           
             this.selectCard(this.cardJson.length - 1);
             this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
             this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1])
@@ -846,6 +849,32 @@ export class AddProductComponent implements OnInit {
     this.merchantiseList.splice(selectedIndex, 1);
   }
 
+  removeMagneticProductConfirmation() {
+    this.productTotal = this.productTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    this.magneticCardSubTotal = this.magneticCardSubTotal - parseFloat(this.magneticProductToRemove.UnitPrice);
+    if(this.magneticIds[this.magneticId] == this.magneticCardList[this.magneticId].id) {
+      var selectedIndex = this.currentMagneticProductId;
+      this.MagneticList.splice(selectedIndex, 1);
+      this.magneticIds.splice(selectedIndex, 1);
+      this.displayMagneticsSubtotal(this.MagneticList, false);
+    }
+   
+  }
+
+  removeMerchProduct(merch) {
+    this.merchproductToRemove = merch
+    $("#removeMerchProductModal").modal('show');
+  }
+
+  removeMagneticProduct(merch,j) {
+    this.magneticProductToRemove = merch;
+    this.currentMagneticProductId = j;
+    $("#removeMagneticProductModal").modal('show');
+    // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
+    // var selectedIndex = this.MagneticList.indexOf(merch);
+    // this.MagneticList.splice(selectedIndex, 1);
+    // this.productCardList.splice(selectedIndex, 1);
+  }
 
   productCheckout() {
     if (this.productTotal == 0) {
@@ -1041,6 +1070,7 @@ export class AddProductComponent implements OnInit {
   // }
 
   clickOnMagnetic(index: any) {
+    this.magneticId = index;
     this.isMagnetic = true;
     this.nonFare = true;
     this.regularRoute = false;
