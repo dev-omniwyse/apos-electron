@@ -139,4 +139,8 @@ export class ShoppingCartService {
         }
         return false;
     }
+
+    getTax(){
+        return 0;
+    }
 }
