@@ -1,4 +1,0 @@
-Mar 22, 2019 11:42:41 AM com.genfare.pos.core.service.LogService createAndAddNewFileHandler
-INFO: Parent log configured, future logs will go to log file: C:\Users\Omniwyse\Desktop\mamatha\apos-electron/logs/APOS.1553235161379.%u.%g.log
-Mar 22, 2019 11:42:41 AM com.genfare.pos.remote.AWSRemoteSystem uploadLogFile
-INFO: Uploading log file: APOS.1553234861571.0.0.log
