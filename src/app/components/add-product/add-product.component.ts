@@ -133,6 +133,7 @@ export class AddProductComponent implements OnInit {
 
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
+  isCustomAmount = false;
   slideConfig = {
     "slidesToShow": 1, dots: true, "infinite": false,
     "autoplay": false, "prevArrow": false, "slidesToScroll": 2,
@@ -988,6 +989,13 @@ export class AddProductComponent implements OnInit {
     // });
 
     this.merchantise = list;
+  }
+  customAmount() {
+    this.isCustomAmount = true;
+    // this.router.navigate(['/custom-amount'])
+  }
+  closeCustomAmount() {
+    this.isCustomAmount = false;
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
