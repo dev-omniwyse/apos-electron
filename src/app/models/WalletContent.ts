@@ -5,9 +5,27 @@ export class WalletContent {
 
     constructor(private _cardUID ? : string, private _sequenceNumber ? : number, private _offering ? : any, private _unitPrice ? : any,
         private _description ? : string, private _quantity ? : number, private _status ? : string, private _slot ? : number,
-        private _balance ? : any, private _startDate ? : number,private _expirationDate ? : number, private _rechargesPending ? : number){
+        private _balance ? : any, private _startDate ? : number,private _expirationDate ? : number, private _rechargesPending ? : number, private _tax ?: number){
 
     }
+
+
+    /**
+     * Getter tax
+     * @return {number}
+     */
+	public get tax(): number {
+		return this._tax;
+	}
+
+    /**
+     * Setter tax
+     * @param {number} value
+     */
+	public set tax(value: number) {
+		this._tax = value;
+	}
+
 
     /**
      * Getter cardUID
