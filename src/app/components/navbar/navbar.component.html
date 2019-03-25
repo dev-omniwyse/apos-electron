@@ -1,7 +1,7 @@
 <div class="header ">
     <div class="header-logo pull-left">
-        <img class="pull-left" src="assets/images/logo-header.jpeg" />
-        <div class="header-time">{{today | date:'EEEE MMMM d, y h:mm a '}}</div>
+        <img class="pull-left" src="assets/images/logo-header.png" />
+        <div class="header-time">{{today | date:'EEEE MMMM d, y h:mm a ' : 'UTC'}}</div>
     </div>
     <div class="header-info pull-right">
         <div class="login-info">
@@ -21,7 +21,7 @@
                     <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">APPS <i class="fa fa-bars"></i></button>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="modal" data-target="#aboutVersion">About APOS</a></li>
-                        <li><a>Genfare Link</a></li>
+                        <li><a (click)="navigateToGenfare()">Genfare Link</a></li>
                     </ul>
                 </div>
             </div>
@@ -96,7 +96,7 @@
             </div>
 
             <div class="modal-body">
-                <p>APOS V1.0 </p>
+                <p>APOS V 1.0.0 - March 22 2019 11:47 AM UTC </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-default" data-dismiss="modal">Ok</button>

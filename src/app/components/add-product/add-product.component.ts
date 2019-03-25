@@ -143,6 +143,8 @@ export class AddProductComponent implements OnInit {
 
   currentWalletLineItem: any = [];
 
+  isProductLimitReached = false;
+  numOfAttempts = 0;
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
@@ -186,8 +188,10 @@ export class AddProductComponent implements OnInit {
       //   // this.isfromAddProduct = true;
       //   // this.electronService.ipcRenderer.send('readSmartcard', cardName);
       // }
+        //this.frequentRide();
 
       if (!this.isMagnetic && !this.isMerchendise) {
+        this.checkIsCardNew();
         if (this.isNew) {
           this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
           // this.displaySmartCardsSubtotal(this.merchantList, false);
@@ -216,6 +220,7 @@ export class AddProductComponent implements OnInit {
             $("#newCardValidationModal").modal('show');
           }
           else {
+            this.checkIsCardNew();
             this.cardJson.push(JSON.parse(data));
             this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
@@ -248,6 +253,40 @@ export class AddProductComponent implements OnInit {
 
         $("#encodeErrorModal").modal('show');
 
+      }
+    });
+
+    var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionStatusResult', (event, data) => {
+      if (data != undefined && data != "") {
+        if (data != 1 && this.numOfAttempts < 600) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          $("#creditCardApplyModal").modal("hide")
+          this.electronService.ipcRenderer.send('getPinpadTransactionData')
+        }
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionDataResult', (event, data) => {
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data); 
+        this.saveTransaction(9);
+      }
+    });
+
+    this.electronService.ipcRenderer.on('cancelPinpadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        $("#creditCardApplyModal").modal("hide")
       }
     });
 
@@ -364,11 +403,12 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.send('comp')
     //console.log('read call', cardName)
   }
-
+  // this.terminalConfigJson.MaxStoredValueAmount
   isMaxProductLengthReached(selectedItem: any) {
     var isExistingProducts = false;
-    var isProductLimitReached = false;
+    this.isProductLimitReached = false;
     var existingQuantity = 0;
+    var itemExistedInCard = false;
     this.currentCard.products.forEach(element => {
       if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
 
@@ -849,6 +889,11 @@ export class AddProductComponent implements OnInit {
     this.currentCard = this.cardJson[index];
     // this.displaySmartCardsSubtotal(this.merchantList, false);
 
+    // this.checkIsCardNew();
+    // if (this.isNew) {
+    //   this.displaySmartCardsSubtotal(this.merchantList, false);
+    //   // this.productTotal = this.productTotal+parseFloat(this.smartCardCost);
+    // }
 
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
@@ -950,6 +995,7 @@ export class AddProductComponent implements OnInit {
   }
 
   newFareCard() {
+    this.checkIsCardNew();
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
@@ -958,7 +1004,6 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchendise", "false");
     if (this.isNew) {
       this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-
     }
   }
 
@@ -1067,6 +1112,91 @@ export class AddProductComponent implements OnInit {
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
   }
+
+  displayMagneticsSubtotal(products: any, isTotalList) {
+    var index = 0;
+    this.subTotal = 0;
+    products.forEach(element => {
+      if (isTotalList) {
+        this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
+      }
+      else {
+        if (this.magneticIds[index] == this.currentMagneticIndex) {
+          this.subTotal = this.subTotal + parseFloat(element.UnitPrice);
+        }
+      }
+      index++;
+    });
+    this.subTotal = this.subTotal + parseFloat(this.magneticCardCost);
+  }
+
+  navigateToDashboard() {
+    localStorage.removeItem('encodeData');
+    localStorage.removeItem('productCardData');
+    localStorage.removeItem("cardsData");
+    localStorage.removeItem("readCardData");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.router.navigate(['/readcard'])
+  }
+
+  clearDigit(digit) {
+    console.log("numberDigits", digit);
+    this.productTotal = digit
+  }
+
+  removeSmartCard() {
+    $("#smartCardRemove").modal('show');
+  }
+
+  removeMagneticCard() {
+    $("#magneticCardRemove").modal('show');
+  }
+
+  checkIsCardNew() {
+    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
+  }
+
+  removeSmartCardConfirmation() {
+    for (let index = 0; index < this.merchantList.length; index++) {
+      const element = this.merchantList[index];
+      if (this.productCardList[index] == this.currentCard.printed_id) {
+        this.smartCradProductToRemove = element;
+        this.removeSmartCardProductConfirmation(index);
+        index--;
+      }
+    }
+    // this.checkIsCardNew();
+    if (this.isNew) {
+      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
+    }
+    this.displaySmartCardsSubtotal(this.merchantList, false);
+    this.cardJson.splice(this.selectedIdx, 1);
+    this.clickOnMerch();
+  }
+
+  removeMagneticCardConfirmation() {
+    for (let index = 0; index < this.MagneticList.length; index++) {
+      const element = this.MagneticList[index];
+      if (this.magneticIds[index] == this.currentMagneticIndex) {
+        this.magneticProductToRemove = element;
+        this.removeMagneticProductConfirmation();
+        index--;
+      }
+    }
+    this.productTotal = this.productTotal - parseFloat(this.magneticCardCost);
+    this.displayMagneticsSubtotal(this.MagneticList, false);
+    var index = 0;
+    this.magneticCardList.forEach(element => {
+      if (element.id == this.currentMagneticIndex) {
+        this.magneticCardList.splice(index, 1);
+        this.clickOnMerch();
+        return;
+      }
+      index++;
+    });
+    this.clickOnMerch();
+  }
+
 
   saveTransaction(paymentMethodId) {
     try {
@@ -1241,4 +1371,16 @@ export class AddProductComponent implements OnInit {
     }
 
   }
+
+  doPinPadTransaction() {
+    this.numOfAttempts = 0;
+    $("#creditCardModal").modal("hide")
+    $("#creditCardApplyModal").modal("show")
+    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.productTotal*100));
+  }
+
+  cancelPinPadTransaction(){
+    this.electronService.ipcRenderer.send('cancelPinpadTransaction');
+  }
+
 }

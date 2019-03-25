@@ -187,6 +187,12 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
+        this.electronService.ipcRenderer.on('autoLoadResult',(event,data) => {
+            if (data != undefined && data != "") {
+                this.electronService.ipcRenderer.send('readSmartcard', cardName)
+            }
+        });
+
         this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
             if (data != undefined && data != "") {
                 //this.show = true;
@@ -332,7 +338,8 @@ export class ReadcardComponent implements OnInit {
         this.isFromReadCard = true;
         localStorage.setItem("isNonFareProduct", "false");
         localStorage.setItem("isMagnetic", "false");
-        this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        this.electronService.ipcRenderer.send('processAutoLoad',cardName)
+        // this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
     }
 
