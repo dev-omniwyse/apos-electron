@@ -1,24 +1,24 @@
 <!-- <div class="header flex">
-	<div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
-	<div class="header-info pull-right">
-		<div class="login-info">
-			<div>CDTA Admin <span>|</span> Terminal: 1258</div>
-			<div><a href="#">logout</a></div>
-		</div>
-	</div>
+    <div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
+    <div class="header-info pull-right">
+        <div class="login-info">
+            <div>CDTA Admin <span>|</span> Terminal: 1258</div>
+            <div><a href="#">logout</a></div>
+        </div>
+    </div>
 </div> -->
 
 <div class="encode-card-set">
     <h2>ENCODE CARD</h2>
     <div class="encode-card-set-block">
-        <div class="pull-left glyphicon glyphicon-credit-card	
-	"></div>
+        <div class="pull-left glyphicon glyphicon-credit-card   
+    "></div>
 
         <div class="pull-left encode-card-txt">
             <h2>Please place card {{currentCard?.printed_id}} on the reader.</h2>
             <h2>The following products will be added.</h2>
-            <div *ngFor="let merch of currentCardMerchantList">
-                <h3>{{merch.quantity}} &nbsp; {{merch.Ticket.Description}} - {{merch.Ticket.Price}}</h3>
+            <div *ngFor="let product of currentCardProductList">
+                <h3>{{product._quantity}} &nbsp; {{product._description}} - {{product._offering.Ticket.Price}}</h3>
             </div>
         </div>
 
@@ -55,8 +55,7 @@
                     <p>Error encoding card. Please try again</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="navigateToDashboard()">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="navigateToDashboard()">Ok</button>
                 </div>
             </div>
         </div>
@@ -74,8 +73,7 @@
                     <p>Card encoded successfully.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="navigateToDashboard()">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="navigateToDashboard()">Ok</button>
                 </div>
             </div>
         </div>
@@ -105,6 +103,6 @@
 <div class="form-group  form-wiz">
     <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="navigateToReadCard()">
         CANCEL</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last"
-        (click)="checkCorrectCard()"> ENCODE CARD </button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>
+

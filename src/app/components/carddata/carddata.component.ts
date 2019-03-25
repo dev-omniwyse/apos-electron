@@ -83,7 +83,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   productCardList: any = [];
   encodedProductCardData: any = [];
   currentCard: any = [];
-  currentCardMerchantList: any = [];
+  currentCardProductList: any = [];
   currentExistingProducts: any = [];
   cardIndex: any = 0;
   carddata: any = [];
@@ -98,6 +98,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   isFromEncode = false;
   executeIpcRendererOn: any = true;
   encodeddata: any = [];
+  shoppingCart: any = [];
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -111,9 +112,11 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
       let item = JSON.parse(localStorage.getItem("catalogJSON"));
       this.catalogJson = JSON.parse(item).Offering;
+      this.shoppingCart = JSON.parse(localStorage.getItem('shoppingCart'));
       // this.readCarddata = JSON.parse(localStorage.getItem("cardsData"));
       // this.cardJson = JSON.parse(this.readCarddata);
       this.currentCard = this.cardJson[this.cardIndex];
+      this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
       this.populatCurrentCardEncodedData();
       // if(localStorage.getItem('cardDataRouterCount') == null){
       //   this.executeIpcRendererOn = true;
@@ -128,18 +131,10 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     var updateCardDataListener: any = this.electronService.ipcRenderer.on('updateCardDataResult', (event, data) => {
       if (data != undefined && data != "" && this.isFromCardComponent) {
-        this.electronService.ipcRenderer.send('processAutoLoad',cardName)
-        // this.electronService.ipcRenderer.send('readSmartcard', cardName)
-      }
-    });
-
-    this.electronService.ipcRenderer.on('autoLoadResult', (event, data) => {
-      if (data != undefined && data != "") {
         this.electronService.ipcRenderer.send('readSmartcard', cardName)
       }
+
     });
-
-
     var readcardListener: any = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "" && this.isFromCardComponent && this.executeIpcRendererOn) {
@@ -159,7 +154,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       if (data != undefined && data != "" && this.isFromEncode) {
         this.isFromEncode = false;
         this._ngZone.run(() => {
-          if (data == this.cardJson[this.cardIndex].printed_id) {
+          if (data == this.currentCard.printed_id) {
             this.encodeCard();
           }
           else {
@@ -221,7 +216,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             })
             var slotNumberStatusIndex: any = 0;
             this.cardJson.forEach(element => {
-              this.currentCardMerchantList.forEach(walletElement => {
+              this.currentCardProductList.forEach(walletElement => {
                 var rechargesPending = 0;
                 var balance = 0;
                 var existingBalance = 0;
@@ -367,17 +362,17 @@ export class CarddataComponent implements OnInit, OnChanges {
         var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
         console.log(data);
         this._ngZone.run(() => {
-          if ((this.cardJson.length - 1) == this.cardIndex) {
+          if ((this.shoppingCart._walletLineItem.length - 2) == this.cardIndex) {
             var resultObj: any = [];
             resultObj = new Array(JSON.parse(data));
             resultObj.forEach(element => {
               this.encodeddata.push(element);
             });
-            this.isFromCardComponent = true;
-            if (this.isNew)
-              this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
-            else
-              this.electronService.ipcRenderer.send('processAutoLoad',cardName)
+            // this.isFromCardComponent = true;
+            // if (this.isNew)
+            //   this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
+            // else
+            //   this.electronService.ipcRenderer.send('readSmartcard', cardName)
           }
           else {
             this.cardIndex++;
@@ -448,15 +443,16 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   populatCurrentCardEncodedData() {
-    var dataIndex: any = 0;
-    this.currentCardMerchantList = [];
-    this.encodedProductCardData.forEach(element => {
-      if (element == this.cardJson[this.cardIndex].printed_id) {
-        this.currentCardMerchantList.push(this.encodeParseData[dataIndex]);
-        this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
-      }
-      dataIndex++
-    });
+    // var dataIndex: any = 0;
+    this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
+    // this.currentCardProductList = this.currentCard._walletContents;
+    // this.encodedProductCardData.forEach(element => {
+    //   if (element == this.cardJson[this.cardIndex].printed_id) {
+    //     this.currentCardProductList.push(this.encodeParseData[dataIndex]);
+    //     this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
+    //   }
+    //   dataIndex++
+    // });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -482,106 +478,28 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   encodeCard() {
     try {
-      console.log("product list data", this.currentCardMerchantList);
+      console.log("product list data", this.currentCardProductList);
       this.encodeJsonData = [];
       var JsonObj;
       var currentIndex = 0;
-      this.currentCardMerchantList.forEach(element => {
-        if (element.Ticket.Group == 1) {
-          var rechargesPending = 0;
-          if (this.currentExistingProducts[currentIndex]) {
-            this.currentCard.products.forEach(cardElement => {
-              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-                rechargesPending = (cardElement.recharges_pending + 1);
-              }
-            })
-          }
-          // var internalJsonArray:any = [];
-          for (let index = 0; index < element.quantity; index++) {
-            var internalJsonObj = {
-              "product_type": element.Ticket.Group,
-              "designator": element.Ticket.Designator,
-              "ticket_id": element.Ticket.TicketId,
-              "designator_details": 0,
-              "start_date_epoch_days": element.Ticket.DateStartEpochDays,
-              "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
-              "is_linked_to_user_profile": false,
-              "type_expiration": element.Ticket.ExpirationTypeId,
-              "add_time": 240,
-              "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-              "days": (element.Ticket.Value),
-              "isAccountBased": element.IsAccountBased,
-              "isCardBased": element.IsCardBased
-            }
+      this.currentCardProductList.forEach(element => {
+        if (element._offering.Ticket.Group == 1) {
+          for (let index = 0; index < element._quantity; index++) {
+            var internalJsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
             this.encodeJsonData.push(internalJsonObj);
-            // internalJsonArray.push(internalJsonObj);
           }
-          // JsonObj = JSON.stringify(internalJsonArray);
-          // JsonObj = {
-          //   "product_type": element.Ticket.Group,
-          //   "designator": element.Ticket.Designator,
-          //   "ticket_id": element.Ticket.TicketId,
-          //   "designator_details": 0,
-          //   "start_date_epoch_days": element.Ticket.DateStartEpochDays,
-          //   "exp_date_epoch_days": element.Ticket.DateExpiresEpochDays,
-          //   "is_linked_to_user_profile": false,
-          //   "type_expiration": element.Ticket.ExpirationTypeId,
-          //   "add_time": 240,
-          //   "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-          //   "days": (element.Ticket.Value),
-          //   "isAccountBased": element.IsAccountBased,
-          //   "isCardBased": element.IsCardBased
-          // }
         }
         else if (element.Ticket.Group == 2) {
-          var rechargeRides = 0;
-          if (this.currentExistingProducts[currentIndex]) {
-            this.currentCard.products.forEach(cardElement => {
-              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-                rechargeRides = cardElement.recharge_rides + element.Ticket.Price;
-              }
-            })
-
-          }
-          JsonObj = {
-            "product_type": element.Ticket.Group,
-            "designator": element.Ticket.Designator,
-            "ticket_id": element.Ticket.TicketId,
-            "designator_details": 0,
-            "remaining_rides": (element.quantity * element.Ticket.Value),
-            "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
-            "threshold": 0,
-            "is_linked_to_user_profile": false,
-            "isAccountBased": element.IsAccountBased,
-            "isCardBased": element.IsCardBased
-          }
+          JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
         }
         else if (element.Ticket.Group == 3) {
-          var remainingValue = 0;
-          if (this.currentExistingProducts[currentIndex]) {
-            this.currentCard.products.forEach(cardElement => {
-              if (element.Ticket.Group == cardElement.product_type && (element.Ticket.Designator == cardElement.designator)) {
-                remainingValue = (cardElement.remaining_value) + (element.Ticket.Price * 100);
-              }
-            })
+          JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
 
-          }
-          JsonObj = {
-            "product_type": element.Ticket.Group,
-            "designator": element.Ticket.Designator,
-            "ticket_id": element.Ticket.TicketId,
-            "designator_details": 0,
-            "is_linked_to_user_profile": false,
-            "remaining_value": (element.quantity * element.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
-            "isAccountBased": element.IsAccountBased,
-            "isCardBased": element.IsCardBased
-          }
         }
-        if (element.Ticket.Group != 1) {
+        if (element._offering.Ticket.Group != 1) {
           this.encodeJsonData.push(JsonObj);
         }
         currentIndex++;
-
       });
 
       console.log(this.encodeJsonData);
@@ -594,6 +512,59 @@ export class CarddataComponent implements OnInit, OnChanges {
     catch{
       $("#encodeErrorModal").modal('show');
     }
+  }
+
+  constructJsonForEncoding(product_type, element) {
+    var JsonObjectForProductType: any;
+    switch (product_type) {
+      case 1:
+        JsonObjectForProductType = {
+          "product_type": element._offering.Ticket.Group,
+          "designator": element._offering.Ticket.Designator,
+          "ticket_id": element._offering.Ticket.TicketId,
+          "designator_details": 0,
+          "start_date_epoch_days": element._offering.Ticket.DateStartEpochDays,
+          "exp_date_epoch_days": element._offering.Ticket.DateExpiresEpochDays,
+          "is_linked_to_user_profile": false,
+          "type_expiration": element._offering.Ticket.ExpirationTypeId,
+          "add_time": 240,
+          "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
+          "days": (element._offering.Ticket.Value),
+          "isAccountBased": element._isAccountBased,
+          "isCardBased": element._isCardBased
+        }
+        break;
+      case 2:
+        JsonObjectForProductType = {
+          "product_type": element._offering.Ticket.Group,
+          "designator": element._offering.Ticket.Designator,
+          "ticket_id": element._offering.Ticket.TicketId,
+          "designator_details": 0,
+          "remaining_rides": (element._quantity * element._offering.Ticket.Value),
+          "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
+          "threshold": 0,
+          "is_linked_to_user_profile": false,
+          "isAccountBased": element._isAccountBased,
+          "isCardBased": element._isCardBased
+        }
+        break;
+      case 3:
+        JsonObjectForProductType = {
+          "product_type": element._offering.Ticket.Group,
+          "designator": element._offering.Ticket.Designator,
+          "ticket_id": element._offering.Ticket.TicketId,
+          "designator_details": 0,
+          "is_linked_to_user_profile": false,
+          "remaining_value": (element._offering.quantity * element._offering.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "isAccountBased": element._isAccountBased,
+          "isCardBased": element._isCardBased
+        }
+        break;
+
+      default:
+        break;
+    }
+    return JsonObjectForProductType;
   }
 
   generateReceipt(timestamp) {
@@ -1056,3 +1027,5 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
 }
+
+
