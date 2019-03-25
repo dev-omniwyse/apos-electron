@@ -169,7 +169,7 @@
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
     <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
-    <button class="btn-white" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
+    <button class="btn-white-top-cancel" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
 </div>
 </div>
 <div class="container-right" *ngIf="checkout">
@@ -522,6 +522,22 @@
                     <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img
                           src="assets/images/arrow-pointing-to-right.svg" /></button>
                     <button class="cardBtn" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card <img
+                          src="assets/images/arrow-pointing-to-right.svg" /></button>
+                    <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="newCardModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <h4 class="modal-title modal-txt-h">Add Card</h4>
+            <div class="modal-body-in">
+                <div class="">
+                    <button class="cardBtn" (click)="newCard($event)" data-dismiss="modal">New Card/LUCC<img
+                          src="assets/images/arrow-pointing-to-right.svg" /></button>
+                    <button class="cardBtn" (click)="ExistingCard($event)" data-dismiss="modal">Existing Card <img
                           src="assets/images/arrow-pointing-to-right.svg" /></button>
                     <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                 </div>

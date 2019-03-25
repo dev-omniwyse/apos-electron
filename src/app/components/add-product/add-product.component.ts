@@ -1024,18 +1024,37 @@ export class AddProductComponent implements OnInit {
   }
 
   newFareCard() {
-    this.checkIsCardNew();
+    $("#addCardModal").modal('hide');
+    $("#newCardModal").modal('show');
+  //   this.checkIsCardNew();
+  //   this.isfromAddProduct = true;
+  //   this.electronService.ipcRenderer.send('readSmartcard', cardName);
+  //   this.isMagnetic = false;
+  //   this.isMerchendise = false;
+  //   localStorage.setItem("isMagnetic", 'false');
+  //   localStorage.setItem("isMerchendise", "false");
+  //   if (this.isNew) {
+  //     this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
+  //   }
+  // }
+  }
+  newCard() {
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
-    if (this.isNew) {
-      this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-    }
   }
 
+  ExistingCard() {
+    this.isfromAddProduct = true;
+    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+    this.isMagnetic = false;
+    this.isMerchendise = false;
+    localStorage.setItem("isMagnetic", 'false');
+    localStorage.setItem("isMerchendise", "false");
+  }
   magneticCard() {
 
     // var magnetic = {
@@ -1114,9 +1133,9 @@ export class AddProductComponent implements OnInit {
   }
 
   displayDigit(digit) {
-    this.productTotal = Math.round(this.productTotal * 100);
-    this.productTotal += digit;
-    this.productTotal = this.productTotal / 100;
+    this.totalDue = Math.round(this.totalDue * 100);
+    this.totalDue += digit;
+    this.totalDue = this.totalDue / 100;
     // this.productTotal = this.productTotal + digit;
     // this.productTotal = ""
     //  if(this.calsifilter == false){
@@ -1171,7 +1190,7 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.productTotal = digit
+    this.totalDue = digit
   }
 
   removeSmartCard() {
