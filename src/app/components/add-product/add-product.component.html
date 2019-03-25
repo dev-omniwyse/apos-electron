@@ -89,80 +89,10 @@
                     <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
                 </div>
             </div>
-        </div>
-        <!-- <div class="btns-mag">
-              <div class="col-md-6">
-                  <button [ngClass]="{'nonFare': !nonFare,'btn-b-white': nonFare || !nonFare}"
-                      (click)=clickOnMerch()>Merch*</button>
-              </div>
-              <div *ngFor="let magnetic of magneticCardList;let j = index" (click)="clickOnMagnetic(magnetic.id)"
-                  class="col-md-6">
-                  <button
-                      [ngClass]="{'nonFare': currentMagneticIndex == magnetic.id && isMagnetic,'btn-b-white': isMagnetic || !isMagnetic || currentMagneticIndex == 0 || currentMagneticIndex == magnetic.id}">{{magnetic.name}}</button>
-              </div>
-              <div>
-                  <div #cardsList *ngFor="let cards of cardJson;let i = index" (click)="selectCard(i)" class="col-md-6">
-                      <button
-                          [ngClass]="{'regularRoute': selectedIdx == i && !isMagnetic && !isMerchendise ,'btn-b-white': selectedIdx == i || selectedIdx == 0 || !isMagnetic || !isMerchendise }">{{cards?.printed_id}}</button>
-                  </div>
-              </div>
-              
-              
-              
-              <div class="clearfix"></div>
-              </div> -->
-        <!-- <div class="flex header-l">
-              <button class="btn-b-white">Merch</button>
-              <button class="btn-b-white">{{cardJson?.printed_id}}</button>
-              </div> -->
+        </div>     
         <div class="container-l-app">
             <div>
                 <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
-            <div *ngIf="!isMagnetic && !isMerchendise">
-                <span class="label label-default">
-                    <div class="pull-left" *ngIf="!isNew">1 Card : {{currentCard?.printed_id}}</div>
-                    <div class="pull-left" *ngIf="isNew">1 Card : {{currentCard?.printed_id}} &nbsp; ${{smartCardCost}}</div>
-
-                    <div class="pull-right" (click)="removeSmartCard()"><span
-                            class="glyphicon glyphicon-minus-sign"></span></div>
-
-                </span>
-                <div class="" *ngFor="let merch of merchantList; let j = index">
-                    <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
-
-                        <div class="pull-left">{{quantityList[j]}} &nbsp; {{merch.Description}} &nbsp;
-                            {{merch.Ticket.Price}}</div>
-
-                        <div class="pull-right"
-                            (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
-                                class="glyphicon glyphicon-minus-sign"></span></div>
-
-                    </span>
-                </div>
-            </div>
-
-            <div *ngIf="isMagnetic">
-                <span class="label label-default">
-                    <div class="pull-left">1 New Magnetics</div>
-
-                    <div class="pull-right" (click)="removeMagneticCard()"><span
-                            class="glyphicon glyphicon-minus-sign"></span></div>
-
-                </span>
-                <div class="" *ngFor="let merch of MagneticList; let j = index">
-
-                    <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
-                        <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
-
-                        <div class="pull-right" (click)="removeMagneticProduct(merch,j)"><span
-                                class="glyphicon glyphicon-minus-sign"></span></div>
-
-                    </span>
-                </div>
-            </div>
-
-
-            <div *ngIf="isMerchendise">
                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >1 Card : {{currentWalletLineItem?._cardPID}} &nbsp; ${{currentWalletLineItem?._unitPrice}}</div>
@@ -269,7 +199,7 @@
 </div>
 <div class="container-right-calc" *ngIf="!checkout">
     <div class="cr-r-set">
-        <h1><span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span></h1>
+        <h1><span class="label label-primary cr-label">${{totalDue | number : '1.2-2'}}</span></h1>
         <div class="flex">
             <div class="cr-left">
                 <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
@@ -305,7 +235,7 @@
                             <p>Click "OK" When cash drawer is closed</p>
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
-                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
+                                <div class="pull-right">${{totalDue | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="pop-up-box">
@@ -332,7 +262,7 @@
                                 <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
-                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
+                                <div class="pull-right">${{totalDue | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -405,7 +335,7 @@
                             <h4 class="modal-title">Are you sure you want use voucher ?</h4>
                         </div>
                         <div class="modal-body">
-                            <p>By continiuing you confirming that the customer has a voucher for the amount of ${{productTotal | number : '1.2-2'}} that you are using in place of payment</p>
+                            <p>By continiuing you confirming that the customer has a voucher for the amount of ${{totalDue | number : '1.2-2'}} that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
                                 <div class="pull-right">${{productTotal}}</div>
@@ -468,7 +398,7 @@
                             <h4 class="modal-title">Are you sure you want comp this sale ?</h4>
                         </div>
                         <div class="modal-body">
-                            <p>By continiuing you confirming that you want to comp this sale for amount of ${{productTotal | number : '1.2-2'}} that you are using in place of payment</p>
+                            <p>By continiuing you confirming that you want to comp this sale for amount of ${{totalDue | number : '1.2-2'}} that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
                                 <div class="pull-right">${{productTotal}}</div>

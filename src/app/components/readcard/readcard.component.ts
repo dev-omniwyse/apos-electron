@@ -339,7 +339,7 @@ export class ReadcardComponent implements OnInit {
         localStorage.setItem("isNonFareProduct", "false");
         localStorage.setItem("isMagnetic", "false");
         this.electronService.ipcRenderer.send('processAutoLoad',cardName)
-        // this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
     }
 

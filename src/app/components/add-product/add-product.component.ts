@@ -418,20 +418,20 @@ export class AddProductComponent implements OnInit {
         switch (element.product_type) {
           case 1:
             if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount)
-              isProductLimitReached = true;
+              this.isProductLimitReached = true;
             break;
           case 2:
             if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255)
-              isProductLimitReached = true;
+              this.isProductLimitReached = true;
             break;
           case 3:
             if (element.product_type == 3 && (((element.remaining_value + (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
-              isProductLimitReached = true;
+              this.isProductLimitReached = true;
               break;
             }
-            if (isProductLimitReached)
+            if (this.isProductLimitReached)
               break;
-            return isProductLimitReached
+            return this.isProductLimitReached
         }
       }
     })
@@ -877,7 +877,7 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if (this.productTotal == 0) {
+    if (this.totalDue == 0) {
       $("#productTotalWarningModal").modal('show');
       return;
     }
@@ -1186,23 +1186,7 @@ export class AddProductComponent implements OnInit {
     this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
   }
 
-  removeSmartCardConfirmation() {
-    for (let index = 0; index < this.merchantList.length; index++) {
-      const element = this.merchantList[index];
-      if (this.productCardList[index] == this.currentCard.printed_id) {
-        this.smartCradProductToRemove = element;
-        this.removeSmartCardProductConfirmation(index);
-        index--;
-      }
-    }
-    // this.checkIsCardNew();
-    if (this.isNew) {
-      this.productTotal = this.productTotal - parseFloat(this.smartCardCost);
-    }
-    this.displaySmartCardsSubtotal(this.merchantList, false);
-    this.cardJson.splice(this.selectedIdx, 1);
-    this.clickOnMerch();
-  }
+
 
   removeMagneticCardConfirmation() {
     for (let index = 0; index < this.MagneticList.length; index++) {
