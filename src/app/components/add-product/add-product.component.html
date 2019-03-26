@@ -76,7 +76,7 @@
         </div>
         <!-- new code  -->
         <div class="btns-mag">
-            <!-- <ngx-slick class="carousel" #slickModal="slick-modal" [config]="slideConfig">
+            <!-- <ngx-slick class="slider" #slickModal="slick-modal" [config]="slideConfig">
                 <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem; let i = index" class="slide">
                     <div class="col-md-6">
                         <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
@@ -84,11 +84,45 @@
                 </div>
             </ngx-slick> -->
 
-            <div class="slide" *ngFor="let item of shoppingcart._walletLineItem">
+            <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
+                    <ol class="carousel-indicators">
+                            <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0 ? 'active' : ''"></li>
+                    </ol>
+            
+                    <div class="carousel-inner">
+                        <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == 0 ? 'item active col-md-12' : 'item col-md-12'" >
+                            
+                            <button class="btn-white-slide"  *ngFor="let currentItem of item"  (click)="activeWallet(currentItem)">{{currentItem._cardPID}}</button>
+                        </div>
+                    </div>
+            </div>
+                            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
+                                    <div [ngClass] = "i == 0? active : '' ">
+                                        <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
+                                  </div>
+                                </div> -->
+                        <!-- <div class="item active">
+                                <button type="button" class="btn btn-info">Button</button>
+                        </div>
+                       <div class="item">
+                            <button type="button" class="btn btn-info">Button</button>
+                        </div>
+                       <div class="item">
+                            <button type="button" class="btn btn-info">Button</button>
+                        </div> -->
+            
+                    <!-- <a class="left carousel-control" href="#Carousel" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#Carousel" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a> -->
+
+            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem">
                 <div class="col-md-6">
                     <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="container-l-app">
             <div>
@@ -96,7 +130,7 @@
                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >1 Card : {{currentWalletLineItem?._cardPID}} &nbsp; ${{currentWalletLineItem?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeCurrentWalletLineItem()">
+                    <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()">
                        <span class="glyphicon glyphicon-minus-sign"></span>
             </div>
             </span>

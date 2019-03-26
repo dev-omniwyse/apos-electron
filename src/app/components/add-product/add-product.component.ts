@@ -134,9 +134,10 @@ export class AddProductComponent implements OnInit {
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
   isCustomAmount = false;
+  walletItems = [];
   slideConfig = {
-    "slidesToShow": 1, dots: true, "infinite": false,
-    "autoplay": false, "prevArrow": false, "slidesToScroll": 2,
+    "slidesToShow": 2, dots: true, "infinite": false,
+    "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
     "nextArrow": false
   };
 
@@ -176,7 +177,9 @@ export class AddProductComponent implements OnInit {
       }
       else
         // this.frequentRide();
-        this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+      this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+      this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
+      // console.log('tttt' + JSON.stringify(this.walletItems));
       this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
 
 
@@ -194,7 +197,7 @@ export class AddProductComponent implements OnInit {
         //this.frequentRide();
 
       if (!this.isMagnetic && !this.isMerchendise) {
-        this.checkIsCardNew();
+        // this.checkIsCardNew();
         if (this.isNew) {
           this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
           // this.displaySmartCardsSubtotal(this.merchantList, false);
@@ -223,13 +226,14 @@ export class AddProductComponent implements OnInit {
             $("#newCardValidationModal").modal('show');
           }
           else {
-            this.checkIsCardNew();
+            // this.checkIsCardNew();
             this.cardJson.push(JSON.parse(data));
-            this.currentCard = this.cardJson[this.cardJson.length - 1]
+            // this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
            
-            this.selectCard(this.cardJson.length - 1);
+            // this.selectCard(this.cardJson.length - 1);
             this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+            this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
             this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1])
           }
         });
@@ -355,6 +359,24 @@ export class AddProductComponent implements OnInit {
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
+    $(document).ready(function () {
+      $('.carousel[data-type="multi"] .item').each(function() {
+        var next = $(this).next();
+        if (!next.length) {
+          next = $(this).siblings(':first');
+        }
+        next.children(':first-child').clone().appendTo($(this));
+      
+        for (var i = 0; i < 2; i++) {
+          next = next.next();
+          if (!next.length) {
+            next = $(this).siblings(':first');
+          }
+      
+          next.children(':first-child').clone().appendTo($(this));
+        }
+      });
+  });
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -1085,6 +1107,7 @@ export class AddProductComponent implements OnInit {
 
     this.shoppingcart = FareCardService.getInstance.addMagneticsCard(this.shoppingcart, item.Offering);
     ShoppingCartService.getInstance.shoppingCart = null;
+    this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
     this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
   }
 
@@ -1209,9 +1232,9 @@ export class AddProductComponent implements OnInit {
     $("#magneticCardRemove").modal('show');
   }
 
-  checkIsCardNew() {
-    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
-  }
+  // checkIsCardNew() {
+  //   this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
+  // }
 
 
 
@@ -1423,5 +1446,17 @@ export class AddProductComponent implements OnInit {
   cancelPinPadTransaction(){
     this.electronService.ipcRenderer.send('cancelPinpadTransaction');
   }
+
+  formatWatlletItems(list, howMany) {
+    var idx = 0
+    let result = []
+  
+    while (idx < list.length) {
+      if (idx % howMany === 0) result.push([])
+      result[result.length - 1].push(list[idx++])
+    }
+    return result
+  }
+
 
 }
