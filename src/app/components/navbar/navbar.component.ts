@@ -69,6 +69,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("shiftReport");
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
+     // localStorage.removeItem("mainShiftClosedByAnyUser")
       //localStorage.removeItem("hideModalPopup")
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login'])
@@ -97,6 +98,10 @@ export class NavbarComponent implements OnInit {
     // }else if(localStorage.getItem("hideAndShowLogout")=="true"){
     //   this.hideAndShowLogout = true
     // }
+
+    setInterval(() => {
+      this.today = new Date();
+    }, 1000); 
   }
   // export class AppComponent  {
   //   today= new Date();

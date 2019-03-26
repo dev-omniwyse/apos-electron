@@ -59,7 +59,7 @@
                                 <button type="button" class="btn btn-default cancel-btn" data-dismiss="modal">No,
                                     Cancel</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
-                                    href="#confirmCashModal">Yes, Close Shift</button>
+                                    href="#confirmCashModal" (click)="getUsersSalesAndPayments()">Yes, Close Shift</button>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"
-                                    (click)="mainShiftClose();">Ok</button>
+                                    (click)="mainAndReliefShiftClose();">Ok</button>
                             </div>
                         </div>
                     </div>
