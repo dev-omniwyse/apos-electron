@@ -189,7 +189,7 @@
                 <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
             </div>
             <div class="">
-                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount()">Custom Amount</button>
+                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount(merchantise[0])">Custom Amount</button>
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
@@ -651,14 +651,8 @@
                         <button (click)="clearDigit(0)">Clear</button>
                     </div>
                 </div>
-                <div class="cr-right">
-                    <button data-toggle="modal" data-target="#myModal">Cash</button>
-                    <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
-                    <button data-toggle="modal" data-target="#checkModal">Check</button>
-                    <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
-                    <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
-                    <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
-                    <button data-toggle="modal" data-target="#compModal">Comp</button>
+                <div class="cr-right-custom">
+                    <button data-toggle="modal" (click)="enterCustomAmount(productTotal)">Enter</button>
                 </div>
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" role="dialog">

@@ -149,6 +149,7 @@ export class AddProductComponent implements OnInit {
   magneticId: any =0;
   currentMagneticProductId: any = 0;
   @ViewChildren('cardsList') cardsList;
+  customPayAsYouGo: any;
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
@@ -990,7 +991,8 @@ export class AddProductComponent implements OnInit {
 
     this.merchantise = list;
   }
-  customAmount() {
+  customAmount(item) {
+    this.customPayAsYouGo = item;
     this.isCustomAmount = true;
     // this.router.navigate(['/custom-amount'])
   }
@@ -1144,24 +1146,24 @@ export class AddProductComponent implements OnInit {
     this.totalDue = Math.round(this.totalDue * 100);
     this.totalDue += digit;
     this.totalDue = this.totalDue / 100;
-    // this.productTotal = this.productTotal + digit;
-    // this.productTotal = ""
-    //  if(this.calsifilter == false){
-    //      this.productTotal = ""
-    //      this.calsifilter = true
-
-    //  }
-    //  this.productTotal  += digit;
-    //  this.productTotal = this.productTotal;
-    // if (this.productTotal == 0) {
-    //   this.productTotal = digit/100;
-    //   // this.productTotal+=digit
-    // } else {
-    //   this.productTotal += digit
-    // }
-
+    if(this.isCustomAmount) {
+      this.productTotal = Math.round(this.productTotal * 100);
+      this.productTotal += digit;
+      this.productTotal = (this.productTotal / 100);
+    }
   }
-
+  enterCustomAmount(productTotal) {
+    let offering = this.customPayAsYouGo;
+    this.customPayAsYouGo = null;
+    offering.UnitPrice = productTotal;
+    console.log(this.customPayAsYouGo);
+    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);    
+    this.isCustomAmount = false;
+    this.productTotal = 0;
+    this.frequentRide();
+    this.getSubTotal(this.currentWalletLineItem);
+    this.getTotalDue(this.shoppingcart);
+  }
   getSubTotal(currentWalletLineItem) {
     this.subTotal = ShoppingCartService.getInstance.getSubTotalForCardUID(currentWalletLineItem);
   }
@@ -1198,7 +1200,10 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.totalDue = digit
+    this.totalDue = digit;
+    if(this.isCustomAmount) {
+      this.productTotal = digit;
+    }
   }
 
   removeSmartCard() {
