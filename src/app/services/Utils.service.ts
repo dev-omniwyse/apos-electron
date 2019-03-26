@@ -116,13 +116,15 @@ export class Utils {
 
     genearateMagneticSequenceNumber(shoppingCart) {
         let currentSequence = 0;
-        for (let item of shoppingCart._walletLineItem) {
-
+        let lastCardPID = null ;
+        debugger;
+         for (let item of shoppingCart._walletLineItem) {
             if (item._walletTypeId == MediaType.MAGNETIC_ID) {
-                currentSequence++;
+                lastCardPID = item._cardPID;
             }
         }
-
+        let seq = null == lastCardPID ? 0 :lastCardPID.split(" ")[1];
+        currentSequence = +seq;
         return (currentSequence + 1);
     }
 

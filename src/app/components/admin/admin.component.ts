@@ -55,7 +55,7 @@ export class AdminComponent implements OnInit {
           this.fareAndNonFareTotal = this.fareTotal + this.nonFareTotal
 
         });
-        localStorage.setItem("allSales", data)
+        //localStorage.setItem("allSales", data)
 
         this._ngZone.run(() => {
           // this.router.navigate(['/addproduct'])
@@ -81,7 +81,7 @@ export class AdminComponent implements OnInit {
           }
 
         });
-        localStorage.setItem("paymentTypes", data)
+       // localStorage.setItem("paymentTypes", data)
 
 
         this._ngZone.run(() => {
@@ -192,7 +192,17 @@ export class AdminComponent implements OnInit {
 
   }
 
-
+getPresentShiftReport(){
+  let userID = localStorage.getItem("userID")
+  let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+  var specificUserDetails = []
+  shiftUsers.forEach(element => {
+    if(element.userID == userID){
+      specificUserDetails.push(element)
+    }
+  });
+  this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
+}
 
   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
@@ -211,12 +221,7 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('adminCloseShift')
     //console.log('read call', cardName)
   }
-  // openMainshiftStatus(){
-  //   this.setShiftStatus = "OPEN SHIFT"
-  //   this.setShiftText = "Enterthe total opening amount in the till and Tap 'Enter' "
-  //   localStorage.setItem("setShiftStatus", this.setShiftStatus)
-  //   localStorage.setItem("setShiftText",this.setShiftText)
-  // }
+
   adminOpenShift(event) {
     this.electronService.ipcRenderer.send('adminOpenShift')
     //console.log('read call', cardName)
@@ -274,7 +279,7 @@ export class AdminComponent implements OnInit {
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     localStorage.setItem("shiftReopenedByMainUser", "true")
-    localStorage.setItem("hideModalPopup" , "true")
+    localStorage.setItem("hideModalPopup", "true")
   }
 
   hideModalPop() {
@@ -285,7 +290,7 @@ export class AdminComponent implements OnInit {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
       } else {
-      
+
         if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
           localStorage.setItem("hideModalPopup", "true")
         } else {
@@ -332,6 +337,7 @@ export class AdminComponent implements OnInit {
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
+            
               localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
@@ -353,7 +359,13 @@ export class AdminComponent implements OnInit {
             } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1"
               this.shiftState = "3"
-
+              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+              //   this.mainshiftCloser = true
+              // } else {
+              //   this.shiftType = "1"
+              //   this.shiftState = "3"
+              //  this.statusOfShiftReport = "Main Shift is Paused "
+              // }
               this.statusOfShiftReport = "Main Shift is Paused "
             } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1";
