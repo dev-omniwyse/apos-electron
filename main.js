@@ -437,19 +437,22 @@ ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, 
 
     event.sender.send('paymentsDataResult', result, userID, shiftType);
 })
+
+ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
+    var date = java.newLong(Number(datevalue));
+    logger.info("printReceiptHeader data", filter, datevalue)
+    var result = posAppletInstance.printReceiptHeaderSync(filter, date );
+    logger.info("printReceiptHeader", '' + result)
+    event.sender.send('printReceiptHeaderResult', result);
+  })
+
 ipcMain.on('printSummaryReport', (event, drawerReport, productsReport, userID, AllUsers) => {
-  logger.info("print summary report",drawerReport, productsReport);
-  var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID, AllUsers);
+  logger.info("print summary report",drawerReport, productsReport,userID, AllUsers);
+  var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID.toString(), AllUsers);
   logger.info("printSummaryReportResult", '' + result)
   event.sender.send('printSummaryReportResult', result);
 })
-ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
-  var date = java.newLong(Number(datevalue));
-  logger.info("printReceiptHeader data", filter, datavalue)
-  var result = posAppletInstance.printReceiptHeaderSync(filter, date );
-  logger.info("printReceiptHeader", '' + result)
-  event.sender.send('printReceiptHeaderResult', result);
-})
+
 ipcMain.on('printSummaryPaymentsReport', (event, paymentReport) => {
   logger.info("paymentReport checking",paymentReport)
   var result = posAppletInstance.printSummaryPaymentsReportSync(paymentReport);

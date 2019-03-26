@@ -91,48 +91,48 @@ export class CdtaService {
     this.terminalNumberSrc.next(mission);
   }
 
-//   getAllClerksSalesReport(shiftStore) {
-//     var backendSalesReport = [];
-//     var container = this;
-//     shiftStore.each(function (record) {
-//         console.log("Inside shist user calling");
-//         //var salesReport1 = container.setSalesReport(record);
-//         if (salesReport1 != null) {
-//             for (var report = 0; report < salesReport1.length; report++) {
-//                 backendSalesReport.push(salesReport1[report]);
-//             }
-//         }
-//     });
-//     return backendSalesReport;
-// },
-getUniqueSaletReport(backendSalesReport) {
+  //   getAllClerksSalesReport(shiftStore) {
+  //     var backendSalesReport = [];
+  //     var container = this;
+  //     shiftStore.each(function (record) {
+  //         console.log("Inside shist user calling");
+  //         //var salesReport1 = container.setSalesReport(record);
+  //         if (salesReport1 != null) {
+  //             for (var report = 0; report < salesReport1.length; report++) {
+  //                 backendSalesReport.push(salesReport1[report]);
+  //             }
+  //         }
+  //     });
+  //     return backendSalesReport;
+  // },
+  getUniqueSaletReport(backendSalesReport) {
     var displayingSales = [];
     var container = this;
     for (var b = 0; b < backendSalesReport.length; b++) {
-        for (var c = b + 1; c < backendSalesReport.length; c++) {
-            if (backendSalesReport[b].description == backendSalesReport[c].description) {
-                backendSalesReport[b].value = backendSalesReport[b].value + backendSalesReport[c].value;
-                backendSalesReport[b].quantity = backendSalesReport[b].quantity + backendSalesReport[c].quantity;
-            }
+      for (var c = b + 1; c < backendSalesReport.length; c++) {
+        if (backendSalesReport[b].description == backendSalesReport[c].description) {
+          backendSalesReport[b].value = backendSalesReport[b].value + backendSalesReport[c].value;
+          backendSalesReport[b].quantity = backendSalesReport[b].quantity + backendSalesReport[c].quantity;
         }
-        if (!this.checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport[b])) {
-            displayingSales.push(backendSalesReport[b]);
-        }
+      }
+      if (!this.checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport[b])) {
+        displayingSales.push(backendSalesReport[b]);
+      }
     }
     return displayingSales;
-}
-
-checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport) {
-  console.log(" verifying is duplicate element?");
-  var contains = false;
-  for (var i = 0; i < displayingSales.length; i++) {
-      if (displayingSales[i].description == backendSalesReport.description) {
-          contains = true;
-          break;
-      }
   }
-  return contains;
-};
+
+  checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport) {
+    console.log(" verifying is duplicate element?");
+    var contains = false;
+    for (var i = 0; i < displayingSales.length; i++) {
+      if (displayingSales[i].description == backendSalesReport.description) {
+        contains = true;
+        break;
+      }
+    }
+    return contains;
+  };
 
   iterateAndFindUniquePaymentTypeString(backendPaymentReport) {
     var container = this;
@@ -355,9 +355,9 @@ checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport) {
     //Kept On Purpose
     console.log("paymentsReport123", paymentsReport)
 
-    if(!isSingleUser || isSingleUser == undefined){
+    if (!isSingleUser || isSingleUser == undefined) {
       localStorage.setItem("paymentReceipt", JSON.stringify(paymentReport))
-    }else{
+    } else {
 
     }
 
@@ -380,6 +380,16 @@ checkIsDuplicateSaleRecordElement(displayingSales, backendSalesReport) {
   }
 
   printAllOrSpecificShiftData(specificUserDetails) {
+
+    try {
+      // printReceiptHeader(true, new Date().getTime());
+      var date = new Date().getTime()
+      this.electronService.ipcRenderer.send("printReceiptHeader", true, date);
+      console.log("checking header")
+    } catch (e) {
+      console.log("Exception printing summary header.");
+    }
+
     var shiftStore
     if (specificUserDetails != null) {
       shiftStore = specificUserDetails
