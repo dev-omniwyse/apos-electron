@@ -893,8 +893,10 @@ export class AddProductComponent implements OnInit {
     // localStorage.setItem("MerchandiseData", JSON.stringify(this.merchantiseList));
     // localStorage.setItem("MagneticData", JSON.stringify(this.MagneticList));
     // localStorage.setItem('productCardData', JSON.stringify(this.productCardList));
+    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart))
     localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
+    localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
   }
 

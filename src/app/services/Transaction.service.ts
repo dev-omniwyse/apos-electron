@@ -25,12 +25,13 @@ export class TransactionService {
 
     saveTransaction(shoppingCart, userData, paymentTypes) {
 
+        debugger;
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         let taxAmount = ShoppingCartService.getInstance.getTax();
         let timeStamp = new Date().getTime();
 
-        transaction.$userID = userData.userName;
+        transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;
         transaction.$transactionID = timeStamp;
         transaction.$transactionAmount = transactionAmount;
@@ -176,14 +177,19 @@ export class TransactionService {
 
         let payments = [];
 
-        for(let item of paymentTypes){
-            let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
+        /**
+         * 
+         * for now we are making single payment in further need to support multiple payments
+         */
+        // for(let item of paymentTypes){
+        //     let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
             let paymentInfo = new PaymentType();
-            paymentInfo.$paymentMethodId = item.id;
-            paymentInfo.$amount = paymentTypeText;
-
-            payments.push(paymentInfo);
-        }
+            paymentInfo.$paymentMethodId = paymentTypes.methodId;
+            paymentInfo.$amount = paymentTypes.amount;
+            paymentInfo.$comment = paymentTypes.comment;
+        //     payments.push(paymentInfo);
+        // }
+        payments.push(paymentInfo);
         transaction.$payments = payments;
 
         return transaction;
