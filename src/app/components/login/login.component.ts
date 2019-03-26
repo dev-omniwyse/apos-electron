@@ -171,15 +171,10 @@ export class LoginComponent implements OnInit {
                     } else
                         if (element.shiftState == "3" && element.shiftType == "0") {
                             this.statusOfShiftReportBoolean = true
-<<<<<<< HEAD
-
-=======
->>>>>>> 900bf46... time stamp and added print functionality
                             this.statusOfShiftReport = "Main Shift is Closed"
                         }
                         else if (element.shiftState == "4" && element.shiftType == "0") {
                             this.statusOfShiftReportBoolean = true
-<<<<<<< HEAD
 
                             this.statusOfShiftReport = "Main Shift is Paused"
                             if (localStorage.getItem("mainShiftUserLock") != undefined) {
@@ -188,15 +183,6 @@ export class LoginComponent implements OnInit {
                             }
 
 
-=======
-                            this.statusOfShiftReport = "Main Shift is Paused"
-                            if (localStorage.getItem("mainShiftUserLock") != undefined) {
-                                this.ownedByUserBoolean = true
-                                this.ownedByUser = localStorage.getItem("mainShiftUserLock")
-                            }
-
-
->>>>>>> 900bf46... time stamp and added print functionality
                         } else if (element.shiftState == "0" && element.shiftType == "0" && element.userEmail != "") {
                             // this.statusOfShiftReport = "Main Shift is Paused"
                             this.lockedByUserBoolean = true

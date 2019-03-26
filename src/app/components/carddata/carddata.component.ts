@@ -122,18 +122,18 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
     });
 
-    incrementEncodableIndex(){
-	this.cardIndex ++;
-    }
+  //   incrementEncodableIndex(){
+	// this.cardIndex ++;
+  //   }
 
-    getCountOfSmartCardsFromShoppingCard(){
-	this.shoppingCart._walletLineItem.foreach(WalletLineItem
-    }
-    getNextEncodableProduct(){
+  //   getCountOfSmartCardsFromShoppingCard(){
+	// this.shoppingCart._walletLineItem.foreach(WalletLineItem
+  //   }
+    // getNextEncodableProduct(){
        
-       this.shoppingCart._walletLineItem[this.cardIndex + 1];
-       this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
-    }
+    //    this.shoppingCart._walletLineItem[this.cardIndex + 1];
+    //    this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
+    // }
 
     var updateCardDataListener: any = this.electronService.ipcRenderer.on('updateCardDataResult', (event, data) => {
       if (data != undefined && data != "" && this.isFromCardComponent) {
