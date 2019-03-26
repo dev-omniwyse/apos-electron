@@ -4,19 +4,18 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { ElectronService } from 'ngx-electron';
 import { CdtaService } from 'src/app/cdta.service';
 @Component({
-  selector: 'app-setup',
-  templateUrl: './setup.component.html',
-  styleUrls: ['./setup.component.css']
+    selector: 'app-setup',
+    templateUrl: './setup.component.html',
+    styleUrls: ['./setup.component.css']
 })
 export class SetupComponent implements OnInit {
 
-  title = 'Please make sure the following peripherals are attached:';
-   
+    title = 'Please make sure the following peripherals are attached:';
     form: any;
     showView = false;
     isFromSetup = false;
-    constructor(private route: ActivatedRoute,private router: Router, private cdtaservice: CdtaService, private electronService:ElectronService,private _ngZone: NgZone,private ref: ChangeDetectorRef, private http: HttpClient) {
-    
+    constructor(private route: ActivatedRoute, private router: Router, private cdtaservice: CdtaService, private electronService: ElectronService, private _ngZone: NgZone, private ref: ChangeDetectorRef, private http: HttpClient) {
+
         // this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
         //     if (data != undefined && data != "" && this.isFromSetup) {
         //         this.isFromSetup = false;
@@ -39,15 +38,15 @@ export class SetupComponent implements OnInit {
         //this.electronService.ipcRenderer.send("switchlogincall");
     }
 
-    ngOnChanges(){
+    ngOnChanges() {
         // this.electronService.ipcRenderer.send("switchlogincall");
     }
 
     save(form: any): boolean {
         if (!form.valid) {
             return false;
-        }  
-      
+        }
+
         return true;
     }
 

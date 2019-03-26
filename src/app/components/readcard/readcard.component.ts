@@ -103,6 +103,11 @@ export class ReadcardComponent implements OnInit {
     public fareAndNonFareTotal: any = 0
     adminSales = []
     salesPayments = []
+    public salesData: any
+    public salesPaymentData: any
+    backendPaymentReport = []
+    backendSalesReport = []
+    paymentReport: any
 
     constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
@@ -111,6 +116,44 @@ export class ReadcardComponent implements OnInit {
             this.logger = this.electronService.remote.require("electron-log");
         }
 
+        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
+            console.log("print sales data", data)
+            if (data != undefined && data.length != 0) {
+                this._ngZone.run(() => {
+                    this.salesData = JSON.parse(data);
+                    var salesReport: any = this.salesData
+                    for (var report = 0; report < salesReport.length; report++) {
+                        salesReport[report].userID = userID
+                        salesReport[report].shiftType = shiftType
+                        this.backendSalesReport.push(salesReport[report]);
+                    }
+                    localStorage.setItem("backendSalesReport",JSON.stringify( this.backendSalesReport))
+                });
+
+            }
+        });
+
+        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
+            console.log("print payments  data", data, userID)
+            if (data != undefined && data.length != 0) {
+                this._ngZone.run(() => {
+                    this.salesPaymentData = JSON.parse(data);
+                    var paymentReport: any = this.salesPaymentData;
+                    for (var report = 0; report < paymentReport.length; report++) {
+                        paymentReport[report].userID = userID
+                        paymentReport[report].shiftType = shiftType
+                        this.backendPaymentReport.push(paymentReport[report]);
+                    }
+                    console.log(" this.backendPaymentReport", this.backendPaymentReport)
+                    localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+                  
+                    var displayingPayments = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
+                    this.paymentReport = cdtaservice.generatePrintReceiptForPayments(displayingPayments,false);
+                    localStorage.setItem("paymentReceipt",JSON.stringify(this.paymentReport))
+
+                });
+            }
+        });
 
 
         this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
@@ -352,6 +395,15 @@ export class ReadcardComponent implements OnInit {
     adminDeviceConfig() {
         this.electronService.ipcRenderer.send('adminDeviceConfig')
         //console.log('read call', cardName)
+    }
+
+    getAllUsersSalesAndPayments() {
+        var shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
+        shiftStore.forEach(record => {
+            this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
+            this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
+        });
+
     }
     setOffering() {
         this.offeringSList = [];
