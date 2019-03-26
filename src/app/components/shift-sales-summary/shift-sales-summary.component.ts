@@ -12,38 +12,62 @@ import { ElectronService } from 'ngx-electron';
 })
 export class ShiftSalesSummaryComponent implements OnInit {
   sales = []
-  selectedValue: any
+  selectedValue: any = 0
   selectedValues: any
   salesData: any
   salesPaymentData: any
   public totalSold: any = 0
+  public backendPaymentReport = []
+  public backendSalesReport = []
   constructor(private cdtaservice: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
-    this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
+    this.electronService.ipcRenderer.on('allSalesResult', (event, data, userID, shiftType) => {
       console.log("sales data", data)
-      if (data != undefined && data != "") {
-        //this.show = true;
-        // localStorage.setItem("allSales", data)
-        this.salesData = JSON.parse(data);
-        return this.salesData
+      if (data != undefined && data.length != 0) {
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
+          if (this.selectedValue == 0) {
+            this.salesData = JSON.parse(data);
+            var salesReport: any = JSON.parse(data);
+            for (var report = 0; report < salesReport.length; report++) {
+              salesReport[report].userID = userID
+              salesReport[report].shiftType = shiftType
+              this.backendSalesReport.push(salesReport[report]);
+            }
+            this.salesData = cdtaservice.getUniqueSaletReport(this.backendSalesReport)
+          } else {
+            this.backendSalesReport = []
+            this.salesData = JSON.parse(data)
+
+          }
         });
       }
     });
 
-    this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
+    this.electronService.ipcRenderer.on('allPaymentsResult', (event, data, userID, shiftType) => {
       console.log("sales data", data)
-      this.totalSold = 0
       if (data != undefined && data.length != 0) {
-        //this.show = true;
-        // localStorage.setItem("paymentTypes", data)
-        JSON.parse(data).forEach(element => {
-          this.totalSold = this.totalSold + element.paymentAmount
-        });
-        this.salesPaymentData = JSON.parse(data);
+       
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
+          if (this.selectedValue == 0) {
+            var paymentReport: any = JSON.parse(data);
+            for (var report = 0; report < paymentReport.length; report++) {
+              paymentReport[report].userID = userID
+              paymentReport[report].shiftType = shiftType
+              this.totalSold = this.totalSold +  paymentReport[report].paymentAmount
+              this.backendPaymentReport.push(paymentReport[report]);
+            }
+            console.log(" this.backendPaymentReport", this.backendPaymentReport)
+            localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+
+            this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
+          }else{
+            this.totalSold = 0
+            this.backendPaymentReport = []
+            JSON.parse(data).forEach(element => {
+              this.totalSold = this.totalSold + element.paymentAmount
+            });
+            this.salesPaymentData = JSON.parse(data)
+          }
         });
         return this.salesPaymentData
       }
@@ -96,39 +120,21 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
   ngOnInit() {
 
-
+    // users list in dropdown 
     this.sales = JSON.parse(localStorage.getItem("shiftReport"));
-    //   let all = {
-    //     userEmail:"--All--",
-    //     userID: "",
-    //     shiftID: "0",
-    //     shiftType: "",
-    //     shiftState: "3",
-    //     openingDrawer: "0.00",
-    //     closingDrawer: "0.00",
-    //     initialOpeningTime: 0,
-    //     timeOpened: 0,
-    //     timeClosed: 0,
-    //     userThatClosedShift: ""
-    // }
-    // this.sales.push(all)
 
-    // this.cdtaservice.getsalesJson().subscribe(data => {
-    //   if (data != '') {
-    //     console.log("sales json", data)
-    //     this.salesData = data
-    //   }
+    // particular logged in user details
+    //this.salesData = JSON.parse(localStorage.getItem("allSales"));
+    //this.salesPaymentData = JSON.parse(localStorage.getItem("paymentTypes"))
 
-    // });
-    this.salesData = JSON.parse(localStorage.getItem("allSales"));
-    this.salesPaymentData = JSON.parse(localStorage.getItem("paymentTypes"))
-    // this.cdtaservice.getsalesPaymentJson().subscribe(data => {
-    //   if (data != '') {
-    //     console.log("sales json", data)
-    //     this.salesPaymentData = data
-    //   }
+    this.selectedValue = 0
+    console.log("this.selectedValue", this.selectedValue)
+    let shiftStore = JSON.parse(localStorage.getItem("shiftReport"));
+    shiftStore.forEach(element => {
+      this.electronService.ipcRenderer.send('allSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID))
+      this.electronService.ipcRenderer.send('allPayments', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
+    });
 
-    // });
   }
 
   hidePopUp() {
@@ -137,29 +143,50 @@ export class ShiftSalesSummaryComponent implements OnInit {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
 
-    if(localStorage.getItem("closingPausedMainShift") == "true"){
+    if (localStorage.getItem("closingPausedMainShift") == "true") {
       localStorage.setItem("closingPausedMainShift", "false")
     }
     shiftReports.forEach(element => {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
-      } else if (element.shiftState == 3 && element.userID == localStorage.getItem("userID")){
+      } else if (element.shiftState == 3 && element.userID == localStorage.getItem("userID")) {
         localStorage.setItem("hideModalPopup", "false")
       }
     })
+   
+    this.electronService.ipcRenderer.removeAllListeners("allSalesResult");
+    this.electronService.ipcRenderer.removeAllListeners("allPaymentsResult")
   }
 
   shiftSaleSummary() {
     console.log("selectedValue:", this.selectedValues)
     // console.log("saleSummary", JSON.parse(saleSummary))
+    
     if (this.selectedValues == 0) {
       this.selectedValue = 0
+      console.log("this.selectedValue", this.selectedValue)
+      let shiftStore = JSON.parse(localStorage.getItem("shiftReport"));
+      this.totalSold = 0
+      shiftStore.forEach(element => {
+        this.electronService.ipcRenderer.send('allSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID))
+        this.electronService.ipcRenderer.send('allPayments', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)
+      });
     } else {
-      this.selectedValue = this.selectedValues.userID
+      this.selectedValue = this.selectedValues
       console.log("this.selectedvalue", this.selectedValue)
+      this.electronService.ipcRenderer.send('allSales', Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed, Number(this.selectedValues.userID))
+      this.electronService.ipcRenderer.send('allPayments', Number(this.selectedValues.userID), Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed, null, null, null)
     }
-    this.electronService.ipcRenderer.send('adminSales', Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed)
-    this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(this.selectedValues.userID), Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed, null, null, null)
+  }
+
+  printSummaryReceipt() {
+    var specificUser = []
+    if (this.selectedValue == 0) {
+      this.cdtaservice.printAllOrSpecificShiftData(null)
+    } else {
+      specificUser.push(this.selectedValue)
+      this.cdtaservice.printAllOrSpecificShiftData(specificUser)
+    }
   }
 
   printSummaryReport() {
@@ -712,8 +739,8 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
       productsReport += spacer + currentProductSum;
 
-      
-      
+
+
 
       var costText = '$' + parseFloat(productValue).toFixed(2);
 
