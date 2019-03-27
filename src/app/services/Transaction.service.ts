@@ -23,27 +23,47 @@ export class TransactionService {
         TransactionService._transactionService = this;
     }
 
+    isValidMerchandise(wallet) {
+        let flag = true;
+        if ( (wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
+            ( 0 == wallet._walletContents.length) ){
+            flag = false;
+        }
+
+        return flag;
+    }
+
     saveTransaction(shoppingCart, userData, paymentTypes) {
 
+        let walletLineItem = shoppingCart._walletLineItem;
+        let userProfile = JSON.parse(localStorage.getItem("userProfile"));
+        let fareCodeDescription = userProfile;
+        debugger
+        if (null != walletLineItem && !this.isValidMerchandise(walletLineItem[0])) {
+            walletLineItem.splice(0, 1);
+
+            shoppingCart._walletLineItem = walletLineItem;
+        }
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         let taxAmount = ShoppingCartService.getInstance.getTax();
         let timeStamp = new Date().getTime();
 
-        transaction.$userID = userData.userName;
+        transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;
         transaction.$transactionID = timeStamp;
         transaction.$transactionAmount = transactionAmount;
         transaction.$salesAmount = transactionAmount;
         transaction.$taxAmount = taxAmount;
         transaction.$timestamp = timeStamp;
+        transaction.$shiftType = +userData.shiftType;
 
         let items = [];
-        let walletLineItem = shoppingCart._walletLineItem;
+
         for (let wallet of walletLineItem) {
             let item = new Items();
 
-            if (wallet._walletTypeId == MediaType.MERCHANDISE_ID && null != wallet._walletContents && [] != wallet._walletContents) {
+            if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
                 console.log("Adding Non-Fare Product transaction.");
 
                 for (let nonFareItem of wallet._walletContents) {
@@ -68,7 +88,7 @@ export class TransactionService {
                     item.$tax = totalTax;
                     item.$fareCode = null;
                     item.$timestamp = timeStamp;
-                    item.$shiftType = userData.shiftType;
+                    item.$shiftType = +userData.shiftType;
                 }
             } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
 
@@ -76,8 +96,6 @@ export class TransactionService {
                 let walletCost = 0;
                 let walletUnitPrice = 0;
                 let walletQuantitySold = 1;
-
-                let fareCodeDescription = "";
                 if (wallet._offering) {
 
                     console.log("Adding wallet transaction.");
@@ -88,7 +106,7 @@ export class TransactionService {
                 } else {
                     // Sold products on an existing wallet, not a new wallet
                     walletQuantitySold = 0;
-                }
+                }                
                 item.$transactionID = timeStamp;
                 item.$cardPID = wallet._cardPID;
                 item.$cardUID = wallet._cardUID;
@@ -117,7 +135,7 @@ export class TransactionService {
                     item.$IsBackendMerchandise = true;
                 }
 
-                item.$shiftType = userData.shiftType;
+                item.$shiftType = +userData.shiftType;
                 item.$timestamp = timeStamp;
 
                 let walletContentItems = [];
@@ -136,9 +154,10 @@ export class TransactionService {
                     }
 
                     walletContentItem.$transactionID = timeStamp;
-                    walletContentItem.$quantity = fareItem._offering.ProductIdentifier;
+                    walletContentItem.$quantity = fareItem._quantity;
                     walletContentItem.$ticketTypeId = fareItem._offering.Ticket.TicketType.TicketTypeId;
                     walletContentItem.$ticketValue = ticketValue;
+                    walletContentItem.$productIdentifier = fareItem._offering.ProductIdentifier;
                     walletContentItem.$status = fareItem._status;
                     walletContentItem.$slotNumber = fareItem._slot;
                     walletContentItem.$startDate = fareItem._startDate;
@@ -159,7 +178,7 @@ export class TransactionService {
                     walletContentItem.$cardUID = wallet._cardUID;
                     walletContentItem.$walletTypeId = wallet._walletTypeId;
                     walletContentItem.$timestamp = timeStamp;
-                    walletContentItem.$shiftType = userData.shiftID;
+                    walletContentItem.$shiftType = +userData.shiftType;
 
                     // special case for Magnetics - record as Products on backend
                     if (wallet._walletTypeId == MediaType.MAGNETIC_ID) {
@@ -176,14 +195,18 @@ export class TransactionService {
 
         let payments = [];
 
-        for(let item of paymentTypes){
-            let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
-            let paymentInfo = new PaymentType();
-            paymentInfo.$paymentMethodId = item.id;
-            paymentInfo.$amount = paymentTypeText;
-
-            payments.push(paymentInfo);
-        }
+        /**
+         * for now we are making single payment in further need to support multiple payments
+         */
+        // for(let item of paymentTypes){
+        //     let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
+        let paymentInfo = new PaymentType();
+        paymentInfo.$paymentMethodId = paymentTypes.paymentMethodId;
+        paymentInfo.$amount = paymentTypes.amount;
+        paymentInfo.$comment = paymentTypes.comment;
+        //     payments.push(paymentInfo);
+        // }
+        payments.push(paymentInfo);
         transaction.$payments = payments;
 
         return transaction;

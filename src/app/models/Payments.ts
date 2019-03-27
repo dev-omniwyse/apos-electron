@@ -2,9 +2,19 @@
 export class PaymentType {
 
 
+    private comment:string;
     constructor(private paymentMethodId?: number, private amount?: number) {
         
     }
+
+/**
+     * Getter $paymentMethodId
+     * @return {string}
+     */
+    public get $comment(): string {
+        return this.comment;
+    }
+
 
     /**
      * Getter $paymentMethodId
@@ -12,6 +22,15 @@ export class PaymentType {
      */
     public get $paymentMethodId(): number {
         return this.paymentMethodId;
+    }
+
+
+    /**
+     * Setter $paymentMethodId
+     * @param {string} comment
+     */
+    public set $comment(comment: string) {
+        this.comment = comment;
     }
 
     /**

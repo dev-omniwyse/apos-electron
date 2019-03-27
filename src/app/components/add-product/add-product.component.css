@@ -329,6 +329,12 @@ ul {
     float: right;
 }
 
+.cr-right-custom {
+    width: 40%;
+    float: right;
+    padding: 0px 20px 0px 55px;
+}
+
 .cr-left .number-btns-set-3 button {
     width: 31%;
     margin: 1%;
@@ -379,6 +385,18 @@ ul {
     font-size: 1.9vh;
     padding: 2.85vh 15px;
     margin: 1% 0;
+}
+
+.cr-right-custom button {
+    width: 100%;
+    background-color: #d65400;
+    border: 1px solid #d65400;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.9vh;
+    padding: 2.85vh 15px;
+    margin: 1% 0;
+    height: 100%;
 }
 
 .cr-r-set {
@@ -571,7 +589,7 @@ ul {
     top: 27px;
 }
 
-.modal-custom {
+.modal-custom{
     width: 90%!important;
     max-width: 90%!important;
 }

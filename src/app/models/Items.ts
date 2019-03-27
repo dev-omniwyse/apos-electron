@@ -3,7 +3,7 @@ import { WalletContentItems } from './WalletContentItems';
 export class Items {
 
     constructor(private transactionID?: number, private cardPID?: string, private cardUID?: number,
-        private quantity?: number, private productIdentifier?: number, private ticketTypeId?: number,
+        private quantity?: number, private productIdentifier?: string, private ticketTypeId?: number,
         private ticketValue?: number, private slotNumber?: number, private expirationDate?: number,
         private balance?: number, private IsMerchandise?: boolean, private IsBackendMerchandise?: boolean,
         private IsFareCard?: boolean, private unitPrice?: number, private totalCost?: number,
@@ -48,9 +48,9 @@ export class Items {
 
     /**
      * Getter $productIdentifier
-     * @return {number}
+     * @return {string}
      */
-    public get $productIdentifier(): number {
+    public get $productIdentifier(): string {
         return this.productIdentifier;
     }
 
@@ -224,9 +224,9 @@ export class Items {
 
     /**
      * Setter $productIdentifier
-     * @param {number} value
+     * @param {sting} value
      */
-    public set $productIdentifier(value: number) {
+    public set $productIdentifier(value: string) {
         this.productIdentifier = value;
     }
 

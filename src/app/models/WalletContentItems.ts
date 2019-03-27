@@ -1,7 +1,7 @@
 export class WalletContentItems {
 
 
-    constructor(private transactionID?: number, private quantity?: number, private productIdentifier?: number,
+    constructor(private transactionID?: number, private quantity?: number, private productIdentifier?: string,
         private ticketTypeId?: number, private ticketValue?: number, private status?: string,
         private slotNumber?: number, private startDate?: number, private expirationDate?: number,
         private balance?: number, private rechargesPending?: number, private IsMerchandise?: boolean,
@@ -53,9 +53,9 @@ export class WalletContentItems {
 
     /**
      * Getter $productIdentifier
-     * @return {number}
+     * @return {string}
      */
-    public get $productIdentifier(): number {
+    public get $productIdentifier(): string {
         return this.productIdentifier;
     }
 
@@ -245,9 +245,9 @@ export class WalletContentItems {
 
     /**
      * Setter $productIdentifier
-     * @param {number} value
+     * @param {string} value
      */
-    public set $productIdentifier(value: number) {
+    public set $productIdentifier(value: string) {
         this.productIdentifier = value;
     }
 

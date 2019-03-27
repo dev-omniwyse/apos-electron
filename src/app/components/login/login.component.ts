@@ -48,20 +48,7 @@ export class LoginComponent implements OnInit {
     ]
 
 
-    // usersData = {
-    //     "users": [
-    //         {
-    //             "username": "admin@cdta.com",
-    //             "password": "123456aA"
-    //         },
-    //         {
-    //             "username": "superadmin@cdta.com",
-    //             "password": "123456aA"
-    //         }
 
-
-    //     ]
-    // }
 
     constructor(
         private formBuilder: FormBuilder,
@@ -79,7 +66,28 @@ export class LoginComponent implements OnInit {
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
                 var shiftIndex: any = 0;
                 shiftStore.forEach(element => {
-                    console.log(element);
+                    console.log("element", element);
+                    // if (element.shiftState == "3" && element.userID != "" && element.shiftType == "0") {
+
+                    //     localStorage.removeItem("shiftReport")
+
+                    //     let newShiftReport = [ {
+                    //         userEmail: this.userdata.username,
+                    //         userID: this.userdata.personId,
+                    //         shiftID: "0",
+                    //         shiftType: "0",
+                    //         shiftState: "3",
+                    //         openingDrawer: "0.00",
+                    //         closingDrawer: "0.00",
+                    //         initialOpeningTime: 0,
+                    //         timeOpened: 0,
+                    //         timeClosed: 0,
+                    //         userThatClosedShift: ""
+                    //     }]
+
+                    //     localStorage.setItem("shiftReport", JSON.stringify(newShiftReport))
+
+                    // } else
                     if (element.shiftState == "3" && element.userID == "") {
                         element.userID = this.userdata.personId
                         element.userEmail = this.userdata.username;
@@ -87,23 +95,7 @@ export class LoginComponent implements OnInit {
                         // localStorage.setItem("mainShiftUser",)
                     } else if (element.userID != this.userdata.personId && element.userID != "") {
                         shiftIndex++;
-                        // if (shiftStore.indexOf(this.userdata.personId) == -1) {
-                        //     let newShiftReport = {
-                        //         userEmail: this.userdata.username,
-                        //         userID: this.userdata.personId,
-                        //         shiftID: "0",
-                        //         shiftType: "1",
-                        //         shiftState: "3",
-                        //         openingDrawer: "0.00",
-                        //         closingDrawer: "0.00",
-                        //         initialOpeningTime: 0,
-                        //         timeOpened: 0,
-                        //         timeClosed: 0,
-                        //         userThatClosedShift: ""
-                        //     }
-                        //     shiftStore.push(newShiftReport)
 
-                        // }
                     }
                     else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
 
@@ -127,6 +119,7 @@ export class LoginComponent implements OnInit {
                     }
                     shiftStore.push(newShiftReport)
                 }
+
                 localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
 
                 this._ngZone.run(() => {
@@ -178,7 +171,6 @@ export class LoginComponent implements OnInit {
                     } else
                         if (element.shiftState == "3" && element.shiftType == "0") {
                             this.statusOfShiftReportBoolean = true
-
                             this.statusOfShiftReport = "Main Shift is Closed"
                         }
                         else if (element.shiftState == "4" && element.shiftType == "0") {
