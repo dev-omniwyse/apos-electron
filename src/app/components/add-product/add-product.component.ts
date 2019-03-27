@@ -174,6 +174,8 @@ export class AddProductComponent implements OnInit {
       }
       if (this.isMerchendise) {
         this.clickOnMerch();
+        this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+        this.activeWallet(this.shoppingcart._walletLineItem[0]);
       }
       else
         // this.frequentRide();
@@ -356,6 +358,9 @@ export class AddProductComponent implements OnInit {
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
+    if(this.isMerchendise){
+    this.clickOnMerch();
+    }
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -715,12 +720,13 @@ export class AddProductComponent implements OnInit {
   }
 
   addProductToWallet(product) {
+    if(!this.isMerchendise) {
     if (!this.isTotalproductCountForCardreached(product)) {
       this.maxLimitErrorMessages = this.getProductLimitMessage()
       $("#maxCardLimitModal").modal('show');
       return;
     }
-
+  }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);

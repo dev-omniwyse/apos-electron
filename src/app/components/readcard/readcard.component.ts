@@ -393,13 +393,17 @@ export class ReadcardComponent implements OnInit {
 
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "false");
-        this.electronService.ipcRenderer.send('newfarecard', cardName)
+        this.electronService.ipcRenderer.send('newfarecard', cardName);
     }
 
     nonFareProduct() {
         localStorage.removeItem('shoppingCart');
-        localStorage.setItem("isNonFareProduct", "true");
+        ShoppingCartService.getInstance.shoppingCart = null;
+        this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        this.shoppingcart = FareCardService.getInstance.addNonFareWallet(this.shoppingcart);
+        localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
         localStorage.setItem("isMagnetic", "false");
+        localStorage.setItem("isNonFareProduct", "true");
         this.getProductCatalogJSON();
         
         var timer = setTimeout(() => {
