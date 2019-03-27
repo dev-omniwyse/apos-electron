@@ -87,20 +87,15 @@ export class CarddataComponent implements OnInit, OnChanges {
   // encodedProductCardData: any = [];
   currentCard: any = [];
   currentCardProductList: any = [];
-  // currentExistingProducts: any = [];
   cardIndex: any = 0;
-  // carddata: any = [];
-  // transactionId: any = "";
-  // transactionAmount: any = 0;
   isNew: any = false;
   catalogJson: any = [];
   terminalConfigJson: any = [];
-  // JsonObjCardObj: any = [];
   isFromCardComponent = false;
   isCorrectCardPlaced = false;
   isFromEncode = false;
-  // executeIpcRendererOn: any = true;
-  // encodeddata: any = [];
+  encodedCardsData: any = [];
+  encodedCardsPID: any = [];
   shoppingCart: any = [];
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
@@ -122,15 +117,15 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
     });
 
-  //   incrementEncodableIndex(){
-	// this.cardIndex ++;
-  //   }
+    //   incrementEncodableIndex(){
+    // this.cardIndex ++;
+    //   }
 
-  //   getCountOfSmartCardsFromShoppingCard(){
-	// this.shoppingCart._walletLineItem.foreach(WalletLineItem
-  //   }
+    //   getCountOfSmartCardsFromShoppingCard(){
+    // this.shoppingCart._walletLineItem.foreach(WalletLineItem
+    //   }
     // getNextEncodableProduct(){
-       
+
     //    this.shoppingCart._walletLineItem[this.cardIndex + 1];
     //    this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
     // }
@@ -368,7 +363,10 @@ export class CarddataComponent implements OnInit, OnChanges {
           for (let index = 0; index < resultObj.length; index++) {
             this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index][0].slotNumber;
             this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
+            this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
           }
+          this.encodedCardsData.push(this.encodeJsonData);
+          this.encodedCardsPID.push(this.currentCard.printed_id);
           // resultObj.forEach(element => {
 
           //   this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[]
@@ -400,17 +398,17 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.electronService.ipcRenderer.send('readSmartcard', cardName)
     }
     let userID = localStorage.getItem('userID');
-       
+
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID), this.getPaymentsObject());
     debugger;
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
 
-  getUserByUserID(userID){
+  getUserByUserID(userID) {
     let userData = null;
     let userJSON = JSON.parse(localStorage.getItem('shiftReport'));
-    for(let user of userJSON){
-      if(user.userID ==  userID){
+    for (let user of userJSON) {
+      if (user.userID == userID) {
         userData = user;
         break
       }
@@ -646,6 +644,18 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
     return JsonObjectForProductType;
   }
+
+  initiatecancelEncoding() {
+    for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
+      let element = this.shoppingCart._walletLineItem[index];
+      if (element._encoded == true) {
+        deleteProductsFromCard(element._cardPID, this.encodedCardsData[index]);
+      }
+
+    }
+  }
+
+  deleteProductsFromCard(this.)
 
   generateReceipt(timestamp) {
 
