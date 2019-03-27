@@ -969,28 +969,6 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
-    // this.productJson.forEach(element => {
-    //   var isCorrectType = false;
-    //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-    //     element.Ticket.WalletType.forEach(walletElement => {
-    //       if (this.isMagnetic) {
-    //         if (walletElement.WalletTypeId == 10)
-    //           isCorrectType = true;
-    //       }
-    //       else {
-    //         if (walletElement.WalletTypeId == 3)
-    //           isCorrectType = true;
-    //       }
-    //     });
-    //   }
-    //   if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
-    //     this.merchantise.push(element);
-    //   }
-    //   else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "1") {
-    //     this.merchantise.push(element);
-    //   }
-    // });
-
     this.merchantise = list;
   }
   customAmount(item) {
@@ -1217,8 +1195,9 @@ export class AddProductComponent implements OnInit {
   }
 
   checkIsCardNew() {
-    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
-  }
+    let flag = Utils.getInstance.isNew(this.currentCard);
+    return flag;
+   }
 
 
 

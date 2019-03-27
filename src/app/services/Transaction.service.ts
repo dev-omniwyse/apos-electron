@@ -23,9 +23,25 @@ export class TransactionService {
         TransactionService._transactionService = this;
     }
 
+    isValidMerchandise(wallet) {
+        let flag = true;
+        if ( (wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
+            ( 0 == wallet._walletContents.length) ){
+            flag = false;
+        }
+
+        return flag;
+    }
+
     saveTransaction(shoppingCart, userData, paymentTypes) {
 
-        debugger;
+        let walletLineItem = shoppingCart._walletLineItem;
+        debugger
+        if (null != walletLineItem && !this.isValidMerchandise(walletLineItem[0])) {
+            walletLineItem.splice(0, 1);
+
+            shoppingCart._walletLineItem = walletLineItem;
+        }
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         let taxAmount = ShoppingCartService.getInstance.getTax();
@@ -40,11 +56,11 @@ export class TransactionService {
         transaction.$timestamp = timeStamp;
 
         let items = [];
-        let walletLineItem = shoppingCart._walletLineItem;
+
         for (let wallet of walletLineItem) {
             let item = new Items();
 
-            if (wallet._walletTypeId == MediaType.MERCHANDISE_ID && null != wallet._walletContents && [] != wallet._walletContents) {
+            if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
                 console.log("Adding Non-Fare Product transaction.");
 
                 for (let nonFareItem of wallet._walletContents) {
@@ -178,15 +194,14 @@ export class TransactionService {
         let payments = [];
 
         /**
-         * 
          * for now we are making single payment in further need to support multiple payments
          */
         // for(let item of paymentTypes){
         //     let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
-            let paymentInfo = new PaymentType();
-            paymentInfo.$paymentMethodId = paymentTypes.methodId;
-            paymentInfo.$amount = paymentTypes.amount;
-            paymentInfo.$comment = paymentTypes.comment;
+        let paymentInfo = new PaymentType();
+        paymentInfo.$paymentMethodId = paymentTypes.methodId;
+        paymentInfo.$amount = paymentTypes.amount;
+        paymentInfo.$comment = paymentTypes.comment;
         //     payments.push(paymentInfo);
         // }
         payments.push(paymentInfo);
