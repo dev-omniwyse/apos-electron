@@ -36,6 +36,8 @@ export class TransactionService {
     saveTransaction(shoppingCart, userData, paymentTypes) {
 
         let walletLineItem = shoppingCart._walletLineItem;
+        let userProfile = JSON.parse(localStorage.getItem("userProfile"));
+        let fareCodeDescription = userProfile;
         debugger
         if (null != walletLineItem && !this.isValidMerchandise(walletLineItem[0])) {
             walletLineItem.splice(0, 1);
@@ -54,6 +56,7 @@ export class TransactionService {
         transaction.$salesAmount = transactionAmount;
         transaction.$taxAmount = taxAmount;
         transaction.$timestamp = timeStamp;
+        transaction.$shiftType = +userData.shiftType;
 
         let items = [];
 
@@ -85,7 +88,7 @@ export class TransactionService {
                     item.$tax = totalTax;
                     item.$fareCode = null;
                     item.$timestamp = timeStamp;
-                    item.$shiftType = userData.shiftType;
+                    item.$shiftType = +userData.shiftType;
                 }
             } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
 
@@ -93,8 +96,6 @@ export class TransactionService {
                 let walletCost = 0;
                 let walletUnitPrice = 0;
                 let walletQuantitySold = 1;
-
-                let fareCodeDescription = "";
                 if (wallet._offering) {
 
                     console.log("Adding wallet transaction.");
@@ -105,7 +106,7 @@ export class TransactionService {
                 } else {
                     // Sold products on an existing wallet, not a new wallet
                     walletQuantitySold = 0;
-                }
+                }                
                 item.$transactionID = timeStamp;
                 item.$cardPID = wallet._cardPID;
                 item.$cardUID = wallet._cardUID;
@@ -134,7 +135,7 @@ export class TransactionService {
                     item.$IsBackendMerchandise = true;
                 }
 
-                item.$shiftType = userData.shiftType;
+                item.$shiftType = +userData.shiftType;
                 item.$timestamp = timeStamp;
 
                 let walletContentItems = [];
@@ -153,9 +154,10 @@ export class TransactionService {
                     }
 
                     walletContentItem.$transactionID = timeStamp;
-                    walletContentItem.$quantity = fareItem._offering.ProductIdentifier;
+                    walletContentItem.$quantity = fareItem._quantity;
                     walletContentItem.$ticketTypeId = fareItem._offering.Ticket.TicketType.TicketTypeId;
                     walletContentItem.$ticketValue = ticketValue;
+                    walletContentItem.$productIdentifier = fareItem._offering.ProductIdentifier;
                     walletContentItem.$status = fareItem._status;
                     walletContentItem.$slotNumber = fareItem._slot;
                     walletContentItem.$startDate = fareItem._startDate;
@@ -176,7 +178,7 @@ export class TransactionService {
                     walletContentItem.$cardUID = wallet._cardUID;
                     walletContentItem.$walletTypeId = wallet._walletTypeId;
                     walletContentItem.$timestamp = timeStamp;
-                    walletContentItem.$shiftType = userData.shiftID;
+                    walletContentItem.$shiftType = +userData.shiftType;
 
                     // special case for Magnetics - record as Products on backend
                     if (wallet._walletTypeId == MediaType.MAGNETIC_ID) {
@@ -199,7 +201,7 @@ export class TransactionService {
         // for(let item of paymentTypes){
         //     let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
         let paymentInfo = new PaymentType();
-        paymentInfo.$paymentMethodId = paymentTypes.methodId;
+        paymentInfo.$paymentMethodId = paymentTypes.paymentMethodId;
         paymentInfo.$amount = paymentTypes.amount;
         paymentInfo.$comment = paymentTypes.comment;
         //     payments.push(paymentInfo);

@@ -180,6 +180,7 @@ export class ReadcardComponent implements OnInit {
                             this.cardType = element.Description;
                         }
                     });
+                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                     console.log('this.carddata', this.carddata);
                     this.getProductCatalogJSON();
                     debugger;
@@ -245,6 +246,12 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
                     console.log('this.carddata', this.carddata);
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if (this.carddata[0].user_profile == element.FareCodeId) {
+                            this.cardType = element.Description;
+                        }
+                    });
+                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                     this.getProductCatalogJSON();
                     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
                     this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
