@@ -11,7 +11,7 @@ var logger = require('electron-log');
 
 let reqPath = path.join(app.getAppPath(), '../../')
 fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.properties');
-
+fs.copyFile(app.getAppPath() + '/epx.properties', reqPath + '/epx.properties');
 fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
 
 // var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
@@ -533,4 +533,19 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
     event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 
+ipcMain.on('doPinPadTransaction', (event, transactionAmount) => {
+    console.log("pinpad", transactionAmount);
+    var result = posAppletInstance.doPinpadPaymentTransactionSync(Number(transactionAmount));
+    event.sender.send('doPinPadTransactionResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionStatus', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionStatusSync();
+    event.sender.send('getPinpadTransactionStatusResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionDataSync();
+    event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
+});
 /** ADMIN METHODS END HERE*/
