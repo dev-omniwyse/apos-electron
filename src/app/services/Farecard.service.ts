@@ -4,6 +4,7 @@ import { MediaType, Constants } from './MediaType';
 import { ShoppingCart } from '../models/ShoppingCart';
 import { Utils } from './Utils.service';
 import { ShoppingCartService } from './ShoppingCart.service';
+import { read } from 'fs';
 
 
 
@@ -102,13 +103,17 @@ export class FareCardService {
          * if card is new then add price else say it as 0;
          */
         let fareCardPrice = 0;
-        if (this.isNew) {
+        let description = " ";
+        if (Utils.getInstance.isNew(readCardJSON)) {
             fareCardPrice = offering.UnitPrice;
+            description = "New " + offering.Description+ " $"+offering.UnitPrice.toFixed(0);
+        } else {
+            fareCardPrice = 0;
+            description = "1 Card:"+" "+readCardJSON.printed_id;
         }
         // let walletLineItem = new WalletLineItem(Utils.getInstance.generateSequenceNumberForWalletLineItem(shoppingCart), offering,
         //     readCardJSON.printed_id, readCardJSON.uid, MediaType.SMART_CARD_ID, readCardJSON.user_profile, fareCardPrice,
         //     "New " + offering.Description, walletC, readCardJSON.card_expiration_date, false);
-
 
         let walletLineItem = new WalletLineItem();
         shoppingCart._activeCardUID = readCardJSON.uid;
@@ -121,7 +126,7 @@ export class FareCardService {
         walletLineItem.walletTypeId = MediaType.SMART_CARD_ID;
         walletLineItem.fareCodeId = readCardJSON.user_profile;
         walletLineItem.unitPrice = fareCardPrice;
-        walletLineItem.description = "New " + offering.Description;
+        walletLineItem.description = description;
         walletLineItem.walletContents = walletC;
         walletLineItem.encoded = false;
         shoppingCart._walletLineItem.push(walletLineItem);
@@ -188,7 +193,7 @@ export class FareCardService {
         walletLineItem.walletTypeId = MediaType.MAGNETIC_ID;
         walletLineItem.fareCodeId = 0;
         walletLineItem.unitPrice = offering.UnitPrice;
-        walletLineItem.description = Constants.MAGNETICS_TEXT;
+        walletLineItem.description = 1+"New Magnetics";
         walletLineItem.walletContents = walletC;
         walletLineItem.encoded = false;
         shoppingCart._walletLineItem.push(walletLineItem);

@@ -185,39 +185,11 @@ export class AddProductComponent implements OnInit {
       }
 
       else{
-           // this.frequentRide();
       this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
       this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
-      // console.log('tttt' + JSON.stringify(this.walletItems));
       this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1],this.walletItems.length - 1);
 
       }
-     
-
-      // if (this.isMagnetic) {
-      //   var magnetic = {
-      //     "name": "Magnetic" + " " + (this.magneticCardList.length + 1),
-      //     "id": (this.magneticCardList.length)
-      //   }
-      //   this.magneticCardList.push(magnetic)
-      //   // this.productTotal = this.productTotal + parseFloat(this.magneticCardCost);
-      //   // this.displayMagneticsSubtotal(this.MagneticList, false);
-      //   // this.isfromAddProduct = true;
-      //   // this.electronService.ipcRenderer.send('readSmartcard', cardName);
-      // }
-      //this.frequentRide();
-
-      if (!this.isMagnetic && !this.isMerchendise) {
-        // this.checkIsCardNew();
-        if (this.isNew) {
-          this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-          // this.displaySmartCardsSubtotal(this.merchantList, false);
-        }
-
-      }
-
-
-      // this.cardsList.toArray()[0].nativeElement.classList.add('isActive');
     });
     var readCardListener = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       var isDuplicateCard = false;
@@ -237,7 +209,7 @@ export class AddProductComponent implements OnInit {
             $("#newCardValidationModal").modal('show');
           }
           else {
-            // this.checkIsCardNew();
+            this.checkIsCardNew();
             this.cardJson.push(JSON.parse(data));
             // this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
@@ -955,31 +927,6 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
-    // this.cdtaService.getJSON().subscribe(data => {
-    //   var i = 0;
-    //   this.productJson.forEach(element => {
-    //     var isCorrectType = false;
-    //     if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-    //       element.Ticket.WalletType.forEach(walletElement => {
-    //         if (this.isMagnetic) {
-    //           if (walletElement.WalletTypeId == 10)
-    //             isCorrectType = true;
-    //         }
-    //         else {
-    //           if (walletElement.WalletTypeId == 3)
-    //             isCorrectType = true;
-    //         }
-    //       });
-    //     }
-    //     if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "2" && (element.Ticket.TicketType.TicketTypeId == 2 && !element.IsMerchandise)) {
-    //       this.merchantise.push(element);
-    //     }
-    //     else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "2") {
-    //       // this.merchantise.push(this.newMagneticProduct);
-    //       this.merchantise.push(element);
-    //     }
-    //   });
-    // });
     this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
@@ -988,30 +935,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
-
-    // this.productJson.forEach(element => {
-    //   var isCorrectType = false;
-    //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-    //     element.Ticket.WalletType.forEach(walletElement => {
-    //       if (this.isMagnetic) {
-    //         if (walletElement.WalletTypeId == 10)
-    //           isCorrectType = true;
-    //       }
-    //       else {
-    //         if (walletElement.WalletTypeId == 3)
-    //           isCorrectType = true;
-    //       }
-    //     });
-    //   }
-    //   if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "1" && (element.Ticket.TicketType.TicketTypeId == 3 && !element.IsMerchandise)) {
-    //     this.merchantise.push(element);
-    //   }
-    //   else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "1") {
-    //     this.merchantise.push(element);
-    //   }
-    // });
     this.walletItemContents = this.formatWatlletContents(list,8);
-
     this.merchantise = list;
   }
   customAmount(item) {
@@ -1027,27 +951,6 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
-    // this.productJson.forEach(element => {
-    //   var isCorrectType = false;
-    //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
-    //     element.Ticket.WalletType.forEach(walletElement => {
-    //       if (this.isMagnetic) {
-    //         if (walletElement.WalletTypeId == 10)
-    //           isCorrectType = true;
-    //       }
-    //       else {
-    //         if (walletElement.WalletTypeId == 3)
-    //           isCorrectType = true;
-    //       }
-    //     });
-    //   }
-    //   if (!this.isMagnetic && null != element.Ticket && undefined != element.Ticket && isCorrectType && this.currentCard.user_profile == element.Ticket.FareCode[0].FareCodeId && element.Ticket.Group == "3" && (element.Ticket.TicketType.TicketTypeId == 1 && !element.IsMerchandise)) {
-    //     this.merchantise.push(element);
-    //   }
-    //   else if (this.isMagnetic && undefined != element.Ticket && undefined != element.Ticket.WalletType && isCorrectType && element.Ticket.Group == "3") {
-    //     this.merchantise.push(element);
-    //   }
-    // });
     this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
@@ -1060,25 +963,18 @@ export class AddProductComponent implements OnInit {
   newFareCard() {
     $("#addCardModal").modal('hide');
     $("#newCardModal").modal('show');
-    //   this.checkIsCardNew();
-    //   this.isfromAddProduct = true;
-    //   this.electronService.ipcRenderer.send('readSmartcard', cardName);
-    //   this.isMagnetic = false;
-    //   this.isMerchendise = false;
-    //   localStorage.setItem("isMagnetic", 'false');
-    //   localStorage.setItem("isMerchendise", "false");
-    //   if (this.isNew) {
-    //     this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-    //   }
-    // }
   }
   newCard() {
+    if(this.checkIsCardNew()){
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
+    } else {
+      $("#newCardValidateModal").modal('show');
+    }
   }
 
   ExistingCard() {
