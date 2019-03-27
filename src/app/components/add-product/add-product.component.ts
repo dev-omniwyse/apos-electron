@@ -179,6 +179,9 @@ export class AddProductComponent implements OnInit {
       }
       if (this.isMerchendise) {
         this.clickOnMerch();
+        this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+        this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
+        this.activeWallet(this.shoppingcart._walletLineItem[0], 0);
       }
 
       else{
@@ -367,24 +370,9 @@ export class AddProductComponent implements OnInit {
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
-    $(document).ready(function () {
-      $('.carousel[data-type="multi"] .item').each(function() {
-        var next = $(this).next();
-        if (!next.length) {
-          next = $(this).siblings(':first');
-        }
-        next.children(':first-child').clone().appendTo($(this));
-      
-        for (var i = 0; i < 2; i++) {
-          next = next.next();
-          if (!next.length) {
-            next = $(this).siblings(':first');
-          }
-      
-          next.children(':first-child').clone().appendTo($(this));
-        }
-      });
-  });
+    if(this.isMerchendise){
+    this.clickOnMerch();
+    }
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -744,12 +732,13 @@ export class AddProductComponent implements OnInit {
   }
 
   addProductToWallet(product) {
+    if(!this.isMerchendise) {
     if (!this.isTotalproductCountForCardreached(product)) {
       this.maxLimitErrorMessages = this.getProductLimitMessage()
       $("#maxCardLimitModal").modal('show');
       return;
     }
-
+  }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
