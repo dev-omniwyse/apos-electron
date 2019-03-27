@@ -111,7 +111,26 @@ ul {
     width: calc(50% - 10px);
     text-transform: uppercase;
 }
-
+.btn-white-slide {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 2.5vh;
+    padding: 0.5vh 15px;
+    width: calc(50% - 10px);
+    margin-left: 2%
+}
+.btn-orange-slide {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #d65400;
+    font-size: 2.5vh;
+    padding: 0.5vh 15px;
+    width: calc(50% - 10px);
+    margin-left: 2%
+}
 .btn-white-cancel {
     background-color: #fff;
     border: 1px solid #c3c3c3;
@@ -185,27 +204,16 @@ ul {
     font-weight: 100;
 }
 
-.btn-white-slide {
-    width: 25vh;
-    margin-left: 35px;
-    background-color: #fff;
-    border: 1px solid #c3c3c3;
-    border-radius: 5px;
-    color: #000;
-    font-size: 2vh;
-    padding: 1.2vh 15px;
-}
-
+/* 
 .slide:last-child button {
     width: 25vh;
-    /* margin-left: 5px; */
     background-color: #fff;
     border-radius: 5px;
     color: #d65400;
     font-size: 2vh;
     padding: 1.2vh 15px;
     border: 1px solid #ccc;
-}
+} */
 
 .btndefault {
     padding: 10px 15px;
@@ -227,12 +235,12 @@ ul {
     flex-flow: row wrap;
 }
 
-.flex-right-items div {
+.flex-right-items .products {
     width: 50%;
     float: left;
 }
 
-.flex-right-items div button {
+.flex-right-items .products button {
     /* flex: 1 1 calc(48% - 15px); */
     /* max-width: calc(48% - 15px); */
     margin: 15px;
@@ -571,26 +579,20 @@ ul {
  .carousel-indicators {
 	/* left: 0;
 	top: auto; */
-    bottom: -12px;
+    bottom: -7px;
 
 }
 
 /* The colour of the indicators */
 .carousel-indicators li {
-    background: #a3a3a3;
+    background: #013d79;
     border-radius: 50%;
     width: 8px;
     height: 8px;
+    margin: 0px;
 }
 
  .carousel-indicators .active {
-background: #707070;
+    background: #013d79;
 }
 
-.carousel {
-    width: 100%;
-  }
-.slide-box {
-    display: flex;
-    justify-content: space-between;
-  }

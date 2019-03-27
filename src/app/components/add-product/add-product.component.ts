@@ -135,6 +135,7 @@ export class AddProductComponent implements OnInit {
   currentWalletsSummary: any = [];
   isCustomAmount = false;
   walletItems = [];
+  walletItemContents = [];
   slideConfig = {
     "slidesToShow": 2, dots: true, "infinite": false,
     "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
@@ -149,6 +150,8 @@ export class AddProductComponent implements OnInit {
   numOfAttempts = 0;
   magneticId: any =0;
   currentMagneticProductId: any = 0;
+  currentWalletLineItemIndex: any;
+
   @ViewChildren('cardsList') cardsList;
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
@@ -175,13 +178,16 @@ export class AddProductComponent implements OnInit {
       if (this.isMerchendise) {
         this.clickOnMerch();
       }
-      else
-        // this.frequentRide();
+
+      else{
+           // this.frequentRide();
       this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
       this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
       // console.log('tttt' + JSON.stringify(this.walletItems));
-      this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
+      this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1],this.walletItems.length - 1);
 
+      }
+     
 
       // if (this.isMagnetic) {
       //   var magnetic = {
@@ -234,7 +240,7 @@ export class AddProductComponent implements OnInit {
             // this.selectCard(this.cardJson.length - 1);
             this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
             this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
-            this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1])
+            this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1],this.walletItems.length - 1);
           }
         });
       }
@@ -352,6 +358,7 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.selectedProductCategoryIndex =0
     let item = JSON.parse(localStorage.getItem("readCardData"))
     this.viewCardData = new Array(JSON.parse(item))
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
@@ -981,6 +988,7 @@ export class AddProductComponent implements OnInit {
     //     }
     //   });
     // });
+    this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
   frequentRide() {
@@ -1009,7 +1017,7 @@ export class AddProductComponent implements OnInit {
     //     this.merchantise.push(element);
     //   }
     // });
-
+    this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
   customAmount() {
@@ -1045,6 +1053,7 @@ export class AddProductComponent implements OnInit {
     //     this.merchantise.push(element);
     //   }
     // });
+    this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
 
@@ -1108,7 +1117,8 @@ export class AddProductComponent implements OnInit {
     this.shoppingcart = FareCardService.getInstance.addMagneticsCard(this.shoppingcart, item.Offering);
     ShoppingCartService.getInstance.shoppingCart = null;
     this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
-    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1]);
+    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1],this.walletItems.length - 1);
+    this.frequentRide();
   }
 
   // Boolean getWalletTypeID(walletList:any []) {
@@ -1130,8 +1140,10 @@ export class AddProductComponent implements OnInit {
     this.currentMagneticIndex = index;
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
-  activeWallet(item) {
+  activeWallet(item,index) {
+    this.selectedProductCategoryIndex = 0;
     this.currentWalletLineItem = item;
+    this.currentWalletLineItemIndex = index;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
 
@@ -1160,6 +1172,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchandise", "true");
     localStorage.setItem("isMagnetic", 'false');
     let list = FilterOfferings.getInstance.filterNonFareOfferings(this.productJson);
+    this.walletItemContents = this.formatWatlletContents(list,8);
     this.merchantise = list;
   }
 
@@ -1448,6 +1461,17 @@ export class AddProductComponent implements OnInit {
   }
 
   formatWatlletItems(list, howMany) {
+    var idx = 0
+    let result = []
+  
+    while (idx < list.length) {
+      if (idx % howMany === 0) result.push([])
+      result[result.length - 1].push(list[idx++])
+    }
+    return result
+  }
+
+  formatWatlletContents(list, howMany) {
     var idx = 0
     let result = []
   

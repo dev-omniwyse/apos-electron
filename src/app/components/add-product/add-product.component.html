@@ -85,16 +85,17 @@
             </ngx-slick> -->
 
             <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
-                    <ol class="carousel-indicators">
-                            <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0 ? 'active' : ''"></li>
-                    </ol>
+             
             
                     <div class="carousel-inner">
-                        <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == 0 ? 'item active col-md-12' : 'item col-md-12'" >
-                            
-                            <button class="btn-white-slide"  *ngFor="let currentItem of item"  (click)="activeWallet(currentItem)">{{currentItem._cardPID}}</button>
+                        <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'" >
+                            <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item"  (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
                         </div>
                     </div>
+                    <br>
+                    <ol class="carousel-indicators">
+                        <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
+                    </ol>
             </div>
                             <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
                                     <div [ngClass] = "i == 0? active : '' ">
@@ -213,24 +214,65 @@
     </div>
     <div class="tab-sets">
         <ul class="nav nav-pills" *ngIf="!regularRoute">
-            <li class="active" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
-            <li (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
-            <li (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
+            <li [ngClass]="selectedProductCategoryIndex == 0? 'active': ''"  (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
+            <li [ngClass]="selectedProductCategoryIndex == 1? 'active': ''" (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
+            <li [ngClass]="selectedProductCategoryIndex == 2? 'active': ''" (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
         </ul>
         <div class="flex-wrap flex-right-items flex-contain-full-w1" *ngIf="!regularRoute">
-            <div *ngFor="let merch of merchantise | slice:0:5">
+                <div id="Carousel-products" class="carousel slide">
+                        <div class="carousel-inner">
+                            <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'" >
+                                <div class="products" *ngFor ="let currentItem of item">
+                                    <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
+        
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
+                            <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
+                        </ol>
+                </div>
+            <!-- <div class="products" *ngFor="let merch of merchantise | slice:0:5"> -->
                 <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-                <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
-            </div>
-            <div class="">
+                <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+            <!-- </div> -->
+            <div class="products">
                 <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount()">Custom Amount</button>
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
-            <div *ngFor="let merch of merchantise">
+            <!-- <div *ngFor="let merch of merchantise"> -->
                 <!-- <button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-                <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button>
-            </div>
+                <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+            <!-- </div> -->
+            <div id="Carousel-products" class="carousel slide">
+                <div class="carousel-inner">
+                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'" >
+                        <div class="products" *ngFor ="let currentItem of item">
+                            <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
+                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
+                </ol>
+        </div>
+        <!-- </div> -->
+        
+        <!-- <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
+             
+            
+                <div class="carousel-inner">
+                    <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'" >
+                        <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item"  (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
+                    </div>
+                </div>
+                <br>
+                
+        </div> -->
         </div>
     </div>
 </div>
