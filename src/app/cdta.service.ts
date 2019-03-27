@@ -29,7 +29,7 @@ export class CdtaService {
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
 
       if (data != undefined && data != "") {
-        alert("print Summary Report Done")
+        //alert("print Summary Report Done")
         console.log("printSummaryReport Done", data)
         this._ngZone.run(() => {
         });
@@ -38,7 +38,7 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printReceiptHeaderResult', (event, data) => {
       if (data != undefined && data != "") {
-        alert("print Receipt Header Result Done")
+        //alert("print Receipt Header Result Done")
         console.log("print Receipt Header Result Done", data)
         this._ngZone.run(() => {
 
@@ -48,7 +48,7 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printSummaryPaymentsReportResult', (event, data) => {
       if (data != undefined && data != "") {
-        alert("print Summary Payments Report Result Done")
+        //alert("print Summary Payments Report Result Done")
         console.log("printSummary Payments Report Result Done", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("salesDataResult")
@@ -91,20 +91,6 @@ export class CdtaService {
     this.terminalNumberSrc.next(mission);
   }
 
-  //   getAllClerksSalesReport(shiftStore) {
-  //     var backendSalesReport = [];
-  //     var container = this;
-  //     shiftStore.each(function (record) {
-  //         console.log("Inside shist user calling");
-  //         //var salesReport1 = container.setSalesReport(record);
-  //         if (salesReport1 != null) {
-  //             for (var report = 0; report < salesReport1.length; report++) {
-  //                 backendSalesReport.push(salesReport1[report]);
-  //             }
-  //         }
-  //     });
-  //     return backendSalesReport;
-  // },
   getUniqueSaletReport(backendSalesReport) {
     var displayingSales = [];
     var container = this;
@@ -493,7 +479,10 @@ export class CdtaService {
           expectedCashInDrawer = expectedCashInDrawer + payment.paymentAmount
           shiftType = payment.shiftType
           userID = payment.userID
-        }
+        } else if(element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod != "CASH"){
+		shiftType = payment.shiftType
+		userID = payment.userID
+}
       });
 
       console.log("expectedCashInDrawer", expectedCashInDrawer);
