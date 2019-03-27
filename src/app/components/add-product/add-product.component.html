@@ -218,7 +218,7 @@
             </div>
             <div class="cr-right">
                 <button data-toggle="modal" data-target="#myModal">Cash</button>
-                <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+                <button data-toggle="modal" data-target="#creditCardModal">Credit or Debit Card</button>
                 <button data-toggle="modal" data-target="#checkModal">Check</button>
                 <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
                 <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
@@ -253,24 +253,61 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="creditModal" role="dialog">
+            <div class="modal fade" id="creditCardModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Cash Applied</h4>
                         </div>
+
                         <div class="modal-body">
                             <!-- <p>Return change to customer</p>
-                                <p>Click "OK" When cash drawer is closed</p> -->
+          <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
-                                <div class="pull-right">${{totalDue | number : '1.2-2'}}</div>
+                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
+
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="doPinPadTransaction()">Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditCardApplyModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Continue Transaction</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Please continue transaction on pinpad</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelPinPadTransaction()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditCardErrorModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title"> Error </h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Error sending transaction to pinpad</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
                         </div>
                     </div>
                 </div>

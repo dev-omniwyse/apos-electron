@@ -269,8 +269,9 @@ export class AddProductComponent implements OnInit {
     });
 
     this.electronService.ipcRenderer.on('getPinpadTransactionStatusResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
       if (data != undefined && data != "") {
-        if (data != 1 && this.numOfAttempts < 600) {
+        if (data == false && this.numOfAttempts < 600) {
           var timer = setTimeout(() => {
             this.numOfAttempts++;
             this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
@@ -284,6 +285,7 @@ export class AddProductComponent implements OnInit {
     });
 
     this.electronService.ipcRenderer.on('getPinpadTransactionDataResult', (event, data) => {
+      console.log(data);
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
         this.saveTransaction(9);
