@@ -479,7 +479,7 @@ export class CdtaService {
           expectedCashInDrawer = expectedCashInDrawer + payment.paymentAmount
           shiftType = payment.shiftType
           userID = payment.userID
-        } else if(element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod == "CASH"){
+        } else if(element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod != "CASH"){
 		shiftType = payment.shiftType
 		userID = payment.userID
 }
