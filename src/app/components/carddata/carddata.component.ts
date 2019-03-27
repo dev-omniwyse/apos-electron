@@ -401,7 +401,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
     let userID = localStorage.getItem('userID');
        
-    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID), this.getPaymentsObject);
+    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID), this.getPaymentsObject());
     debugger;
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
@@ -569,10 +569,10 @@ export class CarddataComponent implements OnInit, OnChanges {
             this.encodeJsonData.push(internalJsonObj);
           }
         }
-        else if (element.Ticket.Group == 2) {
+        else if (element._offering.Ticket.Group == 2) {
           JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
         }
-        else if (element.Ticket.Group == 3) {
+        else if (element._offering.Ticket.Group == 3) {
           JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
 
         }
@@ -635,7 +635,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "ticket_id": element._offering.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": (element._offering.quantity * element._offering.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "remaining_value": (element._quantity * element._offering.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element._isAccountBased,
           "isCardBased": element._isCardBased
         }

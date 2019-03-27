@@ -13,6 +13,7 @@ import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Utils } from 'src/app/services/Utils.service';
+import { TransactionService } from 'src/app/services/Transaction.service';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -242,17 +243,17 @@ export class AddProductComponent implements OnInit {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          if (this.merchantiseList.length != 0 || this.merchantList.length != 0) {
-            this.saveTransaction(localStorage.getItem("paymentMethodId"));
-          }
-          else if (this.MagneticList.length == 0 && this.merchantiseList.length == 0 && this.merchantList.length == 0) {
+          // if (this.merchantiseList.length != 0 || this.merchantList.length != 0) {
+          //   this.saveTransaction(localStorage.getItem("paymentMethodId"));
+          // }
+          // else if (this.MagneticList.length == 0 && this.merchantiseList.length == 0 && this.merchantList.length == 0) {
             localStorage.removeItem('encodeData');
             localStorage.removeItem('productCardData');
             localStorage.removeItem("cardsData");
             localStorage.removeItem("readCardData");
             this.electronService.ipcRenderer.removeAllListeners("readCardResult");
             this.router.navigate(['/readcard'])
-          }
+          // }
         });
       } else {
 
@@ -1126,7 +1127,7 @@ export class AddProductComponent implements OnInit {
     this.totalDue = Math.round(this.totalDue * 100);
     this.totalDue += digit;
     this.totalDue = this.totalDue / 100;
-    if(this.isCustomAmount) {
+    if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
@@ -1137,7 +1138,7 @@ export class AddProductComponent implements OnInit {
     this.customPayAsYouGo = null;
     offering.UnitPrice = productTotal;
     console.log(this.customPayAsYouGo);
-    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);    
+    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);
     this.isCustomAmount = false;
     this.productTotal = 0;
     this.frequentRide();
@@ -1181,7 +1182,7 @@ export class AddProductComponent implements OnInit {
   clearDigit(digit) {
     console.log("numberDigits", digit);
     this.totalDue = digit;
-    if(this.isCustomAmount) {
+    if (this.isCustomAmount) {
       this.productTotal = digit;
     }
   }
@@ -1197,7 +1198,7 @@ export class AddProductComponent implements OnInit {
   checkIsCardNew() {
     let flag = Utils.getInstance.isNew(this.currentCard);
     return flag;
-   }
+  }
 
 
 
@@ -1224,14 +1225,65 @@ export class AddProductComponent implements OnInit {
     this.clickOnMerch();
   }
 
+  isSmartCardFound() {
+    var isSmartcardFound = false
+    this.shoppingcart._walletLineItem.forEach(element => {
+      if (element._walletTypeId == MediaType.SMART_CARD_ID) {
+        isSmartcardFound = true;
+      }
+    });
+    return isSmartcardFound;
+  }
+
+  getUserByUserID(userID){
+    let userData = null;
+    let userJSON = JSON.parse(localStorage.getItem('shiftReport'));
+    for(let user of userJSON){
+      if(user.userID ==  userID){
+        userData = user;
+        break
+      }
+    }
+    return userData;
+  }
+
+  getPaymentsObject() {
+    var paymentObj: any
+    let transactionAmount = localStorage.getItem('transactionAmount');
+    if (localStorage.getItem("paymentMethodId") == "8") {
+      paymentObj = {
+        "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+        "amount": transactionAmount,
+        "comment": localStorage.getItem("compReason")
+      }
+    } else {
+      paymentObj = {
+        "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
+        "amount": transactionAmount,
+        "comment": null
+      }
+    }
+    return paymentObj;
+  }
+
+  saveTransactionForMerchandiseAndMagnetic() {
+    let userID = localStorage.getItem('userID');
+    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingcart, this.getUserByUserID(userID), this.getPaymentsObject());
+    this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj);
+  }
+
 
   saveTransaction(paymentMethodId) {
     try {
       localStorage.setItem("paymentMethodId", paymentMethodId)
-      if (paymentMethodId == "8") {
-        this.router.navigate(['/comp'])
+      if (this.isSmartCardFound()) {
+        if (paymentMethodId == "8") {
+          this.router.navigate(['/comp'])
+        } else {
+          this.router.navigate(['/carddata'])
+        }
       } else {
-        this.router.navigate(['/carddata'])
+        this.saveTransactionForMerchandiseAndMagnetic()
       }
       // var walletObj: any = [];
       // var jsonMagneticObj: any = [];
