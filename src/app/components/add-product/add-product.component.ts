@@ -1460,7 +1460,7 @@ export class AddProductComponent implements OnInit {
     this.numOfAttempts = 0;
     $("#creditCardModal").modal("hide")
     $("#creditCardApplyModal").modal("show")
-    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.productTotal * 100));
+    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
   cancelPinPadTransaction() {
