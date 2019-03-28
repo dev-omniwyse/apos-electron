@@ -25,8 +25,8 @@ export class TransactionService {
 
     isValidMerchandise(wallet) {
         let flag = true;
-        if ( (wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
-            ( 0 == wallet._walletContents.length) ){
+        if ((wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
+            (0 == wallet._walletContents.length)) {
             flag = false;
         }
 
@@ -89,6 +89,8 @@ export class TransactionService {
                     item.$fareCode = null;
                     item.$timestamp = timeStamp;
                     item.$shiftType = +userData.shiftType;
+
+                    items.push(item);
                 }
             } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
 
@@ -106,7 +108,7 @@ export class TransactionService {
                 } else {
                     // Sold products on an existing wallet, not a new wallet
                     walletQuantitySold = 0;
-                }                
+                }
                 item.$transactionID = timeStamp;
                 item.$cardPID = wallet._cardPID;
                 item.$cardUID = wallet._cardUID;
@@ -188,7 +190,9 @@ export class TransactionService {
                 }
                 item.$walletContentItems = walletContentItems;
             }
-            items.push(item);
+            if (MediaType.MERCHANDISE_ID != wallet._walletTypeId) {
+                items.push(item);
+            }
         }
 
         transaction.$items = items;

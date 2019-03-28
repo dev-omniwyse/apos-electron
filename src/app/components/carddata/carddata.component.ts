@@ -475,7 +475,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   navigateToDashboard() {
     var timestamp = new Date().getTime();
-    this.cdtaService.generateReceipt(timestamp);
+    // this.cdtaService.generateReceipt(timestamp);
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
