@@ -168,7 +168,9 @@ export class AddProductComponent implements OnInit {
   isCompApplied: boolean = false;
   applyCompShow: boolean = false;
   reason:boolean = true;
-  reasonForComp = ''
+  reasonForComp = '';
+  isCardApplied: boolean = false;
+  cardAppliedTotal: any;
 
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
@@ -1251,7 +1253,10 @@ export class AddProductComponent implements OnInit {
         if (paymentMethodId == "8") {
           this.router.navigate(['/comp'])
         } else {
+          if(this.totalRemaining == this.checkoutTotal) {
           this.router.navigate(['/carddata'])
+
+          }
         }
       } else {
         this.saveTransactionForMerchandiseAndMagnetic()
@@ -1488,7 +1493,13 @@ export class AddProductComponent implements OnInit {
         this.isCompApplied = false;
       }
 
-      if((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) ){
+      if(this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)){
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = this.totalRemaining - this.checkoutTotal;
@@ -1537,7 +1548,13 @@ export class AddProductComponent implements OnInit {
         this.isCompApplied = false;
       }
 
-      if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied)) {
+      if(this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = this.totalRemaining - this.checkoutTotal;
@@ -1559,6 +1576,7 @@ export class AddProductComponent implements OnInit {
     
     
   }
+
   checkApplied() {
     if(this.totalRemaining == this.checkoutTotal) {
       $('#checkModal').modal('show');
@@ -1583,7 +1601,13 @@ export class AddProductComponent implements OnInit {
         this.isCompApplied = false;
       }
 
-      if((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied)) {
+      if(this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied) ) {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = this.totalRemaining - this.checkoutTotal;
@@ -1632,7 +1656,13 @@ export class AddProductComponent implements OnInit {
         this.isCheckApplied = false;
       }
 
-      if((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied)) {
+      if(this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
         $('#compModal').modal('show');
@@ -1672,6 +1702,53 @@ export class AddProductComponent implements OnInit {
       this.reasonForComp = ""
     } else {
       localStorage.setItem("compReason", this.reasonForComp)
+    }
+  }
+
+  cardApplied() {
+    if(this.totalRemaining == this.checkoutTotal) {
+      $('#creditCardModal').modal('show');
+    } else if(this.totalRemaining > this.checkoutTotal) {
+      if(this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+      this.isCashApplied = false;
+
+      }
+      if(this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+
+      if(this.isCompApplied) {
+        this.isCompApplied = true; 
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if(this.isCheckApplied) {
+        this.isCheckApplied = true
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) || (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+        if(this.isCardApplied) {
+          $('#creditCardModal').modal('show');
+          this.cardAppliedTotal = this.checkAppliedTotal + this.checkoutTotal
+        } else {
+          $('#creditCardModal').modal('show');
+          this.cardAppliedTotal = this.checkoutTotal;
+          this.isCardApplied = true
+
+        }
+      }
+    } else if(this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
     }
   }
 
