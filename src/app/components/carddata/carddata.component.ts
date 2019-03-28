@@ -94,10 +94,10 @@ export class CarddataComponent implements OnInit, OnChanges {
   isFromCardComponent = false;
   isCorrectCardPlaced = false;
   isFromEncode = false;
-  encodedCardsData: any = [];
-  encodedCardsPID: any = [];
+  encodedCardsData: any = {};
   shoppingCart: any = [];
   isEncodeOnProcess: Boolean = true;
+  encodedJsonCardIndex = 0;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -154,7 +154,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         this.isFromEncode = false;
         this._ngZone.run(() => {
           if (data == this.currentCard.printed_id) {
-            this.encodeCard();
+            (this.isEncodeOnProcess) ? this.encodeCard() : this.removeCard();
           }
           else {
             $("#cardModal").modal('show');
@@ -366,8 +366,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
             this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
           }
-          this.encodedCardsData.push(this.encodeJsonData);
-          this.encodedCardsPID.push(this.currentCard.printed_id);
+          this.encodedCardsData[this.currentCard.printed_i] = this.encodeJsonData;
           // resultObj.forEach(element => {
 
           //   this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[]
@@ -387,7 +386,19 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
     });
 
+
+
+    var deleteProductListener: any = this.electronService.ipcRenderer.on('deleteProductsFromCardResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          this.encodedJsonCardIndex++;
+          this.initiateCancelEncoding(this.encodedJsonCardIndex);
+        });
+      }
+    });
   }
+
+
 
   initiateSaveTransaction() {
     var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
@@ -442,6 +453,16 @@ export class CarddataComponent implements OnInit, OnChanges {
         this.currentCard = element;
       }
     });
+  }
+
+  setCardIndexForCancelEncode(cardPID) {
+    for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
+      let element = this.shoppingCart._walletLineItem[index];
+      if (element._cardPID == cardPID) {
+        this.cardIndex = index;
+      }
+    }
+
   }
 
 
@@ -514,6 +535,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
     this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
+    this.electronService.ipcRenderer.removeAllListeners("deleteProductsFromCardResult");
     this.router.navigate(['/readcard'])
   }
 
@@ -547,6 +569,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
     this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
   }
+
 
   checkCorrectCard() {
     this.populatCurrentCard()
@@ -646,18 +669,35 @@ export class CarddataComponent implements OnInit, OnChanges {
     return JsonObjectForProductType;
   }
 
-  initiateCancelEncoding() {
-    this.isEncodeOnProcess = false;
-    for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
-      let element = this.shoppingCart._walletLineItem[index];
-      if (element._encoded == true) {
-        deleteProductsFromCard(element._cardPID, this.encodedCardsData[index]);
-      }
-
-    }
+  removeCard() {
+    this.electronService.ipcRenderer.send('deleteProductsFromCard', this.currentCard.printed_id, this.encodedCardsData[this.currentCard.printed_id]);
   }
 
-  deleteProductsFromCard(this.)
+  getKeyForCancelEncode(index) {
+    let currentIndex = 0;
+    let cardPID = undefined;
+    for (var key in this.encodedCardsData) {
+      if (currentIndex == index) {
+        cardPID = key;
+      }
+      currentIndex++;
+    }
+    return cardPID;
+  }
+
+  initiateCancelEncoding(index) {
+    let cardPID = this.getKeyForCancelEncode(index);
+    if(cardPID == undefined){
+      this.navigateToReadCard();
+      return;
+    }
+    this.isEncodeOnProcess = false;
+    this.setCardIndexForCancelEncode(cardPID);
+    this.populatCurrentCard();
+    this.getSmartCardWalletContents();
+  }
+
+  // sdeleteProductsFromCard(this.)
 
   generateReceipt(timestamp) {
 
