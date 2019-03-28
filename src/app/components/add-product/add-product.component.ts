@@ -931,7 +931,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
   frequentRide() {
@@ -939,7 +939,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
   customAmount(item) {
@@ -955,7 +955,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
 
@@ -1067,7 +1067,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchandise", "true");
     localStorage.setItem("isMagnetic", 'false');
     let list = FilterOfferings.getInstance.filterNonFareOfferings(this.productJson);
-    this.walletItemContents = this.formatWatlletContents(list, 8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
 

@@ -233,14 +233,18 @@
                     <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
                 </ol>
             </div>
+
+            <div class="custom-products" *ngIf="walletItemContents.length !=0">
+                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount(walletItemContents[0][0])">Custom Amount</button>
+            </div>
+
             <!-- <div class="products" *ngFor="let merch of merchantise | slice:0:5"> -->
             <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
 
             <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
             <!-- </div> -->
-            <div class="products">
-                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount(walletItemContents[0][0])">Custom Amount</button>
-
+            <div *ngIf="merchantise.length == 0">
+                <h4 class="nodata">No Products Found</h4>
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
@@ -350,8 +354,7 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
-                                href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
                         </div>
                     </div>
                 </div>
