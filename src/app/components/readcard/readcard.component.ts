@@ -323,7 +323,7 @@ export class ReadcardComponent implements OnInit {
                                 else if (cardElement.product_type == 3)
                                     productName = "Pay As You Go"
                                 if (cardElement.product_type == 1) {
-                                    remainingValue = cardElement.days + " Days";
+                                    remainingValue = ( cardElement.days + 1 )+ " Days";
                                     var pendingText = (cardElement.recharges_pending > 0) ? " (" + cardElement.recharges_pending + " Pending)" : "";
                                     status = status + pendingText;
                                 }
