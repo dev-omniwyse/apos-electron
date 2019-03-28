@@ -97,6 +97,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   encodedCardsData: any = [];
   encodedCardsPID: any = [];
   shoppingCart: any = [];
+  isEncodeOnProcess: Boolean = true;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -645,7 +646,8 @@ export class CarddataComponent implements OnInit, OnChanges {
     return JsonObjectForProductType;
   }
 
-  initiatecancelEncoding() {
+  initiateCancelEncoding() {
+    this.isEncodeOnProcess = false;
     for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
       let element = this.shoppingCart._walletLineItem[index];
       if (element._encoded == true) {
