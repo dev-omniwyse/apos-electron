@@ -101,6 +101,19 @@ ul {
     margin: 0 0 0 35px;
 }
 
+.btn-white-top-cancel-checkout {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #999999;
+    font-size: 2.2vh;
+    /* padding: 2.5vh 15px; */
+    width: calc(85%);
+    /* margin: 0 0 0 35px; */
+    width: 100%;
+    padding: 1.3vh;
+}
+
 .btn-white {
     background-color: #fff;
     border: 1px solid #c3c3c3;

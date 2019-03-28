@@ -364,7 +364,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-      if (data != undefined && data != "") {
+      if (data != undefined && data != "" && data != false) {
         console.log(data);
         this._ngZone.run(() => {
           var resultObj: any = [];
