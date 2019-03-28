@@ -164,6 +164,9 @@ export class LoginComponent implements OnInit {
                     localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
                     this.statusOfShiftReportBoolean = true
                     this.statusOfShiftReport = "Main Shift is Closed"
+                    if (localStorage.getItem("closingPausedMainShift") == "true") {
+                        localStorage.removeItem("closingPausedMainShift")
+                    }
                 } else
                     if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                         this.statusOfShiftReportBoolean = true
