@@ -287,6 +287,9 @@ export class ReadcardComponent implements OnInit {
 
         this.electronService.ipcRenderer.on('getProductCatalogResult', (event, data) => {
             localStorage.setItem('catalogJSON', JSON.stringify(data));
+            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            this.catalogData = JSON.parse(item).Offering;
+            this.setOffering();
         });
         // );
 
@@ -372,9 +375,7 @@ export class ReadcardComponent implements OnInit {
                     clearTimeout(timer);
                 }, 1000);
             }
-        });
-        // }
-        // this.setOffering();
+        }); 
     }
     showErrorMessages() {
         $("#errorModal").modal('show');
