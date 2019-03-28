@@ -538,12 +538,25 @@ ul {
 
 @media (max-width: 1550px) {
     .btn-white,
-    .btn-white-cancel,
     .btn-orange,
     .btn-white-top-cancel,
     .btn-white-top {
         font-size: 2.5vh;
-        padding: 1.5vh 15px;
+        padding: 1.3vh 15px;
+    }
+    .sub-total {
+        margin: 1vh 0;
+    }
+    .container-l-app {
+        height: 44vh;
+    }
+}
+
+@media (max-width: 1550px) {
+    .btn-white-cancel {
+        font-size: 3.5vh;
+        padding: 2.5vh 52px;
+        margin-top: 91%;
     }
     .sub-total {
         margin: 1vh 0;
