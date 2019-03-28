@@ -240,7 +240,12 @@ export class LoginComponent implements OnInit {
                     // this.loading = false;
                 });
     }
-
+    enterKey(e) {
+        if (e.keyCode == 13) {
+            this.Login();
+            return false;
+        }
+    }
     Login() {
         // for (var a = 0; a < this.usersData.users.length; a++) {
         //     if (this.username == this.usersData.users[a].username && this.password == this.usersData.users[a].password) {
