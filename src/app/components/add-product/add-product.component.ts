@@ -131,7 +131,7 @@ export class AddProductComponent implements OnInit {
   productCheckOut: boolean = false;
   isNew: boolean = false;
   totalDue: any = [];
-
+  checkoutTotal: any = 0;
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
   isCustomAmount = false;
@@ -155,6 +155,21 @@ export class AddProductComponent implements OnInit {
 
   @ViewChildren('cardsList') cardsList;
   customPayAsYouGo: any;
+  totalRemaining: any = 0;
+  cashBack: any = 0;
+  isCashApplied: boolean = false;
+  cashAppliedTotal: any= 0;
+  isVoucherApplied: boolean = false;
+  isCheckApplied: boolean = false;
+  checkAppliedTotal: any = 0;
+  voucherAppliedTotal: any = 0;
+  voucherRemainingTotal: any;
+  voucherRemaining: any;
+  isCompApplied: boolean = false;
+  applyCompShow: boolean = false;
+  reason:boolean = true;
+  reasonForComp = ''
+
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
@@ -928,10 +943,16 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
+    this.checkoutTotal = this.totalDue;
+    this.totalRemaining = this.totalDue
   }
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
+    this.isCashApplied = false;
+    this.isVoucherApplied = false;
+    this.isCheckApplied = false;
+    this.getTotalDue(this.shoppingcart);
   }
 
   cancelCheckOutConfirmation() {
@@ -1183,9 +1204,9 @@ export class AddProductComponent implements OnInit {
   }
 
   displayDigit(digit) {
-    this.totalDue = Math.round(this.totalDue * 100);
-    this.totalDue += digit;
-    this.totalDue = this.totalDue / 100;
+    this.checkoutTotal = Math.round(this.checkoutTotal * 100);
+    this.checkoutTotal += digit;
+    this.checkoutTotal = this.checkoutTotal / 100;
     if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
@@ -1210,6 +1231,7 @@ export class AddProductComponent implements OnInit {
 
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
+    this.checkoutTotal = this.totalDue;
   }
 
   displayMagneticsSubtotal(products: any, isTotalList) {
@@ -1240,7 +1262,7 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.totalDue = digit;
+    this.checkoutTotal = digit;
     if (this.isCustomAmount) {
       this.productTotal = digit;
     }
@@ -1548,5 +1570,222 @@ export class AddProductComponent implements OnInit {
     return result
   }
 
+  cashApplied() {
+
+    if(this.totalRemaining == this.checkoutTotal) {
+      this.isCashApplied = false;
+      this.isVoucherApplied = false;
+      this.isCheckApplied = false;
+      $('#myModal').modal('show');
+    } else if(this.totalRemaining > this.checkoutTotal) {
+      
+      if(this.isVoucherApplied){
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+
+      }
+
+      if(this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if(this.isCompApplied) {
+        this.isCompApplied = true; 
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) ){
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+        if(this.isCashApplied) {
+          this.cashAppliedTotal = this.cashAppliedTotal + this.checkoutTotal
+        }
+        else{
+          this.cashAppliedTotal = this.checkoutTotal;
+          this.isCashApplied = true;
+
+        }
+      }
+    } else if(this.totalRemaining < this.checkoutTotal) {
+      // this.isCashApplied = true;
+      // this.isVoucherApplied = false;
+      this.cashAppliedTotal = this.checkoutTotal
+      this.cashBack = this.checkoutTotal - this.totalRemaining;
+      $("#myModal").modal('show');
+    }
+
+
+  }
+
+  voucherApplied() {
+    if(this.totalRemaining == this.checkoutTotal) {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.voucherRemaining = this.totalRemaining;
+
+      $('#voucherModal').modal('show');
+    } else if(this.totalRemaining > this.checkoutTotal) {
+      if(this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+      this.isCashApplied = false;
+
+      }
+      if(this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if(this.isCompApplied) {
+        this.isCompApplied = true; 
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+
+        $('#voucherModal').modal('show');
+        if(this.isVoucherApplied) {
+          this.voucherAppliedTotal = this.voucherAppliedTotal + this.checkoutTotal
+        } else {
+          this.voucherAppliedTotal = this.checkoutTotal;
+          this.isVoucherApplied = true
+
+        }
+      }
+     
+    }
+    else if(this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+    
+    
+  }
+  checkApplied() {
+    if(this.totalRemaining == this.checkoutTotal) {
+      $('#checkModal').modal('show');
+    }
+   
+    else if(this.totalRemaining > this.checkoutTotal) {
+      if(this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+      this.isCashApplied = false;
+
+      }
+      if(this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+
+      if(this.isCompApplied) {
+        this.isCompApplied = true; 
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+        if(this.isCheckApplied) {
+          this.checkAppliedTotal = this.checkAppliedTotal + this.checkoutTotal
+        } else {
+          this.checkAppliedTotal = this.checkoutTotal;
+          this.isCheckApplied = true
+
+        }
+      }
+
+    }
+    else if(this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+  }
+
+  voucherModalApply() {
+    if(this.voucherRemaining !== 0) {
+      $('#voucherApplyModal').modal('hide');
+    } else if(this.voucherRemaining == 0) {
+      $('#voucherApplyModal').modal('show');
+    }
+    // $('#voucherApplyModal').modal('show');
+  }
+
+  compApplied() {
+    if(this.totalRemaining == this.checkoutTotal) {
+      $('#compModal').modal('show');
+    } else if(this.totalRemaining > this.checkoutTotal){
+      if(this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+      this.isCashApplied = false;
+
+      }
+      if(this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+      if(this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        $('#compModal').modal('show');
+      }
+    } else if(this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+    
+   
+  }
+
+  compApplication() {
+    this.applyCompShow = true;
+  }
+
+  compensation() {
+    if(this.totalRemaining == this.checkoutTotal){
+      this.electronService.ipcRenderer.send('compensation');
+      this.router.navigate(['/carddata'])
+    } else if(this.totalRemaining > this.checkoutTotal) {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.totalDue = this.totalRemaining;
+      this.isCompApplied = true;
+      this.applyCompShow = false;
+    }
+
+  }
+
+  cancelCompensation() {
+    this.applyCompShow = false;
+  }
+
+  compensationReason(value) {
+    this.reasonForComp = value
+    if (this.reason == true && value == "OTHERS") {
+      this.reason = false
+      this.reasonForComp = ""
+    } else {
+      localStorage.setItem("compReason", this.reasonForComp)
+    }
+  }
+
+
 
 }
+
