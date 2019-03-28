@@ -364,7 +364,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-      if (data != undefined && data != "") {
+      if (data != undefined && data != "" && data != false) {
         console.log(data);
         this._ngZone.run(() => {
           var resultObj: any = [];
@@ -475,7 +475,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   navigateToDashboard() {
     var timestamp = new Date().getTime();
-    this.cdtaService.generateReceipt(timestamp);
+    // this.cdtaService.generateReceipt(timestamp);
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
