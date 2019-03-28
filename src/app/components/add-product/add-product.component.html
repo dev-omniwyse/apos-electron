@@ -204,7 +204,7 @@
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
     <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
-    <button class="btn-white-top-cancel" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
+    <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
 </div>
 </div>
 <div class="container-right" *ngIf="checkout">
