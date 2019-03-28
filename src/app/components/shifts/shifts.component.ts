@@ -55,8 +55,9 @@ export class ShiftsComponent implements OnInit {
         let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
         let shiftreportUser = localStorage.getItem("userID")
         let mainShiftClose = "true"
-        if (localStorage.getItem("closingPausedMainShift") == "true") {
+       
             shiftStore.filter(element => {
+                if (localStorage.getItem("closingPausedMainShift") == "true") {
                 if (element.shiftState == "4") {
                     element.shiftState = "3"
                     element.userThatClosedShift = localStorage.getItem("userEmail")
@@ -72,25 +73,28 @@ export class ShiftsComponent implements OnInit {
                     //element.closingDrawer = this.productTotal
                     element.userThatClosedShift = localStorage.getItem("userEmail")
                 }
-
-            })
-        }
-        shiftStore.forEach(element => {
-            if (element.userID == shiftreportUser && element.shiftType == "0") {
-                element.shiftState = "3";
-                element.timeClosed = new Date().getTime();
-                element.closingDrawer = this.productTotal
-                element.userThatClosedShift = localStorage.getItem("userEmail")
-                localStorage.setItem("mainShiftClose", mainShiftClose)
-                // this.printSummaryReport();
-
-            } else
-                if (element.userID == shiftreportUser && element.shiftType == "1") {
+            }
+            else{
+                if (element.userID == shiftreportUser && element.shiftType == "0") {
                     element.shiftState = "3";
                     element.timeClosed = new Date().getTime();
                     element.closingDrawer = this.productTotal
-                }
-        })
+                    element.userThatClosedShift = localStorage.getItem("userEmail")
+                    localStorage.setItem("mainShiftClose", mainShiftClose)
+                    // this.printSummaryReport();
+    
+                } else
+                    if (element.userID == shiftreportUser && element.shiftType == "1" && localStorage.getItem("closingPausedMainShift")!= "true") {
+                        element.shiftState = "3";
+                        element.timeClosed = new Date().getTime();
+                        element.closingDrawer = this.productTotal
+                    }
+            }
+            })
+      
+        // shiftStore.forEach(element => {
+
+        // })
         localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
         this.cdtaService.printAllOrSpecificShiftData(null)
         localStorage.setItem("disableUntilReOpenShift", "true")
