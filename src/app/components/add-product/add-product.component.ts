@@ -184,6 +184,7 @@ export class AddProductComponent implements OnInit {
         this.activeWallet(this.shoppingcart._walletLineItem[0], 0);
       }
 
+<<<<<<< HEAD
       else {
         // this.frequentRide();
         this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -218,6 +219,14 @@ export class AddProductComponent implements OnInit {
 
 
       // this.cardsList.toArray()[0].nativeElement.classList.add('isActive');
+=======
+      else{
+      this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
+      this.walletItems = this.formatWatlletItems( this.shoppingcart._walletLineItem, 2);
+      this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1],this.walletItems.length - 1);
+
+      }
+>>>>>>> a1cecdfbb4a13bac0345acc42a317d1d6c93978f
     });
     var readCardListener = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
       var isDuplicateCard = false;
@@ -237,7 +246,7 @@ export class AddProductComponent implements OnInit {
             $("#newCardValidationModal").modal('show');
           }
           else {
-            // this.checkIsCardNew();
+            this.checkIsCardNew();
             this.cardJson.push(JSON.parse(data));
             // this.currentCard = this.cardJson[this.cardJson.length - 1]
             this.selectedProductCategoryIndex = 0;
@@ -284,8 +293,9 @@ export class AddProductComponent implements OnInit {
     });
 
     this.electronService.ipcRenderer.on('getPinpadTransactionStatusResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
       if (data != undefined && data != "") {
-        if (data != 1 && this.numOfAttempts < 600) {
+        if (data == false && this.numOfAttempts < 600) {
           var timer = setTimeout(() => {
             this.numOfAttempts++;
             this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
@@ -299,6 +309,7 @@ export class AddProductComponent implements OnInit {
     });
 
     this.electronService.ipcRenderer.on('getPinpadTransactionDataResult', (event, data) => {
+      console.log(data);
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
         this.saveTransaction(9);
@@ -958,6 +969,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
+<<<<<<< HEAD
     // this.cdtaService.getJSON().subscribe(data => {
     //   var i = 0;
     //   this.productJson.forEach(element => {
@@ -984,6 +996,9 @@ export class AddProductComponent implements OnInit {
     //   });
     // });
     this.walletItemContents = this.formatWatlletContents(list, 8);
+=======
+    this.walletItemContents = this.formatWatlletContents(list,8);
+>>>>>>> a1cecdfbb4a13bac0345acc42a317d1d6c93978f
     this.merchantise = list;
   }
   frequentRide() {
@@ -991,6 +1006,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
+<<<<<<< HEAD
 
     // this.productJson.forEach(element => {
     //   var isCorrectType = false;
@@ -1015,6 +1031,9 @@ export class AddProductComponent implements OnInit {
     // });
     this.walletItemContents = this.formatWatlletContents(list, 8);
 
+=======
+    this.walletItemContents = this.formatWatlletContents(list,8);
+>>>>>>> a1cecdfbb4a13bac0345acc42a317d1d6c93978f
     this.merchantise = list;
   }
   customAmount(item) {
@@ -1030,6 +1049,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
+<<<<<<< HEAD
     // this.productJson.forEach(element => {
     //   var isCorrectType = false;
     //   if (element.Ticket != undefined && element.Ticket.WalletType != undefined) {
@@ -1052,6 +1072,9 @@ export class AddProductComponent implements OnInit {
     //   }
     // });
     this.walletItemContents = this.formatWatlletContents(list, 8);
+=======
+    this.walletItemContents = this.formatWatlletContents(list,8);
+>>>>>>> a1cecdfbb4a13bac0345acc42a317d1d6c93978f
     this.merchantise = list;
   }
 
@@ -1063,25 +1086,18 @@ export class AddProductComponent implements OnInit {
   newFareCard() {
     $("#addCardModal").modal('hide');
     $("#newCardModal").modal('show');
-    //   this.checkIsCardNew();
-    //   this.isfromAddProduct = true;
-    //   this.electronService.ipcRenderer.send('readSmartcard', cardName);
-    //   this.isMagnetic = false;
-    //   this.isMerchendise = false;
-    //   localStorage.setItem("isMagnetic", 'false');
-    //   localStorage.setItem("isMerchendise", "false");
-    //   if (this.isNew) {
-    //     this.productTotal = this.productTotal + parseFloat(this.smartCardCost);
-    //   }
-    // }
   }
   newCard() {
+    if(this.checkIsCardNew()){
     this.isfromAddProduct = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
+    } else {
+      $("#newCardValidateModal").modal('show');
+    }
   }
 
   ExistingCard() {
@@ -1512,7 +1528,7 @@ export class AddProductComponent implements OnInit {
     this.numOfAttempts = 0;
     $("#creditCardModal").modal("hide")
     $("#creditCardApplyModal").modal("show")
-    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.productTotal * 100));
+    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
   cancelPinPadTransaction() {

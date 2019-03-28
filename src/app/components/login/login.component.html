@@ -15,7 +15,7 @@
                                                     primaryColour: '#006ddd', 
                                                     secondaryColour: '#ccc', 
                                                     tertiaryColour: '#006ddd' }"></ngx-loading> -->
-            <input type="password" class="mt20" placeholder="Password" [(ngModel)]="password" />
+            <input type="password" class="mt20" (keypress)="enterKey($event)" placeholder="Password" [(ngModel)]="password" />
             <button class="mt20" (click)="Login()">Login</button>
         </div>
     </div>

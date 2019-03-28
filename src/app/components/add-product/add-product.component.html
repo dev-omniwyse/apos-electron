@@ -85,24 +85,24 @@
             </ngx-slick> -->
 
             <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
-             
-            
-                    <div class="carousel-inner">
-                        <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'" >
-                            <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item"  (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
-                        </div>
+
+
+                <div class="carousel-inner">
+                    <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'">
+                        <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item" (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
                     </div>
-                    <br>
-                    <ol class="carousel-indicators">
-                        <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
-                    </ol>
+                </div>
+                <br>
+                <ol class="carousel-indicators">
+                    <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
+                </ol>
             </div>
-                            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
+            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
                                     <div [ngClass] = "i == 0? active : '' ">
                                         <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
                                   </div>
                                 </div> -->
-                        <!-- <div class="item active">
+            <!-- <div class="item active">
                                 <button type="button" class="btn btn-info">Button</button>
                         </div>
                        <div class="item">
@@ -111,8 +111,8 @@
                        <div class="item">
                             <button type="button" class="btn btn-info">Button</button>
                         </div> -->
-            
-                    <!-- <a class="left carousel-control" href="#Carousel" data-slide="prev">
+
+            <!-- <a class="left carousel-control" href="#Carousel" data-slide="prev">
                         <span class="glyphicon glyphicon-chevron-left"></span>
                     </a>
                     <a class="right carousel-control" href="#Carousel" data-slide="next">
@@ -130,7 +130,7 @@
                 <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
-                    <div class="pull-left" >1 Card : {{currentWalletLineItem?._cardPID}} &nbsp; ${{currentWalletLineItem?._unitPrice}}</div>
+                    <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
                     <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()">
                        <span class="glyphicon glyphicon-minus-sign"></span>
             </div>
@@ -214,44 +214,15 @@
     </div>
     <div class="tab-sets">
         <ul class="nav nav-pills" *ngIf="!regularRoute">
-            <li [ngClass]="selectedProductCategoryIndex == 0? 'active': ''"  (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
+            <li [ngClass]="selectedProductCategoryIndex == 0? 'active': ''" (click)="frequentRide()"><a data-toggle="pill">FREQUENT RIDER</a></li>
             <li [ngClass]="selectedProductCategoryIndex == 1? 'active': ''" (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
             <li [ngClass]="selectedProductCategoryIndex == 2? 'active': ''" (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
         </ul>
         <div class="flex-wrap flex-right-items flex-contain-full-w1" *ngIf="!regularRoute">
-                <div id="Carousel-products" class="carousel slide">
-                        <div class="carousel-inner">
-                            <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'" >
-                                <div class="products" *ngFor ="let currentItem of item">
-                                    <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
-        
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
-                            <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
-                        </ol>
-                </div>
-            <!-- <div class="products" *ngFor="let merch of merchantise | slice:0:5"> -->
-                <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-
-                <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-            <!-- </div> -->
-            <div class="products">
-                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount()">Custom Amount</button>
-
-            </div>
-        </div>
-        <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
-            <!-- <div *ngFor="let merch of merchantise"> -->
-                <!-- <button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-                <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-            <!-- </div> -->
             <div id="Carousel-products" class="carousel slide">
                 <div class="carousel-inner">
-                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'" >
-                        <div class="products" *ngFor ="let currentItem of item">
+                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'">
+                        <div class="products" *ngFor="let currentItem of item">
                             <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
 
                         </div>
@@ -261,10 +232,39 @@
                 <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
                     <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
                 </ol>
+            </div>
+            <!-- <div class="products" *ngFor="let merch of merchantise | slice:0:5"> -->
+            <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+
+            <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+            <!-- </div> -->
+            <div class="products">
+                <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount(walletItemContents[0][0])">Custom Amount</button>
+
+            </div>
         </div>
-        <!-- </div> -->
-        
-        <!-- <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
+        <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
+            <!-- <div *ngFor="let merch of merchantise"> -->
+            <!-- <button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+            <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
+            <!-- </div> -->
+            <div id="Carousel-products" class="carousel slide">
+                <div class="carousel-inner">
+                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'">
+                        <div class="products" *ngFor="let currentItem of item">
+                            <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
+                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
+                </ol>
+            </div>
+            <!-- </div> -->
+
+            <!-- <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
              
             
                 <div class="carousel-inner">
@@ -296,7 +296,7 @@
             </div>
             <div class="cr-right">
                 <button data-toggle="modal" data-target="#myModal">Cash</button>
-                <button data-toggle="modal" data-target="#creditModal" creditModal>Credit or Debit Card</button>
+                <button data-toggle="modal" data-target="#creditCardModal">Credit or Debit Card</button>
                 <button data-toggle="modal" data-target="#checkModal">Check</button>
                 <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
                 <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
@@ -331,21 +331,58 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="creditModal" role="dialog">
+            <div class="modal fade" id="creditCardModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                             <h4 class="modal-title">Cash Applied</h4>
                         </div>
+
                         <div class="modal-body">
                             <!-- <p>Return change to customer</p>
-                                <p>Click "OK" When cash drawer is closed</p> -->
+          <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
-                                <div class="pull-right">${{totalDue | number : '1.2-2'}}</div>
+                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+                                href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditCardApplyModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Continue Transaction</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Please continue transaction on pinpad</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelPinPadTransaction()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditCardErrorModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title"> Error </h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Error sending transaction to pinpad</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -622,6 +659,24 @@
                           src="assets/images/arrow-pointing-to-right.svg" /></button>
                     <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="newCardValidateModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
