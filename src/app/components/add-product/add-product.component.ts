@@ -529,14 +529,14 @@ export class AddProductComponent implements OnInit {
     var existingProductCount = 0;
 
     this.currentCard.products.forEach(product => {
-      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+      if (product.product_type == selectProduct.Ticket.Group && product.designator == selectProduct.Ticket.Designator) {
         existingProductCount = product.recharges_pending;
       }
     })
 
     this.currentWalletLineItem._walletContents.forEach(walletContent => {
       if (walletContent._offering.Ticket.Group == selectProduct.Ticket.Group && walletContent._offering.OfferingId == selectProduct.OfferingId) {
-        existingProductCount = walletContent._quantity;
+        existingProductCount += walletContent._quantity;
       }
     })
 
@@ -558,7 +558,7 @@ export class AddProductComponent implements OnInit {
     var remainingRides = 0;
 
     this.currentCard.products.forEach(product => {
-      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+      if (product.product_type == selectProduct.Ticket.Group && product.designator == selectProduct.Ticket.Designator) {
         remainingRides = remainingRides + product.remaining_rides;
       }
     })
@@ -587,7 +587,7 @@ export class AddProductComponent implements OnInit {
     var remainingValue = 0;
 
     this.currentCard.products.forEach(product => {
-      if (product.product_type == selectProduct.Ticket.Group && product.OfferingId == selectProduct.OfferingId) {
+      if (product.product_type == selectProduct.Ticket.Group && product.designator == selectProduct.Ticket.Designator) {
         remainingValue = remainingValue + product.remaining_value;
       }
     })
@@ -931,7 +931,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
   frequentRide() {
@@ -939,7 +939,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
   customAmount(item) {
@@ -955,7 +955,7 @@ export class AddProductComponent implements OnInit {
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
-    this.walletItemContents = this.formatWatlletContents(list,8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
 
@@ -1067,7 +1067,7 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem("isMerchandise", "true");
     localStorage.setItem("isMagnetic", 'false');
     let list = FilterOfferings.getInstance.filterNonFareOfferings(this.productJson);
-    this.walletItemContents = this.formatWatlletContents(list, 8);
+    this.walletItemContents = this.formatWatlletContents(list,6);
     this.merchantise = list;
   }
 

@@ -15,8 +15,7 @@
                 <div class="btn-tab">Account</div>
             </div>
             <div class="flex container-padding flex-row admin-btn pull-left">
-                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); "
-                    [routerLink]="['/admin']">
+                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
                     Admin
                 </button>
             </div>
@@ -78,9 +77,6 @@
 			</div>
 		</div>
 	</div> -->
-    <div class="content-container container-padding doNotPrint">
-        <h1>Summary</h1>
-    </div>
 
     <div class="flex container-padding flex-row" *ngFor="let card of carddata ">
         <div class="flex-devide">
