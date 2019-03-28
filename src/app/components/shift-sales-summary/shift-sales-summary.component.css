@@ -80,6 +80,21 @@
     text-transform: uppercase;
 }
 
+.back-to-admin {
+    background-color: #fff;
+    border: 1px solid #dedede;
+    border-radius: 6px;
+    color: #323232;
+    font-size: 26px;
+    padding: 30px 73px;
+    text-transform: uppercase;
+}
+
+.sales-bottom {
+    margin-top: 38vh;
+    margin-left: 15px;
+}
+
 .totalSold {
     background-color: #fff;
     border: 1px solid #dedede;
@@ -88,7 +103,6 @@
     font-size: 26px;
     padding: 30px 115px;
     text-transform: uppercase;
-    
 }
 
 .select-clerk select {
