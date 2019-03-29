@@ -230,7 +230,7 @@ export class AddProductComponent implements OnInit {
       console.log("data", data)
       if (data != undefined && data != "") {
         var timestamp = new Date().getTime();
-        // this.cdtaService.generateReceipt(timestamp);
+        this.cdtaService.generateReceipt(timestamp);
         this._ngZone.run(() => {
           // if (this.merchantiseList.length != 0 || this.merchantList.length != 0) {
           //   this.saveTransaction(localStorage.getItem("paymentMethodId"));
