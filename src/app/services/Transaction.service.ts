@@ -97,13 +97,16 @@ export class TransactionService {
                 let walletProductIdentifier = null;
                 let walletCost = 0;
                 let walletUnitPrice = 0;
-                let walletQuantitySold = 1;
+                let walletQuantitySold = 0;
                 if (wallet._offering) {
 
                     console.log("Adding wallet transaction.");
                     walletProductIdentifier = wallet._offering.ProductIdentifier;
                     walletCost = wallet._offering.UnitPrice;
                     walletUnitPrice = wallet._unitPrice;
+                    if(walletUnitPrice != 0){
+                        walletQuantitySold = 1;
+                    }
 
                 } else {
                     // Sold products on an existing wallet, not a new wallet
