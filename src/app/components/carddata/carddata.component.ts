@@ -697,6 +697,8 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.getSmartCardWalletContents();
   }
 
+   
+
   // sdeleteProductsFromCard(this.)
 
   generateReceipt(timestamp) {
