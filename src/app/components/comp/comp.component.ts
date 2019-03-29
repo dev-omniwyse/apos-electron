@@ -24,18 +24,7 @@ export class CompComponent implements OnInit {
     this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     this.isSmartCard = JSON.parse(localStorage.getItem('isSmartCard'));
-    this.electronService.ipcRenderer.on('compensationResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-
-    
-    
-  var transactionListener: any = this.electronService.ipcRenderer.on('saveTransactionForMagneticMerchandiseResult', (event, data) => {
+    var transactionListener: any = this.electronService.ipcRenderer.on('saveTransactionForMagneticMerchandiseResult', (event, data) => {
     console.log("data", data)
     if (data != undefined && data != "") {
       var timestamp = new Date().getTime();
@@ -148,6 +137,10 @@ export class CompComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy() {
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
   }
 
 
