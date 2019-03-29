@@ -1197,16 +1197,29 @@ export class AddProductComponent implements OnInit {
 
   saveTransaction(paymentMethodId) {
     try {
-      localStorage.setItem("paymentMethodId", paymentMethodId)
-      if (this.isSmartCardFound()) {
-        if (paymentMethodId == "8") {
-          this.router.navigate(['/comp'])
+      localStorage.setItem("paymentMethodId", paymentMethodId);
+      if(paymentMethodId == '8') {
+        this.router.navigate(['/comp']);
+      } else  {
+        if(this.isSmartCardFound()) {
+          this.router.navigate(['/carddata']);
         } else {
-          this.router.navigate(['/carddata'])
+          this.saveTransactionForMerchandiseAndMagnetic();
         }
-      } else {
-        this.saveTransactionForMerchandiseAndMagnetic()
       }
+
+
+      // if (this.isSmartCardFound()) {
+      //   if (paymentMethodId == "8") {
+      //     this.router.navigate(['/comp'])
+      //   } else {
+      //     this.router.navigate(['/carddata'])
+      //   }
+      // } else {
+      //   if(paymentMethodId == "8"){
+      //     this.router.navigate(['/comp']);
+      //   }
+      
       // var walletObj: any = [];
       // var jsonMagneticObj: any = [];
       // var jsonMerchandiseObj: any = [];

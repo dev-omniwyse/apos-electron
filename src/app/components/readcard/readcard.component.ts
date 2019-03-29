@@ -501,6 +501,7 @@ export class ReadcardComponent implements OnInit {
     }
 
     Back() {
+        localStorage.removeItem('readCardData');
         this.isShowCardOptions = true;
         // this.carddata.length = 0;
     }
