@@ -184,14 +184,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-      if (data != undefined && data != "" && data != false) {
-        console.log(data);
+      let resultObj = new Array(JSON.parse(data));
+      if (resultObj != undefined && resultObj != null && resultObj.length != 0) {
         this._ngZone.run(() => {
-          var resultObj: any = [];
-          resultObj = new Array(JSON.parse(data));
           for (let index = 0; index < resultObj.length; index++) {
-            this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index][0].slotNumber;
-            this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
+            if(undefined != this.shoppingCart._walletLineItem[this.cardIndex]._walletContents && 0 != this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length){
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index][0].slotNumber;
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
+            }
           }
           // resultObj.forEach(element => {
 
