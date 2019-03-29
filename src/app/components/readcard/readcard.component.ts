@@ -122,7 +122,7 @@ export class ReadcardComponent implements OnInit {
         if (this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
-
+        localStorage.removeItem("readCardData");
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log("print sales data", data)
             if (data != undefined && data.length != 0) {

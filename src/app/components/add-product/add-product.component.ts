@@ -166,7 +166,8 @@ export class AddProductComponent implements OnInit {
       this.productJson = JSON.parse(item).Offering;
       console.log(this.productJson);
       this.readCarddata = JSON.parse(localStorage.getItem("readCardData"));
-      this.cardJson.push(JSON.parse(this.readCarddata));
+      if (this.readCarddata != "" || this.readCarddata != undefined)
+        this.cardJson.push(JSON.parse(this.readCarddata));
       if (this.cardJson[0] == null) {
         this.cardJson = [];
       } else {
@@ -209,7 +210,8 @@ export class AddProductComponent implements OnInit {
             $("#newCardValidationModal").modal('show');
           }
           else {
-            if (this.checkIsCardNew()) {
+            if (isExistingCard) {
+              isExistingCard = false;
               this.cardJson.push(JSON.parse(data));
               this.currentCard = this.cardJson[this.cardJson.length - 1];
               this.selectedProductCategoryIndex = 0;
@@ -217,8 +219,21 @@ export class AddProductComponent implements OnInit {
               this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
               this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
               this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
-            } else {
-              $("#newCardValidateModal").modal('show');
+            }
+            else {
+              let isNewCard = this.checkIsCardNew();
+              if (isNewCard) {
+                this.cardJson.push(JSON.parse(data));
+                this.currentCard = this.cardJson[this.cardJson.length - 1];
+                this.selectedProductCategoryIndex = 0;
+
+                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+                this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+              }
+              else {
+                $("#newCardValidateModal").modal('show');
+              }
             }
           }
         });
@@ -940,6 +955,7 @@ export class AddProductComponent implements OnInit {
 
   ExistingCard() {
     this.isfromAddProduct = true;
+    isExistingCard = true;
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
