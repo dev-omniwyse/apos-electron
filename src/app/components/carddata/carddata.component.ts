@@ -460,7 +460,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "ticket_id": element._offering.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": (element._quantity * element._offering.Ticket.Value * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "remaining_value": (element._quantity * element._unitPrice * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element._isAccountBased,
           "isCardBased": element._isCardBased
         }

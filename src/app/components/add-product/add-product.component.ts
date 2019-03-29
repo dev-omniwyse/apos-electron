@@ -549,7 +549,7 @@ export class AddProductComponent implements OnInit {
 
     this.currentCard.products.forEach(product => {
       if (product.product_type == selectProduct.Ticket.Group && product.designator == selectProduct.Ticket.Designator) {
-        existingProductCount = product.recharges_pending;
+        existingProductCount = product.recharges_pending + 1;
       }
     })
 
@@ -559,7 +559,7 @@ export class AddProductComponent implements OnInit {
       }
     })
 
-    if ((existingProductCount + 1) <= (this.terminalConfigJson.MaxPendingCount + 1))
+    if ((existingProductCount) <= (this.terminalConfigJson.MaxPendingCount))
       canAddFrequentRideBool = true;
     else
       canAddFrequentRideBool = false;
@@ -617,8 +617,8 @@ export class AddProductComponent implements OnInit {
       }
     })
 
-    // if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
-    if ((remainingValue + selectProduct.Ticket.Value) <= 200)
+    // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
+     if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -698,7 +698,7 @@ export class AddProductComponent implements OnInit {
         message = "Cannot Add more than one Product"
         break;
       case MediaType.SMART_CARD_ID:
-        message = "Cannot Add more than 4 products (Existing + New)"
+        message = "Max Product limit reached."
         break;
     }
     return message
