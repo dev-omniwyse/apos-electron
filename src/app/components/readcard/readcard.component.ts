@@ -378,7 +378,10 @@ export class ReadcardComponent implements OnInit {
         }); 
     }
     showErrorMessages() {
-        $("#errorModal").modal('show');
+        $("#errorModal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
     }
     /* JAVA SERVICE CALL */
 

@@ -173,7 +173,10 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          $("#encodeSuccessModal").modal('show');
+          $("#encodeSuccessModal").modal({
+            backdrop: 'static',
+            keyboard: false
+          });
           var timestamp = new Date().getTime();
          // this.cdtaService.generateReceipt(timestamp)
         });
