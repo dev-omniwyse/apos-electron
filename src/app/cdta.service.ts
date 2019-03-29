@@ -479,10 +479,10 @@ export class CdtaService {
           expectedCashInDrawer = expectedCashInDrawer + payment.paymentAmount
           shiftType = payment.shiftType
           userID = payment.userID
-        } else if(element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod != "CASH"){
-		shiftType = payment.shiftType
-		userID = payment.userID
-}
+        } else if (element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod != "CASH") {
+          shiftType = payment.shiftType
+          userID = payment.userID
+        }
       });
 
       console.log("expectedCashInDrawer", expectedCashInDrawer);
@@ -785,7 +785,8 @@ export class CdtaService {
     var changeDue = 0;
     var padSize = 0;
     var transText = "Trans ID:";
-
+    var isMerchandise = ""
+    var walletTypeId = ""
     receipt += transText;
     padSize = receiptWidth - (transText.length + storedTransactionID.length);
 
@@ -842,63 +843,22 @@ export class CdtaService {
     //Add a spacer due to multiple cards on order
     receipt += "\n";
 
+    // if(transactionObj.isMerchandise != "true" || transactionObj.walletItemId != "99")
+
     var walletContents
     cart.forEach(element => {
-      walletContents = element.walletContentItems
-      console.log("walletContents", walletContents);
-      // var PID = element.cardPID;
-      // var cardText = "Card ID:";
-
-      // receipt += cardText;
-      // padSize = receiptWidth - (cardText.length + PID.length);
-      // spacer = '';
-
-      // while (spacer.length <= (padSize - 1)) {
-      //   spacer += " ";
-      // }
-
-      // receipt += spacer + PID + "\n";
-
-      // var dashes = "";
-      // while (dashes.length <= receiptWidth) {
-      //   dashes += "-";
-      // }
-
-      // receipt += dashes + "\n";
-
-      // var lineItem = element.description + "";
-      // var lineItemQty = " - Qty: 1 ";
-
-      // if (lineItem.length > (35 - lineItemQty.length)) {
-      //   lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-      // }
-
-      // lineItem = lineItem + lineItemQty + "                                   ";
-      // lineItem = lineItem.substring(0, 35);
-
-      // var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
-
-      // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-      // receipt += lineItem + subtotalStr + "\n\n";
-
-
-      walletContents.forEach(item => {
-
+      if (element.IsMerchandise == true) {
+        isMerchandise = element.IsMerchandise
+        walletTypeId = element.walletTypeId
         JSON.parse(catalog).Offering.forEach(catalogElement => {
           if (catalogElement.Ticket != undefined) {
-            if (catalogElement.ProductIdentifier == item.productIdentifier) {
-              //  var catalogdata = {
-              //    "ticketid": 
-              //  }
-              return item.description = catalogElement.Ticket.Description
-
+            if (catalogElement.ProductIdentifier == element.productIdentifier) {
+              return element.description = catalogElement.Ticket.Description
             }
           }
         });
-        var lineItem = item.description + "";
-        var lineItemQty = " - Qty: " + item.quantity + " ";
-
+        var lineItem = element.description + "";
+        var lineItemQty = " - Qty: " + element.quantity + " ";
         if (lineItem.length > (35 - lineItemQty.length)) {
           lineItem = lineItem.substring(0, (35 - lineItemQty.length));
         }
@@ -906,43 +866,47 @@ export class CdtaService {
         lineItem = lineItem + lineItemQty + "                                   ";
         lineItem = lineItem.substring(0, 35);
 
-        var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+        var subtotalStr = "          $" + (element.unitPrice * element.quantity).toFixed(2);
 
         subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
 
         receipt += lineItem + subtotalStr + "\n\n";
+      } else {
+        walletContents = element.walletContentItems
+        console.log("walletContents", walletContents);
+        walletContents.forEach(item => {
+          walletTypeId = item.walletTypeId
+          isMerchandise = item.IsMerchandise
+          JSON.parse(catalog).Offering.forEach(catalogElement => {
+            if (catalogElement.Ticket != undefined) {
+              if (catalogElement.ProductIdentifier == item.productIdentifier) {
+                return item.description = catalogElement.Ticket.Description
+              }
+            }
+          });
+          var lineItem = item.description + "";
+          var lineItemQty = " - Qty: " + item.quantity + " ";
+          if (lineItem.length > (35 - lineItemQty.length)) {
+            lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+          }
 
-      })
+          lineItem = lineItem + lineItemQty + "                                   ";
+          lineItem = lineItem.substring(0, 35);
+
+          var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+
+          subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+          receipt += lineItem + subtotalStr + "\n\n";
+
+        })
+      }
+
+
 
     });
 
-    // cart.ProductLineItems.forEach(item => {
-    //   var lineItem = item.description + "";
-    //   var taxAmount = "Tax";
-    //   var lineItemQty = " - Qty: " + item.quantity + " ";
 
-    //   if (lineItem.length > (35 - lineItemQty.length)) {
-    //     lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-    //   }
-
-    //   lineItem = lineItem + lineItemQty + "                                   ";
-    //   lineItem = lineItem.substring(0, 35);
-
-    //   var taxtotalStr = "          $" + (item.tax * item.quantity).toFixed(2);
-    //   taxtotalStr = taxtotalStr.substring(taxtotalStr.length - 10);
-    //   var taxPercentage = ((item.tax * 100) / item.unitPrice).toFixed(2);
-
-    //   taxAmount = taxAmount + "(" + taxPercentage + "%)" + "                                   ";
-    //   taxAmount = taxAmount.substring(0, 35);
-
-    //   var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
-
-    //   subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-    //   receipt += lineItem + subtotalStr + "\n";
-    //   receipt += taxAmount + taxtotalStr + "\n\n";
-
-    // });
 
     var totalDue = localStorage.getItem("transactionAmount")
     var taxtotalDue = taxAmountValue
@@ -1065,154 +1029,155 @@ export class CdtaService {
 
       receipt += "\n" + changeDueLabel + changeDueStr;
     }
+ 
+    if (isMerchandise == "false" || (walletTypeId != "10" && walletTypeId != undefined) ) {
+      var cardBalance = "",
+        textProductType = "",
+        remainingRides: any = 0;
 
-    var cardBalance = "",
-      textProductType = "",
-      remainingRides: any = 0;
+      receipt += "\n\n             Current Card Balance\n\n";
+      var cardStore = JSON.parse(localStorage.getItem("printCardData"));
 
-    receipt += "\n\n             Current Card Balance\n\n";
-    var cardStore = JSON.parse(localStorage.getItem("printCardData"));
-
-
-
-    var receiptWidth = 44;
-    var dashes = "";
-    while (dashes.length <= receiptWidth) {
-      dashes += "-";
-    }
-
-    receipt += dashes + "\n";
-    var PID = cardStore.printed_id;
-    var cardText = "Card ID:";
-    receipt += cardText;
-    padSize = receiptWidth - (cardText.length + PID.length);
-    spacer = '';
-
-    while (spacer.length <= (padSize - 1)) {
-      spacer += " ";
-    }
-
-    receipt += spacer + PID + "\n";
-
-    if (cardStore.products) {
-
-      for (var i = 0; i < cardStore.products.length; i++) {
-
-        var dataItem = cardStore.products[i];
-
-        var productType = dataItem.product_type;
-        var designator = dataItem.designator;
-        var days = dataItem.days;
-        var rechargesPending = dataItem.recharges_pending;
-        var remainingValue = dataItem.remaining_value;
-        var remainingRides = dataItem.remaining_rides;
-        var start_date = dataItem.start_date_str;
-        var exp_date = dataItem.exp_date_str;
-        var start_date_epoch_days = dataItem.start_date_epoch_days;
-        var exp_date_epoch_days = dataItem.exp_date_epoch_days;
-        var bad_listed = dataItem.is_prod_bad_listed;
-        var textProductType = '';
-        var cardBalance = '';
-        var productDescription = '';
-        var productStatus = '';
-
-        switch (productType) {
-          case 1:
-
-            if (exp_date_epoch_days > 1) {
-              cardBalance = "Exp: " + exp_date;
-            } else {
-              cardBalance = (days + 1) + " Days";
-            }
-
-            productDescription = (days + 1) + " Day Pass";
-
-            if (rechargesPending > 0) {
-              productStatus += " (" + rechargesPending + " Pending)"
-            }
-
-            break;
-          case 2:
-            if (1 == remainingRides) {
-              cardBalance = remainingRides + " Ride";
-            } else {
-              cardBalance = remainingRides + " Rides";
-            }
-            productDescription = 'Stored Ride Pass';
-            break;
-          case 3:
-
-            var remaining_value = 0;
-
-            if (dataItem.remaining_value && dataItem.remaining_value > 0) {
-              remaining_value = dataItem.remaining_value / 100;
-            }
-
-            productDescription = 'Pay As You Go';
-            cardBalance = "$" + remaining_value.toFixed(2);
-
-            break;
-          case 7:
-
-            productDescription = "Employee Pass";
-
-            if (exp_date_epoch_days > 1) {
-              cardBalance = "Exp: " + exp_date;
-            }
-
-            break;
-          default:
-            productDescription = "Unknown Product";
-            break;
-        }
-
-        // var ticketKey = productType + "_" + designator;
-
-        //  var carddata = new Array(cardStore);
-
-        //  cardStore.products.forEach(cardElement => {
-        JSON.parse(catalog).Offering.forEach(catalogElement => {
-          if (catalogElement.Ticket != undefined) {
-            if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-              //  var catalogdata = {
-              //    "ticketid": 
-              //  }
-              return productDescription = catalogElement.Ticket.Description
-
-            }
-          }
-        });
-        // });
-
-
-        // don't print anything if your stored value is $0
-        if ((3 != productType) || (0 < remaining_value)) {
-
-          var receiptWidth = 44;
-          var padSize = 0;
-          var maxDescriptionLength = receiptWidth - 16;
-
-          if (productDescription.length >= maxDescriptionLength) {
-            productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
-          }
-
-          receipt += productDescription;
-
-          padSize = receiptWidth - (productDescription.length + cardBalance.length);
-
-          var spacer = '';
-
-          while (spacer.length <= (padSize - 1)) {
-            spacer += " ";
-          }
-
-          receipt += spacer + cardBalance + "\n";
-        }
+      var receiptWidth = 44;
+      var dashes = "";
+      while (dashes.length <= receiptWidth) {
+        dashes += "-";
       }
-      receipt += "\n";
-    }
-    else {
-      console.log("Receipt printing: No smart cards stored.");
+
+      receipt += dashes + "\n";
+      var PID = cardStore.printed_id;
+      var cardText = "Card ID:";
+      receipt += cardText;
+      padSize = receiptWidth - (cardText.length + PID.length);
+      spacer = '';
+
+      while (spacer.length <= (padSize - 1)) {
+        spacer += " ";
+      }
+
+      receipt += spacer + PID + "\n";
+
+      if (cardStore.products) {
+
+        for (var i = 0; i < cardStore.products.length; i++) {
+
+          var dataItem = cardStore.products[i];
+
+          var productType = dataItem.product_type;
+          var designator = dataItem.designator;
+          var days = dataItem.days;
+          var rechargesPending = dataItem.recharges_pending;
+          var remainingValue = dataItem.remaining_value;
+          var remainingRides = dataItem.remaining_rides;
+          var start_date = dataItem.start_date_str;
+          var exp_date = dataItem.exp_date_str;
+          var start_date_epoch_days = dataItem.start_date_epoch_days;
+          var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+          var bad_listed = dataItem.is_prod_bad_listed;
+          var textProductType = '';
+          var cardBalance = '';
+          var productDescription = '';
+          var productStatus = '';
+
+          switch (productType) {
+            case 1:
+
+              if (exp_date_epoch_days > 1) {
+                cardBalance = "Exp: " + exp_date;
+              } else {
+                cardBalance = (days + 1) + " Days";
+              }
+
+              productDescription = (days + 1) + " Day Pass";
+
+              if (rechargesPending > 0) {
+                productStatus += " (" + rechargesPending + " Pending)"
+              }
+
+              break;
+            case 2:
+              if (1 == remainingRides) {
+                cardBalance = remainingRides + " Ride";
+              } else {
+                cardBalance = remainingRides + " Rides";
+              }
+              productDescription = 'Stored Ride Pass';
+              break;
+            case 3:
+
+              var remaining_value = 0;
+
+              if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+                remaining_value = dataItem.remaining_value / 100;
+              }
+
+              productDescription = 'Pay As You Go';
+              cardBalance = "$" + remaining_value.toFixed(2);
+
+              break;
+            case 7:
+
+              productDescription = "Employee Pass";
+
+              if (exp_date_epoch_days > 1) {
+                cardBalance = "Exp: " + exp_date;
+              }
+
+              break;
+            default:
+              productDescription = "Unknown Product";
+              break;
+          }
+
+          // var ticketKey = productType + "_" + designator;
+
+          //  var carddata = new Array(cardStore);
+
+          //  cardStore.products.forEach(cardElement => {
+          JSON.parse(catalog).Offering.forEach(catalogElement => {
+            if (catalogElement.Ticket != undefined) {
+              if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
+                //  var catalogdata = {
+                //    "ticketid": 
+                //  }
+                return productDescription = catalogElement.Ticket.Description
+
+              }
+            }
+          });
+          // });
+
+
+          // don't print anything if your stored value is $0
+          if ((3 != productType) || (0 < remaining_value)) {
+
+            var receiptWidth = 44;
+            var padSize = 0;
+            var maxDescriptionLength = receiptWidth - 16;
+
+            if (productDescription.length >= maxDescriptionLength) {
+              productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+            }
+
+            receipt += productDescription;
+
+            padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+            var spacer = '';
+
+            while (spacer.length <= (padSize - 1)) {
+              spacer += " ";
+            }
+
+            receipt += spacer + cardBalance + "\n";
+          }
+        }
+        receipt += "\n";
+      }
+      else {
+        console.log("Receipt printing: No smart cards stored.");
+      }
+
     }
     receipt += "\n\n";
     console.log("receipt", receipt)

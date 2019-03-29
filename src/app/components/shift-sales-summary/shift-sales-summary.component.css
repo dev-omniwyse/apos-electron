@@ -95,6 +95,23 @@
     margin-left: 15px;
 }
 
+
+
+.shift-data-set-table tbody {
+    display: block;
+    height: 18vw;
+    overflow: auto;
+}
+.shift-data-set-table thead, .shift-data-set-table tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+.shift-data-set-table thead {
+    width: 100%
+}
+
+
 .totalSold {
     background-color: #fff;
     border: 1px solid #dedede;

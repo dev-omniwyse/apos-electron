@@ -295,7 +295,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   navigateToDashboard() {
     var timestamp = new Date().getTime();
-    // this.cdtaService.generateReceipt(timestamp);
+     this.cdtaService.generateReceipt(timestamp);
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
@@ -303,6 +303,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+    
     this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
     this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
