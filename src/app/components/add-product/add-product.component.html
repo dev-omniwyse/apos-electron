@@ -188,7 +188,7 @@
                  </div>
                  </div> -->
 </div>
-<div class="sub-total " *ngIf="!isCashApplied && !isVoucherApplied && !isCheckApplied">
+<div class="sub-total " *ngIf="!isCashApplied && !isVoucherApplied && !isCheckApplied && !isCardApplied">
     <div class="flex">
         <div class="float-left" *ngIf="!isMerchendise">Fare Products Subtotal</div>
         <div class="float-left" *ngIf="isMerchendise">Non - Fare Products Subtotal</div>
@@ -201,7 +201,7 @@
         <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
     </div>
 </div>
-<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied">
+<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied">
     <div class="flex">
             <div class="float-left" >Total Due</div>
             <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
@@ -489,7 +489,7 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click) ='notToApplyvoucher()'>No</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click) ='voucherModalApply()'>Yes</button>
                         </div>
                     </div>

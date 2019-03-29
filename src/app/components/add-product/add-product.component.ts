@@ -919,6 +919,7 @@ export class AddProductComponent implements OnInit {
     this.isCashApplied = false;
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
+    this.isCardApplied = false;
     this.getTotalDue(this.shoppingcart);
   }
 
@@ -1557,16 +1558,9 @@ export class AddProductComponent implements OnInit {
       if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
 
         $('#voucherModal').modal('show');
-        if(this.isVoucherApplied) {
-          this.voucherAppliedTotal = this.voucherAppliedTotal + this.checkoutTotal
-        } else {
-          this.voucherAppliedTotal = this.checkoutTotal;
-          this.isVoucherApplied = true
-
-        }
+     
       }
      
     }
@@ -1574,6 +1568,35 @@ export class AddProductComponent implements OnInit {
       $('#voucherErrorModal').modal('show');
     }
     
+    
+  }
+
+  voucherModalApply() {
+    
+    this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+
+    if(this.isVoucherApplied) {
+      this.voucherAppliedTotal = this.voucherAppliedTotal + this.checkoutTotal
+    } else {
+      this.voucherAppliedTotal = this.checkoutTotal;
+      this.isVoucherApplied = true
+
+    }
+
+    if(this.voucherRemaining !== 0) {
+      $('#voucherApplyModal').modal('hide');
+    } else if(this.voucherRemaining == 0) {
+      $('#voucherApplyModal').modal('show');
+    }
+    // $('#voucherApplyModal').modal('show');
+  }
+
+  notToApplyvoucher() {
+    if(this.isVoucherApplied) {
+      this.isVoucherApplied = true;
+    } else {
+      this.isVoucherApplied = false;
+    }
     
   }
 
@@ -1626,14 +1649,7 @@ export class AddProductComponent implements OnInit {
     }
   }
 
-  voucherModalApply() {
-    if(this.voucherRemaining !== 0) {
-      $('#voucherApplyModal').modal('hide');
-    } else if(this.voucherRemaining == 0) {
-      $('#voucherApplyModal').modal('show');
-    }
-    // $('#voucherApplyModal').modal('show');
-  }
+ 
 
   compApplied() {
     if(this.totalRemaining == this.checkoutTotal) {
@@ -1736,12 +1752,13 @@ export class AddProductComponent implements OnInit {
       if((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) || (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
         if(this.isCardApplied) {
           $('#creditCardModal').modal('show');
           this.cardAppliedTotal = this.checkAppliedTotal + this.checkoutTotal
         } else {
           $('#creditCardModal').modal('show');
+          this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+
           this.cardAppliedTotal = this.checkoutTotal;
           this.isCardApplied = true
 
