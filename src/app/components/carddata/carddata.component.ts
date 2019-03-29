@@ -184,20 +184,22 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-      let resultObj = new Array(JSON.parse(data));
-      if (resultObj != undefined && resultObj != null && resultObj.length != 0) {
-        this._ngZone.run(() => {
-          for (let index = 0; index < resultObj.length; index++) {
-            if(undefined != this.shoppingCart._walletLineItem[this.cardIndex]._walletContents && 0 != this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length){
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index][0].slotNumber;
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
-            }
+        let result = new Array(JSON.parse(data));
+        let resultObj = result[0];
+        if (resultObj != undefined && resultObj != null) {
+  
+          if (0 == this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length) {
+            //dont try to update wallletContents..
+          } else {
+            this._ngZone.run(() => {
+              for (let index = 0; index < resultObj.length; index++) {
+                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index].slotNumber;
+                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index].status;              
+              }
+              
+            });
           }
-          // resultObj.forEach(element => {
-
-          //   this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[]
-          //   // this.encodeddata.push(element);
-          // });
+          this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
           if (this.isSmartCardFound()) {
             this.populatCurrentCard();
             this.getSmartCardWalletContents();
@@ -205,7 +207,6 @@ export class CarddataComponent implements OnInit, OnChanges {
           else {
             this.initiateSaveTransaction()
           }
-        });
       }
       else {
         $("#encodeErrorModal").modal('show');
