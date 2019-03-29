@@ -770,11 +770,15 @@ export class AddProductComponent implements OnInit {
       this.removeCardfromCardJSON();
     }
     // Utils.getInstance.removeWalletFromLocalStore(this.cardJson, );
+
     this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+    
     this.currentWalletLineItemIndex = this.walletItems.length - 1;
+    
     this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
     if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
-      this.isMerchendise = true
+      this.clickOnMerch() ;
+      this.isMerchendise = true;
     }
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
