@@ -198,7 +198,8 @@
     <hr>
     <div class="flex totals">
         <div class="float-left">Total Due</div>
-        <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
+        <div class="float-right" *ngIf="!isCompApplied">${{totalDue | number : '1.2-2'}}</div>
+        <div class="float-right" *ngIf="isCompApplied">${{compDue | number : '1.2-2'}}</div>
     </div>
 </div>
 <div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied">
@@ -324,11 +325,11 @@
                 </div>
             </div>
             <div class="cr-right">
-                <button data-toggle="modal" (click)="cashApplied()">Cash</button>
+                <button data-toggle="modal" (click)="paymentByCash()">Cash</button>
                 <button data-toggle="modal" (click)="cardApplied()">Credit or Debit Card</button>
-                <button data-toggle="modal" (click)="checkApplied()">Check</button>
+                <button data-toggle="modal" (click)="paymentByCheck()">Check</button>
                 <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
-                <button data-toggle="modal" (click)="voucherApplied()">Voucher</button>
+                <button data-toggle="modal" (click)="paymentByVoucher()">Voucher</button>
                 <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
                 <button data-toggle="modal" (click)="compApplied()">Comp</button>
             </div>
@@ -355,7 +356,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cashApplied()">Ok</button>
                         </div>
                     </div>
                 </div>
@@ -379,7 +380,7 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#creditdebitCardApplyModal" (click)="doPinPadTransaction()">Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#creditdebitCardApplyModal" (click)="cardPayment()">Ok</button>
                         </div>
                     </div>
                 </div>
@@ -429,7 +430,7 @@
                             <p>Click "OK" When cash drawer is closed</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="checkApplied()">Ok</button>
                         </div>
                     </div>
                 </div>
