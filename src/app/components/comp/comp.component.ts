@@ -5,7 +5,8 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-
+import { TransactionService } from 'src/app/services/Transaction.service';
+import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
 @Component({
   selector: 'app-comp',
   templateUrl: './comp.component.html',
@@ -22,18 +23,12 @@ export class CompComponent implements OnInit {
   // public reasonForComp: string
   public buttonArray = ["DEFECTIVE CARD", "LOST CARD", "SCHEDULE DELAYS", "OTHERS"]
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
+   
+    
 
-
-    this.electronService.ipcRenderer.on('compensationResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-        });
-      }
-    });
 
   }
+
 
   compReason(value) {
     this.compensationReason.emit(value);
@@ -61,10 +56,21 @@ export class CompComponent implements OnInit {
     this.processCompensation.emit();
     // console.log('reason for comp', this.reasonForComp)
     // this.router.navigate(['/carddata'])
+
   }
+
+
+  
+
+  
 
   ngOnInit() {
 
   }
+
+
+
+
+  
 
 }

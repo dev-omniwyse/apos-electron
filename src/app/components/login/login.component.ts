@@ -61,6 +61,7 @@ export class LoginComponent implements OnInit {
             if (data != undefined && data != "") {
                 // this.loading = false
                 this.userdata = JSON.parse(data)
+                localStorage.removeItem("readCardData");
                 localStorage.setItem("userID", this.userdata.personId)
                 localStorage.setItem("userEmail", this.userdata.username)
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))

@@ -101,6 +101,19 @@ ul {
     margin: 0 0 0 35px;
 }
 
+.btn-white-top-cancel-checkout {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #999999;
+    font-size: 2.2vh;
+    /* padding: 2.5vh 15px; */
+    width: calc(85%);
+    /* margin: 0 0 0 35px; */
+    width: 100%;
+    padding: 1.3vh;
+}
+
 .btn-white {
     background-color: #fff;
     border: 1px solid #c3c3c3;
@@ -538,12 +551,25 @@ ul {
 
 @media (max-width: 1550px) {
     .btn-white,
-    .btn-white-cancel,
     .btn-orange,
     .btn-white-top-cancel,
     .btn-white-top {
         font-size: 2.5vh;
-        padding: 1.5vh 15px;
+        padding: 1.3vh 15px;
+    }
+    .sub-total {
+        margin: 1vh 0;
+    }
+    .container-l-app {
+        height: 44vh;
+    }
+}
+
+@media (max-width: 1550px) {
+    .btn-white-cancel {
+        font-size: 3.5vh;
+        padding: 2.5vh 52px;
+        margin-top: 91%;
     }
     .sub-total {
         margin: 1vh 0;

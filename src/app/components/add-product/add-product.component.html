@@ -230,7 +230,7 @@
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
     <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
-    <button class="btn-white-top-cancel" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
+    <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
 </div>
 </div>
 <div class="container-right" *ngIf="checkout">
@@ -255,7 +255,7 @@
                     </div>
                 </div>
                 <br>
-                <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
+                <ol class="carousel-indicators" *ngIf="merchantise.length > 6">
                     <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
                 </ol>
             </div>
@@ -529,7 +529,7 @@
                             <p>Click "OK" When cash drawer is closed</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" >Ok</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="vocherPayment()">Ok</button>
                         </div>
                     </div>
                 </div>
