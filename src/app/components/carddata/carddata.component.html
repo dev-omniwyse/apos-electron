@@ -59,11 +59,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <p>Error encoding card. Please try again</p>
+                    <p>Error encoding card</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="navigateToDashboard()">Ok</button>
+                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
                 </div>
             </div>
         </div>
@@ -97,11 +97,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <p>Error encoding card. Please try again</p>
+                    <p>Error encoding card.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="navigateToDashboard()">Ok</button>
+                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
                 </div>
             </div>
         </div>
@@ -161,7 +161,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" #href=""
-                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Yes</button>
+                        (click)="navigateToDashboard()">Yes</button>
                 </div>
             </div>
         </div>
