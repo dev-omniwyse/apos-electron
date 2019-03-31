@@ -527,6 +527,8 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
 });
 
 ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
+    console.log("deleteProducts", cardname);
+    console.log("deleteProducts", encodedCardJson);
     var result = posAppletInstance.deleteProductsFromCardSync(cardname, encodedCardJson);
     event.sender.send('deleteProductsFromCardResult', '' + result.getSuccessSync());
 });
