@@ -366,7 +366,7 @@ export class CarddataComponent implements OnInit, OnChanges {
             this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index][0].status;
             this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
           }
-          this.encodedCardsData[this.currentCard.printed_id] = this.encodeJsonData[0];
+          this.encodedCardsData[this.currentCard.printed_id] = JSON.stringify(this.encodeJsonData);
           // resultObj.forEach(element => {
 
           //   this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[]
