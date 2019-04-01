@@ -225,8 +225,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.electronService.ipcRenderer.send('readSmartcard', cardName)
     }
     let userID = localStorage.getItem('userID');
-       
-    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID), this.getPaymentsObject());
+    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
     debugger;
     localStorage.setItem("transactionObj",JSON.stringify(transactionObj))
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
