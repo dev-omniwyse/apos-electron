@@ -293,7 +293,7 @@ export class AddProductComponent implements OnInit {
       console.log("creditcardTransaction ", data);
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
-        this.saveTransaction(9);
+          this.saveTransaction();
       }
     });
 
@@ -1431,4 +1431,441 @@ export class AddProductComponent implements OnInit {
   }
 
 
+  paymentByCash() {
+
+    if (this.totalRemaining == this.checkoutTotal) {
+      this.isCashApplied = false;
+      this.isVoucherApplied = false;
+      this.isCheckApplied = false;
+      $('#myModal').modal('show');
+
+    } else if (this.totalRemaining > this.checkoutTotal) {
+
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+
+      }
+
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+        let indexOfPayment =  this.checkIsPaymentMethodExists(2);
+        if(indexOfPayment == -1) {
+          let payment = new PaymentType();
+          payment.$amount = this.checkoutTotal;
+          payment.$paymentMethodId = 2;
+          payment.$comment = null;
+          this.shoppingcart._payments.push(payment);
+          this.cashAppliedTotal = payment.$amount;
+          this.isCashApplied = true;
+        } else {
+          this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+          this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+          this.isCashApplied = true;
+        }
+   
+      }
+    } else if (this.totalRemaining < this.checkoutTotal) {
+      // this.isCashApplied = true;
+      // this.isVoucherApplied = false;
+      this.cashAppliedTotal = this.checkoutTotal
+      this.cashBack = this.checkoutTotal - this.totalRemaining;
+      $("#myModal").modal('show');
+    }
+  }
+
+  cashApplied() {
+
+    if(this.checkIsPaymentMethodExists(2) == -1) {
+      let payment = new PaymentType();
+      payment.$paymentMethodId = 2
+      payment.$amount = this.checkoutTotal
+      payment.$comment = null;
+      this.shoppingcart._payments.push(payment);
+    }
+    this.saveTransaction();
+
+  }
+
+
+  paymentByVoucher() {
+    if (this.totalRemaining == this.checkoutTotal) {
+      $('#voucherModal').modal('show');
+    } else if (this.totalRemaining > this.checkoutTotal) {
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+
+        $('#voucherModal').modal('show');
+
+      }
+
+    }
+    else if (this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+
+
+  }
+
+  voucherModalApply() {
+    if(this.totalDue == this.checkoutTotal) {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.voucherRemaining = this.totalRemaining;
+      
+      if(this.checkIsPaymentMethodExists(11) == -1) {
+        let payment = new PaymentType();
+        payment.$paymentMethodId = 11
+        payment.$amount = this.checkoutTotal
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+      }
+    } else {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.voucherRemaining = this.totalRemaining;
+      let indexOfPayment =  this.checkIsPaymentMethodExists(11);
+      if(indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 11;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        console.log(this.shoppingcart._payments)
+        this.voucherAppliedTotal = payment.$amount;
+        this.isVoucherApplied = true;
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        this.voucherAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        console.log(this.shoppingcart._payments)
+        this.isVoucherApplied = true;
+      }
+      
+    }
+    if (this.voucherRemaining !== 0) {
+      $('#voucherApplyModal').modal('hide');
+    } else if (this.voucherRemaining == 0) {
+      $('#voucherApplyModal').modal('show');
+    }
+    // $('#voucherApplyModal').modal('show');
+  }
+
+  vocherPayment() {
+    this.saveTransaction();
+  }
+
+  notToApplyvoucher() {
+    if (this.isVoucherApplied) {
+      this.isVoucherApplied = true;
+    } else {
+      this.isVoucherApplied = false;
+    }
+
+  }
+
+  paymentByCheck() {
+    if (this.totalRemaining == this.checkoutTotal) {
+      $('#checkModal').modal('show');
+    }
+
+    else if (this.totalRemaining > this.checkoutTotal) {
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+        let indexOfPayment =  this.checkIsPaymentMethodExists(3);
+        if(indexOfPayment == -1) {
+          let payment = new PaymentType();
+          payment.$amount = this.checkoutTotal;
+          payment.$paymentMethodId = 3;
+          payment.$comment = null;
+          this.shoppingcart._payments.push(payment);
+          console.log(this.shoppingcart._payments)
+          this.checkAppliedTotal = payment.$amount;
+          this.isCheckApplied = true;
+        } else {
+          this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+          this.checkAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+          console.log(this.shoppingcart._payments)
+          this.isCheckApplied = true;
+        }
+   
+      }
+
+    }
+    else if (this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+  }
+
+  checkApplied() {
+    let payment = new PaymentType();
+    payment.$paymentMethodId = 3
+    payment.$amount = this.checkoutTotal
+    payment.$comment = null;
+    if(this.checkIsPaymentMethodExists(3) == -1) {
+      this.shoppingcart._payments.push(payment);
+      console.log(this.shoppingcart._payments)
+    }
+    this.saveTransaction();
+  }
+  
+
+
+
+  compApplied() {
+    if (this.totalRemaining == this.checkoutTotal) {
+      $('#compModal').modal('show');
+    } else if (this.totalRemaining > this.checkoutTotal) {
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if ((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        $('#compModal').modal('show');
+      }
+    } else if (this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+
+
+  }
+
+  compApplication() {
+    this.applyCompShow = true;
+  }
+
+  compensation() {
+    if (this.totalRemaining == this.checkoutTotal) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if(indexOfPayment) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 8;
+        payment.$comment = this.reasonForComp;
+        this.shoppingcart._payments.push(payment);
+      }
+      this.electronService.ipcRenderer.send('compensation');
+      this.saveTransaction();
+    } else if (this.totalRemaining > this.checkoutTotal) {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.compDue= this.totalRemaining;
+      let indexOfPayment =  this.checkIsPaymentMethodExists(8);
+      if(indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 8;
+        payment.$comment = this.reasonForComp;
+        this.shoppingcart._payments.push(payment);
+        // this.cashAppliedTotal = payment.$amount;
+        this.isCompApplied = true;
+        this.applyCompShow = false;
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        this.isCompApplied = true;
+        this.applyCompShow = false;
+      }
+     
+    }
+
+  }
+
+  cancelCompensation() {
+    this.applyCompShow = false;
+  }
+
+  compensationReason(value) {
+    if (this.reason == true && value == "OTHERS") {
+      this.reason = false
+      this.reasonForComp = "";
+    } 
+  }
+
+  cardApplied() {
+    this.checkoutTotal = this.checkoutTotal;
+    if (this.totalRemaining == this.checkoutTotal) {
+      $('#creditCardModal').modal('show');
+    } else if (this.totalRemaining > this.checkoutTotal) {
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) || (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+
+        $('#creditCardModal').modal('show');
+        // if (this.isCardApplied) {
+        //   $('#creditCardModal').modal('show');
+        //   this.cardAppliedTotal = this.checkAppliedTotal + this.checkoutTotal
+        // } else {
+        //   $('#creditCardModal').modal('show');
+        //   this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+
+        //   this.cardAppliedTotal = this.checkoutTotal;
+        //   this.isCardApplied = true
+
+        // }
+      }
+    } else if (this.totalRemaining < this.checkoutTotal) {
+      $('#voucherErrorModal').modal('show');
+    }
+  }
+
+  cardPayment() {
+    if(this.totalRemaining == this.checkoutTotal) {
+      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
+      if(indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 9;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        this.doPinPadTransaction();
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+      }
+    } else {
+      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.cardAppliedTotal= this.checkoutTotal;
+      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
+      if(indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 9;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        // this.cashAppliedTotal = payment.$amount;
+        this.isCardApplied = true;
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        this.cardAppliedTotal = true;
+      }
+    }
+  }
+
+
+  checkIsPaymentMethodExists(paymentMethodId) {
+    let indexOfPayment = -1;
+    let payments = this.shoppingcart._payments;
+    for (let index = 0; index < payments.length; index++) {
+      if (paymentMethodId == payments[index].paymentMethodId) {
+        indexOfPayment = index;
+        console.log(indexOfPayment)
+        break;
+      }
+    }
+    return indexOfPayment;
+  }
 }

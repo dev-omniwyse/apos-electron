@@ -201,6 +201,37 @@
         <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
     </div>
 </div>
+
+<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied">
+    <div class="flex">
+            <div class="float-left" >Total Due</div>
+            <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
+    </div>
+    <div class="flex" *ngIf="isCashApplied">
+            <div class="float-left" >Cash Applied</div>
+            <div class="float-right">${{cashAppliedTotal | number : '1.2-2'}}</div>
+    </div>
+    <div class="flex" *ngIf="isVoucherApplied">
+            <div class="float-left" >Voucher Applied</div>
+            <div class="float-right">${{voucherAppliedTotal | number : '1.2-2'}}</div>
+    </div>   
+    <div class="flex" *ngIf="isCheckApplied">
+        <div class="float-left" >Check Applied</div>
+        <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
+    </div>
+    <div class="flex" *ngIf="isCardApplied">
+        <div class="float-left" >Credit Applied</div>
+        <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
+    </div>
+
+    <hr>
+    <div class="flex totals">
+            <div class="float-left">Total Remaining</div>
+            <div class="float-right">${{totalRemaining | number : '1.2-2'}}</div>
+        </div>
+
+
+</div>
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
     <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
@@ -340,15 +371,16 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">Cash Applied</h4>
+                            <h4 class="modal-title">Credit Applied</h4>
                         </div>
 
                         <div class="modal-body">
                             <!-- <p>Return change to customer</p>
           <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
-                                <div class="pull-left">Cash Applied </div>
-                                <div class="pull-right">${{productTotal | number : '1.2-2'}}</div>
+
+                                <div class="pull-left">Credit Applied </div>
+                                <div class="pull-right">${{checkoutTotal | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
 
