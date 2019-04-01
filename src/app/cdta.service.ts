@@ -1190,7 +1190,7 @@ export class CdtaService {
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }
-    return this.http.post('https://tarc-uat.gfcp.io/login', JSON.stringify(userInfo), {
+    return this.http.post('https://cdta-uat.gfcp.io/login', JSON.stringify(userInfo), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         "accept": "application/json"
@@ -1210,7 +1210,7 @@ export class CdtaService {
 
   jsonData(): Observable<any> {
 
-    return this.http.post('https://api.staging.gfcp.io/services/device/v5/auth?tenant=TARC&type=apos&serialNumber=APOS289&password=08e0668a-4226-4d0f-9f9e-79edb3e4b3b4', '', {
+    return this.http.post('https://api.staging.gfcp.io/services/device/v5/auth?tenant=CDTA&type=apos&serialNumber=APOS289&password=08e0668a-4226-4d0f-9f9e-79edb3e4b3b4', '', {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         "accept": "application/json"
