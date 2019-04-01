@@ -314,8 +314,8 @@ export class AddProductComponent implements OnInit {
       console.log("creditcardTransaction ", data);
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
-        if(this.totalRemaining == this.checkoutTotal)
-        this.saveTransaction();
+       
+          this.saveTransaction();
       }
     });
 
@@ -1523,14 +1523,14 @@ export class AddProductComponent implements OnInit {
   }
 
   cashApplied() {
-    let payment = new PaymentType();
-    payment.$paymentMethodId = 2
-    payment.$amount = this.checkoutTotal
-    payment.$comment = null;
+
     if(this.checkIsPaymentMethodExists(2) == -1) {
+      let payment = new PaymentType();
+      payment.$paymentMethodId = 2
+      payment.$amount = this.checkoutTotal
+      payment.$comment = null;
       this.shoppingcart._payments.push(payment);
     }
-
     this.saveTransaction();
 
   }
@@ -1584,11 +1584,12 @@ export class AddProductComponent implements OnInit {
     if(this.totalDue == this.checkoutTotal) {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
       this.voucherRemaining = this.totalRemaining;
-      let payment = new PaymentType();
-      payment.$paymentMethodId = 2
-      payment.$amount = this.checkoutTotal
-      payment.$comment = null;
-      if(this.checkIsPaymentMethodExists(2) == -1) {
+      
+      if(this.checkIsPaymentMethodExists(11) == -1) {
+        let payment = new PaymentType();
+        payment.$paymentMethodId = 11
+        payment.$amount = this.checkoutTotal
+        payment.$comment = null;
         this.shoppingcart._payments.push(payment);
       }
     } else {
@@ -1752,6 +1753,14 @@ export class AddProductComponent implements OnInit {
 
   compensation() {
     if (this.totalRemaining == this.checkoutTotal) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if(indexOfPayment) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 8;
+        payment.$comment = this.reasonForComp;
+        this.shoppingcart._payments.push(payment);
+      }
       this.electronService.ipcRenderer.send('compensation');
       this.saveTransaction();
     } else if (this.totalRemaining > this.checkoutTotal) {
@@ -1790,6 +1799,7 @@ export class AddProductComponent implements OnInit {
   }
 
   cardApplied() {
+    this.checkoutTotal = this.checkoutTotal;
     if (this.totalRemaining == this.checkoutTotal) {
       $('#creditCardModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
@@ -1841,10 +1851,20 @@ export class AddProductComponent implements OnInit {
 
   cardPayment() {
     if(this.totalRemaining == this.checkoutTotal) {
-      this.doPinPadTransaction();
+      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
+      if(indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = this.checkoutTotal;
+        payment.$paymentMethodId = 9;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        this.doPinPadTransaction();
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+      }
     } else {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-      this.cardAppliedTotal= this.totalRemaining;
+      this.cardAppliedTotal= this.checkoutTotal;
       let indexOfPayment =  this.checkIsPaymentMethodExists(9);
       if(indexOfPayment == -1) {
         let payment = new PaymentType();
@@ -1854,12 +1874,10 @@ export class AddProductComponent implements OnInit {
         this.shoppingcart._payments.push(payment);
         // this.cashAppliedTotal = payment.$amount;
         this.isCardApplied = true;
-        this.doPinPadTransaction()
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.cardAppliedTotal = true;
-        this.doPinPadTransaction();
       }
     }
   }
