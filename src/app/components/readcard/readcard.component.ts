@@ -115,6 +115,8 @@ export class ReadcardComponent implements OnInit {
     backendSalesReport = []
     paymentReport: any
     shoppingcart: any;
+    bonusRidesCountText : string;
+    nextBonusRidesText: string;
 
     constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
@@ -123,6 +125,9 @@ export class ReadcardComponent implements OnInit {
             this.logger = this.electronService.remote.require("electron-log");
         }
         localStorage.removeItem("readCardData");
+        localStorage.removeItem("shoppingCart");
+        localStorage.removeItem("cardsData");
+
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log("print sales data", data)
             if (data != undefined && data.length != 0) {
@@ -185,7 +190,7 @@ export class ReadcardComponent implements OnInit {
                     console.log('this.carddata', this.carddata);
                     this.showCardContents();
                     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                     // ShoppingCartService.getInstance.shoppingCart = null;
                 });
@@ -255,7 +260,7 @@ export class ReadcardComponent implements OnInit {
                         localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                         this.getCatalogJSON();
                         let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
                         ShoppingCartService.getInstance.shoppingCart = null;
                         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                         var timer = setTimeout(() => {
@@ -304,6 +309,8 @@ export class ReadcardComponent implements OnInit {
             let item = JSON.parse(localStorage.getItem("catalogJSON"));
             this.catalogData = JSON.parse(item).Offering;
             var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
+            this.getBonusRidesCount();
+            this.getNextBonusRides();
             if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
                 return;
             var keepGoing = true;
@@ -385,6 +392,13 @@ export class ReadcardComponent implements OnInit {
     }
     /* JAVA SERVICE CALL */
 
+    getBonusRidesCount(){
+        this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.carddata[0]);
+    }
+    
+    getNextBonusRides(){
+        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
+    }
     readCard(event) {
         localStorage.removeItem('shoppingCart');
         isExistingCard = true;
@@ -505,6 +519,7 @@ export class ReadcardComponent implements OnInit {
 
     Back() {
         localStorage.removeItem('readCardData');
+        localStorage.removeItem('printCardData');
         this.isShowCardOptions = true;
         // this.carddata.length = 0;
     }
@@ -537,7 +552,6 @@ export class ReadcardComponent implements OnInit {
         //load catalogJSON
         this.getCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
-        localStorage.setItem('shoppingcart', JSON.stringify(this.shoppingcart));
         if (localStorage.getItem("shiftReport") != undefined) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")

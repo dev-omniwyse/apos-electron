@@ -33,7 +33,7 @@ export class TransactionService {
         return flag;
     }
 
-    saveTransaction(shoppingCart, userData, paymentTypes) {
+    saveTransaction(shoppingCart, userData) {
 
         let walletLineItem = shoppingCart._walletLineItem;
         let userProfile = JSON.parse(localStorage.getItem("userProfile"));
@@ -65,45 +65,22 @@ export class TransactionService {
 
             if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
                 console.log("Adding Non-Fare Product transaction.");
-
-                for (let nonFareItem of wallet._walletContents) {
-                    let totalTax = nonFareItem._tax * nonFareItem._quantity;
-                    let totalItemCost = nonFareItem._offering.UnitPrice * nonFareItem._quantity;
-                    totalItemCost += totalTax;
-
-                    item.$transactionID = timeStamp;
-                    item.$quantity = nonFareItem._quantity;
-                    item.$productIdentifier = nonFareItem._offering.ProductIdentifier;
-                    item.$ticketTypeId = null;
-                    item.$ticketValue = 0;
-                    item.$slotNumber = 0;
-                    item.$balance = 0;
-                    item.$IsMerchandise = true;
-                    item.$IsBackendMerchandise = true;
-                    item.$IsFareCard = false;
-                    item.$unitPrice = nonFareItem._offering.UnitPrice;
-                    item.$totalCost = totalItemCost;
-                    item.$userID = userData.userID;
-                    item.$shiftID = userData.shiftID;
-                    item.$tax = totalTax;
-                    item.$fareCode = null;
-                    item.$timestamp = timeStamp;
-                    item.$shiftType = +userData.shiftType;
-
-                    items.push(item);
-                }
+                items = this.generateTransactionForMerch(wallet, timeStamp, userData);
             } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
 
                 let walletProductIdentifier = null;
                 let walletCost = 0;
                 let walletUnitPrice = 0;
-                let walletQuantitySold = 1;
+                let walletQuantitySold = 0;
                 if (wallet._offering) {
 
                     console.log("Adding wallet transaction.");
                     walletProductIdentifier = wallet._offering.ProductIdentifier;
                     walletCost = wallet._offering.UnitPrice;
                     walletUnitPrice = wallet._unitPrice;
+                    if (walletUnitPrice != 0) {
+                        walletQuantitySold = 1;
+                    }
 
                 } else {
                     // Sold products on an existing wallet, not a new wallet
@@ -198,21 +175,48 @@ export class TransactionService {
         transaction.$items = items;
 
         let payments = [];
-
-        /**
-         * for now we are making single payment in further need to support multiple payments
-         */
-        // for(let item of paymentTypes){
-        //     let paymentTypeText = Utils.getInstance.getPaymentTypeString(item.id);
-        let paymentInfo = new PaymentType();
-        paymentInfo.$paymentMethodId = paymentTypes.paymentMethodId;
-        paymentInfo.$amount = paymentTypes.amount;
-        paymentInfo.$comment = paymentTypes.comment;
-        //     payments.push(paymentInfo);
-        // }
-        payments.push(paymentInfo);
+        let paymentTypes = shoppingCart._payments;
+        for (let item of paymentTypes) {
+            let paymentInfo = new PaymentType();
+            paymentInfo.$paymentMethodId = item.paymentMethodId;
+            paymentInfo.$amount = item.amount;
+            paymentInfo.$comment = item.comment;
+            payments.push(paymentInfo);
+        }
         transaction.$payments = payments;
 
         return transaction;
+    }
+
+    generateTransactionForMerch(wallet, timeStamp, userData) {
+        let items = [];
+        for (let nonFareItem of wallet._walletContents) {
+            let item = new Items();
+            let totalTax = nonFareItem._tax * nonFareItem._quantity;
+            let totalItemCost = nonFareItem._offering.UnitPrice * nonFareItem._quantity;
+            totalItemCost += totalTax;
+
+            item.$transactionID = timeStamp;
+            item.$quantity = nonFareItem._quantity;
+            item.$productIdentifier = nonFareItem._offering.ProductIdentifier;
+            item.$ticketTypeId = null;
+            item.$ticketValue = 0;
+            item.$slotNumber = 0;
+            item.$balance = 0;
+            item.$IsMerchandise = true;
+            item.$IsBackendMerchandise = true;
+            item.$IsFareCard = false;
+            item.$unitPrice = nonFareItem._offering.UnitPrice;
+            item.$totalCost = totalItemCost;
+            item.$userID = userData.userID;
+            item.$shiftID = userData.shiftID;
+            item.$tax = totalTax;
+            item.$fareCode = null;
+            item.$timestamp = timeStamp;
+            item.$shiftType = +userData.shiftType;
+
+            items.push(item);
+        }
+        return items;
     }
 }

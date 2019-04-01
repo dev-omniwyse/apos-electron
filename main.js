@@ -28,7 +28,7 @@ var result = posAppletInstance.runInitializationSync();
 logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
-dialog.showErrorBox = function(title, content) {
+dialog.showErrorBox = function (title, content) {
     // console.log('${title}\n${content}');
 };
 
@@ -60,7 +60,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    // win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -533,6 +533,29 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
     event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 
+
+ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
+    console.log("deleteProducts", cardname);
+    console.log("deleteProducts", encodedCardJson);
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    var result = posAppletInstance.deleteProductsFromCardSync(cardname, encodedCardJson);
+    event.sender.send('deleteProductsFromCardResult', '' + result.getSuccessSync());
+});
+
+/** ADMIN METHODS END HERE*/
+
+ipcMain.on('processAutoLoad', (event, cardname) => {
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    var result = posAppletInstance.processAutoloadSync();
+    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+});
+
+
+ipcMain.on('navigateToGenfare', (event, urlToNavigate) => {
+    shell = require('electron').shell;
+    shell.openExternal(urlToNavigate);
+});
+
 ipcMain.on('doPinPadTransaction', (event, transactionAmount) => {
     console.log("pinpad", transactionAmount);
     var result = posAppletInstance.doPinpadPaymentTransactionSync(Number(transactionAmount));
@@ -547,5 +570,19 @@ ipcMain.on('getPinpadTransactionStatus', (event, transactionAmount) => {
 ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionDataSync();
     event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
+});
+ipcMain.on('getPinpadTransactionStatusEncode', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionStatusSync();
+    event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionDataEncode', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionDataSync();
+    event.sender.send('getPinpadTransactionDataEncodeResult', '' + result.getValueSync());
+});
+ipcMain.on('doPinpadVoidTransaction', (event, transactionAmount) => {
+    console.log("pinpad", transactionAmount);
+    var result = posAppletInstance.doPinpadVoidTransactionSync(Number(transactionAmount));
+    event.sender.send('doPinpadVoidTransactionResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/
