@@ -205,6 +205,15 @@ export class CarddataComponent implements OnInit, OnChanges {
             for (let index = 0; index < resultObj.length; index++) {
               this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index].slotNumber;
               this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index].status;
+              
+              if(resultObj[index].product_type == 3)
+                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._balance = resultObj[index].balance/100;
+              else 
+                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._balance = resultObj[index].balance;
+              
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._rechargesPending = resultObj[index].recharges_pending;
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._expirationDate = resultObj[index].exp_date;
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._startDate = resultObj[index].start_date;
             }
             this.encodedCardsData[this.currentCard.printed_id] = JSON.stringify(this.encodeJsonData);
 
