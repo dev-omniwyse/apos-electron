@@ -99,6 +99,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   // JsonObjCardObj: any = [];
   isFromCardComponent = false;
   isCorrectCardPlaced = false;
+  disableEncode = false;
   isFromEncode = false;
   // executeIpcRendererOn: any = true;
   // encodeddata: any = [];
@@ -181,7 +182,10 @@ export class CarddataComponent implements OnInit, OnChanges {
          // this.cdtaService.generateReceipt(timestamp)
         });
       } else {
-        $("#encodeErrorModal").modal('show');
+        $("#encodeErrorModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
       }
       // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     });
@@ -211,7 +215,10 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
       else {
-        $("#encodeErrorModal").modal('show');
+        $("#encodeErrorModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
       }
     });
 
@@ -381,6 +388,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   checkCorrectCard() {
     this.populatCurrentCard()
     console.log(cardName);
+    this.disableEncode = true;
     this.isFromEncode = true;
     this.electronService.ipcRenderer.send('getCardPID', cardName);
   }

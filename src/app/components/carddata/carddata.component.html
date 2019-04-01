@@ -103,5 +103,5 @@
 <div class="form-group  form-wiz">
     <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="navigateToReadCard()">
         CANCEL</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" [disabled]="disableEncode" (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>

@@ -207,7 +207,10 @@ export class AddProductComponent implements OnInit {
             }
           });
           if (isDuplicateCard) {
-            $("#newCardValidationModal").modal('show');
+            $("#newCardValidationModal").modal({
+              backdrop: 'static',
+              keyboard: false
+            });
           }
           else {
             if (isExistingCard) {
@@ -232,7 +235,10 @@ export class AddProductComponent implements OnInit {
                 this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
               }
               else {
-                $("#newCardValidateModal").modal('show');
+                $("#newCardValidateModal").modal({
+                  backdrop: 'static',
+                  keyboard: false
+                });
               }
             }
           }
@@ -262,8 +268,10 @@ export class AddProductComponent implements OnInit {
         });
       } else {
 
-        $("#encodeErrorModal").modal('show');
-
+        $("#encodeErrorModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
       }
     });
 
