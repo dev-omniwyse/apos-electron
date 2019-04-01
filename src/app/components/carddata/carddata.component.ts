@@ -99,6 +99,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   shoppingCart: any = [];
   isEncodeOnProcess: Boolean = true;
   encodedJsonCardIndex = 0;
+  numOfAttempts = 0;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -119,17 +120,17 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
     });
 
-    //   incrementEncodableIndex(){
+    // incrementEncodableIndex(){
     // this.cardIndex ++;
-    //   }
+    // }
 
-    //   getCountOfSmartCardsFromShoppingCard(){
+    // getCountOfSmartCardsFromShoppingCard(){
     // this.shoppingCart._walletLineItem.foreach(WalletLineItem
-    //   }
+    // }
     // getNextEncodableProduct(){
 
-    //    this.shoppingCart._walletLineItem[this.cardIndex + 1];
-    //    this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
+    // this.shoppingCart._walletLineItem[this.cardIndex + 1];
+    // this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
     // }
 
     var updateCardDataListener: any = this.electronService.ipcRenderer.on('updateCardDataResult', (event, data) => {
@@ -184,7 +185,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         this._ngZone.run(() => {
           $("#encodeSuccessModal").modal('show');
           var timestamp = new Date().getTime();
-         // this.cdtaService.generateReceipt(timestamp)
+          // this.cdtaService.generateReceipt(timestamp)
         });
       } else {
         $("#encodeErrorModal").modal('show');
@@ -193,31 +194,31 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     var encodingListener: any = this.electronService.ipcRenderer.on('encodeCardResult', (event, data) => {
-        let result = new Array(JSON.parse(data));
-        let resultObj = result[0];
-        if (resultObj != undefined && resultObj != null) {
-  
-          if (0 == this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length) {
-            //dont try to update wallletContents..
-          } else {
-            this._ngZone.run(() => {
-              for (let index = 0; index < resultObj.length; index++) {
-                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index].slotNumber;
-                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index].status;              
-              }
+      let result = new Array(JSON.parse(data));
+      let resultObj = result[0];
+      if (resultObj != undefined && resultObj != null) {
+
+        if (0 == this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length) {
+          //dont try to update wallletContents..
+        } else {
+          this._ngZone.run(() => {
+            for (let index = 0; index < resultObj.length; index++) {
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index].slotNumber;
+              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index].status;
+            }
             this.encodedCardsData[this.currentCard.printed_id] = JSON.stringify(this.encodeJsonData);
 
-              
-            });
-          }
-          this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
-          if (this.isSmartCardFound()) {
-            this.populatCurrentCard();
-            this.getSmartCardWalletContents();
-          }
-          else {
-            this.initiateSaveTransaction()
-          }
+
+          });
+        }
+        this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
+        if (this.isSmartCardFound()) {
+          this.populatCurrentCard();
+          this.getSmartCardWalletContents();
+        }
+        else {
+          this.initiateSaveTransaction()
+        }
       }
       else {
         $("#encodeErrorModal").modal('show');
@@ -234,7 +235,43 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
     });
+
+
+    var doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.on('doPinpadVoidTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          this.encodedJsonCardIndex++;
+          this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+        });
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionStatusEncodeResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
+      if (data != undefined && data != "") {
+        if (data == false && this.numOfAttempts < 600) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          this.electronService.ipcRenderer.send('getPinpadTransactionDataEncode')
+        }
+      }
+    });
+
+    this.electronService.ipcRenderer.on('getPinpadTransactionDataEncodeResult', (event, data) => {
+      console.log("creditcardTransaction ", data);
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data);
+        this.navigateToReadCard();
+      }
+    });
+
   }
+
+
 
 
 
@@ -251,7 +288,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
     debugger;
-    localStorage.setItem("transactionObj",JSON.stringify(transactionObj))
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
 
@@ -329,7 +366,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   navigateToDashboard() {
     var timestamp = new Date().getTime();
-     this.cdtaService.generateReceipt(timestamp);
+    this.cdtaService.generateReceipt(timestamp);
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
@@ -337,7 +374,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-    
+
     this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
     this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
@@ -352,7 +389,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     // document.body.innerHTML = printContents;
     // this.electronService.ipcRenderer.send("printPDF", printContents);
     window.print();
-    //  document.body.innerHTML = originalContents;
+    // document.body.innerHTML = originalContents;
   }
 
   ngOnInit() {
@@ -388,11 +425,11 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
     // this.currentCardProductList = this.currentCard._walletContents;
     // this.encodedProductCardData.forEach(element => {
-    //   if (element == this.cardJson[this.cardIndex].printed_id) {
-    //     this.currentCardProductList.push(this.encodeParseData[dataIndex]);
-    //     this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
-    //   }
-    //   dataIndex++
+    // if (element == this.cardJson[this.cardIndex].printed_id) {
+    // this.currentCardProductList.push(this.encodeParseData[dataIndex]);
+    // this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
+    // }
+    // dataIndex++
     // });
   }
 
@@ -445,9 +482,9 @@ export class CarddataComponent implements OnInit, OnChanges {
       });
 
       this.checkIsCardNew();
-      if (this.isNew){
+      if (this.isNew) {
         this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id, this.shoppingCart._walletLineItem[this.cardIndex]._fareCodeId, 0, 0, this.encodeJsonData);
-      }else{
+      } else {
         this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id, this.encodeJsonData);
       }
     }
@@ -525,10 +562,23 @@ export class CarddataComponent implements OnInit, OnChanges {
     return cardPID;
   }
 
+  prePaidTransactionObject() {
+    let userID = localStorage.getItem('userID');
+    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+  }
+
   initiateCancelEncoding(index) {
     let cardPID = this.getKeyForCancelEncode(index);
-    if(cardPID == undefined){
-      this.navigateToReadCard();
+    if (cardPID == undefined) {
+      this.prePaidTransactionObject();
+      if (this.checkIfCreditCardPaymentExists()) {
+        this.numOfAttempts = 0;
+        this.doPinpadVoidTransaction(this.getCreditCardPaymentAmount());
+      }
+      else {
+        this.navigateToReadCard();
+      }
       return;
     }
     this.isEncodeOnProcess = false;
@@ -537,11 +587,37 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.getSmartCardWalletContents();
   }
 
-  confirmCancelEncoding(){
+  checkIfCreditCardPaymentExists() {
+    var creditCardPaymentExists: Boolean = false;
+    var transObj = JSON.parse(localStorage.getItem("transactionObj"))
+    transObj.payments.forEach(element => {
+      if (element.paymentMethodId == 9) {
+        creditCardPaymentExists = true;
+      }
+    });
+    return creditCardPaymentExists;
+  }
+
+  getCreditCardPaymentAmount() {
+    var amount = 0;
+    var transObj = JSON.parse(localStorage.getItem("transactionObj"))
+    transObj.payments.forEach(element => {
+      if (element.paymentMethodId == 9) {
+        amount = element.amount;
+      }
+    });
+    return amount;
+  }
+
+  doPinpadVoidTransaction(amount) {
+    this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount)
+  }
+
+  confirmCancelEncoding() {
     $("#confirmCancelEncodeModal").modal('show');
   }
 
-   
+
 
   // sdeleteProductsFromCard(this.)
 
@@ -601,12 +677,12 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log("Receipt printing, did not detect any wallets.");
     }
     // if(cart.ProductLineItems != undefined){
-    //   if (cart.ProductLineItems.length > 0) {
-    //     console.log("Receipt printing, detected products.");
-    //     anythingToPrint = true;
-    //   } else {
-    //     console.log("Receipt printing, did not detect any products.");
-    //   }
+    // if (cart.ProductLineItems.length > 0) {
+    // console.log("Receipt printing, detected products.");
+    // anythingToPrint = true;
+    // } else {
+    // console.log("Receipt printing, did not detect any products.");
+    // }
     // }
 
 
@@ -618,7 +694,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
 
     // if (cart.ProductLineItems > 0) {
-    //   console.log("Receipt printing, detected products.");
+    // console.log("Receipt printing, detected products.");
     // }
 
     //Add a spacer due to multiple cards on order
@@ -636,14 +712,14 @@ export class CarddataComponent implements OnInit, OnChanges {
       // spacer = '';
 
       // while (spacer.length <= (padSize - 1)) {
-      //   spacer += " ";
+      // spacer += " ";
       // }
 
       // receipt += spacer + PID + "\n";
 
       // var dashes = "";
       // while (dashes.length <= receiptWidth) {
-      //   dashes += "-";
+      // dashes += "-";
       // }
 
       // receipt += dashes + "\n";
@@ -652,13 +728,13 @@ export class CarddataComponent implements OnInit, OnChanges {
       // var lineItemQty = " - Qty: 1 ";
 
       // if (lineItem.length > (35 - lineItemQty.length)) {
-      //   lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+      // lineItem = lineItem.substring(0, (35 - lineItemQty.length));
       // }
 
-      // lineItem = lineItem + lineItemQty + "                                   ";
+      // lineItem = lineItem + lineItemQty + " ";
       // lineItem = lineItem.substring(0, 35);
 
-      // var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
+      // var subtotalStr = " $" + (element.unitPrice).toFixed(2);
 
       // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
 
@@ -670,9 +746,9 @@ export class CarddataComponent implements OnInit, OnChanges {
         JSON.parse(catalog).Offering.forEach(catalogElement => {
           if (catalogElement.Ticket != undefined) {
             if (catalogElement.ProductIdentifier == item.productIdentifier) {
-              //  var catalogdata = {
-              //    "ticketid": 
-              //  }
+              // var catalogdata = {
+              // "ticketid": 
+              // }
               return item.description = catalogElement.Ticket.Description
 
             }
@@ -685,10 +761,10 @@ export class CarddataComponent implements OnInit, OnChanges {
           lineItem = lineItem.substring(0, (35 - lineItemQty.length));
         }
 
-        lineItem = lineItem + lineItemQty + "                                   ";
+        lineItem = lineItem + lineItemQty + " ";
         lineItem = lineItem.substring(0, 35);
 
-        var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+        var subtotalStr = " $" + (item.unitPrice * item.quantity).toFixed(2);
 
         subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
 
@@ -699,30 +775,30 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
 
     // cart.ProductLineItems.forEach(item => {
-    //   var lineItem = item.description + "";
-    //   var taxAmount = "Tax";
-    //   var lineItemQty = " - Qty: " + item.quantity + " ";
+    // var lineItem = item.description + "";
+    // var taxAmount = "Tax";
+    // var lineItemQty = " - Qty: " + item.quantity + " ";
 
-    //   if (lineItem.length > (35 - lineItemQty.length)) {
-    //     lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-    //   }
+    // if (lineItem.length > (35 - lineItemQty.length)) {
+    // lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+    // }
 
-    //   lineItem = lineItem + lineItemQty + "                                   ";
-    //   lineItem = lineItem.substring(0, 35);
+    // lineItem = lineItem + lineItemQty + " ";
+    // lineItem = lineItem.substring(0, 35);
 
-    //   var taxtotalStr = "          $" + (item.tax * item.quantity).toFixed(2);
-    //   taxtotalStr = taxtotalStr.substring(taxtotalStr.length - 10);
-    //   var taxPercentage = ((item.tax * 100) / item.unitPrice).toFixed(2);
+    // var taxtotalStr = " $" + (item.tax * item.quantity).toFixed(2);
+    // taxtotalStr = taxtotalStr.substring(taxtotalStr.length - 10);
+    // var taxPercentage = ((item.tax * 100) / item.unitPrice).toFixed(2);
 
-    //   taxAmount = taxAmount + "(" + taxPercentage + "%)" + "                                   ";
-    //   taxAmount = taxAmount.substring(0, 35);
+    // taxAmount = taxAmount + "(" + taxPercentage + "%)" + " ";
+    // taxAmount = taxAmount.substring(0, 35);
 
-    //   var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+    // var subtotalStr = " $" + (item.unitPrice * item.quantity).toFixed(2);
 
-    //   subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+    // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
 
-    //   receipt += lineItem + subtotalStr + "\n";
-    //   receipt += taxAmount + taxtotalStr + "\n\n";
+    // receipt += lineItem + subtotalStr + "\n";
+    // receipt += taxAmount + taxtotalStr + "\n\n";
 
     // });
 
@@ -753,15 +829,15 @@ export class CarddataComponent implements OnInit, OnChanges {
       taxtotalStr = "$" + taxtotalDue.toFixed(2);
     }
 
-    totalStr = "                    " + totalStr;
-    faretotalStr = "              " + faretotalStr;
-    taxtotalStr = "              " + taxtotalStr;
+    totalStr = " " + totalStr;
+    faretotalStr = " " + faretotalStr;
+    taxtotalStr = " " + taxtotalStr;
     totalStr = totalStr.substring(totalStr.length - 20);
 
-    receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
-    receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
+    receipt += "\nFare TOTAL: " + faretotalStr + "\n\n";
+    receipt += "\nTax TOTAL: " + taxtotalStr + "\n\n";
 
-    receipt += "\nTOTAL:                   " + totalStr + "\n\n";
+    receipt += "\nTOTAL: " + totalStr + "\n\n";
 
     var paymentAmount = "";
     var paymentId = 0;
@@ -814,18 +890,18 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
 
       // if the payment method is cash, you want to give the full amount tendered.
-      //    that is the amount we stored + the change due
+      // that is the amount we stored + the change due
       if (null != paymentId) {
         if (2 == paymentId) {
-          paymentAmount = "          $" + (changeDue + (paymentRecord.amount)).toFixed(2);
+          paymentAmount = " $" + (changeDue + (paymentRecord.amount)).toFixed(2);
         } else {
           if (paymentRecord.amount != null) {
-            paymentAmount = "          $" + (paymentRecord.amount).toFixed(2);
+            paymentAmount = " $" + (paymentRecord.amount).toFixed(2);
           }
         }
       }
 
-      var paymentTenderedItem = "Payment tendered: " + paymentTypeText + "                                   ";
+      var paymentTenderedItem = "Payment tendered: " + paymentTypeText + " ";
 
       paymentTenderedItem = paymentTenderedItem.substring(0, 35);
 
@@ -837,11 +913,11 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     // if cash was one of your payment types, figure out if there's any change due
     if (paymentId == 2) {
-      var changeDueLabel = "CHANGE DUE:              ";
+      var changeDueLabel = "CHANGE DUE: ";
       var changeDueStr = "";
 
       changeDueStr = "$" + changeDue.toFixed(2);
-      changeDueStr = "                    " + changeDueStr;
+      changeDueStr = " " + changeDueStr;
 
       changeDueStr = changeDueStr.substring(changeDueStr.length - 20);
 
@@ -852,7 +928,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       textProductType = "",
       remainingRides: any = 0;
 
-    receipt += "\n\n             Current Card Balance\n\n";
+    receipt += "\n\n Current Card Balance\n\n";
     var cardStore = JSON.parse(localStorage.getItem("printCardData"));
 
 
@@ -950,15 +1026,15 @@ export class CarddataComponent implements OnInit, OnChanges {
 
         // var ticketKey = productType + "_" + designator;
 
-        //  var carddata = new Array(cardStore);
+        // var carddata = new Array(cardStore);
 
-        //  cardStore.products.forEach(cardElement => {
+        // cardStore.products.forEach(cardElement => {
         JSON.parse(catalog).Offering.forEach(catalogElement => {
           if (catalogElement.Ticket != undefined) {
             if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-              //  var catalogdata = {
-              //    "ticketid": 
-              //  }
+              // var catalogdata = {
+              // "ticketid": 
+              // }
               return productDescription = catalogElement.Ticket.Description
 
             }
@@ -1004,5 +1080,3 @@ export class CarddataComponent implements OnInit, OnChanges {
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
   }
 }
-
-
