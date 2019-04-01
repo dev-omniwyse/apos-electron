@@ -533,6 +533,17 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
     event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 
+
+ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
+    console.log("deleteProducts", cardname);
+    console.log("deleteProducts", encodedCardJson);
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    var result = posAppletInstance.deleteProductsFromCardSync(cardname, encodedCardJson);
+    event.sender.send('deleteProductsFromCardResult', '' + result.getSuccessSync());
+});
+
+/** ADMIN METHODS END HERE*/
+
 ipcMain.on('processAutoLoad', (event, cardname) => {
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.processAutoloadSync();
