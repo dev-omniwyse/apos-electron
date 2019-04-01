@@ -37,7 +37,6 @@ export class ShiftSalesSummaryComponent implements OnInit {
           } else {
             this.backendSalesReport = []
             this.salesData = JSON.parse(data)
-
           }
         });
       }
@@ -46,7 +45,6 @@ export class ShiftSalesSummaryComponent implements OnInit {
     this.electronService.ipcRenderer.on('allPaymentsResult', (event, data, userID, shiftType) => {
       console.log("sales data", data)
       if (data != undefined && data.length != 0) {
-
         this._ngZone.run(() => {
           if (this.selectedValue == 0) {
             var paymentReport: any = JSON.parse(data);
@@ -56,7 +54,6 @@ export class ShiftSalesSummaryComponent implements OnInit {
               this.totalSold = this.totalSold + paymentReport[report].paymentAmount
               this.backendPaymentReport.push(paymentReport[report]);
             }
-            console.log(" this.backendPaymentReport", this.backendPaymentReport)
             localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
 
             this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
@@ -76,41 +73,22 @@ export class ShiftSalesSummaryComponent implements OnInit {
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
       console.log("sales data", data)
       if (data != undefined && data != "") {
-        //this.show = true;
-        // localStorage.setItem("paymentTypes", data)
-        //alert("print Summary Report Done")
-        console.log("printSummaryReport Done", data)
-        //  this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
         });
       }
     });
 
     this.electronService.ipcRenderer.on('printReceiptHeaderResult', (event, data) => {
-      console.log("sales data", data)
       if (data != undefined && data != "") {
-        //this.show = true;
-        // localStorage.setItem("paymentTypes", data)
-        //alert("printReceiptHeaderResult Done")
-        console.log("printReceiptHeaderResult Done", data)
-        //  this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
         });
       }
     });
 
     this.electronService.ipcRenderer.on('printSummaryPaymentsReportResult', (event, data) => {
-      console.log("sales data", data)
       if (data != undefined && data != "") {
-        //this.show = true;
-        // localStorage.setItem("paymentTypes", data)
-        //alert("printSummaryPaymentsReportResult Done")
-        console.log("printSummaryPaymentsReportResult Done", data)
         this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
         });
       }
     });
@@ -119,14 +97,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
 
   ngOnInit() {
-
-    // users list in dropdown 
     this.sales = JSON.parse(localStorage.getItem("shiftReport"));
-
-    // particular logged in user details
-    //this.salesData = JSON.parse(localStorage.getItem("allSales"));
-    //this.salesPaymentData = JSON.parse(localStorage.getItem("paymentTypes"))
-
     this.selectedValue = 0
     console.log("this.selectedValue", this.selectedValue)
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"));
@@ -138,11 +109,8 @@ export class ShiftSalesSummaryComponent implements OnInit {
   }
 
   hidePopUp() {
-    // this.hideModalPopup = true
-    // localStorage.setItem("hideModalPopup",this.hideModalPopup.toString())
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
-
     if (localStorage.getItem("closingPausedMainShift") == "true") {
       localStorage.setItem("closingPausedMainShift", "false")
     }
@@ -159,9 +127,6 @@ export class ShiftSalesSummaryComponent implements OnInit {
   }
 
   shiftSaleSummary() {
-    console.log("selectedValue:", this.selectedValues)
-    // console.log("saleSummary", JSON.parse(saleSummary))
-
     if (this.selectedValues == 0) {
       this.selectedValue = 0
       console.log("this.selectedValue", this.selectedValue)

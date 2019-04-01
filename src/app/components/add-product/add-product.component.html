@@ -299,13 +299,13 @@
                 </div>
             </div>
             <div class="cr-right">
-                <button data-toggle="modal" data-target="#myModal">Cash</button>
-                <button data-toggle="modal" data-target="#creditCardModal">Credit or Debit Card</button>
-                <button data-toggle="modal" data-target="#checkModal">Check</button>
-                <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
-                <button data-toggle="modal" data-target="#voucherModal">Voucher</button>
-                <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
-                <button data-toggle="modal" data-target="#compModal">Comp</button>
+                <button data-toggle="modal" data-target="#myModal" (click) = "openCashDrawer();">Cash</button>
+                <button data-toggle="modal" data-target="#creditCardModal" (click) = "openCashDrawer();">Credit or Debit Card</button>
+                <button data-toggle="modal" data-target="#checkModal" (click) = "openCashDrawer();">Check</button>
+                <button data-toggle="modal" data-target="#fareCardModal" (click) = "openCashDrawer();">Existing Farecard</button>
+                <button data-toggle="modal" data-target="#voucherModal" (click) = "openCashDrawer();">Voucher</button>
+                <button data-toggle="modal" data-target="#payasyougoModal" (click) = "openCashDrawer();">Pay As You Go</button>
+                <button data-toggle="modal" data-target="#compModal" >Comp</button>
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">

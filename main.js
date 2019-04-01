@@ -549,3 +549,8 @@ ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
     event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
 });
 /** ADMIN METHODS END HERE*/
+
+ipcMain.on('openCashDrawer', (event) => {
+    var result = posAppletInstance.openCashDrawerSync();
+    console.log("openCashDrawer", result)
+});

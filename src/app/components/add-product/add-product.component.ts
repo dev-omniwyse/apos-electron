@@ -1416,7 +1416,9 @@ export class AddProductComponent implements OnInit {
     }
     return result
   }
-
+  openCashDrawer() {
+    this.electronService.ipcRenderer.send("openCashDrawer")
+  }
   formatWatlletContents(list, howMany) {
     var idx = 0
     let result = []

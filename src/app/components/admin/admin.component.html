@@ -60,7 +60,7 @@
                         <button data-toggle="modal" data-target="#reliefShiftModal">
                       Pause Main Shift For Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
-                        <button data-toggle="modal" data-target="#noSale">
+                        <button data-toggle="modal" data-target="#noSale" (click) = "openCashDrawerForNoSale();">
                       NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
                     </button>
                         <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">

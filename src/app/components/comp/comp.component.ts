@@ -1,6 +1,5 @@
 
 import { Component, OnInit, ChangeDetectorRef, NgZone, AfterViewInit, ViewChild, Type } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,11 +44,8 @@ export class CompComponent implements OnInit {
       });
     } else {
 
-
     }
   });
-
-
   }
 
   isSmartCardFound() {

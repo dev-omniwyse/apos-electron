@@ -48,8 +48,6 @@ export class LoginComponent implements OnInit {
     ]
 
 
-
-
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -67,42 +65,17 @@ export class LoginComponent implements OnInit {
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
                 var shiftIndex: any = 0;
                 shiftStore.forEach(element => {
-                    console.log("element", element);
-                    // if (element.shiftState == "3" && element.userID != "" && element.shiftType == "0") {
 
-                    //     localStorage.removeItem("shiftReport")
-
-                    //     let newShiftReport = [ {
-                    //         userEmail: this.userdata.username,
-                    //         userID: this.userdata.personId,
-                    //         shiftID: "0",
-                    //         shiftType: "0",
-                    //         shiftState: "3",
-                    //         openingDrawer: "0.00",
-                    //         closingDrawer: "0.00",
-                    //         initialOpeningTime: 0,
-                    //         timeOpened: 0,
-                    //         timeClosed: 0,
-                    //         userThatClosedShift: ""
-                    //     }]
-
-                    //     localStorage.setItem("shiftReport", JSON.stringify(newShiftReport))
-
-                    // } else
                     if (element.shiftState == "3" && element.userID == "") {
                         element.userID = this.userdata.personId
                         element.userEmail = this.userdata.username;
                         element.shiftType = "0"
-                        // localStorage.setItem("mainShiftUser",)
                     } else if (element.userID != this.userdata.personId && element.userID != "") {
                         shiftIndex++;
 
                     }
                     else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
-
                     }
-
-
                 });
                 if (shiftIndex == shiftStore.length) {
                     let newShiftReport = {
@@ -124,15 +97,12 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
 
                 this._ngZone.run(() => {
-                    // this.carddata = new Array(JSON.parse(data));
-                    // console.log('this.carddata', this.carddata);
+
                     this.router.navigate(['/readcard'])
                 });
             } else {
                 this.loading = false
                 $("#errorLogin").modal("show")
-                //this.errorMsg = " Please Enter valid Details"
-
             }
         });
     }
@@ -143,11 +113,6 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
-
-        // if(localStorage.getItem("userEmail") != undefined){
-        //    // this.hideAndShowLogout = false
-        //    // localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
-        //    } 
 
         localStorage.removeItem("mainShiftClosed")
         localStorage.removeItem("mainShiftClose")
@@ -188,7 +153,6 @@ export class LoginComponent implements OnInit {
 
 
                         } else if (element.shiftState == "0" && element.shiftType == "0" && element.userEmail != "") {
-                            // this.statusOfShiftReport = "Main Shift is Paused"
                             this.lockedByUserBoolean = true
                             this.lockedByUser = localStorage.getItem("userEmail")
 
@@ -199,80 +163,18 @@ export class LoginComponent implements OnInit {
             })
         }
 
-
-
-
-
-
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.loginForm.controls; }
-
-    onSubmit() {
-        this.submitted = true;
-
-        // stop here if form is invalid
-        if (this.loginForm.invalid) {
-            return;
-        }
-        console.log("cdtaService")
-        // this.loading = true;
-        this.cdtaservice.login(this.f.username.value, this.f.password.value)
-            .subscribe((data: any) => {
-                this.router.navigate(['/readcard']);
-            },
-                error => {
-                    // this.alertService.error(error);
-                    // this.loading = false;
-                });
-    }
-
-
-    jsonValues() {
-        this.cdtaservice.jsonData()
-            .subscribe((data: any) => {
-                this.router.navigate(['/readcard']);
-
-                console.log('json data', data)
-                var base64 = btoa(data.aws.credentials.accessKey + "|" + data.aws.credentials.secretKey + '|' + data.aws.credentials.sessionId)
-                console.log('base64', base64);
-
-            },
-                error => {
-                    // this.alertService.error(error);
-                    // this.loading = false;
-                });
-    }
-    enterKey(e) {
-        if (e.keyCode == 13) {
-            this.Login();
-            return false;
-        }
-    }
     Login() {
-        // for (var a = 0; a < this.usersData.users.length; a++) {
-        //     if (this.username == this.usersData.users[a].username && this.password == this.usersData.users[a].password) {
-        //         this.router.navigate(['/readcard']);
-        //     }else{
-        //         this.errorMsg = true
-        //     }
-        // }
         var user = {
             username: this.username,
             password: this.password
         }
         if (user.username == undefined || user.password == undefined) {
             return $("#emptyLogin").modal("show")
-            // return this.errorMsg = " Username Or Password Shouldn't be Empty"
         } else {
-            console.log("main.js" + user)
-            //this.loading = true;
             this.electronService.ipcRenderer.send('logincall', user)
         }
-
-
-
     }
 }
 
