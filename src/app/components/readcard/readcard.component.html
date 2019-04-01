@@ -23,17 +23,17 @@
         <div class="col-md-6">
             <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
             <div class="container-padding flex-column">
-                <button class="read-card-btn" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
                     New Fare Card
-                    <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                    
                 </button>
-                <button class="read-card-btn" [disabled]="disableCards" (click)="readCard($event);">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="readCard($event);">
                     Existing Fare Card
-                    <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                  
                 </button>
-                <button class="read-card-btn" [disabled]="disableCards" (click)="nonFareProduct()">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="nonFareProduct()">
                     Non-Fare Product
-                    <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                  
                 </button>
             </div>
         </div>
@@ -48,10 +48,8 @@
                 <h4 class="modal-title modal-txt-h">Select Media Type</h4>
                 <div class="modal-body-in">
                     <div class="">
-                        <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img
-                                src="assets/images/arrow-pointing-to-right.svg" /></button>
-                        <button class="cardBtn" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card <img
-                                src="assets/images/arrow-pointing-to-right.svg" /></button>
+                        <button class="cardBtn arrow_right" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC</button>
+                        <button class="cardBtn arrow_right" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card </button>
 
                         <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                     </div>

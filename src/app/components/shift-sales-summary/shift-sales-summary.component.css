@@ -5,7 +5,7 @@
 }
 
 .in-page-cont {
-    padding: 20px;
+    padding: 10px;
     height: calc(100vh - 95px);
     background-color: #f0f3fa;
     border-radius: 5px;
@@ -22,7 +22,7 @@
 
 .shift-data-sets {
     display: flex;
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
 }
 
 .shift-data-set {
@@ -56,8 +56,14 @@
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #2056a2;
+    background-color: #3b80c5;
     color: white;
+    margin: 0;
+    padding: 5px;
+    font-weight: 100;
+    text-transform: uppercase;
+    font-size: 12px;
+    border: 1px solid #3b80c5;
 }
 
 .shift-sales-txt {
@@ -75,8 +81,8 @@
     border: 1px solid #dedede;
     border-radius: 6px;
     color: #323232;
-    font-size: 26px;
-    padding: 30px 115px;
+    font-size: 3vh;
+    padding: 3vh 10vh;
     text-transform: uppercase;
 }
 
@@ -85,8 +91,8 @@
     border: 1px solid #dedede;
     border-radius: 6px;
     color: #323232;
-    font-size: 26px;
-    padding: 30px 73px;
+    font-size: 2.5vh;
+    padding: 4vh 10vh;
     text-transform: uppercase;
 }
 
@@ -95,36 +101,49 @@
     margin-left: 15px;
 }
 
-
-
-.shift-data-set-table tbody {
+.shift-data-set-table tbody,
+.shift-data-set tbody {
     display: block;
-    height: 18vw;
+    height: 24vw;
+    background: #e3e3e3;
     overflow: auto;
+    margin-top: 7px;
 }
-.shift-data-set-table thead, .shift-data-set-table tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
+
+.shift-data-set-table thead,
+.shift-data-set-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
+
 .shift-data-set-table thead {
     width: 100%
 }
 
-
 .totalSold {
-    background-color: #fff;
-    border: 1px solid #dedede;
+    background-color: transparent;
+    border: 1px solid transparent;
     border-radius: 6px;
     color: #323232;
-    font-size: 26px;
-    padding: 30px 115px;
+    font-size: 2.5vh;
+    padding: 3vh 115px;
     text-transform: uppercase;
 }
 
 .select-clerk select {
-    padding: 10px;
+    padding: 6px;
     margin-left: 20px;
-    border-radius: 3px;
-    min-width: 200px;
+    border-radius: 0;
+    min-width: 250px;
+    border: 1px solid #fff;
+    font-size: 13px;
+}
+
+.select-clerk label {
+    font-weight: 100
+}
+
+.select-clerk {
+    margin-top: 7px;
 }

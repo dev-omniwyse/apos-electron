@@ -1,6 +1,7 @@
 .dev-container-padding,
 body {
     background-color: #f0f3fa;
+    height: calc(100vh - 74px);
 }
 
 .back-to-sales {
@@ -8,13 +9,14 @@ body {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 2.2vh;
-    padding: 2.2vh 35px;
+    font-size: 3vh;
+    padding: 3.2vh 8vh;
 }
 
 .shift-data-sets {
     display: flex;
-    margin: 0 0 20px 0;
+    margin: 0;
+    height: calc(100vh - 250px);
 }
 
 .shift-data-set {

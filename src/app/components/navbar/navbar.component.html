@@ -5,10 +5,10 @@
     </div>
     <div class="header-info pull-right">
         <div class="login-info">
-            <div *ngIf="terminalNumber" class="pull-left header-tx-top">User: APOS Admin <span>|</span> Terminal: {{terminalNumber}}</div>
+            <div *ngIf="terminalNumber" class="pull-left header-tx-top">User: APOS Admin <span></span> Terminal: {{terminalNumber}}</div>
             <div *ngIf="terminalNumber" class="pull-left">
                 <div class="dropdown">
-                    <button class="btn-default header-btn-menu" type="button" data-toggle="dropdown">LOGOUT</button>
+                    <button class="btn-default header-btn-menu header-login-logout" type="button" data-toggle="dropdown">LOGOUT</button>
                     <ul class="dropdown-menu">
                         <li><a>Lock Device</a></li>
                         <li><a (click)="logOut();">Logout</a></li>

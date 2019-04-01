@@ -2,12 +2,6 @@
 
 /* CSS Document */
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-}
-
 ul {
     list-style-type: none;
 }
@@ -16,7 +10,7 @@ ul {
     background-color: #777777;
     display: flex;
     padding: 10px 5px;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 74px);
 }
 
 .container-left {
@@ -133,7 +127,7 @@ ul {
     font-size: 2.5vh;
     padding: 0.5vh 15px;
     width: calc(50% - 10px);
-    margin-left: 2%
+    margin: 0 5px;
 }
 
 .btn-orange-slide {
@@ -144,7 +138,7 @@ ul {
     font-size: 2.5vh;
     padding: 0.5vh 15px;
     width: calc(50% - 10px);
-    margin-left: 2%
+    margin: 0 5px;
 }
 
 .btn-white-cancel {
@@ -357,11 +351,11 @@ ul {
     width: 100%;
     display: block;
     text-align: right;
-    padding: 20px 15px;
+    padding: 2vh 1.5vh;
     border-radius: 0;
-    font-size: 35px;
+    font-size: 4vh;
     font-weight: 100;
-    margin-bottom: 39px;
+    margin-bottom: 3vh;
 }
 
 .cr-left {
@@ -457,7 +451,7 @@ ul {
 .tab-sets {
     background-color: #013D7B;
     padding: 10px;
-    height: calc(100vh - 154px);
+    height: calc(100vh - 164px);
 }
 
 .nav-pills>li>a {
@@ -546,7 +540,7 @@ ul {
     padding: 1.5vh;
     border: 1px solid #ccc;
     overflow: auto;
-    height: 44vh;
+    height: 42vh;
 }
 
 @media (max-width: 1550px) {
@@ -561,7 +555,7 @@ ul {
         margin: 1vh 0;
     }
     .container-l-app {
-        height: 44vh;
+        height: 42vh;
     }
 }
 
@@ -575,8 +569,12 @@ ul {
         margin: 1vh 0;
     }
     .container-l-app {
-        height: 44vh;
+        height: 42vh;
     }
+}
+
+.carousel {
+    max-width: 100%;
 }
 
 
