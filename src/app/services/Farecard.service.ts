@@ -85,7 +85,7 @@ export class FareCardService {
     }
 
     //add smart card data - WalletLineItem
-    addSmartCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
+    addSmartCard(shoppingCart, readCardJSON, offeringJSONArray) {
 
         /***
          * 1. create local storage
@@ -104,7 +104,7 @@ export class FareCardService {
          */
         let fareCardPrice = 0;
         let description = " ";
-        if (isNew) {
+        if (Utils.getInstance.isNew(readCardJSON)) {
             fareCardPrice = offering.UnitPrice;
             description = "New " + offering.Description+ " $"+offering.UnitPrice.toFixed(0);
         } else {

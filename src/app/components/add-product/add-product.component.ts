@@ -14,8 +14,6 @@ import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
-import { PaymentType } from 'src/app/models/Payments';
-import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
 declare var pcsc: any;
 declare var $: any;
@@ -130,11 +128,11 @@ export class AddProductComponent implements OnInit {
   quantityList: any = [];
   viewCardData: any = []
   cardProductData: any = [];
-  compDue: any = 0;
+
   productCheckOut: boolean = false;
   isNew: boolean = false;
   totalDue: any = [];
-  checkoutTotal: any = 0;
+
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
   isCustomAmount = false;
@@ -145,8 +143,6 @@ export class AddProductComponent implements OnInit {
     "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
     "nextArrow": false
   };
-
-  payment = new PaymentType();
 
 
 
@@ -160,23 +156,6 @@ export class AddProductComponent implements OnInit {
 
   @ViewChildren('cardsList') cardsList;
   customPayAsYouGo: any;
-  totalRemaining: any = 0;
-  cashBack: any = 0;
-  isCashApplied: boolean = false;
-  cashAppliedTotal: any = 0;
-  isVoucherApplied: boolean = false;
-  isCheckApplied: boolean = false;
-  checkAppliedTotal: any = 0;
-  voucherAppliedTotal: any = 0;
-  voucherRemainingTotal: any;
-  voucherRemaining: any;
-  isCompApplied: boolean = false;
-  applyCompShow: boolean = false;
-  reason: boolean = true;
-  reasonForComp = '';
-  isCardApplied: boolean = false;
-  cardAppliedTotal: any;
-
   constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
@@ -237,7 +216,7 @@ export class AddProductComponent implements OnInit {
               this.currentCard = this.cardJson[this.cardJson.length - 1];
               this.selectedProductCategoryIndex = 0;
 
-              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
               this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
               this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
             }
@@ -248,7 +227,7 @@ export class AddProductComponent implements OnInit {
                 this.currentCard = this.cardJson[this.cardJson.length - 1];
                 this.selectedProductCategoryIndex = 0;
 
-                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
                 this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
                 this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
               }
@@ -314,7 +293,6 @@ export class AddProductComponent implements OnInit {
       console.log("creditcardTransaction ", data);
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
-       
           this.saveTransaction();
       }
     });
@@ -893,19 +871,10 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
-    this.checkoutTotal = this.totalDue;
-    this.totalRemaining = this.totalDue
   }
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
-    this.isCashApplied = false;
-    this.isVoucherApplied = false;
-    this.isCheckApplied = false;
-    this.isCardApplied = false;
-    this.shoppingcart._payments = [];
-    this.getTotalDue(this.shoppingcart);
-
   }
 
   cancelCheckOutConfirmation() {
@@ -1080,9 +1049,9 @@ export class AddProductComponent implements OnInit {
   }
 
   displayDigit(digit) {
-    this.checkoutTotal = Math.round(this.checkoutTotal * 100);
-    this.checkoutTotal += digit;
-    this.checkoutTotal = this.checkoutTotal / 100;
+    this.totalDue = Math.round(this.totalDue * 100);
+    this.totalDue += digit;
+    this.totalDue = this.totalDue / 100;
     if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
@@ -1107,7 +1076,6 @@ export class AddProductComponent implements OnInit {
 
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
-    this.checkoutTotal = this.totalDue;
   }
 
   displayMagneticsSubtotal(products: any, isTotalList) {
@@ -1138,7 +1106,7 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.checkoutTotal = digit;
+    this.totalDue = digit;
     if (this.isCustomAmount) {
       this.productTotal = digit;
     }
@@ -1225,19 +1193,23 @@ export class AddProductComponent implements OnInit {
 
   saveTransactionForMerchandiseAndMagnetic() {
     let userID = localStorage.getItem('userID');
-    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingcart, this.getUserByUserID(userID));
+    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingcart, this.getUserByUserID(userID), this.getPaymentsObject());
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
     this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj);
   }
 
 
-  saveTransaction() {
+  saveTransaction(paymentMethodId) {
     try {
-      localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-      if (this.isSmartCardFound()) {        
-        this.router.navigate(['/carddata']);
-      } else {
-        this.saveTransactionForMerchandiseAndMagnetic()
+      localStorage.setItem("paymentMethodId", paymentMethodId);
+      if(paymentMethodId == '8') {
+        this.router.navigate(['/comp']);
+      } else  {
+        if(this.isSmartCardFound()) {
+          this.router.navigate(['/carddata']);
+        } else {
+          this.saveTransactionForMerchandiseAndMagnetic();
+        }
       }
 
 
@@ -1457,6 +1429,7 @@ export class AddProductComponent implements OnInit {
     }
     return result
   }
+
 
   paymentByCash() {
 
@@ -1896,4 +1869,3 @@ export class AddProductComponent implements OnInit {
     return indexOfPayment;
   }
 }
-
