@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ReadcardComponent } from './components/readcard/readcard.component';
 import { LoginComponent } from './components/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { LogoutComponent } from './components/logout/logout.component';
 import { CarddataComponent } from './components/carddata/carddata.component';
-import { CameraComponent } from './components/camera/camera.component';
 import { SetupComponent } from './components/setup/setup.component';
 import { ActivationComponent } from './components/activation/activation.component';
 import { VerifyComponent } from './components/verify/verify.component';
@@ -50,11 +47,6 @@ const routes: Routes = [
     path: 'readcard',
     component: ReadcardComponent
   },
-  {
-    path: 'camera',
-    component: CameraComponent
-  },
-
   {
     path: 'carddata',
     component: CarddataComponent

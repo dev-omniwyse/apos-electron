@@ -24,28 +24,12 @@ export class VerifyComponent implements OnInit {
   @Output() hideHeader = new EventEmitter();
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
-    // this.electronService.ipcRenderer.on('verifyCallResult', (event, data) => {
-    //   alert(data);
-    //   if (data != undefined && data != "") {
-    //     alert(data);
-    //     this._ngZone.run(() => {
-    //       this.carddata = new Array(JSON.parse(data));
-    //       this.password =  this.carddata.password;
-    //       console.log('this.carddata', this.carddata);
-    //       // this.router.navigate(['/carddata'])
-    //     });
-    //   }
-    // });
     this.environment = localStorage.getItem('environment');
         this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
-          
         if (data != undefined && data != "") {
           this._ngZone.run(() => {
             this.cdtaservice.announceHeaderShowHide("hideHeader");
             this.router.navigate(['/login'])
-              // this.carddata = new Array(JSON.parse(data));
-              // console.log('this.carddata', this.carddata);
-             
           });
       }
   });

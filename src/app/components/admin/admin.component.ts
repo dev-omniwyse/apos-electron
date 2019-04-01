@@ -2,10 +2,7 @@ import { Component, NgZone, OnInit, ɵMethodFn } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-import { MethodFn } from '@angular/core/src/reflection/types';
-import { MethodCall } from '@angular/compiler';
-// import { ConsoleReporter } from 'jasmine';
-// import {setInterval, clearInterval} from 'timers';
+
 declare var $: any
 
 @Component({
@@ -44,21 +41,15 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
       console.log("sales data", data)
       if (data != undefined && data != "") {
-        //this.show = true;
         JSON.parse(data).forEach(element => {
-          // if (element.userID == localStorage.getItem("userId")) {
           if (element.isMerchandise == 0) {
             this.fareTotal = this.fareTotal + element.value
           } else if (element.isMerchandise == 1) {
             this.nonFareTotal = this.nonFareTotal + element.value
           }
           this.fareAndNonFareTotal = this.fareTotal + this.nonFareTotal
-
         });
-        //localStorage.setItem("allSales", data)
-
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
         });
         return JSON.parse(data)
       }
@@ -66,54 +57,25 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.on('adminSalesPaymentResult', (event, data) => {
       console.log("sales data", data)
       if (data != undefined && data.length != 0) {
-        //this.show = true;
         JSON.parse(data).forEach(element => {
           if (element.paymentMethod == "CASH") {
-            console.log("CASH PAYMENTS", element.paymentAmount, this.expectedCash)
-
             this.expectedCash = Number(this.expectedCash) + element.paymentAmount
             this.expectedCash = this.expectedCash.toFixed(2)
-            console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
-
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
             this.overShort = Math.abs(this.overShort)
-
           }
-
         });
-       // localStorage.setItem("paymentTypes", data)
-
-
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
         });
       }
     });
-    this.electronService.ipcRenderer.on('adminCloseShiftResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-          // this.carddata = new Array(JSON.parse(data));
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('adminOpenShiftResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
+
     this.electronService.ipcRenderer.on('adminSyncResult', (event, data) => {
       if (data != undefined && data != "") {
-
         if (data == true) {
           this.electronService.ipcRenderer.send('isSyncCompleted')
         }
         this._ngZone.run(() => {
-          //  this.router.navigate(['/addproduct'])
         });
       }
     });
@@ -133,12 +95,6 @@ export class AdminComponent implements OnInit {
               this.electronService.ipcRenderer.send('isSyncCompleted')
             }
           }, 1000);
-          // this.intervalSyc = setInterval(() => {
-          //   if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
-          //     this.numOfAttempts++;
-          //     this.electronService.ipcRenderer.send('isSyncCompleted')
-          //   }
-          // }, 2000)
         }
         else if (isSyncDone == true) {
           this.isCurrentSync = false;
@@ -158,51 +114,27 @@ export class AdminComponent implements OnInit {
     });
     this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
       if (data != undefined && data != "") {
-        //this.show = true;
         this.configData = JSON.parse(data);
         this.deviceInfoNew = this.configData.LAST_SYNC_WAS_SUCCESS
-        console.log("this.deviceInfoNew", this.deviceInfoNew)
-
         this._ngZone.run(() => {
-
           localStorage.setItem("deviceConfigData", data);
-          // this.router.navigate(['/deviceconfig'])
-
         });
       }
     });
-    // this.electronService.ipcRenderer.on('adminTerminalConfigResult', (event, data) => {
-    //   if (data != undefined && data != "") {
-    //     //this.show = true;
-    //     localStorage.setItem("terminalConfig", data);
-    //     this._ngZone.run(() => {
-    //       // this.router.navigate(['/addproduct'])
-    //     });
-    //   }
-    // });
-    this.electronService.ipcRenderer.on('adminShiftSaleSummaryResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-
 
   }
 
-getPresentShiftReport(){
-  let userID = localStorage.getItem("userID")
-  let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-  var specificUserDetails = []
-  shiftUsers.forEach(element => {
-    if(element.userID == userID){
-      specificUserDetails.push(element)
-    }
-  });
-  this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
-}
+  getPresentShiftReport() {
+    let userID = localStorage.getItem("userID")
+    let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+    var specificUserDetails = []
+    shiftUsers.forEach(element => {
+      if (element.userID == userID) {
+        specificUserDetails.push(element)
+      }
+    });
+    this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
+  }
 
   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
@@ -215,71 +147,53 @@ getPresentShiftReport(){
 
       }
     });
-    //console.log('read call', cardName)
   }
-  adminCloseShift(event) {
-    this.electronService.ipcRenderer.send('adminCloseShift')
-    //console.log('read call', cardName)
-  }
-
-  adminOpenShift(event) {
-    this.electronService.ipcRenderer.send('adminOpenShift')
-    //console.log('read call', cardName)
-  }
-
   adminDeviceConfig() {
     this.electronService.ipcRenderer.send('adminDeviceConfig')
-    //console.log('read call', cardName)
   }
-  adminShiftSaleSummary(event) {
-    this.electronService.ipcRenderer.send('adminShiftSaleSummary')
-    //console.log('read call', cardName)
-  }
-  // getTerminalConfig() {
-  //   this.electronService.ipcRenderer.send('adminTerminalConfig')
-  // }
-  mainShiftPause() {
 
+  mainShiftPause() {
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftType == "0") {
         element.shiftState = "4";
         localStorage.setItem("mainShiftUserLock", element.userEmail)
-        //var disableUntilReopenShift = true
         localStorage.setItem("disableUntilReOpenShift", "true")
       }
 
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
-
+    this.electronService.ipcRenderer.send("openCashDrawer")
     this.router.navigate(['/login'])
-
   }
+
   closePausedMainShift() {
     this.closingPausedMainShift = true
     localStorage.setItem("closingPausedMainShift", this.closingPausedMainShift.toString())
+    this.electronService.ipcRenderer.send("openCashDrawer")
   }
-
+  openCashDrawerForNoSale() {
+    this.electronService.ipcRenderer.send("openCashDrawer")
+  }
   reOpenShift() {
-
+    this.electronService.ipcRenderer.send("openCashDrawer")
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftState == "4") {
         element.shiftState = "0";
         this.mainShiftReOpen = false
-        // this.mainshiftcloser = false
         this.shiftState = "0"
         this.shiftType = "0"
         element.timeOpened = new Date().getTime();
         localStorage.setItem("disableUntilReOpenShift", "false")
       }
-
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
     localStorage.setItem("shiftReopenedByMainUser", "true")
     localStorage.setItem("hideModalPopup", "true")
+
   }
 
   hideModalPop() {
@@ -331,19 +245,15 @@ getPresentShiftReport(){
             this.shiftState = "3"
             this.mainshiftCloser = true
             this.statusOfShiftReport = "Main Shift is Closed"
-            localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+
           } else
             if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0") {
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
-            
-              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
-
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
               this.shiftState = "0"
               this.shiftType = "0"
-
               this.statusOfShiftReport = "Main Shift is Opened"
               if (localStorage.getItem("hideModalPopup") == "true") {
                 $("#readyForSaleModal").modal('hide');
@@ -355,7 +265,6 @@ getPresentShiftReport(){
               this.shiftType = "0"
               this.shiftState = "4"
               this.statusOfShiftReport = "Main Shift is Paused"
-              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
             } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
               this.shiftType = "1"
               this.shiftState = "3"
@@ -384,7 +293,6 @@ getPresentShiftReport(){
         if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
-
         }
         if (element.closingDrawer != undefined && element.closingDrawer != "") {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)

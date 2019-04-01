@@ -3,34 +3,16 @@ import { Observable, of, throwError, Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap, map } from 'rxjs/operators';
 import { ElectronService } from 'ngx-electron';
-// import { product_log } from '../assets/data/'
-const httpOptions = {
-  headers: new HttpHeaders(
-    {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'accept': 'application/json'
 
-    }
-
-  )
-};
-
-const apiUrl = "https://api.qe.gfcp.io/services/data-api/v1/wpf/id_card/updateExisting?tenant=CDTA&access_token=6294ffc6-1189-4803-8ddf-6a99f039f37a"
 
 @Injectable({
   providedIn: 'root'
 })
 
-
 export class CdtaService {
-
   constructor(private http: HttpClient, private electronService: ElectronService, private _ngZone: NgZone) {
-
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
-
       if (data != undefined && data != "") {
-        //alert("print Summary Report Done")
-        console.log("printSummaryReport Done", data)
         this._ngZone.run(() => {
         });
       }
@@ -38,18 +20,13 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printReceiptHeaderResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Receipt Header Result Done")
-        console.log("print Receipt Header Result Done", data)
         this._ngZone.run(() => {
-
         });
       }
     });
 
     this.electronService.ipcRenderer.on('printSummaryPaymentsReportResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Summary Payments Report Result Done")
-        console.log("printSummary Payments Report Result Done", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("salesDataResult")
           this.electronService.ipcRenderer.removeAllListeners("paymentsDataResult")
@@ -93,7 +70,6 @@ export class CdtaService {
 
   getUniqueSaletReport(backendSalesReport) {
     var displayingSales = [];
-    var container = this;
     for (var b = 0; b < backendSalesReport.length; b++) {
       for (var c = b + 1; c < backendSalesReport.length; c++) {
         if (backendSalesReport[b].description == backendSalesReport[c].description) {
@@ -819,14 +795,6 @@ export class CdtaService {
     } else {
       console.log("Receipt printing, did not detect any wallets.");
     }
-    // if(cart.ProductLineItems != undefined){
-    //   if (cart.ProductLineItems.length > 0) {
-    //     console.log("Receipt printing, detected products.");
-    //     anythingToPrint = true;
-    //   } else {
-    //     console.log("Receipt printing, did not detect any products.");
-    //   }
-    // }
 
 
     if (anythingToPrint) {
@@ -1206,53 +1174,6 @@ export class CdtaService {
         ),
         catchError(this.handleError)
       );
-  }
-
-  jsonData(): Observable<any> {
-
-    return this.http.post('https://api.staging.gfcp.io/services/device/v5/auth?tenant=CDTA&type=apos&serialNumber=APOS289&password=08e0668a-4226-4d0f-9f9e-79edb3e4b3b4', '', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        "accept": "application/json"
-      },
-      responseType: 'json'
-
-    })
-      .pipe(
-        map((result: any) => {
-          console.log('user data', result)
-          return result
-        }
-        ),
-        catchError(this.handleError)
-      );
-  }
-
-  uploadImage(data: any): Observable<Object> {
-
-    return this.http.post(apiUrl, data,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          "accept": "application/json"
-        },
-        responseType: 'text'
-      })
-      .pipe(
-        map((result: any) => {
-          return result
-        }
-        ),
-        catchError(this.handleError)
-      );
-  }
-
-
-
-  cardData() {
-    return this
-      .http
-      .get(`${apiUrl}`);
   }
 
   private handleError(error: HttpErrorResponse) {
