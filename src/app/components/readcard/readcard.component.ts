@@ -187,7 +187,7 @@ export class ReadcardComponent implements OnInit {
                     console.log('this.carddata', this.carddata);
                     this.showCardContents();
                     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                     // ShoppingCartService.getInstance.shoppingCart = null;
                 });
@@ -257,7 +257,7 @@ export class ReadcardComponent implements OnInit {
                         localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                         this.getCatalogJSON();
                         let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
                         ShoppingCartService.getInstance.shoppingCart = null;
                         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                         var timer = setTimeout(() => {

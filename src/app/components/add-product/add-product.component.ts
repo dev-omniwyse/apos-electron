@@ -216,7 +216,7 @@ export class AddProductComponent implements OnInit {
               this.currentCard = this.cardJson[this.cardJson.length - 1];
               this.selectedProductCategoryIndex = 0;
 
-              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
               this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
               this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
             }
@@ -227,7 +227,7 @@ export class AddProductComponent implements OnInit {
                 this.currentCard = this.cardJson[this.cardJson.length - 1];
                 this.selectedProductCategoryIndex = 0;
 
-                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
                 this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
                 this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
               }
