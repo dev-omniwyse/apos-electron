@@ -21,8 +21,8 @@ export class Utils {
 
     removeWalletFromLocalStore(cardJSON, walletLineItem) {
         let newCardJSON = null;
-
-        for (let item of cardJSON) {
+        
+        for(let item of cardJSON) {
 
             // if(item.){
 
@@ -116,14 +116,14 @@ export class Utils {
 
     genearateMagneticSequenceNumber(shoppingCart) {
         let currentSequence = 0;
-        let lastCardPID = null;
+        let lastCardPID = null ;
         debugger;
-        for (let item of shoppingCart._walletLineItem) {
+         for (let item of shoppingCart._walletLineItem) {
             if (item._walletTypeId == MediaType.MAGNETIC_ID) {
                 lastCardPID = item._cardPID;
             }
         }
-        let seq = null == lastCardPID ? 0 : lastCardPID.split(" ")[1];
+        let seq = null == lastCardPID ? 0 :lastCardPID.split(" ")[1];
         currentSequence = +seq;
         return (currentSequence + 1);
     }
@@ -248,34 +248,5 @@ export class Utils {
 
         //         return isExpired;
         return isCardNew;
-    }
-
-    getBonusRideCount(cardData) {
-        let bonus_rides = 0;
-        let bonusRideStatusText = "Bonus Ride(s): " + bonus_rides;
-        if ((cardData.num_bonus_passes != null) &&
-            (cardData.num_bonus_passes > 0)) {
-            
-            if (cardData.bonus_pass) {
-                bonus_rides = cardData.bonus_pass.ride_count;
-            }
-            bonusRideStatusText = "Bonus Ride(s): " + bonus_rides;
-            console.log("Bonus ride set!");
-        }
-        return bonusRideStatusText;
-    }
-
-    getNextBonusRidesCount(cardData, terminalConfig) {
-        let bonusRideThreshold = terminalConfig.BonusRideThreshold;
-        var bonus_ride_counter = 0;
-
-        // cardStore.products.forEach(cardElement => {
-        cardData.products.forEach(fItem => {
-            if (fItem.product_type == TICKET_GROUP.VALUE) {
-                bonus_ride_counter = fItem.bonus_ride_count;
-            }
-        });
-        let text = "Next Bonus: " + bonus_ride_counter + "/" + bonusRideThreshold;
-        return text;
     }
 }
