@@ -11,7 +11,7 @@ var logger = require('electron-log');
 
 let reqPath = path.join(app.getAppPath(), '../../')
 fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.properties');
-
+fs.copyFile(app.getAppPath() + '/epx.properties', reqPath + '/epx.properties');
 fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
 
 // var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
@@ -56,15 +56,15 @@ function createWindow() {
     );
 
     //added this line to open developer tools for debugging
-    
+
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
- win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
-    }); 
+    });
 }
 
 //camera access code
@@ -281,6 +281,13 @@ ipcMain.on('catalogJson', (event, catalog) => {
     event.sender.send('catalogJsonResult', result);
 })
 
+ipcMain.on('productCatalogJson', (event, catalog) => {
+    logger.info("catalogJson  Data", posAppletInstance)
+    var result = posAppletInstance.getProductCatalogJSONSync();
+    logger.info("catalogJson data", '' + result)
+    event.sender.send('getProductCatalogResult', result);
+})
+
 
 ipcMain.on('generateSequenceNumber', (event, catalog) => {
     var result = posAppletInstance.generateSequenceNumberSync();
@@ -385,7 +392,7 @@ ipcMain.on('allSales', (event, shiftType, startTime, endTime, userID) => {
     var result = posAppletInstance.getSalesreportSync(shiftType, S, E);
     logger.info("allSalesResult", '' + result)
 
-    event.sender.send('allSalesResult', result,userID,shiftType);
+    event.sender.send('allSalesResult', result, userID, shiftType);
 })
 ipcMain.on('allPayments', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3) => {
     var S = java.newLong(Number(startTime / 1000));
@@ -393,7 +400,7 @@ ipcMain.on('allPayments', (event, userID, shiftType, startTime, endTime, nul1, n
     var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
     logger.info("allPaymentsResult", '' + result)
 
-    event.sender.send('allPaymentsResult', result,userID, shiftType);
+    event.sender.send('allPaymentsResult', result, userID, shiftType);
 })
 
 
@@ -407,7 +414,7 @@ ipcMain.on('adminSales', (event, shiftType, startTime, endTime, userID) => {
     var result = posAppletInstance.getSalesreportSync(shiftType, S, E);
     logger.info("salesResult", '' + result)
 
-    event.sender.send('adminSalesResult', result,userID,shiftType);
+    event.sender.send('adminSalesResult', result, userID, shiftType);
 })
 ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3) => {
     var S = java.newLong(Number(startTime / 1000));
@@ -415,7 +422,7 @@ ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endT
     var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
     logger.info("adminSalesPaymentMethod", '' + result)
 
-    event.sender.send('adminSalesPaymentResult', result,userID, shiftType);
+    event.sender.send('adminSalesPaymentResult', result, userID, shiftType);
 })
 
 ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID) => {
@@ -441,23 +448,23 @@ ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, 
 ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
     var date = java.newLong(Number(datevalue));
     logger.info("printReceiptHeader data", filter, datevalue)
-    var result = posAppletInstance.printReceiptHeaderSync(filter, date );
+    var result = posAppletInstance.printReceiptHeaderSync(filter, date);
     logger.info("printReceiptHeader", '' + result)
     event.sender.send('printReceiptHeaderResult', result);
-  })
+})
 
 ipcMain.on('printSummaryReport', (event, drawerReport, productsReport, userID, AllUsers) => {
-  logger.info("print summary report",drawerReport, productsReport,userID, AllUsers);
-  var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID.toString(), AllUsers);
-  logger.info("printSummaryReportResult", '' + result)
-  event.sender.send('printSummaryReportResult', result);
+    logger.info("print summary report", drawerReport, productsReport, userID, AllUsers);
+    var result = posAppletInstance.printSummaryReportSync(drawerReport, productsReport, userID.toString(), AllUsers);
+    logger.info("printSummaryReportResult", '' + result)
+    event.sender.send('printSummaryReportResult', result);
 })
 
 ipcMain.on('printSummaryPaymentsReport', (event, paymentReport) => {
-  logger.info("paymentReport checking",paymentReport)
-  var result = posAppletInstance.printSummaryPaymentsReportSync(paymentReport);
-  logger.info("printSummaryPaymentsReport", '' + result)
-  event.sender.send('printSummaryPaymentsReportResult', result);
+    logger.info("paymentReport checking", paymentReport)
+    var result = posAppletInstance.printSummaryPaymentsReportSync(paymentReport);
+    logger.info("printSummaryPaymentsReport", '' + result)
+    event.sender.send('printSummaryPaymentsReportResult', result);
 })
 
 ipcMain.on('adminCloseShift', (event, catalog) => {
@@ -526,6 +533,7 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
     event.sender.send('updateCardDataResult', '' + result.getSuccessSync());
 });
 
+
 ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
     console.log("deleteProducts", cardname);
     console.log("deleteProducts", encodedCardJson);
@@ -534,4 +542,33 @@ ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
     event.sender.send('deleteProductsFromCardResult', '' + result.getSuccessSync());
 });
 
+/** ADMIN METHODS END HERE*/
+
+ipcMain.on('processAutoLoad', (event, cardname) => {
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    var result = posAppletInstance.processAutoloadSync();
+    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+});
+
+
+ipcMain.on('navigateToGenfare', (event, urlToNavigate) => {
+    shell = require('electron').shell;
+    shell.openExternal(urlToNavigate);
+});
+
+ipcMain.on('doPinPadTransaction', (event, transactionAmount) => {
+    console.log("pinpad", transactionAmount);
+    var result = posAppletInstance.doPinpadPaymentTransactionSync(Number(transactionAmount));
+    event.sender.send('doPinPadTransactionResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionStatus', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionStatusSync();
+    event.sender.send('getPinpadTransactionStatusResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionDataSync();
+    event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
+});
 /** ADMIN METHODS END HERE*/

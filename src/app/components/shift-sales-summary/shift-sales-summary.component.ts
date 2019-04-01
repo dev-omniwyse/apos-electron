@@ -46,21 +46,21 @@ export class ShiftSalesSummaryComponent implements OnInit {
     this.electronService.ipcRenderer.on('allPaymentsResult', (event, data, userID, shiftType) => {
       console.log("sales data", data)
       if (data != undefined && data.length != 0) {
-       
+
         this._ngZone.run(() => {
           if (this.selectedValue == 0) {
             var paymentReport: any = JSON.parse(data);
             for (var report = 0; report < paymentReport.length; report++) {
               paymentReport[report].userID = userID
               paymentReport[report].shiftType = shiftType
-              this.totalSold = this.totalSold +  paymentReport[report].paymentAmount
+              this.totalSold = this.totalSold + paymentReport[report].paymentAmount
               this.backendPaymentReport.push(paymentReport[report]);
             }
             console.log(" this.backendPaymentReport", this.backendPaymentReport)
             localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
 
             this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
-          }else{
+          } else {
             this.totalSold = 0
             this.backendPaymentReport = []
             JSON.parse(data).forEach(element => {
@@ -78,7 +78,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
-        alert("print Summary Report Done")
+        //alert("print Summary Report Done")
         console.log("printSummaryReport Done", data)
         //  this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
@@ -92,7 +92,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
-        alert("printReceiptHeaderResult Done")
+        //alert("printReceiptHeaderResult Done")
         console.log("printReceiptHeaderResult Done", data)
         //  this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
@@ -106,7 +106,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
       if (data != undefined && data != "") {
         //this.show = true;
         // localStorage.setItem("paymentTypes", data)
-        alert("printSummaryPaymentsReportResult Done")
+        //alert("printSummaryPaymentsReportResult Done")
         console.log("printSummaryPaymentsReportResult Done", data)
         this.salesPaymentData = JSON.parse(data);
         this._ngZone.run(() => {
@@ -153,7 +153,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
         localStorage.setItem("hideModalPopup", "false")
       }
     })
-   
+
     this.electronService.ipcRenderer.removeAllListeners("allSalesResult");
     this.electronService.ipcRenderer.removeAllListeners("allPaymentsResult")
   }
@@ -161,12 +161,14 @@ export class ShiftSalesSummaryComponent implements OnInit {
   shiftSaleSummary() {
     console.log("selectedValue:", this.selectedValues)
     // console.log("saleSummary", JSON.parse(saleSummary))
-    
+
     if (this.selectedValues == 0) {
       this.selectedValue = 0
       console.log("this.selectedValue", this.selectedValue)
       let shiftStore = JSON.parse(localStorage.getItem("shiftReport"));
       this.totalSold = 0
+      this.backendPaymentReport = []
+      this.backendSalesReport = []
       shiftStore.forEach(element => {
         this.electronService.ipcRenderer.send('allSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID))
         this.electronService.ipcRenderer.send('allPayments', Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null)

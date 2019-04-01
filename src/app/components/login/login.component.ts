@@ -61,6 +61,7 @@ export class LoginComponent implements OnInit {
             if (data != undefined && data != "") {
                 // this.loading = false
                 this.userdata = JSON.parse(data)
+                localStorage.removeItem("readCardData");
                 localStorage.setItem("userID", this.userdata.personId)
                 localStorage.setItem("userEmail", this.userdata.username)
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
@@ -164,6 +165,9 @@ export class LoginComponent implements OnInit {
                     localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
                     this.statusOfShiftReportBoolean = true
                     this.statusOfShiftReport = "Main Shift is Closed"
+                    if (localStorage.getItem("closingPausedMainShift") == "true") {
+                        localStorage.removeItem("closingPausedMainShift")
+                    }
                 } else
                     if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                         this.statusOfShiftReportBoolean = true
@@ -240,7 +244,12 @@ export class LoginComponent implements OnInit {
                     // this.loading = false;
                 });
     }
-
+    enterKey(e) {
+        if (e.keyCode == 13) {
+            this.Login();
+            return false;
+        }
+    }
     Login() {
         // for (var a = 0; a < this.usersData.users.length; a++) {
         //     if (this.username == this.usersData.users[a].username && this.password == this.usersData.users[a].password) {

@@ -101,6 +101,19 @@ ul {
     margin: 0 0 0 35px;
 }
 
+.btn-white-top-cancel-checkout {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #999999;
+    font-size: 2.2vh;
+    /* padding: 2.5vh 15px; */
+    width: calc(85%);
+    /* margin: 0 0 0 35px; */
+    width: 100%;
+    padding: 1.3vh;
+}
+
 .btn-white {
     background-color: #fff;
     border: 1px solid #c3c3c3;
@@ -110,6 +123,28 @@ ul {
     padding: 2.5vh 15px;
     width: calc(50% - 10px);
     text-transform: uppercase;
+}
+
+.btn-white-slide {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 2.5vh;
+    padding: 0.5vh 15px;
+    width: calc(50% - 10px);
+    margin-left: 2%
+}
+
+.btn-orange-slide {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #d65400;
+    font-size: 2.5vh;
+    padding: 0.5vh 15px;
+    width: calc(50% - 10px);
+    margin-left: 2%
 }
 
 .btn-white-cancel {
@@ -185,27 +220,17 @@ ul {
     font-weight: 100;
 }
 
-.btn-white-slide {
-    width: 25vh;
-    margin-left: 35px;
-    background-color: #fff;
-    border: 1px solid #c3c3c3;
-    border-radius: 5px;
-    color: #000;
-    font-size: 2vh;
-    padding: 1.2vh 15px;
-}
 
+/* 
 .slide:last-child button {
     width: 25vh;
-    /* margin-left: 5px; */
     background-color: #fff;
     border-radius: 5px;
     color: #d65400;
     font-size: 2vh;
     padding: 1.2vh 15px;
     border: 1px solid #ccc;
-}
+} */
 
 .btndefault {
     padding: 10px 15px;
@@ -227,15 +252,43 @@ ul {
     flex-flow: row wrap;
 }
 
-.flex-right-items div {
+.flex-right-items .products {
     width: 50%;
     float: left;
 }
 
-.flex-right-items div button {
+.flex-right-items .custom-products {
+    width: 50%;
+    float: right;
+}
+
+.flex-right-items .custom-products button {
     /* flex: 1 1 calc(48% - 15px); */
     /* max-width: calc(48% - 15px); */
-    margin: 15px;
+    /* margin: 15px; */
+    width: calc(100% - 30px);
+    padding: 43px 0px 70px 0px;
+    border-radius: 7px;
+    color: #3b80c3;
+    font-size: 1.25em;
+    border: 1px solid #c4c4c4;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+18,fafafa+52,f7f7f7+100 */
+    background: #ffffff;
+    /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #ffffff 0%, #fcfcfc 18%, #fafafa 52%, #f7f7f7 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
+    /* IE6-9 */
+}
+
+.flex-right-items .products button {
+    /* flex: 1 1 calc(48% - 15px); */
+    /* max-width: calc(48% - 15px); */
+    /* margin: 15px; */
     width: calc(100% - 30px);
     padding: 10px 0;
     border-radius: 7px;
@@ -319,6 +372,11 @@ ul {
 .cr-right {
     width: 40%;
     float: right;
+}
+
+.nodata {
+    margin-top: -43%;
+    font-size: 18px;
 }
 
 .cr-right-custom {
@@ -493,18 +551,31 @@ ul {
 
 @media (max-width: 1550px) {
     .btn-white,
-    .btn-white-cancel,
     .btn-orange,
     .btn-white-top-cancel,
     .btn-white-top {
         font-size: 2.5vh;
-        padding: 1.5vh 15px;
+        padding: 1.3vh 15px;
     }
     .sub-total {
         margin: 1vh 0;
     }
     .container-l-app {
-        height: 45vh;
+        height: 44vh;
+    }
+}
+
+@media (max-width: 1550px) {
+    .btn-white-cancel {
+        font-size: 3.5vh;
+        padding: 2.5vh 52px;
+        margin-top: 91%;
+    }
+    .sub-total {
+        margin: 1vh 0;
+    }
+    .container-l-app {
+        height: 44vh;
     }
 }
 
@@ -581,7 +652,32 @@ ul {
     top: 27px;
 }
 
-.modal-custom{
+.modal-custom {
     width: 90%!important;
     max-width: 90%!important;
+}
+
+.carousel-indicators {
+    /* left: 0;
+	top: auto; */
+    bottom: -7px;
+}
+
+
+/* The colour of the indicators */
+
+.carousel-indicators li {
+    background: #013d79;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    margin: 0px;
+}
+
+.carousel-indicators .active {
+    background: #013d79;
+}
+
+#Carousel-products {
+    height: calc(100vh - 380px);
 }

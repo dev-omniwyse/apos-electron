@@ -15,8 +15,7 @@
                 <div class="btn-tab">Account</div>
             </div>
             <div class="flex container-padding flex-row admin-btn pull-left">
-                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); "
-                    [routerLink]="['/admin']">
+                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
                     Admin
                 </button>
             </div>
@@ -78,9 +77,6 @@
 			</div>
 		</div>
 	</div> -->
-    <div class="content-container container-padding doNotPrint">
-        <h1>Summary</h1>
-    </div>
 
     <div class="flex container-padding flex-row" *ngFor="let card of carddata ">
         <div class="flex-devide">
@@ -91,8 +87,8 @@
                     <p>Card Exp: {{card.card_expiration_date_str}}</p>
                 </div>
                 <div class="flex-devide">
-                    <p>Bonus Ride(s): 0</p>
-                    <p>Next Bonus: 0/4</p>
+                    <p>{{bonusRidesCountText}}</p>
+                    <p>{{nextBonusRidesText}}</p>
                 </div>
             </div>
         </div>
@@ -138,9 +134,7 @@
     </div>
 
 
-    <div class="content-container container-padding">
-        <h1></h1>
-
+    <div class="container-padding">
         <div class="flex">
             <div class="flex-devide">
                 <button class="back-btn doNotPrint" (click)="Back();"><i class="fa fa-long-arrow-left"></i>

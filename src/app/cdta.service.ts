@@ -29,7 +29,7 @@ export class CdtaService {
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
 
       if (data != undefined && data != "") {
-        alert("print Summary Report Done")
+        //alert("print Summary Report Done")
         console.log("printSummaryReport Done", data)
         this._ngZone.run(() => {
         });
@@ -38,7 +38,7 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printReceiptHeaderResult', (event, data) => {
       if (data != undefined && data != "") {
-        alert("print Receipt Header Result Done")
+        //alert("print Receipt Header Result Done")
         console.log("print Receipt Header Result Done", data)
         this._ngZone.run(() => {
 
@@ -48,7 +48,7 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printSummaryPaymentsReportResult', (event, data) => {
       if (data != undefined && data != "") {
-        alert("print Summary Payments Report Result Done")
+        //alert("print Summary Payments Report Result Done")
         console.log("printSummary Payments Report Result Done", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("salesDataResult")
@@ -91,20 +91,6 @@ export class CdtaService {
     this.terminalNumberSrc.next(mission);
   }
 
-  //   getAllClerksSalesReport(shiftStore) {
-  //     var backendSalesReport = [];
-  //     var container = this;
-  //     shiftStore.each(function (record) {
-  //         console.log("Inside shist user calling");
-  //         //var salesReport1 = container.setSalesReport(record);
-  //         if (salesReport1 != null) {
-  //             for (var report = 0; report < salesReport1.length; report++) {
-  //                 backendSalesReport.push(salesReport1[report]);
-  //             }
-  //         }
-  //     });
-  //     return backendSalesReport;
-  // },
   getUniqueSaletReport(backendSalesReport) {
     var displayingSales = [];
     var container = this;
@@ -493,6 +479,9 @@ export class CdtaService {
           expectedCashInDrawer = expectedCashInDrawer + payment.paymentAmount
           shiftType = payment.shiftType
           userID = payment.userID
+        } else if (element.userID == payment.userID && element.shiftType == payment.shiftType && payment.paymentMethod != "CASH") {
+          shiftType = payment.shiftType
+          userID = payment.userID
         }
       });
 
@@ -669,6 +658,7 @@ export class CdtaService {
     if ((null != openingDrawer)) {
 
       openingAmount = Number(openingDrawer);
+
     }
 
     if (null != closingDrawer) {
@@ -772,6 +762,431 @@ export class CdtaService {
     receipt += "\n";
     return (receipt);
   }
+
+  generateReceipt(timestamp) {
+
+    // TODO: stop using two different ways of getting transaction IDs.
+    var paymentsStore
+    var transRecord
+    var cart
+    var transactionObj = JSON.parse(localStorage.getItem("transactionObj"))
+    var catalog = JSON.parse(localStorage.getItem("catalogJSON"));
+    var storedTransactionID = '';
+    var taxAmountValue
+    paymentsStore = transactionObj.payments;
+    cart = transactionObj.items
+    storedTransactionID = transactionObj.transactionID;
+    taxAmountValue = transactionObj.taxAmount
+    var paymentTypeText = '';
+    var receiptWidth = 44;
+    var receipt = "";
+    var signatureRequired = false;
+    var customerCopyReceipt = "";
+    var changeDue = 0;
+    var padSize = 0;
+    var transText = "Trans ID:";
+    var isMerchandise = ""
+    var walletTypeId = ""
+    receipt += transText;
+    padSize = receiptWidth - (transText.length + storedTransactionID.length);
+
+    var spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    receipt += spacer + storedTransactionID + "\n";
+
+    var transTypeLabel = "Trans Type:";
+    var transType = "Sale";
+
+    padSize = receiptWidth - (transTypeLabel.length + transType.length);
+
+    spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    receipt += transTypeLabel + spacer + transType + "\n";
+
+    var anythingToPrint = false;
+
+    if (cart.length > 0) {
+      console.log("Receipt printing, detected wallets.");
+      anythingToPrint = true;
+    } else {
+      console.log("Receipt printing, did not detect any wallets.");
+    }
+    // if(cart.ProductLineItems != undefined){
+    //   if (cart.ProductLineItems.length > 0) {
+    //     console.log("Receipt printing, detected products.");
+    //     anythingToPrint = true;
+    //   } else {
+    //     console.log("Receipt printing, did not detect any products.");
+    //   }
+    // }
+
+
+    if (anythingToPrint) {
+      console.log("Detected items to print.");
+    } else {
+      console.warn("Receipt printing, failed to detect anything to print.");
+      return;
+    }
+
+    // if (cart.ProductLineItems > 0) {
+    //   console.log("Receipt printing, detected products.");
+    // }
+
+    //Add a spacer due to multiple cards on order
+    receipt += "\n";
+
+    // if(transactionObj.isMerchandise != "true" || transactionObj.walletItemId != "99")
+
+    var walletContents
+    cart.forEach(element => {
+      if (element.IsMerchandise == true) {
+        isMerchandise = element.IsMerchandise
+        walletTypeId = element.walletTypeId
+        JSON.parse(catalog).Offering.forEach(catalogElement => {
+          if (catalogElement.Ticket != undefined) {
+            if (catalogElement.ProductIdentifier == element.productIdentifier) {
+              return element.description = catalogElement.Ticket.Description
+            }
+          }
+        });
+        var lineItem = element.description + "";
+        var lineItemQty = " - Qty: " + element.quantity + " ";
+        if (lineItem.length > (35 - lineItemQty.length)) {
+          lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+        }
+
+        lineItem = lineItem + lineItemQty + "                                   ";
+        lineItem = lineItem.substring(0, 35);
+
+        var subtotalStr = "          $" + (element.unitPrice * element.quantity).toFixed(2);
+
+        subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+        receipt += lineItem + subtotalStr + "\n\n";
+      } else {
+        walletContents = element.walletContentItems
+        console.log("walletContents", walletContents);
+        walletContents.forEach(item => {
+          walletTypeId = item.walletTypeId
+          isMerchandise = item.IsMerchandise
+          JSON.parse(catalog).Offering.forEach(catalogElement => {
+            if (catalogElement.Ticket != undefined) {
+              if (catalogElement.ProductIdentifier == item.productIdentifier) {
+                return item.description = catalogElement.Ticket.Description
+              }
+            }
+          });
+          var lineItem = item.description + "";
+          var lineItemQty = " - Qty: " + item.quantity + " ";
+          if (lineItem.length > (35 - lineItemQty.length)) {
+            lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+          }
+
+          lineItem = lineItem + lineItemQty + "                                   ";
+          lineItem = lineItem.substring(0, 35);
+
+          var subtotalStr = "          $" + (item.unitPrice * item.quantity).toFixed(2);
+
+          subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+          receipt += lineItem + subtotalStr + "\n\n";
+
+        })
+      }
+
+
+
+    });
+
+
+
+    var totalDue = localStorage.getItem("transactionAmount")
+    var taxtotalDue = taxAmountValue
+    var faretotalDue = localStorage.getItem("transactionAmount")
+
+    var faretotalStr = "";
+    var taxtotalStr = "";
+
+    var totalStr = "";
+
+    if ("0" == totalDue) {
+      totalStr = '$0.00';
+    } else {
+      totalStr = "$" + Number(totalDue).toFixed(2);
+    }
+
+    if ("0" == faretotalDue) {
+      faretotalStr = '$0.00';
+    } else {
+      faretotalStr = "$" + Number(faretotalDue).toFixed(2);
+    }
+
+    if (0 == taxtotalDue) {
+      taxtotalStr = '$0.00';
+    } else {
+      taxtotalStr = "$" + taxtotalDue.toFixed(2);
+    }
+
+    totalStr = "                    " + totalStr;
+    faretotalStr = "              " + faretotalStr;
+    taxtotalStr = "              " + taxtotalStr;
+    totalStr = totalStr.substring(totalStr.length - 20);
+
+    receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
+    receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
+
+    receipt += "\nTOTAL:                   " + totalStr + "\n\n";
+
+    var paymentAmount = "";
+    var paymentId = 0;
+
+    // possible add for payment type and change due
+    paymentsStore.forEach(paymentRecord => {
+      paymentId = paymentRecord.paymentMethodId;
+      paymentTypeText = ""
+
+      switch (paymentId) {
+        case 1:
+          paymentTypeText = "INVOICED"
+          break;
+        case 2:
+          paymentTypeText = "CASH"
+          break;
+        case 3:
+          paymentTypeText = "CHECK"
+          break;
+        case 4:
+          paymentTypeText = "AMEX"
+          break;
+        case 5:
+          paymentTypeText = "VISA"
+          break;
+        case 6:
+          paymentTypeText = "MASTERCARD"
+          break;
+        case 7:
+          paymentTypeText = "DISCOVER"
+          break;
+        case 8:
+          paymentTypeText = "COMP"
+          break;
+        case 9:
+          paymentTypeText = "CREDIT"
+          break;
+        case 10:
+          paymentTypeText = "FARE_CARD"
+          break;
+        case 11:
+          paymentTypeText = "VOUCHER"
+          break;
+        case 12:
+          paymentTypeText = "STORED_VALUE"
+          break;
+        default:
+          paymentTypeText = "UNKNOWN"
+          break;
+      }
+
+      // if the payment method is cash, you want to give the full amount tendered.
+      //    that is the amount we stored + the change due
+      if (null != paymentId) {
+        if (2 == paymentId) {
+          paymentAmount = "          $" + (changeDue + Number(paymentRecord.amount)).toFixed(2);
+        } else {
+          if (paymentRecord.amount != null) {
+            paymentAmount = "          $" + Number(paymentRecord.amount).toFixed(2);
+          }
+        }
+      }
+
+      var paymentTenderedItem = "Payment tendered: " + paymentTypeText + "                                   ";
+
+      paymentTenderedItem = paymentTenderedItem.substring(0, 35);
+
+      paymentAmount = paymentAmount.substring(paymentAmount.length - 10);
+
+      receipt += "\n" + paymentTenderedItem + paymentAmount + "\n";
+
+    });
+
+    // if cash was one of your payment types, figure out if there's any change due
+    if (paymentId == 2) {
+      var changeDueLabel = "CHANGE DUE:              ";
+      var changeDueStr = "";
+
+      changeDueStr = "$" + changeDue.toFixed(2);
+      changeDueStr = "                    " + changeDueStr;
+
+      changeDueStr = changeDueStr.substring(changeDueStr.length - 20);
+
+      receipt += "\n" + changeDueLabel + changeDueStr;
+    }
+ 
+    if (isMerchandise == "false" || (walletTypeId != "10" && walletTypeId != undefined) ) {
+      var cardBalance = "",
+        textProductType = "",
+        remainingRides: any = 0;
+
+      receipt += "\n\n             Current Card Balance\n\n";
+      var cardStore = JSON.parse(localStorage.getItem("printCardData"));
+
+      var receiptWidth = 44;
+      var dashes = "";
+      while (dashes.length <= receiptWidth) {
+        dashes += "-";
+      }
+
+      receipt += dashes + "\n";
+      var PID = cardStore.printed_id;
+      var cardText = "Card ID:";
+      receipt += cardText;
+      padSize = receiptWidth - (cardText.length + PID.length);
+      spacer = '';
+
+      while (spacer.length <= (padSize - 1)) {
+        spacer += " ";
+      }
+
+      receipt += spacer + PID + "\n";
+
+      if (cardStore.products) {
+
+        for (var i = 0; i < cardStore.products.length; i++) {
+
+          var dataItem = cardStore.products[i];
+
+          var productType = dataItem.product_type;
+          var designator = dataItem.designator;
+          var days = dataItem.days;
+          var rechargesPending = dataItem.recharges_pending;
+          var remainingValue = dataItem.remaining_value;
+          var remainingRides = dataItem.remaining_rides;
+          var start_date = dataItem.start_date_str;
+          var exp_date = dataItem.exp_date_str;
+          var start_date_epoch_days = dataItem.start_date_epoch_days;
+          var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+          var bad_listed = dataItem.is_prod_bad_listed;
+          var textProductType = '';
+          var cardBalance = '';
+          var productDescription = '';
+          var productStatus = '';
+
+          switch (productType) {
+            case 1:
+
+              if (exp_date_epoch_days > 1) {
+                cardBalance = "Exp: " + exp_date;
+              } else {
+                cardBalance = (days + 1) + " Days";
+              }
+
+              productDescription = (days + 1) + " Day Pass";
+
+              if (rechargesPending > 0) {
+                productStatus += " (" + rechargesPending + " Pending)"
+              }
+
+              break;
+            case 2:
+              if (1 == remainingRides) {
+                cardBalance = remainingRides + " Ride";
+              } else {
+                cardBalance = remainingRides + " Rides";
+              }
+              productDescription = 'Stored Ride Pass';
+              break;
+            case 3:
+
+              var remaining_value = 0;
+
+              if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+                remaining_value = dataItem.remaining_value / 100;
+              }
+
+              productDescription = 'Pay As You Go';
+              cardBalance = "$" + remaining_value.toFixed(2);
+
+              break;
+            case 7:
+
+              productDescription = "Employee Pass";
+
+              if (exp_date_epoch_days > 1) {
+                cardBalance = "Exp: " + exp_date;
+              }
+
+              break;
+            default:
+              productDescription = "Unknown Product";
+              break;
+          }
+
+          // var ticketKey = productType + "_" + designator;
+
+          //  var carddata = new Array(cardStore);
+
+          //  cardStore.products.forEach(cardElement => {
+          JSON.parse(catalog).Offering.forEach(catalogElement => {
+            if (catalogElement.Ticket != undefined) {
+              if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
+                //  var catalogdata = {
+                //    "ticketid": 
+                //  }
+                return productDescription = catalogElement.Ticket.Description
+
+              }
+            }
+          });
+          // });
+
+
+          // don't print anything if your stored value is $0
+          if ((3 != productType) || (0 < remaining_value)) {
+
+            var receiptWidth = 44;
+            var padSize = 0;
+            var maxDescriptionLength = receiptWidth - 16;
+
+            if (productDescription.length >= maxDescriptionLength) {
+              productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+            }
+
+            receipt += productDescription;
+
+            padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+            var spacer = '';
+
+            while (spacer.length <= (padSize - 1)) {
+              spacer += " ";
+            }
+
+            receipt += spacer + cardBalance + "\n";
+          }
+        }
+        receipt += "\n";
+      }
+      else {
+        console.log("Receipt printing: No smart cards stored.");
+      }
+
+    }
+    receipt += "\n\n";
+    console.log("receipt", receipt)
+    // APOS.util.PrintService.printReceipt(receipt, timestamp);
+    this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
+    console.log(receipt + 'generateReceipt receipt ');
+    console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
+  }
+
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }

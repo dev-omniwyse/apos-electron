@@ -10,6 +10,7 @@ import { FareCardService } from 'src/app/services/Farecard.service';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { Globals } from 'src/app/global';
 import { AddProductComponent } from '../add-product/add-product.component';
+import { Utils } from 'src/app/services/Utils.service';
 declare var $: any;
 declare var WebCamera: any;
 declare var dialog: any;
@@ -114,6 +115,8 @@ export class ReadcardComponent implements OnInit {
     backendSalesReport = []
     paymentReport: any
     shoppingcart: any;
+    bonusRidesCountText : string;
+    nextBonusRidesText: string;
 
     constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
@@ -121,7 +124,7 @@ export class ReadcardComponent implements OnInit {
         if (this.electronService.isElectronApp) {
             this.logger = this.electronService.remote.require("electron-log");
         }
-
+        localStorage.removeItem("readCardData");
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log("print sales data", data)
             if (data != undefined && data.length != 0) {
@@ -182,12 +185,11 @@ export class ReadcardComponent implements OnInit {
                     });
                     localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                     console.log('this.carddata', this.carddata);
-                    this.getProductCatalogJSON();
-                    debugger;
+                    this.showCardContents();
                     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-                    ShoppingCartService.getInstance.shoppingCart = null;
+                    // ShoppingCartService.getInstance.shoppingCart = null;
                 });
             }
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
@@ -251,21 +253,22 @@ export class ReadcardComponent implements OnInit {
                             this.cardType = element.Description;
                         }
                     });
-                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
-                    this.getProductCatalogJSON();
-                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering);
-                    ShoppingCartService.getInstance.shoppingCart = null;
-                    debugger;
-                    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-                    var timer = setTimeout(() => {
-                        this.router.navigate(['/addproduct']);
-                        clearTimeout(timer);
-                    }, 1000);
-                    // } else {
-                    // this.carddata.length = [];
-                    // $("#newCardValidateModal").modal('show');
-                    // }
+                    if (Utils.getInstance.isNew(this.carddata[0])) {
+                        localStorage.setItem('userProfile', JSON.stringify(this.cardType));
+                        this.getCatalogJSON();
+                        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                        ShoppingCartService.getInstance.shoppingCart = null;
+                        localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+                        var timer = setTimeout(() => {
+                            this.router.navigate(['/addproduct']);
+                            clearTimeout(timer);
+                        }, 1000);
+                    }
+                    else {
+                        this.carddata.length = [];
+                        $("#newCardValidateModal").modal('show');
+                    }
                 });
             }
         });
@@ -284,102 +287,112 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-
-
-        this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
-            if (data != undefined && data != "") {
-                this.readCardData = [];
-                // this.show = true;
-                this._ngZone.run(() => {
-                    // this.catalogData = new Array(JSON.parse(data));
-                    // console.log('this.carddata', this.catalogData);
-                    localStorage.setItem('catalogJSON', JSON.stringify(data));
-                    let item = JSON.parse(localStorage.getItem("catalogJSON"));
-                    this.catalogData = JSON.parse(item).Offering;
-                    var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
-                    if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
-                        return;
-                    var keepGoing = true;
-                    if (isMagnetic == false) {
-                        this.carddata[0].products.forEach(cardElement => {
-
-                            this.catalogData.forEach(catalogElement => {
-                                if (catalogElement.Ticket && keepGoing) {
-                                    if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
-                                        var remainingValue = "";
-                                        var productName = "";
-                                        var status = "Active";//cardElement.status;
-                                        if (cardElement.product_type == 1)
-                                            productName = "Frequent Ride"
-                                        else if (cardElement.product_type == 2)
-                                            productName = "Stored Ride"
-                                        else if (cardElement.product_type == 3)
-                                            productName = "Pay As You Go"
-                                        if (cardElement.product_type == 1) {
-                                            remainingValue = cardElement.days + " Days";
-                                            var pendingText = (cardElement.recharges_pending > 0) ? " (" + cardElement.recharges_pending + " Pending)" : "";
-                                            status = status + pendingText;
-                                        }
-                                        else if (cardElement.product_type == 2)
-                                            remainingValue = cardElement.remaining_rides + " Rides";
-                                        else
-                                            remainingValue = "$ " + cardElement.remaining_value / 100;
-                                        var jsonObject = {
-
-                                            "product": productName,
-                                            "description": catalogElement.Ticket.Description,
-                                            "status": status,
-                                            "remainingValue": remainingValue
-                                        }
-                                        keepGoing = false;
-                                        this.readCardData.push(jsonObject);
-
-                                    }
-                                }
-                                if (catalogElement.Description === "Magnetics") {
-                                    localStorage.setItem("magneticCardCost", catalogElement.UnitPrice);
-                                    localStorage.setItem("magneticProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
-                                }
-                                if (catalogElement.Description === "Smart Card") {
-                                    localStorage.setItem("smartCardCost", catalogElement.UnitPrice);
-                                    localStorage.setItem("smartCardProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
-                                }
-                            });
-                            if (keepGoing == true) {
-                                var jObject = {
-
-                                    "product": "Pay As You Go",
-                                    "description": "Frequent Rider",
-                                    "status": cardElement.status,
-                                    "balance": cardElement.balance
-                                }
-                                this.readCardData.push(jObject);
-                            }
-
-                            keepGoing = true;
-
-                        });
-                    }
-                    console.log("pushedData --", this.readCardData)
-                    localStorage.setItem("cardProductData", JSON.stringify(this.readCardData))
-                    if (!isExistingCard) {
-                        var timer = setTimeout(() => {
-                            this.router.navigate(['/addproduct']);
-                            clearTimeout(timer);
-                        }, 1000);
-                    }
-                });
-            }
+        this.electronService.ipcRenderer.on('getProductCatalogResult', (event, data) => {
+            localStorage.setItem('catalogJSON', JSON.stringify(data));
+            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            this.catalogData = JSON.parse(item).Offering;
             this.setOffering();
         });
+        // );
 
     }
 
+    showCardContents() {
+        // this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
+        // if (data != undefined && data != "") {
+        this.readCardData = [];
+        // this.show = true;
+        this._ngZone.run(() => {                 
+            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            this.catalogData = JSON.parse(item).Offering;
+            var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
+            this.getBonusRidesCount();
+            this.getNextBonusRides();
+            if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
+                return;
+            var keepGoing = true;
+            if (isMagnetic == false) {
+                this.carddata[0].products.forEach(cardElement => {
+
+                    this.catalogData.forEach(catalogElement => {
+                        if (catalogElement.Ticket && keepGoing) {
+                            if (catalogElement.Ticket.Group == cardElement.product_type && (catalogElement.Ticket.Designator == cardElement.designator)) {
+                                var remainingValue = "";
+                                var productName = "";
+                                var status = "Active";//cardElement.status;
+                                if (cardElement.product_type == 1)
+                                    productName = "Frequent Ride"
+                                else if (cardElement.product_type == 2)
+                                    productName = "Stored Ride"
+                                else if (cardElement.product_type == 3)
+                                    productName = "Pay As You Go"
+                                if (cardElement.product_type == 1) {
+                                    remainingValue = ( cardElement.days + 1 )+ " Days";
+                                    var pendingText = (cardElement.recharges_pending > 0) ? " (" + cardElement.recharges_pending + " Pending)" : "";
+                                    status = status + pendingText;
+                                }
+                                else if (cardElement.product_type == 2)
+                                    remainingValue = cardElement.remaining_rides + " Rides";
+                                else
+                                    remainingValue = "$ " + cardElement.remaining_value / 100;
+                                var jsonObject = {
+
+                                    "product": productName,
+                                    "description": catalogElement.Ticket.Description,
+                                    "status": status,
+                                    "remainingValue": remainingValue
+                                }
+                                keepGoing = false;
+                                this.readCardData.push(jsonObject);
+
+                            }
+                        }
+                        if (catalogElement.Description === "Magnetics") {
+                            localStorage.setItem("magneticCardCost", catalogElement.UnitPrice);
+                            localStorage.setItem("magneticProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
+                        }
+                        if (catalogElement.Description === "Smart Card") {
+                            localStorage.setItem("smartCardCost", catalogElement.UnitPrice);
+                            localStorage.setItem("smartCardProductIndentifier", JSON.stringify(catalogElement.ProductIdentifier));
+                        }
+                    });
+                    if (keepGoing == true) {
+                        var jObject = {
+
+                            "product": "Pay As You Go",
+                            "description": "Frequent Rider",
+                            "status": cardElement.status,
+                            "balance": cardElement.balance
+                        }
+                        this.readCardData.push(jObject);
+                    }
+
+                    keepGoing = true;
+
+                });
+            }
+            console.log("pushedData --", this.readCardData)
+            localStorage.setItem("cardProductData", JSON.stringify(this.readCardData))
+            if (!isExistingCard) {
+                var timer = setTimeout(() => {
+                    this.router.navigate(['/addproduct']);
+                    clearTimeout(timer);
+                }, 1000);
+            }
+        }); 
+    }
     showErrorMessages() {
         $("#errorModal").modal('show');
     }
     /* JAVA SERVICE CALL */
 
+    getBonusRidesCount(){
+        this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.carddata[0]);
+    }
+    
+    getNextBonusRides(){
+        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
+    }
     readCard(event) {
         localStorage.removeItem('shoppingCart');
         isExistingCard = true;
@@ -400,15 +413,19 @@ export class ReadcardComponent implements OnInit {
 
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "false");
-        this.electronService.ipcRenderer.send('newfarecard', cardName)
+        this.electronService.ipcRenderer.send('newfarecard', cardName);
     }
 
     nonFareProduct() {
         localStorage.removeItem('shoppingCart');
-        localStorage.setItem("isNonFareProduct", "true");
+        ShoppingCartService.getInstance.shoppingCart = null;
+        this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        this.shoppingcart = FareCardService.getInstance.addNonFareWallet(this.shoppingcart);
+        localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
         localStorage.setItem("isMagnetic", "false");
+        localStorage.setItem("isNonFareProduct", "true");
         this.getProductCatalogJSON();
-        
+
         var timer = setTimeout(() => {
             this.router.navigate(['/addproduct']);
             clearTimeout(timer);
@@ -438,6 +455,10 @@ export class ReadcardComponent implements OnInit {
     writeCard(event) {
         this.electronService.ipcRenderer.send('writeSmartcard', cardName)
         console.log('write call', cardName)
+    }
+    getCatalogJSON() {
+        this.logger.info('this is a message from angular');
+        this.electronService.ipcRenderer.send('productCatalogJson', cardName);
     }
 
     getProductCatalogJSON() {
@@ -491,6 +512,8 @@ export class ReadcardComponent implements OnInit {
     }
 
     Back() {
+        localStorage.removeItem('readCardData');
+        localStorage.removeItem('printCardData');
         this.isShowCardOptions = true;
         // this.carddata.length = 0;
     }
@@ -520,11 +543,9 @@ export class ReadcardComponent implements OnInit {
     ngOnInit() {
         this.electronService.ipcRenderer.send("terminalConfigcall");
         ShoppingCartService.getInstance.shoppingCart = null;
-        debugger;
         //load catalogJSON
-        // this.getProductCatalogJSON();
+        this.getCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
-        localStorage.setItem('shoppingcart', JSON.stringify(this.shoppingcart));
         if (localStorage.getItem("shiftReport") != undefined) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
