@@ -16,7 +16,7 @@ body {
 .shift-data-sets {
     display: flex;
     margin: 0;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 290px);
 }
 
 .shift-data-set {

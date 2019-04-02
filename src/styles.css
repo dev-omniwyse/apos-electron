@@ -44,7 +44,7 @@ html,
 body {
     font-family: "RobotoRegular", Arial, HelveticaNeue, Helvetica, "BBAlpha Sans", sans-serif!important;
     font-size: 100%;
-    font-weight: normal;
+    font-weight: normal!important;
     -webkit-text-size-adjust: none;
     margin: 0;
     cursor: default
@@ -55,9 +55,7 @@ body {
 }
 
 .header-logo img {
-    padding: 0;
-    width: 194px;
-    height: 74px;
+    padding: 14px 0 2px 13px;
 }
 
 .img-responsive {
@@ -526,7 +524,7 @@ button:disabled {
 .modal-footer .btn-default {
     border-radius: 16px!important;
     font-size: 21px!important;
-    padding: 15px 65px!important;
+    padding: 1.5vh 4vh!important;
     margin: 0 5px!important;
     width: inherit!important;
     text-transform: uppercase;
@@ -592,4 +590,12 @@ button:disabled {
     bottom: 0;
     margin: auto;
     display: table;
+}
+
+.modal-content {
+    padding: 2px;
+}
+
+button:focus {
+    outline: none;
 }

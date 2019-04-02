@@ -11,13 +11,13 @@
 .cardBtn {
     width: 100%;
     border: 1px solid #3b80c3;
-    border-radius: 3px;
+    border-radius: 14px;
     background-color: #3b80c3;
-    padding: 2vh 2vh;
+    padding: 1vh 2vh;
     color: #fff;
     font-size: 3vh;
     position: relative;
-    margin: 1px 0 10px;
+    margin: 10px 0 10px;
     float: left;
 }
 
@@ -86,7 +86,7 @@
     border: 1px solid #d65400;
     border-radius: 7px;
     background-color: #d65400;
-    padding: 4vh 7vh;
+    padding: 3vh 6vh;
     color: #fff;
     font-size: 3vh;
     position: absolute;
@@ -146,7 +146,7 @@ button:disabled {
 
 .cancel-btn-pop {
     border: 1px solid #d65400;
-    border-radius: 3px;
+    border-radius: 10px;
     background-color: #d65400;
     padding: 10px 15px;
     color: #fff;
@@ -155,4 +155,12 @@ button:disabled {
 
 .modal-txt-h {
     padding: 25px 0 0 25px;
+}
+
+.home-btns-set-padd {
+    padding: 14vh 0 0 0;
+}
+
+.arrow_right:before {
+    font-size: 40px;
 }

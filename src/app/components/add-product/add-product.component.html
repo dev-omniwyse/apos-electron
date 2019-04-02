@@ -10,14 +10,14 @@
 <div class="main-container" *ngIf="!isCustomAmount && !applyCompShow">
     <div class="container-left">
         <div class="header-l">
-            <img src="assets/images/shopping-cart.svg" width="30" />
+            <img src="assets/images/icon-cart.png" />
             <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">View
-                Card</button>
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">View
-                    Card</button>
+            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
+                CARD</button>
+            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
+                    CARD</button>
 
-            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">Add Card</button>
+            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
         </div>
         <div class="modal fade" id="viewCard" role="dialog">
             <div class="modal-dialog modal-custom  modal-dialog-centered">
@@ -127,18 +127,21 @@
         </div>
         <div class="container-l-app">
             <div>
-                <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
-                <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
+                <div *ngIf="!isMerchendise" class="cont-products-head"> FARE PRODUCTS</div>
+                <div *ngIf="isMerchendise" class="cont-products-head"> NON FARE PRODUCTS</div>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
-                    <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()">
-                       <span class="glyphicon glyphicon-minus-sign"></span>
+                    <div class="pull-right remove-slide remove-icon" (click)="removeCurrentWalletLineItem()">
+                            <img src="assets/images/icon-rmproduct.png" />
+                       <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeProduct(item)"><span
-                       class="glyphicon glyphicon-minus-sign"></span></div>
+                    <div class="pull-right remove-icon" (click)="removeProduct(item)">
+                        <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
+            <img src="assets/images/icon-rmproduct.png" />
+        </div>
         </span>
         <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
             <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
@@ -230,7 +233,7 @@
 </div>
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
-    <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
+    <button class="btn-orange-bottom" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
     <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
 </div>
 </div>
@@ -336,7 +339,7 @@
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -363,7 +366,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -387,7 +390,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -404,7 +407,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardErrorModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -421,7 +424,7 @@
                 </div>
             </div>
             <div class="modal fade" id="checkModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -437,7 +440,7 @@
                 </div>
             </div>
             <div class="modal fade" id="fareCardModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -459,7 +462,7 @@
                 </div>
             </div>
             <div class="modal fade" id="fareApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -476,7 +479,7 @@
                 </div>
             </div>
             <div class="modal fade" id="voucherModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -498,7 +501,7 @@
                 </div>
             </div>
             <div class="modal fade" id="voucherErrorModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -519,7 +522,7 @@
                 </div>
             </div>
             <div class="modal fade" id="voucherApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -536,7 +539,7 @@
                 </div>
             </div>
             <div class="modal fade" id="thirdPaymentModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Error</h4>
@@ -551,7 +554,7 @@
                 </div>
             </div>
             <div class="modal fade" id="payasyougoModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             Pay As You Go
@@ -575,7 +578,7 @@
                 </div>
             </div>
             <div class="modal fade" id="compModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -601,7 +604,7 @@
     </div>
 </div>
 <div class="modal fade" id="newCardValidationModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -618,7 +621,7 @@
     </div>
 </div>
 <div class="modal fade" id="magneticCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -634,7 +637,7 @@
     </div>
 </div>
 <div class="modal fade" id="maxCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -683,7 +686,7 @@
 </div> -->
 
 <div class="modal fade" id="removeProductModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
