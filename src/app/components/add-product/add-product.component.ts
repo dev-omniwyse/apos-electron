@@ -1088,14 +1088,20 @@ export class AddProductComponent implements OnInit {
   }
 
   displayDigit(digit) {
+    
+    if(this.totalRemaining == this.checkoutTotal) {
+      this.checkoutTotal = 0;
+    }
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
     this.checkoutTotal += digit;
     this.checkoutTotal = this.checkoutTotal / 100;
+
     if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
     }
+ 
   }
   enterCustomAmount(productTotal) {
     let offering = this.customPayAsYouGo;
