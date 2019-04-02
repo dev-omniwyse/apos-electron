@@ -287,7 +287,6 @@ export class AddProductComponent implements OnInit {
 
       }
     });
-
     var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
         this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
@@ -409,11 +408,21 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem("MerchandiseData");
     localStorage.removeItem("MagneticData");
     this.calsifilter = false
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
     this.router.navigate(['/readcard'])
   }
 
   ngOnDestroy() {
     // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
   }
 
 
@@ -639,7 +648,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-     if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -793,12 +802,12 @@ export class AddProductComponent implements OnInit {
     // Utils.getInstance.removeWalletFromLocalStore(this.cardJson, );
 
     this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
-    
+
     this.currentWalletLineItemIndex = this.walletItems.length - 1;
-    
+
     this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
     if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
-      this.clickOnMerch() ;
+      this.clickOnMerch();
       this.isMerchendise = true;
     }
     this.getSubTotal(this.currentWalletLineItem);
@@ -1132,6 +1141,10 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem("cardsData");
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
     this.router.navigate(['/readcard'])
   }
 
@@ -1233,7 +1246,7 @@ export class AddProductComponent implements OnInit {
   saveTransaction() {
     try {
       localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-      if (this.isSmartCardFound()) {        
+      if (this.isSmartCardFound()) {
         this.router.navigate(['/carddata']);
       } else {
         this.saveTransactionForMerchandiseAndMagnetic()
@@ -1250,7 +1263,7 @@ export class AddProductComponent implements OnInit {
       //   if(paymentMethodId == "8"){
       //     this.router.navigate(['/comp']);
       //   }
-      
+
       // var walletObj: any = [];
       // var jsonMagneticObj: any = [];
       // var jsonMerchandiseObj: any = [];
@@ -1494,8 +1507,8 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-        let indexOfPayment =  this.checkIsPaymentMethodExists(2);
-        if(indexOfPayment == -1) {
+        let indexOfPayment = this.checkIsPaymentMethodExists(2);
+        if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = this.checkoutTotal;
           payment.$paymentMethodId = 2;
@@ -1508,7 +1521,7 @@ export class AddProductComponent implements OnInit {
           this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           this.isCashApplied = true;
         }
-   
+
       }
     } else if (this.totalRemaining < this.checkoutTotal) {
       // this.isCashApplied = true;
@@ -1524,7 +1537,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 2
     payment.$amount = this.checkoutTotal
     payment.$comment = null;
-    if(this.checkIsPaymentMethodExists(2) == -1) {
+    if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }
 
@@ -1578,21 +1591,21 @@ export class AddProductComponent implements OnInit {
   }
 
   voucherModalApply() {
-    if(this.totalDue == this.checkoutTotal) {
+    if (this.totalDue == this.checkoutTotal) {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
       this.voucherRemaining = this.totalRemaining;
       let payment = new PaymentType();
       payment.$paymentMethodId = 11
       payment.$amount = this.checkoutTotal
       payment.$comment = null;
-      if(this.checkIsPaymentMethodExists(11) == -1) {
+      if (this.checkIsPaymentMethodExists(11) == -1) {
         this.shoppingcart._payments.push(payment);
       }
     } else {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
       this.voucherRemaining = this.totalRemaining;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(11);
-      if(indexOfPayment == -1) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(11);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 11;
@@ -1607,7 +1620,7 @@ export class AddProductComponent implements OnInit {
         console.log(this.shoppingcart._payments)
         this.isVoucherApplied = true;
       }
-      
+
     }
     if (this.voucherRemaining !== 0) {
       $('#voucherApplyModal').modal('hide');
@@ -1664,8 +1677,8 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-        let indexOfPayment =  this.checkIsPaymentMethodExists(3);
-        if(indexOfPayment == -1) {
+        let indexOfPayment = this.checkIsPaymentMethodExists(3);
+        if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = this.checkoutTotal;
           payment.$paymentMethodId = 3;
@@ -1680,7 +1693,7 @@ export class AddProductComponent implements OnInit {
           console.log(this.shoppingcart._payments)
           this.isCheckApplied = true;
         }
-   
+
       }
 
     }
@@ -1694,13 +1707,13 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 3
     payment.$amount = this.checkoutTotal
     payment.$comment = null;
-    if(this.checkIsPaymentMethodExists(3) == -1) {
+    if (this.checkIsPaymentMethodExists(3) == -1) {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
     this.saveTransaction();
   }
-  
+
 
 
 
@@ -1749,8 +1762,8 @@ export class AddProductComponent implements OnInit {
 
   compensation() {
     if (this.totalRemaining == this.checkoutTotal) {
-      let indexOfPayment =  this.checkIsPaymentMethodExists(8);
-      if(indexOfPayment == -1) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 8;
@@ -1761,9 +1774,9 @@ export class AddProductComponent implements OnInit {
       this.saveTransaction();
     } else if (this.totalRemaining > this.checkoutTotal) {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-      this.compDue= this.totalRemaining;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(8);
-      if(indexOfPayment == -1) {
+      this.compDue = this.totalRemaining;
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 8;
@@ -1778,7 +1791,7 @@ export class AddProductComponent implements OnInit {
         this.isCompApplied = true;
         this.applyCompShow = false;
       }
-     
+
     }
 
   }
@@ -1791,7 +1804,7 @@ export class AddProductComponent implements OnInit {
     if (this.reason == true && value == "OTHERS") {
       this.reason = false
       this.reasonForComp = "";
-    } 
+    }
   }
 
   cardApplied() {
@@ -1845,9 +1858,9 @@ export class AddProductComponent implements OnInit {
   }
 
   cardPayment() {
-    if(this.totalRemaining == this.checkoutTotal) {
-      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
-      if(indexOfPayment == -1) {
+    if (this.totalRemaining == this.checkoutTotal) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 9;
@@ -1857,9 +1870,9 @@ export class AddProductComponent implements OnInit {
       this.doPinPadTransaction();
     } else {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-      this.cardAppliedTotal= this.checkoutTotal;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
-      if(indexOfPayment == -1) {
+      this.cardAppliedTotal = this.checkoutTotal;
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 9;
