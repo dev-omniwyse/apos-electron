@@ -21,9 +21,9 @@ body {
 
 .shift-data-set {
     flex: 1 1 50%;
-    margin: 0 5px;
+    margin: 0;
     border-radius: 3px;
-    padding: 11px;
+    padding: 10px 0;
 }
 
 .shift-data-set table {
@@ -34,7 +34,7 @@ body {
 .shift-data-set table td,
 .shift-data-set table th {
     border: 1px solid #f0f3fa;
-    padding: 1vh;
+    padding: 1vh 0;
     font-size: 2vh;
     color: #003c79;
 }
@@ -48,11 +48,6 @@ body {
 }
 
 .shift-sales-txt {
-    font-size: 18px;
+    font-size: 4vh;
     color: #04177b;
-    padding-top: 11px;
-}
-
-.shift-sales-head {
-    margin-bottom: 20px;
 }

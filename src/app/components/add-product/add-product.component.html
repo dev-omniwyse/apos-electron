@@ -455,7 +455,7 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#fareApplyModal">Yes</button>
                         </div>
                     </div>
@@ -494,7 +494,7 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)='voucherModalApply()'>Yes</button>
                         </div>
                     </div>
@@ -696,7 +696,7 @@
                 <p>By continuing, the "{{productToRemove?.description}}" will be permanently deleted.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeProductConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -756,7 +756,7 @@
                 <p>By continuing, you will remove card {{currentWalletLineItem?._cardPID}}.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeCurrentWalletLineItemConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -770,7 +770,7 @@
                 <p>By continuing, you will remove card Magnetic {{currentMagneticIndex+1}}.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeMagneticCardConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -819,7 +819,7 @@
                 <p>By continiuing,any payment methods that have been applied will be canceled.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="cancelCheckOutConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>

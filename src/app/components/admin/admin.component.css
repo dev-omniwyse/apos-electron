@@ -436,12 +436,6 @@
     color: #000;
 }
 
-.device-bottom {
-    position: absolute;
-    bottom: 2vh;
-    left: 0;
-}
-
 @media (max-width: 1450px) {
     .cr-right-btns button {
         padding: 1.65vh 15px;

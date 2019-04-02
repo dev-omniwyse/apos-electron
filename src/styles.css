@@ -599,3 +599,15 @@ button:disabled {
 button:focus {
     outline: none;
 }
+
+.modal-footer .btn-cancel {
+    background-color: #fafafa;
+    border: 1px solid #dedede;
+    color: #323232;
+    border-radius: 16px!important;
+    font-size: 21px!important;
+    padding: 1.5vh 4vh!important;
+    margin: 0 5px!important;
+    width: inherit!important;
+    text-transform: uppercase;
+}
