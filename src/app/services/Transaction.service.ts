@@ -78,7 +78,8 @@ export class TransactionService {
                     walletProductIdentifier = wallet._offering.ProductIdentifier;
                     walletCost = wallet._offering.UnitPrice;
                     walletUnitPrice = wallet._unitPrice;
-                    if (walletUnitPrice != 0) {
+                    debugger
+                    if (wallet._isNew) {
                         walletQuantitySold = 1;
                     }
 

@@ -53,7 +53,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
             for (var report = 0; report < paymentReport.length; report++) {
               paymentReport[report].userID = userID
               paymentReport[report].shiftType = shiftType
-              this.totalSold = this.totalSold + paymentReport[report].paymentAmount
+              this.totalSold = +(this.totalSold + paymentReport[report].paymentAmount).toFixed(2);
               this.backendPaymentReport.push(paymentReport[report]);
             }
             console.log(" this.backendPaymentReport", this.backendPaymentReport)
@@ -61,10 +61,10 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
             this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
           } else {
-            this.totalSold = 0
+            this.totalSold = 0.00;
             this.backendPaymentReport = []
             JSON.parse(data).forEach(element => {
-              this.totalSold = this.totalSold + element.paymentAmount
+              this.totalSold = +(this.totalSold + element.paymentAmount).toFixed(2);
             });
             this.salesPaymentData = JSON.parse(data)
           }

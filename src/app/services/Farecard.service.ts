@@ -87,6 +87,7 @@ export class FareCardService {
     //add smart card data - WalletLineItem
     addSmartCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
 
+        debugger;
         /***
          * 1. create local storage
          * 2. push Non fare by default
@@ -129,6 +130,7 @@ export class FareCardService {
         walletLineItem.description = description;
         walletLineItem.walletContents = walletC;
         walletLineItem.encoded = false;
+        walletLineItem.isNew = isNew;
         shoppingCart._walletLineItem.push(walletLineItem);
 
         return shoppingCart;
@@ -196,6 +198,7 @@ export class FareCardService {
         walletLineItem.description = 1+"New Magnetics";
         walletLineItem.walletContents = walletC;
         walletLineItem.encoded = false;
+        walletLineItem.isNew = true;
         shoppingCart._walletLineItem.push(walletLineItem);
 
         return shoppingCart;

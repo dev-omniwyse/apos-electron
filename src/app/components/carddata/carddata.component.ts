@@ -166,6 +166,10 @@ export class CarddataComponent implements OnInit, OnChanges {
 
         });
       }
+       else {
+        $("#cardModal").modal('show');
+        return;
+       }
       // this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
     });
     this.electronService.ipcRenderer.on('printReceiptResult', (event, data) => {
@@ -383,14 +387,12 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
+
     this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
     this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-    this.electronService.ipcRenderer.removeAllListeners("deleteProductsFromCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("doPinpadVoidTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusEncodeResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataEncodeResult");
+    this.electronService.ipcRenderer.removeAllListeners("updateCardDataResult");
+    //this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
     this.router.navigate(['/readcard'])
   }
 
@@ -424,9 +426,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
     this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
     this.electronService.ipcRenderer.removeAllListeners("deleteProductsFromCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("doPinpadVoidTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusEncodeResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataEncodeResult");
     this.router.navigate(['/readcard'])
   }
 
@@ -459,10 +458,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
     this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-    this.electronService.ipcRenderer.removeAllListeners("deleteProductsFromCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("doPinpadVoidTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusEncodeResult");
-    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataEncodeResult");
   }
 
 
