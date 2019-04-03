@@ -40,6 +40,7 @@ export class ShoppingCartService {
 
         let shoppingCart = new ShoppingCart();
         shoppingCart.walletLineItem = [];
+        shoppingCart.transactionID = new Date().getTime();
         shoppingCart.payments = [];
         shoppingCart.activeCardUID = "";
 
