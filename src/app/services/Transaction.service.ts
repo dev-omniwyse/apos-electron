@@ -23,23 +23,13 @@ export class TransactionService {
         TransactionService._transactionService = this;
     }
 
-    isValidMerchandise(wallet) {
-        let flag = true;
-        if ((wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
-            (0 == wallet._walletContents.length)) {
-            flag = false;
-        }
-
-        return flag;
-    }
-
     saveTransaction(shoppingCart, userData) {
 
         let walletLineItem = shoppingCart._walletLineItem;
         let userProfile = JSON.parse(localStorage.getItem("userProfile"));
         let fareCodeDescription = userProfile;
         debugger
-        if (null != walletLineItem && !this.isValidMerchandise(walletLineItem[0])) {
+        if (null != walletLineItem && !Utils.getInstance.isValidMerchandise(walletLineItem[0])) {
             walletLineItem.splice(0, 1);
 
             shoppingCart._walletLineItem = walletLineItem;
@@ -47,7 +37,7 @@ export class TransactionService {
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         let taxAmount = ShoppingCartService.getInstance.getTax();
-        let timeStamp = new Date().getTime();
+        let timeStamp = shoppingCart._transactionID;
 
         transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;

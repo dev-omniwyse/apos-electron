@@ -2,7 +2,7 @@ import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} fro
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-import { concat, timestamp } from 'rxjs/operators';
+import { concat, timestamp, isEmpty } from 'rxjs/operators';
 import { parse } from 'url';
 import { element } from '@angular/core/src/render3';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -504,7 +504,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -594,7 +594,10 @@ export class AddProductComponent implements OnInit {
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
         this.maxLimitErrorMessages = this.getProductLimitMessage()
-        $("#maxCardLimitModal").modal('show');
+        $("#maxCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         return;
       }
     }
@@ -631,7 +634,10 @@ export class AddProductComponent implements OnInit {
     var elementExists = false;
     this.magneticIds.forEach(element => {
       if (element == this.currentMagneticIndex) {
-        $("#magneticCardLimitModal").modal('show');
+        $("#magneticCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         elementExists = true;
       }
     });
@@ -645,7 +651,10 @@ export class AddProductComponent implements OnInit {
 
 
   removeCurrentWalletLineItem() {
-    $("#currentCardRemove").modal('show');
+    $("#currentCardRemove").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeCurrentWalletLineItemConfirmation() {
@@ -690,7 +699,10 @@ export class AddProductComponent implements OnInit {
 
   removeProduct(product) {
     this.productToRemove = product;
-    $("#removeProductModal").modal('show');
+    $("#removeProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeProductConfirmation() {
@@ -723,13 +735,19 @@ export class AddProductComponent implements OnInit {
 
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
-    $("#removeMerchProductModal").modal('show');
+    $("#removeMerchProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeMagneticProduct(merch, j) {
     this.magneticProductToRemove = merch;
     this.currentMagneticProductId = j;
-    $("#removeMagneticProductModal").modal('show');
+    $("#removeMagneticProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
     // var selectedIndex = this.MagneticList.indexOf(merch);
     // this.MagneticList.splice(selectedIndex, 1);
@@ -737,10 +755,38 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if (this.totalDue == 0) {
-      $("#productTotalWarningModal").modal('show');
+    if(Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+      $("#shoppingCartEmptyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       return;
     }
+    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+      $("#emptyMagneticModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    if(this.totalDue > this.terminalConfigJson.MaxTransAmount) {
+      $("#maxTransactionModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    if(this.totalDue < this.terminalConfigJson.MinTransAmount) {
+      $("#minTransactionModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    // if (this.totalDue == 0) {
+    //   $("#productTotalWarningModal").modal('show');
+    //   return;
+    // }
     this.productCheckOut = true;
 
     // var index = 0;
