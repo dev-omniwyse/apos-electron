@@ -846,7 +846,70 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="emptyMagneticModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Cannot purchase magnetic card <br>without a product</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="shoppingCartEmptyModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Cart Empty</h4>
+            </div>
+            <div class="modal-body">
+                <p>The shopping cart is empty.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="maxTransactionModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Transaction amount is above the maximum transaction limit of $ {{terminalConfigJson.MaxTransAmount}}.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="minTransactionModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Transaction amount is below the minimum transaction limit of $ {{terminalConfigJson.MinTransAmount}}.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <div class="main-container" *ngIf="isCustomAmount">
