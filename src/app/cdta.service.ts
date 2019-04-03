@@ -3,6 +3,7 @@ import { Observable, of, throwError, Subject } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap, map } from 'rxjs/operators';
 import { ElectronService } from 'ngx-electron';
+import { MediaType } from './services/MediaType';
 // import { product_log } from '../assets/data/'
 const httpOptions = {
   headers: new HttpHeaders(
@@ -786,9 +787,9 @@ export class CdtaService {
     var padSize = 0;
     var transText = "Trans ID:";
     var isMerchandise = ""
-    var walletTypeId = ""
+    var walletTypeId = 0;
     receipt += transText;
-    padSize = receiptWidth - (transText.length + storedTransactionID.length);
+    padSize = receiptWidth - (transText.length + storedTransactionID.toString().length);
 
     var spacer = '';
 
@@ -872,6 +873,51 @@ export class CdtaService {
 
         receipt += lineItem + subtotalStr + "\n\n";
       } else {
+
+
+        var PID = element.cardPID;
+        var cardText = "Card ID:";
+
+        receipt += cardText;
+        padSize = receiptWidth - (cardText.length + PID.length);
+        spacer = '';
+
+        while (spacer.length <= (padSize - 1)) {
+          spacer += " ";
+        }
+
+        receipt += spacer + PID + "\n";
+
+        var dashes = "";
+        while (dashes.length <= receiptWidth) {
+          dashes += "-";
+        }
+
+        receipt += dashes + "\n";
+        if (element.description == undefined) {
+          var lineItem = "Card:" + PID + "";
+        } else {
+          var lineItem = element.description + "";
+        }
+
+        var lineItemQty = " - Qty: 1 ";
+
+        if (lineItem.length > (35 - lineItemQty.length)) {
+          lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+        }
+
+        lineItem = lineItem + lineItemQty + "                                   ";
+        lineItem = lineItem.substring(0, 35);
+
+        var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
+
+        subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+        receipt += lineItem + subtotalStr + "\n\n";
+
+
+
+
         walletContents = element.walletContentItems
         console.log("walletContents", walletContents);
         walletContents.forEach(item => {
@@ -940,8 +986,8 @@ export class CdtaService {
     taxtotalStr = "              " + taxtotalStr;
     totalStr = totalStr.substring(totalStr.length - 20);
 
-    receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
-    receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
+    // receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
+    // receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
 
     receipt += "\nTOTAL:                   " + totalStr + "\n\n";
 
@@ -1029,156 +1075,163 @@ export class CdtaService {
 
       receipt += "\n" + changeDueLabel + changeDueStr;
     }
- 
-    if (isMerchandise == "false" || (walletTypeId != "10" && walletTypeId != undefined) ) {
-      var cardBalance = "",
-        textProductType = "",
-        remainingRides: any = 0;
 
-      receipt += "\n\n             Current Card Balance\n\n";
-      var cardStore = JSON.parse(localStorage.getItem("printCardData"));
+    cart.forEach(item => {
+      walletTypeId = item.walletTypeId;
+      // isMerchandise = item.IsMerchandise
+      if (walletTypeId == MediaType.SMART_CARD_ID) {
+        var cardBalance = "",
+          textProductType = "",
+          remainingRides: any = 0;
 
-      var receiptWidth = 44;
-      var dashes = "";
-      while (dashes.length <= receiptWidth) {
-        dashes += "-";
-      }
-
-      receipt += dashes + "\n";
-      var PID = cardStore.printed_id;
-      var cardText = "Card ID:";
-      receipt += cardText;
-      padSize = receiptWidth - (cardText.length + PID.length);
-      spacer = '';
-
-      while (spacer.length <= (padSize - 1)) {
-        spacer += " ";
-      }
-
-      receipt += spacer + PID + "\n";
-
-      if (cardStore.products) {
-
-        for (var i = 0; i < cardStore.products.length; i++) {
-
-          var dataItem = cardStore.products[i];
-
-          var productType = dataItem.product_type;
-          var designator = dataItem.designator;
-          var days = dataItem.days;
-          var rechargesPending = dataItem.recharges_pending;
-          var remainingValue = dataItem.remaining_value;
-          var remainingRides = dataItem.remaining_rides;
-          var start_date = dataItem.start_date_str;
-          var exp_date = dataItem.exp_date_str;
-          var start_date_epoch_days = dataItem.start_date_epoch_days;
-          var exp_date_epoch_days = dataItem.exp_date_epoch_days;
-          var bad_listed = dataItem.is_prod_bad_listed;
-          var textProductType = '';
-          var cardBalance = '';
-          var productDescription = '';
-          var productStatus = '';
-
-          switch (productType) {
-            case 1:
-
-              if (exp_date_epoch_days > 1) {
-                cardBalance = "Exp: " + exp_date;
-              } else {
-                cardBalance = (days + 1) + " Days";
-              }
-
-              productDescription = (days + 1) + " Day Pass";
-
-              if (rechargesPending > 0) {
-                productStatus += " (" + rechargesPending + " Pending)"
-              }
-
-              break;
-            case 2:
-              if (1 == remainingRides) {
-                cardBalance = remainingRides + " Ride";
-              } else {
-                cardBalance = remainingRides + " Rides";
-              }
-              productDescription = 'Stored Ride Pass';
-              break;
-            case 3:
-
-              var remaining_value = 0;
-
-              if (dataItem.remaining_value && dataItem.remaining_value > 0) {
-                remaining_value = dataItem.remaining_value / 100;
-              }
-
-              productDescription = 'Pay As You Go';
-              cardBalance = "$" + remaining_value.toFixed(2);
-
-              break;
-            case 7:
-
-              productDescription = "Employee Pass";
-
-              if (exp_date_epoch_days > 1) {
-                cardBalance = "Exp: " + exp_date;
-              }
-
-              break;
-            default:
-              productDescription = "Unknown Product";
-              break;
-          }
-
-          // var ticketKey = productType + "_" + designator;
-
-          //  var carddata = new Array(cardStore);
-
-          //  cardStore.products.forEach(cardElement => {
-          JSON.parse(catalog).Offering.forEach(catalogElement => {
-            if (catalogElement.Ticket != undefined) {
-              if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-                //  var catalogdata = {
-                //    "ticketid": 
-                //  }
-                return productDescription = catalogElement.Ticket.Description
-
-              }
-            }
-          });
-          // });
-
-
-          // don't print anything if your stored value is $0
-          if ((3 != productType) || (0 < remaining_value)) {
-
-            var receiptWidth = 44;
-            var padSize = 0;
-            var maxDescriptionLength = receiptWidth - 16;
-
-            if (productDescription.length >= maxDescriptionLength) {
-              productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
-            }
-
-            receipt += productDescription;
-
-            padSize = receiptWidth - (productDescription.length + cardBalance.length);
-
-            var spacer = '';
-
-            while (spacer.length <= (padSize - 1)) {
-              spacer += " ";
-            }
-
-            receipt += spacer + cardBalance + "\n";
-          }
+        receipt += "\n\n             Current Card Balance\n\n";
+        var cards = JSON.parse(localStorage.getItem("cardsData"));
+        // for (let cardStore of cards) {
+        let cardStore = this.findByCardPIDFromCardsData(cards, item.cardPID);
+        var receiptWidth = 44;
+        var dashes = "";
+        while (dashes.length <= receiptWidth) {
+          dashes += "-";
         }
-        receipt += "\n";
-      }
-      else {
-        console.log("Receipt printing: No smart cards stored.");
+
+        receipt += dashes + "\n";
+        var PID = cardStore.printed_id;
+        var cardText = "Card ID:";
+        receipt += cardText;
+        padSize = receiptWidth - (cardText.length + PID.length);
+        spacer = '';
+
+        while (spacer.length <= (padSize - 1)) {
+          spacer += " ";
+        }
+
+        receipt += spacer + PID + "\n";
+
+        if (cardStore.products) {
+
+          for (var i = 0; i < cardStore.products.length; i++) {
+
+            var dataItem = cardStore.products[i];
+
+            var productType = dataItem.product_type;
+            var designator = dataItem.designator;
+            var days = dataItem.days;
+            var rechargesPending = dataItem.recharges_pending;
+            var remainingValue = dataItem.remaining_value;
+            var remainingRides = dataItem.remaining_rides;
+            var start_date = dataItem.start_date_str;
+            var exp_date = dataItem.exp_date_str;
+            var start_date_epoch_days = dataItem.start_date_epoch_days;
+            var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+            var bad_listed = dataItem.is_prod_bad_listed;
+            var textProductType = '';
+            var cardBalance = '';
+            var productDescription = '';
+            var productStatus = '';
+
+            switch (productType) {
+              case 1:
+
+                if (exp_date_epoch_days > 1) {
+                  cardBalance = "Exp: " + exp_date;
+                } else {
+                  cardBalance = (days + 1) + " Days";
+                }
+
+                productDescription = (days + 1) + " Day Pass";
+
+                if (rechargesPending > 0) {
+                  productStatus += " (" + rechargesPending + " Pending)"
+                }
+
+                break;
+              case 2:
+                if (1 == remainingRides) {
+                  cardBalance = remainingRides + " Ride";
+                } else {
+                  cardBalance = remainingRides + " Rides";
+                }
+                productDescription = 'Stored Ride Pass';
+                break;
+              case 3:
+
+                var remaining_value = 0;
+
+                if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+                  remaining_value = dataItem.remaining_value / 100;
+                }
+
+                productDescription = 'Pay As You Go';
+                cardBalance = "$" + remaining_value.toFixed(2);
+
+                break;
+              case 7:
+
+                productDescription = "Employee Pass";
+
+                if (exp_date_epoch_days > 1) {
+                  cardBalance = "Exp: " + exp_date;
+                }
+
+                break;
+              default:
+                productDescription = "Unknown Product";
+                break;
+            }
+
+            // var ticketKey = productType + "_" + designator;
+
+            //  var carddata = new Array(cardStore);
+
+            //  cardStore.products.forEach(cardElement => {
+            JSON.parse(catalog).Offering.forEach(catalogElement => {
+              if (catalogElement.Ticket != undefined) {
+                if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
+                  //  var catalogdata = {
+                  //    "ticketid": 
+                  //  }
+                  return productDescription = catalogElement.Ticket.Description
+
+                }
+              }
+            });
+            // });
+
+
+            // don't print anything if your stored value is $0
+            if ((3 != productType) || (0 < remaining_value)) {
+
+              var receiptWidth = 44;
+              var padSize = 0;
+              var maxDescriptionLength = receiptWidth - 16;
+
+              if (productDescription.length >= maxDescriptionLength) {
+                productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+              }
+
+              receipt += productDescription;
+
+              padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+              var spacer = '';
+
+              while (spacer.length <= (padSize - 1)) {
+                spacer += " ";
+              }
+
+              receipt += spacer + cardBalance + "\n";
+            }
+          }
+          receipt += "\n";
+        }
+        else {
+          console.log("Receipt printing: No smart cards stored.");
+        }
+        // }
       }
 
-    }
+    })
+
     receipt += "\n\n";
     console.log("receipt", receipt)
     // APOS.util.PrintService.printReceipt(receipt, timestamp);
@@ -1273,6 +1326,17 @@ export class CdtaService {
   private extractData(res: Response) {
     let body = res;
     return body || {};
+  }
+  findByCardPIDFromCardsData(cardsJson, cardPID) {
+
+    let cardData = null;
+    for (let index = 0; index < cardsJson.length; index++) {
+      if (cardPID == cardsJson[index].printed_id) {
+        cardData = cardsJson[index];
+        break;
+      }
+    }
+    return cardData;
   }
 }
 

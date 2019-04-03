@@ -97,7 +97,7 @@ export class TransactionService {
                 //fareCodeDescription -----
                 item.$fareCode = fareCodeDescription;
 
-                item.$walletTypeId = wallet.walletTypeId;
+                item.$walletTypeId = wallet._walletTypeId;
 
                 console.log("wallet.walletTypeId......." + wallet._walletTypeId)
                 // special case for Magnetics - record as Products
