@@ -737,7 +737,10 @@ export class AddProductComponent implements OnInit {
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
         this.maxLimitErrorMessages = this.getProductLimitMessage()
-        $("#maxCardLimitModal").modal('show');
+        $("#maxCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         return;
       }
     }
@@ -774,7 +777,10 @@ export class AddProductComponent implements OnInit {
     var elementExists = false;
     this.magneticIds.forEach(element => {
       if (element == this.currentMagneticIndex) {
-        $("#magneticCardLimitModal").modal('show');
+        $("#magneticCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         elementExists = true;
       }
     });
@@ -788,7 +794,10 @@ export class AddProductComponent implements OnInit {
 
 
   removeCurrentWalletLineItem() {
-    $("#currentCardRemove").modal('show');
+    $("#currentCardRemove").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeCurrentWalletLineItemConfirmation() {
@@ -833,7 +842,10 @@ export class AddProductComponent implements OnInit {
 
   removeProduct(product) {
     this.productToRemove = product;
-    $("#removeProductModal").modal('show');
+    $("#removeProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeProductConfirmation() {
@@ -866,13 +878,19 @@ export class AddProductComponent implements OnInit {
 
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
-    $("#removeMerchProductModal").modal('show');
+    $("#removeMerchProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeMagneticProduct(merch, j) {
     this.magneticProductToRemove = merch;
     this.currentMagneticProductId = j;
-    $("#removeMagneticProductModal").modal('show');
+    $("#removeMagneticProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
     // var selectedIndex = this.MagneticList.indexOf(merch);
     // this.MagneticList.splice(selectedIndex, 1);
@@ -880,8 +898,20 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
+    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+      debugger;
+      $("#emptyMagneticModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+
     if (this.totalDue == 0) {
-      $("#productTotalWarningModal").modal('show');
+      $("#productTotalWarningModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       return;
     }
     this.productCheckOut = true;

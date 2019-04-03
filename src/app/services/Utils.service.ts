@@ -255,7 +255,7 @@ export class Utils {
         let bonusRideStatusText = "Bonus Ride(s): " + bonus_rides;
         if ((cardData.num_bonus_passes != null) &&
             (cardData.num_bonus_passes > 0)) {
-            
+
             if (cardData.bonus_pass) {
                 bonus_rides = cardData.bonus_pass.ride_count;
             }
@@ -277,5 +277,18 @@ export class Utils {
         });
         let text = "Next Bonus: " + bonus_ride_counter + "/" + bonusRideThreshold;
         return text;
+    }
+
+    isAnyEmptyMagnetics(shoppingCart) {
+debugger;
+        let isEmpty = false;
+        let walletLineItems = shoppingCart._walletLineItem
+        for (let itemIndex = 0; itemIndex < walletLineItems.length; itemIndex++) {
+            if (walletLineItems[itemIndex]._walletTypeId == MediaType.MAGNETIC_ID && (0 == walletLineItems[itemIndex]._walletContents.length)) {
+                isEmpty = true;
+                break;
+            }
+        }
+        return isEmpty;
     }
 }
