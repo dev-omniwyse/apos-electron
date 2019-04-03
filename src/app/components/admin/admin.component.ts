@@ -73,6 +73,7 @@ export class AdminComponent implements OnInit {
 
             this.expectedCash = Number(this.expectedCash) + element.paymentAmount
             this.expectedCash = this.expectedCash.toFixed(2)
+            localStorage.setItem("expectedCash",this.expectedCash)
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
@@ -384,6 +385,7 @@ getPresentShiftReport(){
         if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
+          localStorage.setItem("expectedCash",this.expectedCash)
 
         }
         if (element.closingDrawer != undefined && element.closingDrawer != "") {
