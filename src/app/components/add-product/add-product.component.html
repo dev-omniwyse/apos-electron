@@ -131,14 +131,14 @@
                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
-                    <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()">
+                    <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()" *ngIf="!productCheckOut">
                        <span class="glyphicon glyphicon-minus-sign"></span>
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeProduct(item)"><span
-                       class="glyphicon glyphicon-minus-sign"></span></div>
+                    <div class="pull-right" (click)="removeProduct(item)" *ngIf="!productCheckOut">
+                        <span class="glyphicon glyphicon-minus-sign"></span></div>
         </span>
         <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
             <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
@@ -204,31 +204,31 @@
 </div>
 <div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied">
     <div class="flex">
-            <div class="float-left" >Total Due</div>
-            <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
+        <div class="float-left">Total Due</div>
+        <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
     </div>
     <div class="flex" *ngIf="isCashApplied">
-            <div class="float-left" >Cash Applied</div>
-            <div class="float-right">${{cashAppliedTotal | number : '1.2-2'}}</div>
+        <div class="float-left">Cash Applied</div>
+        <div class="float-right">${{cashAppliedTotal | number : '1.2-2'}}</div>
     </div>
     <div class="flex" *ngIf="isVoucherApplied">
-            <div class="float-left" >Voucher Applied</div>
-            <div class="float-right">${{voucherAppliedTotal | number : '1.2-2'}}</div>
-    </div>   
+        <div class="float-left">Voucher Applied</div>
+        <div class="float-right">${{voucherAppliedTotal | number : '1.2-2'}}</div>
+    </div>
     <div class="flex" *ngIf="isCheckApplied">
-        <div class="float-left" >Check Applied</div>
+        <div class="float-left">Check Applied</div>
         <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
     </div>
     <div class="flex" *ngIf="isCardApplied">
-        <div class="float-left" >Credit Applied</div>
+        <div class="float-left">Credit Applied</div>
         <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
     </div>
 
     <hr>
     <div class="flex totals">
-            <div class="float-left">Total Remaining</div>
-            <div class="float-right">${{totalRemaining | number : '1.2-2'}}</div>
-        </div>
+        <div class="float-left">Total Remaining</div>
+        <div class="float-right">${{totalRemaining | number : '1.2-2'}}</div>
+    </div>
 
 
 </div>
@@ -511,33 +511,33 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" (click) ='notToApplyvoucher()'>No</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click) ='voucherModalApply()'>Yes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)='voucherModalApply()'>Yes</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="voucherErrorModal" role="dialog">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                                <h4 class="modal-title">Error</h4>
-                            </div>
-                            <div class="modal-body">
-                                <p>Cannot process for more than the amount due.</p>
-                                <!-- <div class="pop-up-box">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Error</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Cannot process for more than the amount due.</p>
+                            <!-- <div class="pop-up-box">
                                     <div class="pull-left">Cash Applied </div>
                                     <div class="pull-right">${{productTotal}}</div>
                                     <div class="clearfix"></div>
                                     </div> -->
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal">Yes</button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal">Yes</button>
                         </div>
                     </div>
                 </div>
+            </div>
             <div class="modal fade" id="voucherApplyModal" role="dialog">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -565,7 +565,7 @@
                             <p>Only three payment types can be used with each transaction. Please make sure that payment of third payment type equals the total</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" >Yes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -612,7 +612,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">No, Cancel</button>
                             <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
-                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="compApplication()" >Yes, Continue</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="compApplication()">Yes, Continue</button>
                         </div>
                     </div>
                 </div>
@@ -877,10 +877,10 @@
                     <button data-toggle="modal" (click)="enterCustomAmount(productTotal)">Enter</button>
                 </div>
             </div>
-        
-        </div>
+
         </div>
     </div>
-    <div *ngIf="applyCompShow">
-        <app-comp (processCompensation)="compensation($event)" (processCompensationCancel) = "cancelCompensation($event)" (compensationReason)="compensationReason($event)" [reason]= "reason" [reasonForComp] ="reasonForComp"></app-comp>
-    </div>
+</div>
+<div *ngIf="applyCompShow">
+    <app-comp (processCompensation)="compensation($event)" (processCompensationCancel)="cancelCompensation($event)" (compensationReason)="compensationReason($event)" [reason]="reason" [reasonForComp]="reasonForComp"></app-comp>
+</div>
