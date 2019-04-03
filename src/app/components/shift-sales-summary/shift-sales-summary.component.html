@@ -34,7 +34,7 @@
                     <tr *ngFor="let salesdetail of salesData">
                         <td>{{salesdetail.quantity}}</td>
                         <td>{{salesdetail.description}}</td>
-                        <td>${{salesdetail.value}}</td>
+                        <td>${{salesdetail.value | number : '1.2-2'}}</td>
                     </tr>
                 </tbody>
                     <!-- <tr>
@@ -55,7 +55,7 @@
                 <tbody>
                     <tr *ngFor="let salePayment of salesPaymentData">
                         <td>{{salePayment.paymentMethod}}</td>
-                        <td>${{salePayment.paymentAmount}}</td>
+                        <td>${{salePayment.paymentAmount | number : '1.2-2'}}</td>
                     </tr>
                 </tbody>
                 </table>
@@ -63,7 +63,7 @@
         </div>
         
             <button class="back-to-admin" [routerLink]="['/admin']" (click)="hidePopUp();"> Back to Admin</button>
-            <button class="totalSold pull-right"> Total Sold : ${{totalSold}}</button>
+            <button class="totalSold pull-right"> Total Sold : ${{totalSold | number : '1.2-2'}}</button>
         </div>
     </div>
 </div>
