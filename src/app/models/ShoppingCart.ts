@@ -3,10 +3,28 @@ import { NonFareLineItem } from './NonFareLineItem';
 import { PaymentType } from './Payments';
 
 export class ShoppingCart {
-    private _payments: PaymentType[];
+    
     constructor(private _walletLineItem?: WalletLineItem[],
-        private _activeCardUID?: string) {
+        private _activeCardUID?: string, private _transactionID ?:number,
+        private _payments ?: PaymentType[] ){
+
     }
+
+    /**
+     * Getter transactionID
+     * @return {number}
+     */
+	public get transactionID(): number {
+		return this._transactionID;
+	}
+
+    /**
+     * Setter transactionID
+     * @param {number} value
+     */
+	public set transactionID(value: number) {
+		this._transactionID = value;
+	}
 
     /**
      * Getter walletLineItem

@@ -47,7 +47,7 @@ export class TransactionService {
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         let taxAmount = ShoppingCartService.getInstance.getTax();
-        let timeStamp = new Date().getTime();
+        let timeStamp = shoppingCart._transactionID;
 
         transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;
