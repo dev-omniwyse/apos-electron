@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -66,6 +66,8 @@ pcs.on('reader', function (reader) {
       }
     }
   });
+
+ 
 
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
@@ -177,7 +179,7 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+  constructor(private elementRef:ElementRef,private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
@@ -228,6 +230,7 @@ export class AddProductComponent implements OnInit {
 
  
   }
+ 
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
@@ -993,12 +996,16 @@ export class AddProductComponent implements OnInit {
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
-
+  clearFilter(checkoutTotal) {
+    console.log(checkoutTotal)
+  }
   displayDigit(digit) {
-    
+  
+    debugger;
+    console.log(digit);
     if(this.totalRemaining == this.checkoutTotal) {
       this.checkoutTotal = 0;
-    }
+    } 
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
     this.checkoutTotal += digit;
     this.checkoutTotal = this.checkoutTotal / 100;
