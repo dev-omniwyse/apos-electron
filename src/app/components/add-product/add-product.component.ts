@@ -322,6 +322,7 @@ export class AddProductComponent implements OnInit {
               this.isProductLimitReached = true;
             break;
           case 3:
+          debugger;
             if (element.product_type == 3 && (((element.remaining_value + (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
               this.isProductLimitReached = true;
               break;
@@ -501,7 +502,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
