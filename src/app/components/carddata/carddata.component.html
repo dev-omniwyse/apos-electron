@@ -62,8 +62,7 @@
                     <p>Error encoding card</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
                 </div>
             </div>
         </div>
@@ -81,8 +80,7 @@
                     <p>Card encoded successfully.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="navigateToDashboard()">Ok</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="proceedForSaveTransaction()">Ok</button>
                 </div>
             </div>
         </div>
@@ -100,8 +98,7 @@
                     <p>Error encoding card.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
                 </div>
             </div>
         </div>
@@ -119,7 +116,7 @@
                     <p>By continuing, the transaction will be canceled and all payments voided</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#returnCheckModal">Yes</button>
                 </div>
             </div>
@@ -140,8 +137,7 @@
                     <p>Click "Ok" when the cash drawer is closed </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                        (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="initiateCancelEncoding(encodedJsonCardIndex)">Ok</button>
                 </div>
             </div>
         </div>
@@ -152,11 +148,9 @@
 <div *ngIf="isEncodeOnProcess" class="form-group  form-wiz">
     <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="confirmCancelEncoding()">
         CANCEL</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last"
-        (click)="checkCorrectCard()"> ENCODE CARD </button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>
 
 <div *ngIf="!isEncodeOnProcess" class="form-group  form-wiz">
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last"
-        (click)="checkCorrectCard()"> REMOVE CARD </button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> REMOVE CARD </button>
 </div>

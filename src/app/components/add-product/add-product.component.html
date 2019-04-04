@@ -10,14 +10,14 @@
 <div class="main-container" *ngIf="!isCustomAmount && !applyCompShow">
     <div class="container-left">
         <div class="header-l">
-            <img src="assets/images/shopping-cart.svg" width="30" />
+            <img src="assets/images/icon-cart.png" />
             <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">View
-                Card</button>
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">View
-                    Card</button>
+            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
+                CARD</button>
+            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
+                    CARD</button>
 
-            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">Add Card</button>
+            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
         </div>
         <div class="modal fade" id="viewCard" role="dialog">
             <div class="modal-dialog modal-custom  modal-dialog-centered">
@@ -127,18 +127,23 @@
         </div>
         <div class="container-l-app">
             <div>
-                <span *ngIf="!isMerchendise "> FARE PRODUCTS</span>
-                <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
+                <div *ngIf="!isMerchendise" class="cont-products-head"> FARE PRODUCTS</div>
+                <div *ngIf="isMerchendise" class="cont-products-head"> NON FARE PRODUCTS</div>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
-                    <div class="pull-right remove-slide" (click)="removeCurrentWalletLineItem()" *ngIf="!productCheckOut">
-                       <span class="glyphicon glyphicon-minus-sign"></span>
+
+                    <div class="pull-right remove-slide remove-icon" (click)="removeCurrentWalletLineItem()" *ngIf="!productCheckOut">
+                            <img src="assets/images/icon-rmproduct.png" />
+                       <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right" (click)="removeProduct(item)" *ngIf="!productCheckOut">
-                        <span class="glyphicon glyphicon-minus-sign"></span></div>
+                    <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
+                        <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
+            <img src="assets/images/icon-rmproduct.png" />
+        </div>
+
         </span>
         <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
             <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
@@ -219,6 +224,7 @@
         <div class="float-left">Check Applied</div>
         <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
     </div>
+
     <div class="flex" *ngIf="isCardApplied">
         <div class="float-left">Credit Applied</div>
         <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
@@ -234,7 +240,7 @@
 </div>
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
-    <button class="btn-orange" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
+    <button class="btn-orange-bottom" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
     <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
 </div>
 </div>
@@ -315,7 +321,28 @@
 </div>
 <div class="container-right-calc" *ngIf="!checkout">
     <div class="cr-r-set">
-        <h1><span class="label label-primary cr-label">${{checkoutTotal | number : '1.2-2'}}</span></h1>
+        <h1>
+            <form [formGroup]="currencyForm">
+                    <input type="text" class="form-control label label-primary cr-label" 
+                    formControlName="currency"
+                    [ngModel]="checkoutTotal | currency: 'USD' : 'symbol-narrow': '1.2-2'"
+                    (ngModelChange) ="textAreaEmpty()"
+                    (keyup.1)="displayDigit('1')"
+                    (keyup.2)="displayDigit('2')"
+                    (keyup.3)="displayDigit('3')"
+                    (keyup.4)="displayDigit('4')"
+                    (keyup.5)="displayDigit('5')"
+                    (keyup.6)="displayDigit('6')"
+                    (keyup.7)="displayDigit('7')"
+                    (keyup.8)="displayDigit('8')"
+                    (keyup.9)="displayDigit('9')"
+                    (keyup.0)="displayDigit('0')"
+                    (keyup.00)="displayDigit('00')" appNumericOnly>
+
+            </form>
+            <!-- <span class="label label-primary cr-label">${{checkoutTotal | number : '1.2-2'}}</span> -->
+         
+        </h1>
         <div class="flex">
             <div class="cr-left">
                 <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
@@ -356,7 +383,7 @@
                 </div>
             </div>
             <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -383,7 +410,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -407,7 +434,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -424,7 +451,7 @@
                 </div>
             </div>
             <div class="modal fade" id="creditCardErrorModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -441,7 +468,7 @@
                 </div>
             </div>
             <div class="modal fade" id="checkModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -457,7 +484,7 @@
                 </div>
             </div>
             <div class="modal fade" id="fareCardModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -472,14 +499,14 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#fareApplyModal">Yes</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="fareApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -496,7 +523,7 @@
                 </div>
             </div>
             <div class="modal fade" id="voucherModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -511,14 +538,15 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
+
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)='voucherModalApply()'>Yes</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="voucherErrorModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -539,7 +567,7 @@
                 </div>
             </div>
             <div class="modal fade" id="voucherApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -556,7 +584,7 @@
                 </div>
             </div>
             <div class="modal fade" id="thirdPaymentModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Error</h4>
@@ -571,7 +599,7 @@
                 </div>
             </div>
             <div class="modal fade" id="payasyougoModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             Pay As You Go
@@ -595,7 +623,7 @@
                 </div>
             </div>
             <div class="modal fade" id="compModal" role="dialog">
-                <div class="modal-dialog modal-sm">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -621,7 +649,7 @@
     </div>
 </div>
 <div class="modal fade" id="newCardValidationModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -638,7 +666,7 @@
     </div>
 </div>
 <div class="modal fade" id="magneticCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -654,7 +682,7 @@
     </div>
 </div>
 <div class="modal fade" id="maxCardLimitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -703,7 +731,7 @@
 </div> -->
 
 <div class="modal fade" id="removeProductModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -713,7 +741,7 @@
                 <p>By continuing, the "{{productToRemove?.description}}" will be permanently deleted.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeProductConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -725,10 +753,8 @@
             <h4 class="modal-title modal-txt-h">Select Media Type</h4>
             <div class="modal-body-in">
                 <div class="">
-                    <button class="cardBtn" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC<img
-                          src="assets/images/arrow-pointing-to-right.svg" /></button>
-                    <button class="cardBtn" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card <img
-                          src="assets/images/arrow-pointing-to-right.svg" /></button>
+                    <button class="cardBtn arrow_right" (click)="newFareCard($event)" data-dismiss="modal">Smart Card/LUCC</button>
+                    <button class="cardBtn arrow_right" (click)="magneticCard($event)" data-dismiss="modal">Magnetic Card </button>
                     <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -741,10 +767,8 @@
             <h4 class="modal-title modal-txt-h">Add Card</h4>
             <div class="modal-body-in">
                 <div class="">
-                    <button class="cardBtn" (click)="newCard($event)" data-dismiss="modal">New Card/LUCC<img
-                          src="assets/images/arrow-pointing-to-right.svg" /></button>
-                    <button class="cardBtn" (click)="ExistingCard($event)" data-dismiss="modal">Existing Card <img
-                          src="assets/images/arrow-pointing-to-right.svg" /></button>
+                    <button class="cardBtn arrow_right" (click)="newCard($event)" data-dismiss="modal">New Card/LUCC</button>
+                    <button class="cardBtn arrow_right" (click)="ExistingCard($event)" data-dismiss="modal">Existing Card </button>
                     <button class="cancel-btn-pop" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -772,12 +796,14 @@
 <div class="modal fade" id="currentCardRemove" role="dialog">
     <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
-            <h4 class="modal-title modal-txt-h">Are you sure you want to delete?</h4>
+            <div class="modal-header">
+                <h4 class="modal-title">Are you sure you want to delete?</h4>
+            </div>
             <div class="modal-body">
                 <p>By continuing, you will remove card {{currentWalletLineItem?._cardPID}}.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeCurrentWalletLineItemConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -791,7 +817,7 @@
                 <p>By continuing, you will remove card Magnetic {{currentMagneticIndex+1}}.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="removeMagneticCardConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -840,7 +866,7 @@
                 <p>By continiuing,any payment methods that have been applied will be canceled.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="cancelCheckOutConfirmation()" data-dismiss="modal">Yes</button>
             </div>
         </div>
@@ -922,7 +948,9 @@
     </div>
     <div class="container-right-calc">
         <div class="cr-r-set">
-            <h1><span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span></h1>
+            <h1>
+                <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span>
+            </h1>
             <div class="flex">
                 <div class="cr-left">
                     <div class="number-btns-set-3" *ngFor="let digit of numberDigits">

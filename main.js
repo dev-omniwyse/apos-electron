@@ -28,7 +28,7 @@ var result = posAppletInstance.runInitializationSync();
 logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
-dialog.showErrorBox = function (title, content) {
+dialog.showErrorBox = function(title, content) {
     // console.log('${title}\n${content}');
 };
 
@@ -60,7 +60,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -112,6 +112,8 @@ ipcMain.on('readSmartcard', (event, cardname) => {
     if (result.getSuccessSync()) {
         // readSmartCardOnSetEncoder();
         try {
+            var result = posAppletInstance.getCardPIDSync();
+            var result = posAppletInstance.processAutoloadSync();
             var result = posAppletInstance.readCardSync();
         } catch (error) {
             logger.info("error " + error);
@@ -547,7 +549,7 @@ ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
 ipcMain.on('processAutoLoad', (event, cardname) => {
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.processAutoloadSync();
-    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+    //    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
 });
 
 
@@ -571,6 +573,12 @@ ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionDataSync();
     event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
 });
+
+ipcMain.on('cancelPinpadTransaction', (event, transactionAmount) => {
+    var result = posAppletInstance.cancelPinpadTransactionSync();
+    event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
+});
+
 ipcMain.on('getPinpadTransactionStatusEncode', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionStatusSync();
     event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());

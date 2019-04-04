@@ -29,6 +29,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { EnvironmentComponent } from './components/environment/environment.component';
 import { SlickModule } from 'ngx-slick';
 import { Globals } from './global';
+import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +51,8 @@ import { Globals } from './global';
     ShiftSalesSummaryComponent,
     ShiftsComponent,
     AddMagneticProductComponent,
-    EnvironmentComponent 
+    EnvironmentComponent,
+    NumericOnlyDirective 
     
   ],
   imports: [
