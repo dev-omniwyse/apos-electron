@@ -73,7 +73,7 @@ export class AdminComponent implements OnInit {
 
             this.expectedCash = Number(this.expectedCash) + element.paymentAmount
             this.expectedCash = this.expectedCash.toFixed(2)
-            localStorage.setItem("expectedCash",this.expectedCash)
+            localStorage.setItem("expectedCash", this.expectedCash)
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
@@ -82,7 +82,7 @@ export class AdminComponent implements OnInit {
           }
 
         });
-       // localStorage.setItem("paymentTypes", data)
+        // localStorage.setItem("paymentTypes", data)
 
 
         this._ngZone.run(() => {
@@ -193,17 +193,17 @@ export class AdminComponent implements OnInit {
 
   }
 
-getPresentShiftReport(){
-  let userID = localStorage.getItem("userID")
-  let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-  var specificUserDetails = []
-  shiftUsers.forEach(element => {
-    if(element.userID == userID){
-      specificUserDetails.push(element)
-    }
-  });
-  this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
-}
+  getPresentShiftReport() {
+    let userID = localStorage.getItem("userID")
+    let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+    var specificUserDetails = []
+    shiftUsers.forEach(element => {
+      if (element.userID == userID) {
+        specificUserDetails.push(element)
+      }
+    });
+    this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
+  }
 
   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
@@ -303,6 +303,14 @@ getPresentShiftReport(){
 
   }
 
+  lastTransactionReceipt() {
+    var timestamp = new Date().getTime();
+    var lastTransactionReceipt = localStorage.getItem("lastTransactionReceipt")
+    if (lastTransactionReceipt != undefined) {
+      this.electronService.ipcRenderer.send('printReceipt', lastTransactionReceipt, timestamp)
+    }
+  }
+
   syncData() {
     this.loading = true;
     // this.maxLoopingCount = 600;
@@ -338,7 +346,7 @@ getPresentShiftReport(){
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
-            
+
               localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
@@ -385,7 +393,7 @@ getPresentShiftReport(){
         if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
-          localStorage.setItem("expectedCash",this.expectedCash)
+          localStorage.setItem("expectedCash", this.expectedCash)
 
         }
         if (element.closingDrawer != undefined && element.closingDrawer != "") {

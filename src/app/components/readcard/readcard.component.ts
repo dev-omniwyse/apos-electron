@@ -129,9 +129,44 @@ export class ReadcardComponent implements OnInit {
         localStorage.removeItem("cardsData");
 
        
+        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
+            console.log("print sales data", data)
+            if (data != undefined && data.length != 0) {
+                this._ngZone.run(() => {
+                    this.salesData = JSON.parse(data);
+                    var salesReport: any = this.salesData
+                    for (var report = 0; report < salesReport.length; report++) {
+                        salesReport[report].userID = userID
+                        salesReport[report].shiftType = shiftType
+                        this.backendSalesReport.push(salesReport[report]);
+                    }
+                    localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
+                });
 
+            }
+        });
 
+        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
+            console.log("print payments  data", data, userID)
+            if (data != undefined && data.length != 0) {
+                this._ngZone.run(() => {
+                    this.salesPaymentData = JSON.parse(data);
+                    var paymentReport: any = this.salesPaymentData;
+                    for (var report = 0; report < paymentReport.length; report++) {
+                        paymentReport[report].userID = userID
+                        paymentReport[report].shiftType = shiftType
+                        this.backendPaymentReport.push(paymentReport[report]);
+                    }
+                    console.log(" this.backendPaymentReport", this.backendPaymentReport)
+                    localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
 
+                    var displayingPayments = this.cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
+                    this.paymentReport = this.cdtaservice.generatePrintReceiptForPayments(displayingPayments, false);
+                    localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
+
+                });
+            }
+        });
 
        
 
@@ -237,10 +272,7 @@ export class ReadcardComponent implements OnInit {
         }); 
     }
     showErrorMessages() {
-        $("#errorModal").modal({
-            backdrop: 'static',
-            keyboard: false
-        });
+        $("#errorModal").modal('show');
     }
     /* JAVA SERVICE CALL */
 
@@ -416,43 +448,8 @@ export class ReadcardComponent implements OnInit {
     getAllUsersSalesAndPayments() {
         var shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
         shiftStore.forEach(record => {
-            this.electronService.ipcRenderer.once('salesDataResult', (event, data, userID, shiftType) => {
-                console.log("print sales data", data)
-                if (data != undefined && data.length != 0) {
-                    this._ngZone.run(() => {
-                        this.salesData = JSON.parse(data);
-                        var salesReport: any = this.salesData
-                        for (var report = 0; report < salesReport.length; report++) {
-                            salesReport[report].userID = userID
-                            salesReport[report].shiftType = shiftType
-                            this.backendSalesReport.push(salesReport[report]);
-                        }
-                        localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
-                    });
-    
-                }
-            });
-            this.electronService.ipcRenderer.once('paymentsDataResult', (event, data, userID, shiftType) => {
-                console.log("print payments  data", data, userID)
-                if (data != undefined && data.length != 0) {
-                    this._ngZone.run(() => {
-                        this.salesPaymentData = JSON.parse(data);
-                        var paymentReport: any = this.salesPaymentData;
-                        for (var report = 0; report < paymentReport.length; report++) {
-                            paymentReport[report].userID = userID
-                            paymentReport[report].shiftType = shiftType
-                            this.backendPaymentReport.push(paymentReport[report]);
-                        }
-                        console.log(" this.backendPaymentReport", this.backendPaymentReport)
-                        localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
-    
-                        var displayingPayments = this.cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
-                        this.paymentReport = this.cdtaservice.generatePrintReceiptForPayments(displayingPayments, false);
-                        localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
-    
-                    });
-                }
-            });
+           
+           
             this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
             this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
         });
