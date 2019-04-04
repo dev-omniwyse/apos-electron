@@ -188,7 +188,8 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          $("#encodeSuccessModal").modal('show');
+          // $("#encodeSuccessModal").modal('show');
+          this.navigateToDashboard();
           var timestamp = new Date().getTime();
           // this.cdtaService.generateReceipt(timestamp)
         });
@@ -228,18 +229,22 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
         }
         this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
-        if (this.isSmartCardFound()) {
-          this.populatCurrentCard();
-          this.getSmartCardWalletContents();
-        }
-        else {
-          this.initiateSaveTransaction()
-        }
+        $("#encodeSuccessModal").modal('show');
       }
       else {
         $("#encodeErrorModal").modal('show');
       }
     });
+  }
+
+  proceedForSaveTransaction() {
+    if (this.isSmartCardFound()) {
+      this.populatCurrentCard();
+      this.getSmartCardWalletContents();
+    }
+    else {
+      this.initiateSaveTransaction()
+    }
   }
 
   handleDeleteProductsFromCardResult() {
