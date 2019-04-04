@@ -136,7 +136,12 @@ export class LoginComponent implements OnInit {
             }
         });
     }
-
+    resetUser() {
+        this.username = '';
+    }
+    resetPassword() {
+        this.password = '';
+    }
     ngOnInit() {
 
         this.loginForm = this.formBuilder.group({
