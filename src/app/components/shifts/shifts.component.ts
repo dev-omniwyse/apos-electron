@@ -161,7 +161,7 @@ export class ShiftsComponent implements OnInit {
         shiftReports.forEach(element => {
             if (localStorage.getItem("closingPausedMainShift") == "true" && element.userID == userId) {
                 this.setShiftStatus = "CLOSE SHIFT"
-                this.expectedCash = element.openingDrawer
+                this.expectedCash =  localStorage.getItem("expectedCash")
                 this.setShiftText = "Enter the total closing amount in the till and Tap 'Enter' "
             }
             else
@@ -171,7 +171,7 @@ export class ShiftsComponent implements OnInit {
                     this.setShiftText = "Enter the total opening amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "0" && element.shiftState == "0") && element.userID == userId) {
                     this.setShiftStatus = "CLOSE SHIFT"
-                    this.expectedCash = element.openingDrawer
+                    this.expectedCash =  localStorage.getItem("expectedCash")
                     this.setShiftText = "Enter the total closing amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "1" && element.shiftState == "3") && element.userID == userId) {
                     this.setShiftStatus = "RELIEF SHIFT"
@@ -179,7 +179,7 @@ export class ShiftsComponent implements OnInit {
                     this.setShiftText = "Enter the total opening amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "1" && element.shiftState == "0") && element.userID == userId) {
                     this.setShiftStatus = "CLOSE RELIEF SHIFT"
-                    this.expectedCash = element.openingDrawer
+                    this.expectedCash =  localStorage.getItem("expectedCash")
                     this.setShiftText = "Enter the total closing amount in the till and Tap 'Enter' "
                 }
         })

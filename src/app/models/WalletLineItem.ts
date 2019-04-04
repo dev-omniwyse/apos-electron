@@ -3,7 +3,6 @@ import { WalletContent } from './WalletContent';
 
 export class WalletLineItem {
 
-    
     constructor(private _sequenceNumber ?: number, private _offering?: Offering, private _cardPID?: string,
         private _cardUID?: string,
         private _walletTypeId?: number,
@@ -11,10 +10,26 @@ export class WalletLineItem {
         private _unitPrice?: any,
         private _description?: string,
         private _walletContents ?: WalletContent[],
-        private _cardExpiration?: number,
+        private _cardExpiration?: number, private _isNew ? : boolean,
         private _encoded?: boolean) {
 
     } 
+
+    /**
+     * Getter isNew
+     * @return {boolean}
+     */
+	public get isNew(): boolean {
+		return this._isNew;
+	}
+
+    /**
+     * Setter isNew
+     * @param {boolean} value
+     */
+	public set isNew(value: boolean) {
+		this._isNew = value;
+	}
 
 
     /**

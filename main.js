@@ -28,7 +28,7 @@ var result = posAppletInstance.runInitializationSync();
 logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
-dialog.showErrorBox = function(title, content) {
+dialog.showErrorBox = function (title, content) {
     // console.log('${title}\n${content}');
 };
 
@@ -570,5 +570,19 @@ ipcMain.on('getPinpadTransactionStatus', (event, transactionAmount) => {
 ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionDataSync();
     event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
+});
+ipcMain.on('getPinpadTransactionStatusEncode', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionStatusSync();
+    event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('getPinpadTransactionDataEncode', (event, transactionAmount) => {
+    var result = posAppletInstance.getPinpadTransactionDataSync();
+    event.sender.send('getPinpadTransactionDataEncodeResult', '' + result.getValueSync());
+});
+ipcMain.on('doPinpadVoidTransaction', (event, transactionAmount) => {
+    console.log("pinpad", transactionAmount);
+    var result = posAppletInstance.doPinpadVoidTransactionSync(Number(transactionAmount));
+    event.sender.send('doPinpadVoidTransactionResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/

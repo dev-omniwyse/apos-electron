@@ -20,50 +20,49 @@
         </div>
 
         <div class="shift-sales-bottom">
-            <div class="shift-data-sets">
-                <div class="shift-data-set shift-data-set-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Quanity</th>
-                                <th>Product</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let salesdetail of salesData">
-                                <td>{{salesdetail.quantity}}</td>
-                                <td>{{salesdetail.description}}</td>
-                                <td>${{salesdetail.value}}</td>
-                            </tr>
-                        </tbody>
-                        <!-- <tr>
+        <div class="shift-data-sets">
+            <div class="shift-data-set  shift-data-set-table ">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Quantity</th>
+                        <th>Product</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let salesdetail of salesData">
+                        <td>{{salesdetail.quantity}}</td>
+                        <td>{{salesdetail.description}}</td>
+                        <td>${{salesdetail.value | number : '1.2-2'}}</td>
+                    </tr>
+                </tbody>
+                    <!-- <tr>
                     <td>1</td>
                     <td>Pay As You Go</td>
                     <td>$30.00</td>
                 </tr> -->
-                    </table>
-                </div>
-                <div class="shift-data-set shift-data-set-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Payment Method</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let salePayment of salesPaymentData">
-                                <td>{{salePayment.paymentMethod}}</td>
-                                <td>${{salePayment.paymentAmount}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                </table>
+            </div>
+            <div class="shift-data-set">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Payment Method</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let salePayment of salesPaymentData">
+                        <td>{{salePayment.paymentMethod}}</td>
+                        <td>${{salePayment.paymentAmount | number : '1.2-2'}}</td>
+                    </tr>
+                </tbody>
+                </table>
             </div>
 
             <button class="back-to-admin" [routerLink]="['/admin']" (click)="hidePopUp();"> Back to Admin</button>
-            <button class="totalSold pull-right"> Total Sold : ${{totalSold}}</button>
+            <button class="totalSold pull-right"> Total Sold : ${{totalSold | number : '1.2-2'}}</button>
         </div>
     </div>
 </div>

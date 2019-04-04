@@ -125,75 +125,15 @@ export class ReadcardComponent implements OnInit {
             this.logger = this.electronService.remote.require("electron-log");
         }
         localStorage.removeItem("readCardData");
-        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
-            console.log("print sales data", data)
-            if (data != undefined && data.length != 0) {
-                this._ngZone.run(() => {
-                    this.salesData = JSON.parse(data);
-                    var salesReport: any = this.salesData
-                    for (var report = 0; report < salesReport.length; report++) {
-                        salesReport[report].userID = userID
-                        salesReport[report].shiftType = shiftType
-                        this.backendSalesReport.push(salesReport[report]);
-                    }
-                    localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
-                });
+        localStorage.removeItem("shoppingCart");
+        localStorage.removeItem("cardsData");
 
-            }
-        });
-
-        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
-            console.log("print payments  data", data, userID)
-            if (data != undefined && data.length != 0) {
-                this._ngZone.run(() => {
-                    this.salesPaymentData = JSON.parse(data);
-                    var paymentReport: any = this.salesPaymentData;
-                    for (var report = 0; report < paymentReport.length; report++) {
-                        paymentReport[report].userID = userID
-                        paymentReport[report].shiftType = shiftType
-                        this.backendPaymentReport.push(paymentReport[report]);
-                    }
-                    console.log(" this.backendPaymentReport", this.backendPaymentReport)
-                    localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
-
-                    var displayingPayments = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
-                    this.paymentReport = cdtaservice.generatePrintReceiptForPayments(displayingPayments, false);
-                    localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
-
-                });
-            }
-        });
+       
 
 
-        this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
-            console.log("data", data)
-            if (this.isFromReadCard && data != undefined && data != "") {
-                this.show = true;
-                this.isShowCardOptions = false;
-                this.isFromReadCard = false
-                this._ngZone.run(() => {
-                    localStorage.setItem("readCardData", JSON.stringify(data));
-                    localStorage.setItem("printCardData", data)
-                    // let item = JSON.parse(localStorage.getItem("readCardData"));
-                    // this.carddata = JSON.parse(item);
-                    this.carddata = new Array(JSON.parse(data));
-                    //  this.carddataProducts = this.carddata.products;
-                    this.terminalConfigJson.Farecodes.forEach(element => {
-                        if (this.carddata[0].user_profile == element.FareCodeId) {
-                            this.cardType = element.Description;
-                        }
-                    });
-                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
-                    console.log('this.carddata', this.carddata);
-                    this.showCardContents();
-                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
-                    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-                    // ShoppingCartService.getInstance.shoppingCart = null;
-                });
-            }
-            // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
-        });
+
+
+       
 
         //readcardError
 
@@ -208,92 +148,6 @@ export class ReadcardComponent implements OnInit {
             this.errorMessage = data;
             this.showErrorMessages();
         });
-
-
-        this.electronService.ipcRenderer.on('saveOfferingResult', (event, data) => {
-            if (data != undefined && data != "") {
-                console.log('Offerings Success');
-            }
-        });
-
-        this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
-            if (data != undefined && data != "") {
-                localStorage.setItem("deviceConfigData", data);
-                this._ngZone.run(() => {
-                    // this.router.navigate(['/addproduct'])
-                });
-            }
-        });
-
-        this.electronService.ipcRenderer.on('terminalConfigResult', (event, data) => {
-            if (data != undefined && data != "") {
-                localStorage.setItem('terminalConfigJson', data)
-                this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
-                this._ngZone.run(() => {
-                    this.terminalConfigJson = JSON.parse(data);
-                });
-            }
-        });
-
-        this.electronService.ipcRenderer.on('autoLoadResult', (event, data) => {
-            if (data != undefined && data != "") {
-                this.electronService.ipcRenderer.send('readSmartcard', cardName)
-            }
-        });
-
-        this.electronService.ipcRenderer.on('newfarecardResult', (event, data) => {
-            if (data != undefined && data != "") {
-                //this.show = true;
-                this._ngZone.run(() => {
-                    localStorage.setItem("readCardData", JSON.stringify(data));
-                    this.carddata = new Array(JSON.parse(data));
-                    console.log('this.carddata', this.carddata);
-                    this.terminalConfigJson.Farecodes.forEach(element => {
-                        if (this.carddata[0].user_profile == element.FareCodeId) {
-                            this.cardType = element.Description;
-                        }
-                    });
-                    if (Utils.getInstance.isNew(this.carddata[0])) {
-                        localStorage.setItem('userProfile', JSON.stringify(this.cardType));
-                        this.getCatalogJSON();
-                        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
-                        ShoppingCartService.getInstance.shoppingCart = null;
-                        localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-                        var timer = setTimeout(() => {
-                            this.router.navigate(['/addproduct']);
-                            clearTimeout(timer);
-                        }, 1000);
-                    }
-                    else {
-                        this.carddata.length = [];
-                        $("#newCardValidateModal").modal('show');
-                    }
-                });
-            }
-        });
-
-        this.electronService.ipcRenderer.on('magneticcardResult', (event, data) => {
-            if (data != undefined && data != "") {
-                //this.show = true;
-                this._ngZone.run(() => {
-                    this.getProductCatalogJSON();
-                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                    this.shoppingcart = new FareCardService().addMagneticsCard(this.shoppingcart, item.Offering);
-                    ShoppingCartService.getInstance.shoppingCart = null;
-                    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-                    // this.router.navigate(['/addproduct'])
-                });
-            }
-        });
-
-        this.electronService.ipcRenderer.on('getProductCatalogResult', (event, data) => {
-            localStorage.setItem('catalogJSON', JSON.stringify(data));
-            let item = JSON.parse(localStorage.getItem("catalogJSON"));
-            this.catalogData = JSON.parse(item).Offering;
-            this.setOffering();
-        });
-        // );
 
     }
 
@@ -374,10 +228,11 @@ export class ReadcardComponent implements OnInit {
             console.log("pushedData --", this.readCardData)
             localStorage.setItem("cardProductData", JSON.stringify(this.readCardData))
             if (!isExistingCard) {
-                var timer = setTimeout(() => {
-                    this.router.navigate(['/addproduct']);
-                    clearTimeout(timer);
-                }, 1000);
+                this.router.navigate(['/addproduct']);
+                // var timer = setTimeout(() => {
+                //     this.router.navigate(['/addproduct']);
+                //     clearTimeout(timer);
+                // }, 1000);
             }
         }); 
     }
@@ -401,9 +256,44 @@ export class ReadcardComponent implements OnInit {
         localStorage.setItem("isMagnetic", "false");
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
+            console.log("data", data)
+            if (this.isFromReadCard && data != undefined && data != "") {
+                this.show = true;
+                this.isShowCardOptions = false;
+                this.isFromReadCard = false
+                this._ngZone.run(() => {
+                    localStorage.setItem("readCardData", JSON.stringify(data));
+                    localStorage.setItem("printCardData", data)
+                    // let item = JSON.parse(localStorage.getItem("readCardData"));
+                    // this.carddata = JSON.parse(item);
+                    this.carddata = new Array(JSON.parse(data));
+                    //  this.carddataProducts = this.carddata.products;
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if (this.carddata[0].user_profile == element.FareCodeId) {
+                            this.cardType = element.Description;
+                        }
+                    });
+                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
+                    console.log('this.carddata', this.carddata);
+                    this.showCardContents();
+                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+                    // ShoppingCartService.getInstance.shoppingCart = null;
+                });
+            }
+            // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
+        });
+        this.electronService.ipcRenderer.once('autoLoadResult', (event, data) => {
+            if (data != undefined && data != "") {
+                this.electronService.ipcRenderer.send('readSmartcard', cardName)
+            }
+        });
         this.electronService.ipcRenderer.send('processAutoLoad', cardName)
-        this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        // this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
+
     }
 
     newFareCard(event) {
@@ -413,6 +303,39 @@ export class ReadcardComponent implements OnInit {
 
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "false");
+
+        this.electronService.ipcRenderer.once('newfarecardResult', (event, data) => {
+            if (data != undefined && data != "") {
+                //this.show = true;
+                this._ngZone.run(() => {
+                    localStorage.setItem("readCardData", JSON.stringify(data));
+                    this.carddata = new Array(JSON.parse(data));
+                    console.log('this.carddata', this.carddata);
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if (this.carddata[0].user_profile == element.FareCodeId) {
+                            this.cardType = element.Description;
+                        }
+                    });
+                    if (Utils.getInstance.isNew(this.carddata[0])) {
+                        localStorage.setItem('userProfile', JSON.stringify(this.cardType));
+                        // this.getProductCatalogJSON();
+                        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                        ShoppingCartService.getInstance.shoppingCart = null;
+                        localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+                        this.router.navigate(['/addproduct']);
+                        // var timer = setTimeout(() => {
+                        //     this.router.navigate(['/addproduct']);
+                        //     clearTimeout(timer);
+                        // }, 200);
+                    }
+                    else {
+                        this.carddata.length = [];
+                        $("#newCardValidateModal").modal('show');
+                    }
+                });
+            }
+        });
         this.electronService.ipcRenderer.send('newfarecard', cardName);
     }
 
@@ -424,12 +347,13 @@ export class ReadcardComponent implements OnInit {
         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
         localStorage.setItem("isMagnetic", "false");
         localStorage.setItem("isNonFareProduct", "true");
-        this.getProductCatalogJSON();
+        this.router.navigate(['/addproduct']);
+        // this.getProductCatalogJSON();
 
-        var timer = setTimeout(() => {
-            this.router.navigate(['/addproduct']);
-            clearTimeout(timer);
-        }, 1000);
+        // var timer = setTimeout(() => {
+        //     this.router.navigate(['/addproduct']);
+        //     clearTimeout(timer);
+        // }, 1000);
         // this.router.navigate(['/addproduct']);
     }
 
@@ -443,10 +367,11 @@ export class ReadcardComponent implements OnInit {
         this.shoppingcart = FareCardService.getInstance.addMagneticsCard(this.shoppingcart, item.Offering);
         ShoppingCartService.getInstance.shoppingCart = null;
         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-        var timer = setTimeout(() => {
-            this.router.navigate(['/addproduct']);
-            clearTimeout(timer);
-        }, 1000);
+        this.router.navigate(['/addproduct']);
+        // var timer = setTimeout(() => {
+        //     this.router.navigate(['/addproduct']);
+        //     clearTimeout(timer);
+        // }, 1000);
         // this.router.navigate(['/addproduct'])
         // this.electronService.ipcRenderer.send('magneticcard', cardName)
         console.log('read call', cardName)
@@ -456,17 +381,31 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('writeSmartcard', cardName)
         console.log('write call', cardName)
     }
-    getCatalogJSON() {
-        this.logger.info('this is a message from angular');
-        this.electronService.ipcRenderer.send('productCatalogJson', cardName);
-    }
+    // getCatalogJSON() {
+    //     this.logger.info('this is a message from angular');
+    //     this.electronService.ipcRenderer.send('productCatalogJson', cardName);
+    // }
 
     getProductCatalogJSON() {
         this.logger.info('this is a message from angular');
-        this.electronService.ipcRenderer.send('catalogJson', cardName)
+        this.electronService.ipcRenderer.once('getProductCatalogResult', (event, data) => {
+            localStorage.setItem('catalogJSON', JSON.stringify(data));
+            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            this.catalogData = JSON.parse(item).Offering;
+            this.setOffering();
+        });
+        this.electronService.ipcRenderer.send('productCatalogJson', cardName)
     }
 
     adminDeviceConfig() {
+        this.electronService.ipcRenderer.once('adminDeviceConfigResult', (event, data) => {
+            if (data != undefined && data != "") {
+                localStorage.setItem("deviceConfigData", data);
+                this._ngZone.run(() => {
+                    // this.router.navigate(['/addproduct'])
+                });
+            }
+        });
         this.electronService.ipcRenderer.send('adminDeviceConfig')
         //console.log('read call', cardName)
     }
@@ -474,6 +413,43 @@ export class ReadcardComponent implements OnInit {
     getAllUsersSalesAndPayments() {
         var shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
         shiftStore.forEach(record => {
+            this.electronService.ipcRenderer.once('salesDataResult', (event, data, userID, shiftType) => {
+                console.log("print sales data", data)
+                if (data != undefined && data.length != 0) {
+                    this._ngZone.run(() => {
+                        this.salesData = JSON.parse(data);
+                        var salesReport: any = this.salesData
+                        for (var report = 0; report < salesReport.length; report++) {
+                            salesReport[report].userID = userID
+                            salesReport[report].shiftType = shiftType
+                            this.backendSalesReport.push(salesReport[report]);
+                        }
+                        localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
+                    });
+    
+                }
+            });
+            this.electronService.ipcRenderer.once('paymentsDataResult', (event, data, userID, shiftType) => {
+                console.log("print payments  data", data, userID)
+                if (data != undefined && data.length != 0) {
+                    this._ngZone.run(() => {
+                        this.salesPaymentData = JSON.parse(data);
+                        var paymentReport: any = this.salesPaymentData;
+                        for (var report = 0; report < paymentReport.length; report++) {
+                            paymentReport[report].userID = userID
+                            paymentReport[report].shiftType = shiftType
+                            this.backendPaymentReport.push(paymentReport[report]);
+                        }
+                        console.log(" this.backendPaymentReport", this.backendPaymentReport)
+                        localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+    
+                        var displayingPayments = this.cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
+                        this.paymentReport = this.cdtaservice.generatePrintReceiptForPayments(displayingPayments, false);
+                        localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
+    
+                    });
+                }
+            });
             this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
             this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
         });
@@ -499,6 +475,11 @@ export class ReadcardComponent implements OnInit {
         });
         console.log(JSON.stringify(this.offeringSList));
         // var tempJson:string = '[{"TicketId": 3, "Description": test1},{"TicketId": 4, "Description": test1}]'
+        this.electronService.ipcRenderer.once('saveOfferingResult', (event, data) => {
+            if (data != undefined && data != "") {
+                console.log('Offerings Success');
+            }
+        });
         this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(this.offeringSList) + '}');
     }
 
@@ -539,12 +520,20 @@ export class ReadcardComponent implements OnInit {
     }
 
 
-
     ngOnInit() {
+        this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
+            if (data != undefined && data != "") {
+                localStorage.setItem('terminalConfigJson', data)
+                this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
+                this._ngZone.run(() => {
+                    this.terminalConfigJson = JSON.parse(data);
+                });
+            }
+        });
         this.electronService.ipcRenderer.send("terminalConfigcall");
         ShoppingCartService.getInstance.shoppingCart = null;
         //load catalogJSON
-        this.getCatalogJSON();
+        this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         if (localStorage.getItem("shiftReport") != undefined) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));

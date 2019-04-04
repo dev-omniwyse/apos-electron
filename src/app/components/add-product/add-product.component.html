@@ -131,17 +131,19 @@
                 <div *ngIf="isMerchendise" class="cont-products-head"> NON FARE PRODUCTS</div>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
-                    <div class="pull-right remove-slide remove-icon" (click)="removeCurrentWalletLineItem()">
+
+                    <div class="pull-right remove-slide remove-icon" (click)="removeCurrentWalletLineItem()" *ngIf="!productCheckOut">
                             <img src="assets/images/icon-rmproduct.png" />
                        <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
                     <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
-                    <div class="pull-right remove-icon" (click)="removeProduct(item)">
+                    <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
                         <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             <img src="assets/images/icon-rmproduct.png" />
         </div>
+
         </span>
         <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
             <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
@@ -221,6 +223,11 @@
     <div class="flex" *ngIf="isCheckApplied">
         <div class="float-left">Check Applied</div>
         <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
+    </div>
+
+    <div class="flex" *ngIf="isCardApplied">
+        <div class="float-left">Credit Applied</div>
+        <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
     </div>
 
     <hr>
@@ -338,6 +345,22 @@
                 <button data-toggle="modal" (click)="compApplied()">Comp</button>
             </div>
             <!-- Modal -->
+            <div class="modal fade" id="invalidAmountModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Error</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Invali Amount</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
@@ -370,14 +393,14 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">Cash Applied</h4>
+                            <h4 class="modal-title">Credit Applied</h4>
                         </div>
 
                         <div class="modal-body">
                             <!-- <p>Return change to customer</p>
           <p>Click "OK" When cash drawer is closed</p> -->
                             <div class="pop-up-box">
-                                <div class="pull-left">Cash Applied </div>
+                                <div class="pull-left">Credit Applied </div>
                                 <div class="pull-right">${{checkoutTotal | number : '1.2-2'}}</div>
                                 <div class="clearfix"></div>
                             </div>
@@ -495,6 +518,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-cancel" data-dismiss="modal" (click)='notToApplyvoucher()'>No</button>
+
                             <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)='voucherModalApply()'>Yes</button>
                         </div>
                     </div>
@@ -821,6 +845,70 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                 <button type="button" class="btn btn-default" (click)="cancelCheckOutConfirmation()" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="emptyMagneticModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Cannot purchase magnetic card <br>without a product</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="shoppingCartEmptyModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Cart Empty</h4>
+            </div>
+            <div class="modal-body">
+                <p>The shopping cart is empty.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="maxTransactionModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Transaction amount is above the maximum transaction limit of $ {{terminalConfigJson.MaxTransAmount}}.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="minTransactionModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Transaction amount is below the minimum transaction limit of $ {{terminalConfigJson.MinTransAmount}}.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
