@@ -308,6 +308,14 @@ export class AdminComponent implements OnInit {
 
   }
 
+  lastTransactionReceipt() {
+    var timestamp = new Date().getTime();
+    var lastTransactionReceipt = localStorage.getItem("lastTransactionReceipt")
+    if (lastTransactionReceipt != undefined) {
+      this.electronService.ipcRenderer.send('printReceipt', lastTransactionReceipt, timestamp)
+    }
+  }
+
   syncData() {
     this.loading = true;
     // this.maxLoopingCount = 600;

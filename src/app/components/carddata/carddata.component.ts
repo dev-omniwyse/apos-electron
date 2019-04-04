@@ -186,14 +186,15 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   handleSaveTransactionResult() {
+    this.disableEncode = false;
     var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          $("#encodeSuccessModal").modal({
-            backdrop: 'static',
-            keyboard: false
-          });
+          // $("#encodeSuccessModal").modal({
+          //   backdrop: 'static',
+          //   keyboard: false
+          // });
           this.navigateToDashboard();
           var timestamp = new Date().getTime();
           // this.cdtaService.generateReceipt(timestamp)
@@ -237,6 +238,10 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
         }
         this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
+        $("#encodeSuccessModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         $("#encodeSuccessModal").modal('show');
       }
       else {
@@ -246,6 +251,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
     });
+    this.disableEncode = false;
   }
 
   proceedForSaveTransaction() {
@@ -315,6 +321,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
 
   initiateSaveTransaction() {
+    this.disableEncode = true;
     var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
     this.isFromCardComponent = true;
     if (this.isNew) {

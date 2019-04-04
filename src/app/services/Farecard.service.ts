@@ -87,7 +87,6 @@ export class FareCardService {
     //add smart card data - WalletLineItem
     addSmartCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
 
-        debugger;
         /***
          * 1. create local storage
          * 2. push Non fare by default
