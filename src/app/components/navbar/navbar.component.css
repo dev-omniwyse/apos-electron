@@ -4,10 +4,14 @@
 .header-btn-menu:hover {
     border-radius: 5px;
     border: 1px solid #fff;
-    padding: 10px 25px;
-    margin: 0 20px 0 0;
+    padding: 10px 20px;
+    margin: 0;
     color: #333333;
     background-color: #fff;
+}
+
+.header-login-logout {
+    color: #d55400!important
 }
 
 .header-btn-menu i {
@@ -16,19 +20,20 @@
 
 .header-tx-top {
     margin: 0 20px;
-    padding: 7px 0 0 0;
+    padding: 10px 0 0 0;
     color: #fff;
+    font-size: 16px;
 }
 
 .login-info {
-    margin: 11px 0;
+    margin: 15px 0;
     padding: 0 10px;
     display: block;
 }
 
 .login-info div {
     float: left;
-    margin-left: 15px
+    margin-left: 5px
 }
 
 .btn-org {
@@ -45,7 +50,7 @@
 .header-time {
     color: #fff;
     float: left;
-    padding: 25px 0 25px 30px;
+    padding: 25px 0 25px 25px;
     font-size: 17px;
 }
 

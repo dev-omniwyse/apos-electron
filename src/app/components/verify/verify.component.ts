@@ -65,7 +65,7 @@ export class VerifyComponent implements OnInit {
   goToPrevious(form: any) {
       
     // Navigate to the personal page
-    this.router.navigate(['/personal']);
+    this.router.navigate(['/activation']);
 
 }
 

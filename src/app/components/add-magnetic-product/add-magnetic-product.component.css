@@ -2,12 +2,6 @@
 
 /* CSS Document */
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-}
-
 .main-container {
     background-color: #777777;
     display: flex;

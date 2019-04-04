@@ -28,3 +28,35 @@
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6', GradientType=0);
     /* IE6-9 */
 }
+
+.modal-custom-pop {
+    max-width: 410px!important;
+    width: 410px!important;
+}
+
+.modal-custom-pop .modal-header h4 {
+    font-size: 21px!important;
+}
+
+.modal-custom-pop .modal-body {
+    font-size: 21px!important;
+    color: #000!important;
+    text-align: center!important;
+    padding: 20px!important;
+}
+
+.modal-custom-pop .modal-footer .btn-default {
+    font-size: 21px!important;
+    padding: 10px 35px!important;
+    margin: 0 5px!important;
+    border-radius: 12px!important;
+}
+
+.modal-custom-pop .modal-footer .btn-cancel-no {
+    font-size: 21px!important;
+    padding: 10px 35px!important;
+    margin: 0 5px!important;
+    border-radius: 12px!important;
+    background: transparent!important;
+    border: 1px solid #ccc!important;
+}

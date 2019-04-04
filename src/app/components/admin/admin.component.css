@@ -2,12 +2,6 @@
 
 /* CSS Document */
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-}
-
 .main-container {
     background-color: #777777;
     padding: 10px;
@@ -38,7 +32,7 @@ body {
     float: left;
     background-color: #f0f3fa;
     border-radius: 5px;
-    padding: 20px;
+    padding: 0 20px;
 }
 
 .container-left textarea {
@@ -197,8 +191,7 @@ body {
 
 .container-l-app {
     width: 100%;
-    padding: 20px;
-    min-height: 300px;
+    padding: 0;
 }
 
 .container-l-app .label {
@@ -344,8 +337,8 @@ body {
 
 .main-shift-row {
     overflow: hidden;
-    padding: 5px 0;
-    font-size: 18px;
+    padding: 1px 0;
+    font-size: 1.7vh;
     color: #000;
 }
 
@@ -363,18 +356,24 @@ body {
     margin: 2px 0;
 }
 
+.print-report-btn-set {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    bottom: 160px;
+}
+
 .print-report {
-    width: 50%;
+    width: 70%;
     margin-top: 15px;
     border: 1px solid #D64900;
     border-radius: 5px;
     background-color: #d65400;
-    padding: 10px 0;
+    padding: 6vh 0;
     color: #fff;
-    font-size: 24px;
+    font-size: 2.5vh;
     position: relative;
-    margin-left: 30%;
-    margin-right: auto;
+    margin: 0 auto;
 }
 
 .cr-right-btns {
@@ -384,13 +383,17 @@ body {
 
 .cr-right-btns button {
     width: 100%;
-    background-color: #337ab7;
-    border: 1px solid #337ab7;
+    background-color: #3b80c3;
+    border: 1px solid #3b80c3;
     border-radius: 5px;
     color: #fff;
-    font-size: 2vh;
-    padding: 2.3vh 15px;
+    font-size: 2.5vh;
+    padding: 2.1vh 15px;
     margin: 5px 0;
+}
+
+.cr-right-btns button i {
+    margin-top: 8px;
 }
 
 .back-to-sales {
@@ -398,30 +401,30 @@ body {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 22px;
-    padding: 20px 85px;
+    font-size: 2.5vh;
+    padding: 2.25vh 11vh;
     position: relative;
 }
 
 .back-to-sales i {
     position: absolute;
     left: 16px;
-    top: 23px;
+    top: 31px;
 }
 
 .back-sales-txt {
-    margin: 20px 0 15px 0;
-    font-size: 17px;
+    margin: 2vh 0 1vh 0;
+    font-size: 2vh;
     color: #003c79;
 }
 
 .main-shift-heads {
-    color: red;
+    color: #398000;
     font-weight: 100;
-    font-size: 18px;
-    margin-bottom: 20px;
+    font-size: 2vh;
+    margin-bottom: 2vh;
     border-bottom: 1px solid #ccc;
-    padding-bottom: 15px;
+    padding-bottom: 1vh;
 }
 
 .apos-version {
@@ -433,8 +436,8 @@ body {
     color: #000;
 }
 
-.device-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+@media (max-width: 1450px) {
+    .cr-right-btns button {
+        padding: 1.65vh 15px;
+    }
 }
