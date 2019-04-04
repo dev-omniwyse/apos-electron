@@ -696,9 +696,9 @@ ul {
 .carousel-indicators li {
     background: #013d79;
     border-radius: 50%;
-    width: 8px;
-    height: 8px;
-    margin: 0px;
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
 }
 
 .carousel-indicators .active {

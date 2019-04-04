@@ -185,14 +185,15 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   handleSaveTransactionResult() {
+    this.disableEncode = false;
     var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          $("#encodeSuccessModal").modal({
-            backdrop: 'static',
-            keyboard: false
-          });
+          // $("#encodeSuccessModal").modal({
+          //   backdrop: 'static',
+          //   keyboard: false
+          // });
           this.navigateToDashboard();
           var timestamp = new Date().getTime();
           // this.cdtaService.generateReceipt(timestamp)
@@ -236,6 +237,10 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
         }
         this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
+        $("#encodeSuccessModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         $("#encodeSuccessModal").modal('show');
       }
       else {
@@ -245,6 +250,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
     });
+    this.disableEncode = false;
   }
 
   proceedForSaveTransaction() {
@@ -314,6 +320,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
 
   initiateSaveTransaction() {
+    this.disableEncode = true;
     var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
     this.isFromCardComponent = true;
     if (this.isNew) {
@@ -327,7 +334,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     let userID = localStorage.getItem('userID');
 
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    debugger;
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);

@@ -28,7 +28,6 @@ export class TransactionService {
         let walletLineItem = shoppingCart._walletLineItem;
         let userProfile = JSON.parse(localStorage.getItem("userProfile"));
         let fareCodeDescription = userProfile;
-        debugger
         if (null != walletLineItem && !Utils.getInstance.isValidMerchandise(walletLineItem[0])) {
             walletLineItem.splice(0, 1);
 
@@ -68,7 +67,6 @@ export class TransactionService {
                     walletProductIdentifier = wallet._offering.ProductIdentifier;
                     walletCost = wallet._offering.UnitPrice;
                     walletUnitPrice = wallet._unitPrice;
-                    debugger
                     if (wallet._isNew) {
                         walletQuantitySold = 1;
                     }

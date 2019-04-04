@@ -622,3 +622,10 @@ button:focus {
     width: inherit!important;
     text-transform: uppercase;
 }
+
+
+@media (min-width: 768px){
+    .modal-dialog {
+        margin: 0 auto!important;
+    }
+}

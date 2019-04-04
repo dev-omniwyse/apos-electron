@@ -775,7 +775,8 @@ export class AddProductComponent implements OnInit {
       });
       return;
     }
-    if(this.totalDue > this.terminalConfigJson.MaxTransAmount) {
+    // this.terminalConfigJson.MaxTransAmount
+    if(this.totalDue > 5000) {
       $("#maxTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -947,7 +948,6 @@ export class AddProductComponent implements OnInit {
   }
   newCard() {
 
-    debugger;
     this.isfromAddProduct = true;
     this.handleReadCardResult();
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
@@ -1059,7 +1059,6 @@ export class AddProductComponent implements OnInit {
     }
   
   displayDigit(digit) {
-    debugger;
     console.log(digit);
     if(this.totalRemaining == this.checkoutTotal) {
       this.checkoutTotal = 0;

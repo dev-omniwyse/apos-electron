@@ -29,7 +29,6 @@ logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
 dialog.showErrorBox = function (title, content) {
-    // console.log('${title}\n${content}');
 };
 
 let win;
@@ -60,7 +59,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    // win.webContents.openDevTools()
+     win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -170,12 +169,9 @@ ipcMain.on('newfarecard', (event, cardname) => {
 })
 
 ipcMain.on('magneticcard', (event, cardname) => {
-    console.log("before java call  Data", posAppletInstance)
     try {
         var smartread = posAppletInstance.readCardSync();
-        console.log("smartcard", smartread)
     } catch (error) {
-        console.log(error);
     }
 
     event.sender.send('magneticcardResult', smartread);
@@ -535,8 +531,6 @@ ipcMain.on('updateCardData', (event, cardname, transactionDate) => {
 
 
 ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
-    console.log("deleteProducts", cardname);
-    console.log("deleteProducts", encodedCardJson);
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.deleteProductsFromCardSync(cardname, encodedCardJson);
     event.sender.send('deleteProductsFromCardResult', '' + result.getSuccessSync());
@@ -557,7 +551,6 @@ ipcMain.on('navigateToGenfare', (event, urlToNavigate) => {
 });
 
 ipcMain.on('doPinPadTransaction', (event, transactionAmount) => {
-    console.log("pinpad", transactionAmount);
     var result = posAppletInstance.doPinpadPaymentTransactionSync(Number(transactionAmount));
     event.sender.send('doPinPadTransactionResult', '' + result.getSuccessSync());
 });
@@ -587,7 +580,6 @@ ipcMain.on('getPinpadTransactionDataEncode', (event, transactionAmount) => {
     event.sender.send('getPinpadTransactionDataEncodeResult', '' + result.getValueSync());
 });
 ipcMain.on('doPinpadVoidTransaction', (event, transactionAmount) => {
-    console.log("pinpad", transactionAmount);
     var result = posAppletInstance.doPinpadVoidTransactionSync(Number(transactionAmount));
     event.sender.send('doPinpadVoidTransactionResult', '' + result.getSuccessSync());
 });
