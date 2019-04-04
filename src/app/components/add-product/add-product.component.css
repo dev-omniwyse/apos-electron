@@ -6,6 +6,10 @@ ul {
     list-style-type: none;
 }
 
+.form-control:focus {
+    color: white;
+}
+
 .main-container {
     background-color: #777777;
     display: flex;
