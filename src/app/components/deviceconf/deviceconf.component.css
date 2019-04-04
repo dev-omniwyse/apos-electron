@@ -1,6 +1,7 @@
 .dev-container-padding,
 body {
     background-color: #f0f3fa;
+    height: calc(100vh - 74px);
 }
 
 .back-to-sales {
@@ -8,20 +9,21 @@ body {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 2.2vh;
-    padding: 2.2vh 35px;
+    font-size: 3vh;
+    padding: 3.2vh 8vh;
 }
 
 .shift-data-sets {
     display: flex;
-    margin: 0 0 20px 0;
+    margin: 0;
+    height: calc(100vh - 290px);
 }
 
 .shift-data-set {
     flex: 1 1 50%;
-    margin: 0 5px;
+    margin: 0;
     border-radius: 3px;
-    padding: 11px;
+    padding: 10px 0;
 }
 
 .shift-data-set table {
@@ -32,7 +34,7 @@ body {
 .shift-data-set table td,
 .shift-data-set table th {
     border: 1px solid #f0f3fa;
-    padding: 1vh;
+    padding: 1vh 0;
     font-size: 2vh;
     color: #003c79;
 }
@@ -46,11 +48,6 @@ body {
 }
 
 .shift-sales-txt {
-    font-size: 18px;
+    font-size: 4vh;
     color: #04177b;
-    padding-top: 11px;
-}
-
-.shift-sales-head {
-    margin-bottom: 20px;
 }

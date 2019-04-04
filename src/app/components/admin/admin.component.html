@@ -37,13 +37,13 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <button class="print-report" (click) = "getPresentShiftReport();">
+            <div class="print-report-btn-set">
+                <button class="print-report" (click)="getPresentShiftReport();">
                      PRINT REPORT
                 </button>
             </div>
             <div class="apos-version">
-                APOS Version V12.0
+                APOS Version V 1.0.0
             </div>
 
         </div>
@@ -51,67 +51,67 @@
         <div class="container-right">
             <div class="cr-r-set">
                 <div class="">
-                    <button class="back-to-sales" [routerLink]="['/readcard']" (click)="hideModalPop()"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back To Sales</button>
+                    <button class="back-to-sales arrow_left" [routerLink]="['/readcard']" (click)="hideModalPop()"> Back To Sales</button>
                     <div class="back-sales-txt">What would you like to do ? </div>
                     <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 0">
-                        <button [routerLink]="['/shifts']">
-                      Close Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                      Close Main Shift 
                     </button>
-                        <button data-toggle="modal" data-target="#reliefShiftModal">
-                      Pause Main Shift For Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#reliefShiftModal">
+                      Pause Main Shift For Relief Shift 
                     </button>
-                        <button data-toggle="modal" data-target="#noSale">
-                      NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#noSale">
+                      NO SALE 
                     </button>
-                        <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
-                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
-                    </button>
-
-                        <button data-toggle="modal" data-target="#syncCds">
-                      Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shift Sales Summary 
                     </button>
 
-                        <button>
-                      Print Last Transaction Receipt <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS 
                     </button>
 
-                        <button class="device-bottom" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
-                      Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right">
+                      Print Last Transaction Receipt 
+                    </button>
+
+                        <button class="device-bottom arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                      Device Configuration 
                     </button>
                     </div>
                     <div class="cr-right-btns" *ngIf="shiftState == 3 && shiftType == 0 && !mainshiftCloser">
-                        <button [routerLink]="['/shifts']">
-                      Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                      Open Main Shift 
                     </button>
-                        <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS 
                       </button>
-                        <button class="device-bottom" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="device-bottom arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                        Device Configuration 
                       </button>
 
                     </div>
                     <div class="cr-right-btns" *ngIf="mainshiftCloser || closingPausedMainShift">
-                        <button (click)="getSalesReports();" [routerLink]="['/shift_sales']">
-                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" (click)="getSalesReports();" [routerLink]="['/shift_sales']">
+                      Shift Sales Summary 
                     </button>
-                        <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="device-bottom" data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS 
                       </button>
                         <button class="device-bottom" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        Device Configuration 
                       </button>
 
                     </div>
                     <div class="cr-right-btns" *ngIf="shiftState == 4 && shiftType == 0">
-                        <button data-toggle="modal" data-target="#reOpenModal">
-                    Re-Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#reOpenModal">
+                    Re-Open Main Shift 
                     </button>
-                        <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS 
                       </button>
-                        <button class="device-bottom" [routerLink]="['/deviceconfig']">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" class="device-bottom" [routerLink]="['/deviceconfig']">
+                        Device Configuration 
                       </button>
 
                     </div>
@@ -184,7 +184,7 @@
                                     tertiaryColour: '#006ddd' }"></ngx-loading>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button> -->
                                 </div>
                             </div>
                         </div>
@@ -237,8 +237,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">No, Close Window</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes, Start Sales</button>
+                                    <button type="button" class="btn btn-cancel" data-dismiss="modal">No<br/>Close Window</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes<br/>Start Sales</button>
                                 </div>
                             </div>
                         </div>
@@ -265,67 +265,67 @@
                 <div class="back-sales-txt">What would you like to do ? </div> -->
 
                     <div class="cr-right-btns" *ngIf="shiftState == 3 && shiftType == 1">
-                        <button [routerLink]="['/shifts']" (click)="closePausedMainShift();">
-                        Close Paused Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shifts']" (click)="closePausedMainShift();">
+                        Close Paused Main Shift 
                       </button>
-                        <button [routerLink]="['/shifts']">
-                        Open Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                        Open Relief Shift 
                       </button>
-                        <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        Sync With CDS 
                       </button>
-                        <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                        Device Configuration 
                       </button>
 
                     </div>
 
                     <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 1">
-                        <button [routerLink]="['/shifts']">
-                      Close Relief Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                      Close Relief Shift 
                     </button>
 
-                        <button data-toggle="modal" data-target="#noSale">
-                      NO SALE <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#noSale">
+                      NO SALE 
                     </button>
-                        <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
-                      Shift Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
-                    </button>
-
-                        <button data-toggle="modal" data-target="#syncCds">
-                      Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shift Sales Summary 
                     </button>
 
-                        <button>
-                      Print Last Transaction Receipt <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS 
                     </button>
 
-                        <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
-                      Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        <button class="arrow_right">
+                      Print Last Transaction Receipt 
+                    </button>
+
+                        <button class="arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                      Device Configuration 
                     </button>
                     </div>
 
                     <!-- <div class="cr-right-btns" *ngIf="mainShiftClosed">
                     <button [routerLink]="['/shift_sales']" (click)="getSalesReports();">
-                      Shif Sales Summary <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                      Shif Sales Summary 
                     </button>
                     <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        Sync With CDS 
                       </button>
                     <button [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig(); getTerminalConfig();">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        Device Configuration 
                       </button>
 
                 </div> -->
                     <!-- <div class="cr-right-btns" *ngIf="mainShiftPaused">
                     <button data-toggle="modal" data-target="#reOpenModal">
-                    Re-Open Main Shift <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                    Re-Open Main Shift 
                     </button>
                     <button data-toggle="modal" data-target="#syncCds">
-                        Sync With CDS <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        Sync With CDS 
                       </button>
                     <button [routerLink]="['/deviceconfig']">
-                        Device Configuration <i class="fa fa-long-arrow-right float-right" aria-hidden="true"></i>
+                        Device Configuration 
                       </button>
 
                 </div> -->

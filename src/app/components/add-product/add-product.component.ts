@@ -1,8 +1,8 @@
-import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-import { concat, timestamp } from 'rxjs/operators';
+import { concat, timestamp, isEmpty } from 'rxjs/operators';
 import { parse } from 'url';
 import { element } from '@angular/core/src/render3';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -17,6 +17,7 @@ import { TransactionService } from 'src/app/services/Transaction.service';
 import { PaymentType } from 'src/app/models/Payments';
 import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
+import { FormGroup, FormBuilder } from '@angular/forms';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -67,6 +68,8 @@ pcs.on('reader', function (reader) {
     }
   });
 
+ 
+
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
   });
@@ -81,6 +84,9 @@ pcs.on('error', function (err) {
   styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent implements OnInit {
+  currencyForm: FormGroup = this.formBuilder.group({
+    currency:['']
+  })
   merchantise = [];
   merch = [];
   merchantList: any = [];
@@ -160,7 +166,7 @@ export class AddProductComponent implements OnInit {
 
   @ViewChildren('cardsList') cardsList;
   customPayAsYouGo: any;
-  totalRemaining: any = 0;
+  totalRemaining: number = 0;
   cashBack: any = 0;
   isCashApplied: boolean = false;
   cashAppliedTotal: any = 0;
@@ -177,7 +183,10 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+  constructor(private elementRef:ElementRef,
+    private formBuilder: FormBuilder,
+    private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
@@ -213,169 +222,21 @@ export class AddProductComponent implements OnInit {
 
       }
     });
-    var readCardListener = this.electronService.ipcRenderer.on('readcardResult', (event, data) => {
-      var isDuplicateCard = false;
-      if (this.isfromAddProduct && data != undefined && data != "") {
-        this.isfromAddProduct = false;
-        this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          this.carddata = new Array(JSON.parse(data));
-          let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-          ShoppingCartService.getInstance.shoppingCart = null;
-          this.cardJson.forEach(element => {
-            if (element.printed_id == JSON.parse(data).printed_id) {
-              isDuplicateCard = true;
-            }
-          });
-          if (isDuplicateCard) {
-            $("#newCardValidationModal").modal('show');
-          }
-          else {
-            if (isExistingCard) {
-              isExistingCard = false;
-              this.cardJson.push(JSON.parse(data));
-              this.currentCard = this.cardJson[this.cardJson.length - 1];
-              this.selectedProductCategoryIndex = 0;
-
-              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
-              this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
-              this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
-            }
-            else {
-              let isNewCard = this.checkIsCardNew();
-              if (isNewCard) {
-                this.cardJson.push(JSON.parse(data));
-                this.currentCard = this.cardJson[this.cardJson.length - 1];
-                this.selectedProductCategoryIndex = 0;
-
-                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
-                this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
-                this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
-              }
-              else {
-                $("#newCardValidateModal").modal('show');
-              }
-            }
-          }
-        });
-      }
-      // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-    });
-
-    var transactionListener: any = this.electronService.ipcRenderer.on('saveTransactionForMagneticMerchandiseResult', (event, data) => {
-      console.log("data", data)
-      if (data != undefined && data != "") {
-        var timestamp = new Date().getTime();
-        this.cdtaService.generateReceipt(timestamp);
-        this._ngZone.run(() => {
-          // if (this.merchantiseList.length != 0 || this.merchantList.length != 0) {
-          //   this.saveTransaction(localStorage.getItem("paymentMethodId"));
-          // }
-          // else if (this.MagneticList.length == 0 && this.merchantiseList.length == 0 && this.merchantList.length == 0) {
-
-          localStorage.removeItem('encodeData');
-          localStorage.removeItem('productCardData');
-          localStorage.removeItem("cardsData");
-          localStorage.removeItem("readCardData");
-          this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-          this.router.navigate(['/readcard'])
-          // }
-        });
-      } else {
-
-        $("#encodeErrorModal").modal('show');
-
-      }
-    });
-
-    var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
-      if (data != undefined && data != "") {
-        this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
-      }
-    });
-
-    this.electronService.ipcRenderer.on('getPinpadTransactionStatusResult', (event, data) => {
-      console.log("transaction Status CreditCArd", data);
-      if (data != undefined && data != "") {
-        if (data == false && this.numOfAttempts < 600) {
-          var timer = setTimeout(() => {
-            this.numOfAttempts++;
-            this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
-          }, 1000);
-        } else {
-          clearTimeout(timer);
-          $("#creditCardApplyModal").modal("hide")
-          this.electronService.ipcRenderer.send('getPinpadTransactionData')
-        }
-      }
-    });
-
-    this.electronService.ipcRenderer.on('getPinpadTransactionDataResult', (event, data) => {
-      console.log("creditcardTransaction ", data);
-      if (data != undefined && data != "") {
-        localStorage.setItem("pinPadTransactionData", data);
-        this.saveTransaction();
-      }
-    });
-
-    this.electronService.ipcRenderer.on('cancelPinpadTransactionResult', (event, data) => {
-      if (data != undefined && data != "") {
-        $("#creditCardApplyModal").modal("hide")
-      }
-    });
-
-    this.electronService.ipcRenderer.on('creditOrDebitResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('checkResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-          // this.carddata = new Array(JSON.parse(data));
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('existingFareCardResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('voucherResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //  this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('payAsYouGoResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('compResult', (event, data) => {
-      if (data != undefined && data != "") {
-        //this.show = true;
-        this._ngZone.run(() => {
-          //this.router.navigate(['/addproduct'])
-        });
-      }
-    });
 
 
+    // var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
+    //   if (data != undefined && data != "") {
+    //     this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+    //   }
+    // });
+
+
+
+
+
+ 
   }
+ 
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
@@ -409,11 +270,21 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem("MerchandiseData");
     localStorage.removeItem("MagneticData");
     this.calsifilter = false
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
     this.router.navigate(['/readcard'])
   }
 
   ngOnDestroy() {
     // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
   }
 
 
@@ -639,7 +510,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-     if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -729,7 +600,10 @@ export class AddProductComponent implements OnInit {
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
         this.maxLimitErrorMessages = this.getProductLimitMessage()
-        $("#maxCardLimitModal").modal('show');
+        $("#maxCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         return;
       }
     }
@@ -766,7 +640,10 @@ export class AddProductComponent implements OnInit {
     var elementExists = false;
     this.magneticIds.forEach(element => {
       if (element == this.currentMagneticIndex) {
-        $("#magneticCardLimitModal").modal('show');
+        $("#magneticCardLimitModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         elementExists = true;
       }
     });
@@ -780,7 +657,10 @@ export class AddProductComponent implements OnInit {
 
 
   removeCurrentWalletLineItem() {
-    $("#currentCardRemove").modal('show');
+    $("#currentCardRemove").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeCurrentWalletLineItemConfirmation() {
@@ -793,12 +673,12 @@ export class AddProductComponent implements OnInit {
     // Utils.getInstance.removeWalletFromLocalStore(this.cardJson, );
 
     this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
-    
+
     this.currentWalletLineItemIndex = this.walletItems.length - 1;
-    
+
     this.currentWalletLineItem = this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1];
     if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
-      this.clickOnMerch() ;
+      this.clickOnMerch();
       this.isMerchendise = true;
     }
     this.getSubTotal(this.currentWalletLineItem);
@@ -825,7 +705,10 @@ export class AddProductComponent implements OnInit {
 
   removeProduct(product) {
     this.productToRemove = product;
-    $("#removeProductModal").modal('show');
+    $("#removeProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeProductConfirmation() {
@@ -858,13 +741,19 @@ export class AddProductComponent implements OnInit {
 
   removeMerchProduct(merch) {
     this.merchproductToRemove = merch
-    $("#removeMerchProductModal").modal('show');
+    $("#removeMerchProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
   }
 
   removeMagneticProduct(merch, j) {
     this.magneticProductToRemove = merch;
     this.currentMagneticProductId = j;
-    $("#removeMagneticProductModal").modal('show');
+    $("#removeMagneticProductModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     // this.productTotal = this.productTotal - parseFloat(merch.UnitPrice);
     // var selectedIndex = this.MagneticList.indexOf(merch);
     // this.MagneticList.splice(selectedIndex, 1);
@@ -872,10 +761,38 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if (this.totalDue == 0) {
-      $("#productTotalWarningModal").modal('show');
+    if(Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+      $("#shoppingCartEmptyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       return;
     }
+    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+      $("#emptyMagneticModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    if(this.totalDue > this.terminalConfigJson.MaxTransAmount) {
+      $("#maxTransactionModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    if(this.totalDue < this.terminalConfigJson.MinTransAmount) {
+      $("#minTransactionModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
+    // if (this.totalDue == 0) {
+    //   $("#productTotalWarningModal").modal('show');
+    //   return;
+    // }
     this.productCheckOut = true;
 
     // var index = 0;
@@ -893,7 +810,8 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
     this.checkoutTotal = this.totalDue;
-    this.totalRemaining = this.totalDue
+    this.totalRemaining = this.totalDue;
+    this.currencyForm.setValue({"currency": this.checkoutTotal});
   }
 
   cancelCheckout() {
@@ -931,6 +849,57 @@ export class AddProductComponent implements OnInit {
     // }
 
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
+  }
+
+  handleReadCardResult() {
+    var readCardListener = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
+      var isDuplicateCard = false;
+      if (this.isfromAddProduct && data != undefined && data != "") {
+        this.isfromAddProduct = false;
+        this._ngZone.run(() => {
+          localStorage.setItem("readCardData", JSON.stringify(data));
+          this.carddata = new Array(JSON.parse(data));
+          let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+          ShoppingCartService.getInstance.shoppingCart = null;
+          this.cardJson.forEach(element => {
+            if (element.printed_id == JSON.parse(data).printed_id) {
+              isDuplicateCard = true;
+            }
+          });
+          if (isDuplicateCard) {
+            $("#newCardValidationModal").modal('show');
+          }
+          else {
+            if (isExistingCard) {
+              isExistingCard = false;
+              this.cardJson.push(JSON.parse(data));
+              this.currentCard = this.cardJson[this.cardJson.length - 1];
+              this.selectedProductCategoryIndex = 0;
+
+              this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+              this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+              this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+            }
+            else {
+              let isNewCard = this.checkIsCardNew();
+              if (isNewCard) {
+                this.cardJson.push(JSON.parse(data));
+                this.currentCard = this.cardJson[this.cardJson.length - 1];
+                this.selectedProductCategoryIndex = 0;
+
+                this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+                this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+              }
+              else {
+                $("#newCardValidateModal").modal('show');
+              }
+            }
+          }
+        });
+      }
+      // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    });
   }
 
   // stored ride values
@@ -980,16 +949,19 @@ export class AddProductComponent implements OnInit {
 
     debugger;
     this.isfromAddProduct = true;
+    this.handleReadCardResult();
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem("isMagnetic", 'false');
     localStorage.setItem("isMerchendise", "false");
+
   }
 
   ExistingCard() {
     this.isfromAddProduct = true;
     isExistingCard = true;
+    this.handleReadCardResult();
     this.electronService.ipcRenderer.send('readSmartcard', cardName);
     this.isMagnetic = false;
     this.isMerchendise = false;
@@ -1078,15 +1050,34 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
 
+    textAreaEmpty(){
+      console.log(this.currencyForm.value.currency)
+      if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
+        this.checkoutTotal = this.totalRemaining;
+        this.clearDigit(0);
+      }
+    }
+  
   displayDigit(digit) {
+    debugger;
+    console.log(digit);
+    if(this.totalRemaining == this.checkoutTotal) {
+      this.checkoutTotal = 0;
+    } 
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
     this.checkoutTotal += digit;
     this.checkoutTotal = this.checkoutTotal / 100;
+    if(this.currencyForm.value.currency == ''){
+      this.currencyForm.value.currency = ''+ this.checkoutTotal
+    }
+
+
     if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
     }
+ 
   }
   enterCustomAmount(productTotal) {
     let offering = this.customPayAsYouGo;
@@ -1132,6 +1123,10 @@ export class AddProductComponent implements OnInit {
     localStorage.removeItem("cardsData");
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+    this.electronService.ipcRenderer.removeAllListeners("saveTransactionForMagneticMerchandiseResult");
+    this.electronService.ipcRenderer.removeAllListeners("doPinPadTransactionResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionStatusResult");
+    this.electronService.ipcRenderer.removeAllListeners("getPinpadTransactionDataResult");
     this.router.navigate(['/readcard'])
   }
 
@@ -1222,10 +1217,34 @@ export class AddProductComponent implements OnInit {
     return paymentObj;
   }
 
+  handlesaveTransactionForMagneticMerchandiseResult() {
+    var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionForMagneticMerchandiseResult', (event, data) => {
+      console.log("data", data)
+      if (data != undefined && data != "") {
+        var timestamp = new Date().getTime();
+        this.cdtaService.generateReceipt(timestamp);
+        this._ngZone.run(() => {
+
+          localStorage.removeItem('encodeData');
+          localStorage.removeItem('productCardData');
+          localStorage.removeItem("cardsData");
+          localStorage.removeItem("readCardData");
+          this.electronService.ipcRenderer.removeAllListeners("readCardResult");
+          this.router.navigate(['/readcard'])
+        });
+      } else {
+
+        $("#encodeErrorModal").modal('show');
+
+      }
+    });
+  }
+
   saveTransactionForMerchandiseAndMagnetic() {
     let userID = localStorage.getItem('userID');
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingcart, this.getUserByUserID(userID));
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+    this.handlesaveTransactionForMagneticMerchandiseResult();
     this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj);
   }
 
@@ -1233,188 +1252,11 @@ export class AddProductComponent implements OnInit {
   saveTransaction() {
     try {
       localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-      if (this.isSmartCardFound()) {        
+      if (this.isSmartCardFound()) {
         this.router.navigate(['/carddata']);
       } else {
         this.saveTransactionForMerchandiseAndMagnetic()
       }
-
-
-      // if (this.isSmartCardFound()) {
-      //   if (paymentMethodId == "8") {
-      //     this.router.navigate(['/comp'])
-      //   } else {
-      //     this.router.navigate(['/carddata'])
-      //   }
-      // } else {
-      //   if(paymentMethodId == "8"){
-      //     this.router.navigate(['/comp']);
-      //   }
-      
-      // var walletObj: any = [];
-      // var jsonMagneticObj: any = [];
-      // var jsonMerchandiseObj: any = [];
-      // var unitPrice: any = 0;
-      // var fareCode: any = "";
-      // var shiftType: any = 0;
-      // // var de
-      // this.productJson.forEach(catalogElement => {
-      //   if ((null == catalogElement.Ticket) &&
-      //     (false == catalogElement.IsMerchandise) &&
-      //     (null != catalogElement.WalletType)) {
-      //     if (catalogElement.WalletType.WalletTypeId == 10) {
-      //       unitPrice = catalogElement.WalletType.UnitPrice;
-      //     }
-      //   }
-      // });
-      // fareCode = "full";
-      // // get shiftType from ShiftReport
-      // var shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-      // var userId = localStorage.getItem("userID")
-      // shiftReports.forEach(shiftReportElement => {
-      //   if (shiftReportElement.userID == userId) {
-      //     shiftType = shiftReportElement.shiftType;
-      //   }
-      // })
-      // //Magnetic
-      // if (this.MagneticList.length > 0) {
-      //   // this.displayMagneticsSubtotal(this.MagneticList, true);
-      //   var magneticIndex = 0;
-      //   var currentMagneticCardList: any = [];
-      //   this.magneticCardList.forEach(magneticCardElement => {
-      //     walletObj = [];
-      //     // jsonMagneticObj = [];
-      //     currentMagneticCardList = [];
-      //     var loopIndex = 0;
-      //     this.MagneticList.forEach(listElement => {
-      //       if (this.magneticIds[loopIndex] == magneticIndex) {
-      //         currentMagneticCardList.push(listElement);
-      //       }
-      //       loopIndex++;
-      //     });
-      //     currentMagneticCardList.forEach(walletElement => {
-      //       var jsonWalletObj = {
-      //         "transactionID": new Date().getTime(),
-      //         "quantity": 1,
-      //         "productIdentifier": walletElement.ProductIdentifier,
-      //         "ticketTypeId": walletElement.Ticket.TicketType.TicketTypeId,
-      //         "ticketValue": walletElement.Ticket.Value,
-      //         "status": "ACTIVE",
-      //         "slotNumber": 3,
-      //         "startDate": walletElement.DateEffective,
-      //         "expirationDate": walletElement.DateExpires,
-      //         "balance": walletElement.UnitPrice,
-      //         "rechargesPending": 0,
-      //         "IsMerchandise": walletElement.IsMerchandise,
-      //         "IsBackendMerchandise": false,
-      //         "IsFareCard": false,
-      //         "unitPrice": walletElement.UnitPrice,
-      //         "totalCost": this.subTotal,
-      //         "userID": localStorage.getItem("userEmail"),
-      //         "shiftID": 1,
-      //         "fareCode": fareCode,
-      //         "offeringId": walletElement.OfferingId,
-      //         "cardPID": magneticCardElement.name,
-      //         "cardUID": new Date().getTime(),
-      //         "walletTypeId": 3,
-      //         "shiftType": shiftType,
-      //         "timestamp": new Date().getTime()
-      //       }
-      //       walletObj.push(jsonWalletObj);
-      //     });
-      //     var JsonObj: any = {
-      //       "transactionID": new Date().getTime(),
-      //       "cardPID": magneticCardElement.name,
-      //       "cardUID": new Date().getTime(),
-      //       "quantity": 1,
-      //       "productIdentifier": JSON.parse(localStorage.getItem("magneticProductIndentifier")),
-      //       "ticketTypeId": null,
-      //       "ticketValue": 0,
-      //       "slotNumber": 0,
-      //       "expirationDate": 0,
-      //       "balance": 0,
-      //       "IsMerchandise": false,
-      //       "IsBackendMerchandise": true,
-      //       "IsFareCard": true,
-      //       "unitPrice": this.magneticCardCost,
-      //       "totalCost": this.magneticCardCost,
-      //       "userID": localStorage.getItem("userEmail"),
-      //       "shiftID": 1,
-      //       "fareCode": fareCode,
-      //       "walletContentItems": walletObj,
-      //       "walletTypeId": 10,
-      //       "shiftType": shiftType,
-      //       "timestamp": new Date().getTime()
-      //     };
-      //     jsonMagneticObj.push(JsonObj);
-      //     magneticIndex++;
-      //   });
-      //   var magneticTransactionObj =
-      //   {
-      //     "userID": localStorage.getItem("userEmail"),
-      //     "timestamp": new Date().getTime(),
-      //     "transactionID": new Date().getTime(),
-      //     "transactionType": "Charge",
-      //     "transactionAmount": this.subTotal,
-      //     "salesAmount": this.subTotal,
-      //     "taxAmount": 0,
-      //     "items": jsonMagneticObj,
-      //     "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.subTotal }], "shiftType": shiftType
-      //   }
-      //   this.MagneticList = [];
-      //   this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', magneticTransactionObj);
-      // }
-      // // Merchandise
-      // if (this.merchantiseList.length > 0 && this.MagneticList.length == 0) {
-      //   this.merchantiseList.forEach(merchandiseElement => {
-      //     var merchandiseObj: any = {
-      //       "transactionID": new Date().getTime(),
-      //       "quantity": merchandiseElement.quantity,
-      //       "productIdentifier": merchandiseElement.ProductIdentifier,
-      //       "ticketTypeId": null,
-      //       "ticketValue": 0,
-      //       "slotNumber": 0,
-      //       "balance": 0,
-      //       "IsMerchandise": true,
-      //       "IsBackendMerchandise": true,
-      //       "IsFareCard": false,
-      //       "unitPrice": merchandiseElement.UnitPrice,
-      //       "totalCost": merchandiseElement.UnitPrice,
-      //       "tax": 0, "userID": localStorage.getItem("userEmail"),
-      //       "shiftID": 1,
-      //       "fareCode": null,
-      //       "shiftType": shiftType,
-      //       "timestamp": new Date().getTime()
-      //     };
-      //     jsonMerchandiseObj.push(merchandiseObj);
-      //   });
-      //   var merchandiseTransactionObj =
-      //   {
-      //     "userID": localStorage.getItem("userEmail"),
-      //     "timestamp": new Date().getTime(),
-      //     "transactionID": new Date().getTime(),
-      //     "transactionType": "Charge",
-      //     "transactionAmount": this.merchentiseSubTotal,
-      //     "salesAmount": this.merchentiseSubTotal,
-      //     "taxAmount": 0,
-      //     "items": jsonMerchandiseObj,
-      //     "payments": [{ "paymentMethodId": paymentMethodId, "amount": this.merchentiseSubTotal }], "shiftType": shiftType
-      //   }
-      //   this.merchantiseList = [];
-      //   this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', merchandiseTransactionObj);
-      // }
-      // if (this.merchantList.length > 0 && this.MagneticList.length == 0 && this.merchantiseList.length == 0) {
-      //   // this.displaySmartCardsSubtotal(this.merchantList, true)
-      //   localStorage.setItem('transactionAmount', JSON.stringify(this.subTotal));
-      //   if (paymentMethodId == "8") {
-      //     localStorage.setItem("paymentMethodId", paymentMethodId)
-      //     this.router.navigate(['/comp'])
-      //   } else {
-      //     localStorage.setItem("paymentMethodId", paymentMethodId)
-      //     this.router.navigate(['/carddata'])
-      //   }
-
-      //}
     }
     catch (e) {
       $("#encodeErrorModal").modal('show');
@@ -1422,14 +1264,65 @@ export class AddProductComponent implements OnInit {
 
   }
 
+  handle
+
+  handlegetPinpadTransactionDataResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionDataResult', (event, data) => {
+      console.log("creditcardTransaction ", data);
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data);
+        this.saveTransaction();
+      }
+    });
+  }
+
+  handlegetPinpadTransactionStatusResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionStatusResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
+      if (data != undefined && data != "") {
+        if (data == false && this.numOfAttempts < 600) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.handlegetPinpadTransactionStatusResult();
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          $("#creditCardApplyModal").modal("hide")
+          this.handlegetPinpadTransactionDataResult();
+          this.electronService.ipcRenderer.send('getPinpadTransactionData')
+        }
+      }
+    });
+  }
+
+  handleDoPinPadTransactionResult() {
+    var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.once('doPinPadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this.handlegetPinpadTransactionStatusResult();
+        this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
+      }
+    });
+  }
+
   doPinPadTransaction() {
     this.numOfAttempts = 0;
     $("#creditCardModal").modal("hide")
     $("#creditCardApplyModal").modal("show")
+    this.handleDoPinPadTransactionResult();
     this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
+  handleCancelPinPadTransaction(){
+    this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        $("#creditCardApplyModal").modal("hide")
+      }
+    });
+  }
+
   cancelPinPadTransaction() {
+    this.handleCancelPinPadTransaction();
     this.electronService.ipcRenderer.send('cancelPinpadTransaction');
   }
 
@@ -1456,8 +1349,11 @@ export class AddProductComponent implements OnInit {
   }
 
   paymentByCash() {
+    if(this.checkoutTotal == 0) {
 
-    if (this.totalRemaining == this.checkoutTotal) {
+      $('#invalidAmountModal').modal('show');
+
+    }else if (this.totalRemaining == this.checkoutTotal) {
       this.isCashApplied = false;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
@@ -1493,9 +1389,9 @@ export class AddProductComponent implements OnInit {
       if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-        let indexOfPayment =  this.checkIsPaymentMethodExists(2);
-        if(indexOfPayment == -1) {
+        this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+        let indexOfPayment = this.checkIsPaymentMethodExists(2);
+        if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = this.checkoutTotal;
           payment.$paymentMethodId = 2;
@@ -1503,12 +1399,14 @@ export class AddProductComponent implements OnInit {
           this.shoppingcart._payments.push(payment);
           this.cashAppliedTotal = payment.$amount;
           this.isCashApplied = true;
+          this.checkoutTotal = 0;
         } else {
           this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
           this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           this.isCashApplied = true;
+          this.checkoutTotal = 0;
         }
-   
+
       }
     } else if (this.totalRemaining < this.checkoutTotal) {
       // this.isCashApplied = true;
@@ -1524,7 +1422,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 2
     payment.$amount = this.checkoutTotal
     payment.$comment = null;
-    if(this.checkIsPaymentMethodExists(2) == -1) {
+    if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }
 
@@ -1534,7 +1432,11 @@ export class AddProductComponent implements OnInit {
 
 
   paymentByVoucher() {
-    if (this.totalRemaining == this.checkoutTotal) {
+    if(this.checkoutTotal == 0) {
+
+      $('#invalidAmountModal').modal('show');
+
+    } else if(this.totalRemaining == this.checkoutTotal) {
       $('#voucherModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1570,7 +1472,7 @@ export class AddProductComponent implements OnInit {
       }
 
     }
-    else if (this.totalRemaining < this.checkoutTotal) {
+    else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1578,21 +1480,21 @@ export class AddProductComponent implements OnInit {
   }
 
   voucherModalApply() {
-    if(this.totalDue == this.checkoutTotal) {
-      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+    if (this.totalDue == this.checkoutTotal) {
+      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
       this.voucherRemaining = this.totalRemaining;
       let payment = new PaymentType();
       payment.$paymentMethodId = 11
       payment.$amount = this.checkoutTotal
       payment.$comment = null;
-      if(this.checkIsPaymentMethodExists(11) == -1) {
+      if (this.checkIsPaymentMethodExists(11) == -1) {
         this.shoppingcart._payments.push(payment);
       }
     } else {
       this.totalRemaining = this.totalRemaining - this.checkoutTotal;
       this.voucherRemaining = this.totalRemaining;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(11);
-      if(indexOfPayment == -1) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(11);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 11;
@@ -1601,13 +1503,15 @@ export class AddProductComponent implements OnInit {
         console.log(this.shoppingcart._payments)
         this.voucherAppliedTotal = payment.$amount;
         this.isVoucherApplied = true;
+        this.checkoutTotal = 0;
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
         this.voucherAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         console.log(this.shoppingcart._payments)
         this.isVoucherApplied = true;
+        this.checkoutTotal = 0;
       }
-      
+
     }
     if (this.voucherRemaining !== 0) {
       $('#voucherApplyModal').modal('hide');
@@ -1630,8 +1534,11 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  paymentByCheck() {
-    if (this.totalRemaining == this.checkoutTotal) {
+  paymentByCheck() { if(this.checkoutTotal == 0) {
+
+    $('#invalidAmountModal').modal('show');
+
+  }else if(this.totalRemaining == this.checkoutTotal) {
       $('#checkModal').modal('show');
     }
 
@@ -1663,9 +1570,9 @@ export class AddProductComponent implements OnInit {
       if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-        let indexOfPayment =  this.checkIsPaymentMethodExists(3);
-        if(indexOfPayment == -1) {
+        this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+        let indexOfPayment = this.checkIsPaymentMethodExists(3);
+        if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = this.checkoutTotal;
           payment.$paymentMethodId = 3;
@@ -1674,17 +1581,19 @@ export class AddProductComponent implements OnInit {
           console.log(this.shoppingcart._payments)
           this.checkAppliedTotal = payment.$amount;
           this.isCheckApplied = true;
+          this.checkoutTotal = 0;
         } else {
           this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
           this.checkAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           console.log(this.shoppingcart._payments)
           this.isCheckApplied = true;
+          this.checkoutTotal = 0;
         }
-   
+
       }
 
     }
-    else if (this.totalRemaining < this.checkoutTotal) {
+    else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
   }
@@ -1694,18 +1603,22 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 3
     payment.$amount = this.checkoutTotal
     payment.$comment = null;
-    if(this.checkIsPaymentMethodExists(3) == -1) {
+    if (this.checkIsPaymentMethodExists(3) == -1) {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
     this.saveTransaction();
   }
-  
+
 
 
 
   compApplied() {
-    if (this.totalRemaining == this.checkoutTotal) {
+    if(this.checkoutTotal == 0) {
+
+      $('#invalidAmountModal').modal('show');
+
+    }else if(this.totalRemaining == this.checkoutTotal) {
       $('#compModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1736,7 +1649,7 @@ export class AddProductComponent implements OnInit {
       } else {
         $('#compModal').modal('show');
       }
-    } else if (this.totalRemaining < this.checkoutTotal) {
+    } else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1749,8 +1662,8 @@ export class AddProductComponent implements OnInit {
 
   compensation() {
     if (this.totalRemaining == this.checkoutTotal) {
-      let indexOfPayment =  this.checkIsPaymentMethodExists(8);
-      if(indexOfPayment == -1) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 8;
@@ -1760,10 +1673,10 @@ export class AddProductComponent implements OnInit {
       this.electronService.ipcRenderer.send('compensation');
       this.saveTransaction();
     } else if (this.totalRemaining > this.checkoutTotal) {
-      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-      this.compDue= this.totalRemaining;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(8);
-      if(indexOfPayment == -1) {
+      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+      this.compDue = this.totalRemaining;
+      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 8;
@@ -1772,13 +1685,15 @@ export class AddProductComponent implements OnInit {
         // this.cashAppliedTotal = payment.$amount;
         this.isCompApplied = true;
         this.applyCompShow = false;
+        this.checkoutTotal = 0;
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.isCompApplied = true;
         this.applyCompShow = false;
+        this.checkoutTotal = 0;
       }
-     
+
     }
 
   }
@@ -1791,11 +1706,15 @@ export class AddProductComponent implements OnInit {
     if (this.reason == true && value == "OTHERS") {
       this.reason = false
       this.reasonForComp = "";
-    } 
+    }
   }
 
   cardApplied() {
-    if (this.totalRemaining == this.checkoutTotal) {
+    if(this.checkoutTotal == 0) {
+
+      $('#invalidAmountModal').modal('show');
+
+    }else if(this.totalRemaining == this.checkoutTotal) {
       $('#creditCardModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1839,15 +1758,15 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (Math.round(this.totalRemaining) < this.checkoutTotal) {
+    } else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
   }
 
   cardPayment() {
-    if(this.totalRemaining == this.checkoutTotal) {
-      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
-      if(indexOfPayment == -1) {
+    if (this.totalRemaining == this.checkoutTotal) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 9;
@@ -1856,10 +1775,10 @@ export class AddProductComponent implements OnInit {
       }
       this.doPinPadTransaction();
     } else {
-      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
-      this.cardAppliedTotal= this.checkoutTotal;
-      let indexOfPayment =  this.checkIsPaymentMethodExists(9);
-      if(indexOfPayment == -1) {
+      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+      this.cardAppliedTotal = this.checkoutTotal;
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = this.checkoutTotal;
         payment.$paymentMethodId = 9;
@@ -1867,9 +1786,11 @@ export class AddProductComponent implements OnInit {
         this.shoppingcart._payments.push(payment);
         // this.cashAppliedTotal = payment.$amount;
         this.isCardApplied = true;
+        this.checkoutTotal = 0;
         // this.doPinPadTransaction()
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        this.cardAppliedTotal= this.shoppingcart._payments[indexOfPayment].amount;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.cardAppliedTotal = true;
         // this.doPinPadTransaction();

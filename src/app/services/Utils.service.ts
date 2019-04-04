@@ -1,6 +1,7 @@
 import { ShoppingCartService } from "./ShoppingCart.service";
 import { FareCardService } from "./Farecard.service";
 import { MediaType, TICKET_GROUP } from "./MediaType";
+import { TransactionService } from './Transaction.service';
 
 export class Utils {
 
@@ -255,7 +256,7 @@ export class Utils {
         let bonusRideStatusText = "Bonus Ride(s): " + bonus_rides;
         if ((cardData.num_bonus_passes != null) &&
             (cardData.num_bonus_passes > 0)) {
-            
+
             if (cardData.bonus_pass) {
                 bonus_rides = cardData.bonus_pass.ride_count;
             }
@@ -277,5 +278,43 @@ export class Utils {
         });
         let text = "Next Bonus: " + bonus_ride_counter + "/" + bonusRideThreshold;
         return text;
+    }
+    isAnyEmptyMagnetics(shoppingCart) {
+        let isEmpty = false;
+        let walletLineItems = shoppingCart._walletLineItem
+        for (let itemIndex = 0; itemIndex < walletLineItems.length; itemIndex++) {
+            if (walletLineItems[itemIndex]._walletTypeId == MediaType.MAGNETIC_ID && (0 == walletLineItems[itemIndex]._walletContents.length)) {
+                isEmpty = true;
+                break;
+            }
+        }
+        return isEmpty;
+    }
+    isValidMerchandise(wallet) {
+        let flag = true;
+        if ((wallet._walletTypeId == MediaType.MERCHANDISE_ID) &&
+            (0 == wallet._walletContents.length)) {
+            flag = false;
+        }
+
+        return flag;
+    }
+    isEmptyShoppingCart(shoppingcart) {
+
+        let walletLineItems = shoppingcart._walletLineItem;
+        let isEmpty = false;
+        if (0 == walletLineItems.length) {
+            isEmpty = true;
+        } else if (1 == walletLineItems.length && !this.isValidMerchandise(walletLineItems[0])) {
+            isEmpty = true;
+        }
+        // else {
+        //     for(let index = 0; index < walletLineItems.length; index++){
+        //         if(walletLineItems[index].walletContents){
+
+        //         }
+        //     }
+        // }
+        return isEmpty;
     }
 }

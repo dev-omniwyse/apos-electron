@@ -4,7 +4,7 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-
+declare var $: any;
 @Component({
   selector: 'app-activation',
   templateUrl: './activation.component.html',
@@ -18,6 +18,7 @@ export class ActivationComponent implements OnInit {
   password:any
   organization : string;
   environment: string = "";
+  
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
   //   this.electronService.ipcRenderer.on('activationCallResult', (event, data) => {
@@ -31,7 +32,9 @@ export class ActivationComponent implements OnInit {
   // });
   this.environment = localStorage.getItem('environment');
   this.electronService.ipcRenderer.on('verifyCallResult', (event, data) => {
-    if (data != undefined && data != "") {
+    console.log('verifycall -----------',data);
+    var activationData = this.validJSON(data)
+    if (activationData == true) {
       this._ngZone.run(() => {
         this.carddata = new Array(JSON.parse(data));
         this.password =  this.carddata[0].deviceSetup.password;
@@ -42,9 +45,23 @@ export class ActivationComponent implements OnInit {
          this.router.navigate(['/verify'])
       });
     }
+    else {
+           $("#activationModal").modal({
+            backdrop: 'static',
+            keyboard: false
+          });
+    }
   });
    }
 
+   validJSON(data){
+     try{
+       JSON.parse(data);
+     }catch(e){
+       return false
+     }
+     return true
+   }
 //   activationCall(form:any) {
 //     if (this.save(form)) {
 //       console.log("form", form.value)
@@ -67,9 +84,10 @@ export class ActivationComponent implements OnInit {
                 localStorage.setItem("assetId", form.value.hardware);
               this.electronService.ipcRenderer.send('verifycall', data, this.environment)
               console.log('read call', event)
-              }
-      }
+              } 
 
+
+    }
 save(form: any): boolean {
   if (!form.valid) {
       return false;
