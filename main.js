@@ -59,7 +59,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-     win.webContents.openDevTools()
+    //  win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -543,7 +543,7 @@ ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
 ipcMain.on('processAutoLoad', (event, cardname) => {
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.processAutoloadSync();
-    //    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
 });
 
 
