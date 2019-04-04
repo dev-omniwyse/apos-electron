@@ -32,12 +32,12 @@
                                 <div class="flex">
                                     <div class="flex-devide">
                                         <p>{{card?.printed_id}} - Active</p>
-                                        <p>Fare Code: Full</p>
+                                        <p>Fare Code: {{userFarecode}}</p>
                                         <p>Card Exp: {{card?.card_expiration_date_str}}</p>
                                     </div>
                                     <div class="flex-devide">
-                                        <p>Bonus Ride(s): 0</p>
-                                        <p>Next Bonus: 0/4</p>
+                                        <p>Bonus Ride(s): {{bonusRidesCountText}}</p>
+                                        <p>Next Bonus: {{nextBonusRidesText}}</p>
                                     </div>
                                 </div>
                             </div>

@@ -543,7 +543,7 @@ ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
 ipcMain.on('processAutoLoad', (event, cardname) => {
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.processAutoloadSync();
-    // event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
 });
 
 

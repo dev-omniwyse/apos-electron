@@ -153,8 +153,9 @@ export class AddProductComponent implements OnInit {
   };
 
   payment = new PaymentType();
-
-
+  userFarecode : any;
+  bonusRidesCountText : string;
+  nextBonusRidesText: string;
 
   currentWalletLineItem: any = [];
 
@@ -241,7 +242,12 @@ export class AddProductComponent implements OnInit {
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
     let item = JSON.parse(localStorage.getItem("readCardData"))
-    this.viewCardData = new Array(JSON.parse(item))
+    this.viewCardData = new Array(JSON.parse(item));
+    this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.viewCardData[0]);
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+    this.userFarecode = JSON.parse(localStorage.getItem('userProfile'));
+    this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.viewCardData[0], this.terminalConfigJson);
+    
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
