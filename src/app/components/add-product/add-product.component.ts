@@ -215,7 +215,6 @@ export class AddProductComponent implements OnInit {
     });
 
 
-
     // var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.on('doPinPadTransactionResult', (event, data) => {
     //   if (data != undefined && data != "") {
     //     this.electronService.ipcRenderer.send('getPinpadTransactionStatus')

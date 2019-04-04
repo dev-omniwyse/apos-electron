@@ -3,6 +3,7 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
 import {environment} from '../../../environments/environment';
+declare var $: any;
 
 @Component({
   selector: 'app-environment',
@@ -12,6 +13,7 @@ import {environment} from '../../../environments/environment';
 export class EnvironmentComponent implements OnInit {
   showView = false;
   isFromSetup = false;
+  selectedEnvironment = {};
   environments = [{"name" : "DEMO","value":"demo"},{"name" : "DEV", "value": "dev"},{"name" : "INTG", "value": "intg"},{"name" : "LOCAL", "value": "local"},{"name" : "PREP", "value": "prep"},{"name" : "QA", "value": "qa"},{"name" : "QE", "value": "qe"},{"name" : "STAGING", "value": "staging"},{"name" : "UAT", "value": "uat"}]
 
   constructor(private cdtaservice: CdtaService, private electronService:ElectronService, private router: Router, private _ngZone: NgZone) {
@@ -42,9 +44,17 @@ export class EnvironmentComponent implements OnInit {
   }
 
   selectEnvironment(environment) {
+    this.selectedEnvironment = environment.name;
+    console.log(this.selectedEnvironment);
+    $("#environmentSetupModal").modal({
+      backdrop: 'static',
+      keyboard: false
+    });
     localStorage.setItem('environment',environment.value)
+    // this.router.navigate(['/setup'])
+  }
+  navigateToDashboard() {
     this.router.navigate(['/setup'])
   }
-
 
 }

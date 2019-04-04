@@ -433,6 +433,17 @@ body {
     width: 50%;
 }
 
+.modal-footer .btn-default:hover {
+    background-color: #d65400;
+    border: 1px solid #d65400;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 0 5px;
+    width: 50%;
+}
+
 .modal-footer {
     justify-content: center;
 }
