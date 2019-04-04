@@ -786,7 +786,7 @@ export class CdtaService {
     var changeDue = 0;
     var padSize = 0;
     var transText = "Trans ID:";
-    var isMerchandise = ""
+    var isMerchandise: Boolean
     var walletTypeId = 0;
     receipt += transText;
     padSize = receiptWidth - (transText.length + storedTransactionID.toString().length);
@@ -851,12 +851,13 @@ export class CdtaService {
       if (element.IsMerchandise == true) {
         isMerchandise = element.IsMerchandise
         walletTypeId = element.walletTypeId
-        JSON.parse(catalog).Offering.forEach(catalogElement => {
-          if (catalogElement.Ticket != undefined) {
-            if (catalogElement.ProductIdentifier == element.productIdentifier) {
-              return element.description = catalogElement.Ticket.Description
-            }
+        var catalogJson = JSON.parse(catalog).Offering
+        catalogJson.forEach(catalogElement => {
+          // if (catalogElement.Ticket != undefined) {
+          if (catalogElement.ProductIdentifier == element.productIdentifier) {
+            return element.description = catalogElement.Description
           }
+          // }
         });
         var lineItem = element.description + "";
         var lineItemQty = " - Qty: " + element.quantity + " ";
@@ -873,7 +874,6 @@ export class CdtaService {
 
         receipt += lineItem + subtotalStr + "\n\n";
       } else {
-
 
         var PID = element.cardPID;
         var cardText = "Card ID:";
@@ -922,7 +922,7 @@ export class CdtaService {
         console.log("walletContents", walletContents);
         walletContents.forEach(item => {
           walletTypeId = item.walletTypeId
-          isMerchandise = item.IsMerchandise
+          //  isMerchandise = item.IsMerchandise
           JSON.parse(catalog).Offering.forEach(catalogElement => {
             if (catalogElement.Ticket != undefined) {
               if (catalogElement.ProductIdentifier == item.productIdentifier) {
@@ -985,9 +985,11 @@ export class CdtaService {
     faretotalStr = "              " + faretotalStr;
     taxtotalStr = "              " + taxtotalStr;
     totalStr = totalStr.substring(totalStr.length - 20);
+    if (isMerchandise == true) {
+      receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
+      receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
 
-    // receipt += "\nFare TOTAL:              " + faretotalStr + "\n\n";
-    // receipt += "\nTax TOTAL:               " + taxtotalStr + "\n\n";
+    }
 
     receipt += "\nTOTAL:                   " + totalStr + "\n\n";
 
@@ -1001,40 +1003,40 @@ export class CdtaService {
 
       switch (paymentId) {
         case 1:
-          paymentTypeText = "INVOICED"
+          paymentTypeText = "Invoiced"
           break;
         case 2:
-          paymentTypeText = "CASH"
+          paymentTypeText = "Cash"
           break;
         case 3:
-          paymentTypeText = "CHECK"
+          paymentTypeText = "Check"
           break;
         case 4:
-          paymentTypeText = "AMEX"
+          paymentTypeText = "Amex"
           break;
         case 5:
-          paymentTypeText = "VISA"
+          paymentTypeText = "Visa"
           break;
         case 6:
-          paymentTypeText = "MASTERCARD"
+          paymentTypeText = "Mastercard"
           break;
         case 7:
-          paymentTypeText = "DISCOVER"
+          paymentTypeText = "Discover"
           break;
         case 8:
-          paymentTypeText = "COMP"
+          paymentTypeText = "Comp"
           break;
         case 9:
-          paymentTypeText = "CREDIT"
+          paymentTypeText = "Credit"
           break;
         case 10:
-          paymentTypeText = "FARE_CARD"
+          paymentTypeText = "Fare_card"
           break;
         case 11:
-          paymentTypeText = "VOUCHER"
+          paymentTypeText = "Voucher"
           break;
         case 12:
-          paymentTypeText = "STORED_VALUE"
+          paymentTypeText = "Stored_value"
           break;
         default:
           paymentTypeText = "UNKNOWN"
@@ -1083,157 +1085,158 @@ export class CdtaService {
         var cardBalance = "",
           textProductType = "",
           remainingRides: any = 0;
-
-        receipt += "\n\n             Current Card Balance\n\n";
-        var cards = JSON.parse(localStorage.getItem("cardsData"));
-        // for (let cardStore of cards) {
-        let cardStore = this.findByCardPIDFromCardsData(cards, item.cardPID);
-        var receiptWidth = 44;
-        var dashes = "";
-        while (dashes.length <= receiptWidth) {
-          dashes += "-";
-        }
-
-        receipt += dashes + "\n";
-        var PID = cardStore.printed_id;
-        var cardText = "Card ID:";
-        receipt += cardText;
-        padSize = receiptWidth - (cardText.length + PID.length);
-        spacer = '';
-
-        while (spacer.length <= (padSize - 1)) {
-          spacer += " ";
-        }
-
-        receipt += spacer + PID + "\n";
-
-        if (cardStore.products) {
-
-          for (var i = 0; i < cardStore.products.length; i++) {
-
-            var dataItem = cardStore.products[i];
-
-            var productType = dataItem.product_type;
-            var designator = dataItem.designator;
-            var days = dataItem.days;
-            var rechargesPending = dataItem.recharges_pending;
-            var remainingValue = dataItem.remaining_value;
-            var remainingRides = dataItem.remaining_rides;
-            var start_date = dataItem.start_date_str;
-            var exp_date = dataItem.exp_date_str;
-            var start_date_epoch_days = dataItem.start_date_epoch_days;
-            var exp_date_epoch_days = dataItem.exp_date_epoch_days;
-            var bad_listed = dataItem.is_prod_bad_listed;
-            var textProductType = '';
-            var cardBalance = '';
-            var productDescription = '';
-            var productStatus = '';
-
-            switch (productType) {
-              case 1:
-
-                if (exp_date_epoch_days > 1) {
-                  cardBalance = "Exp: " + exp_date;
-                } else {
-                  cardBalance = (days + 1) + " Days";
-                }
-
-                productDescription = (days + 1) + " Day Pass";
-
-                if (rechargesPending > 0) {
-                  productStatus += " (" + rechargesPending + " Pending)"
-                }
-
-                break;
-              case 2:
-                if (1 == remainingRides) {
-                  cardBalance = remainingRides + " Ride";
-                } else {
-                  cardBalance = remainingRides + " Rides";
-                }
-                productDescription = 'Stored Ride Pass';
-                break;
-              case 3:
-
-                var remaining_value = 0;
-
-                if (dataItem.remaining_value && dataItem.remaining_value > 0) {
-                  remaining_value = dataItem.remaining_value / 100;
-                }
-
-                productDescription = 'Pay As You Go';
-                cardBalance = "$" + remaining_value.toFixed(2);
-
-                break;
-              case 7:
-
-                productDescription = "Employee Pass";
-
-                if (exp_date_epoch_days > 1) {
-                  cardBalance = "Exp: " + exp_date;
-                }
-
-                break;
-              default:
-                productDescription = "Unknown Product";
-                break;
-            }
-
-            // var ticketKey = productType + "_" + designator;
-
-            //  var carddata = new Array(cardStore);
-
-            //  cardStore.products.forEach(cardElement => {
-            JSON.parse(catalog).Offering.forEach(catalogElement => {
-              if (catalogElement.Ticket != undefined) {
-                if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-                  //  var catalogdata = {
-                  //    "ticketid": 
-                  //  }
-                  return productDescription = catalogElement.Ticket.Description
-
-                }
-              }
-            });
-            // });
-
-
-            // don't print anything if your stored value is $0
-            if ((3 != productType) || (0 < remaining_value)) {
-
-              var receiptWidth = 44;
-              var padSize = 0;
-              var maxDescriptionLength = receiptWidth - 16;
-
-              if (productDescription.length >= maxDescriptionLength) {
-                productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
-              }
-
-              receipt += productDescription;
-
-              padSize = receiptWidth - (productDescription.length + cardBalance.length);
-
-              var spacer = '';
-
-              while (spacer.length <= (padSize - 1)) {
-                spacer += " ";
-              }
-
-              receipt += spacer + cardBalance + "\n";
-            }
+        if (item.IsMerchandise != true) {
+          receipt += "\n\n             Current Card Balance\n\n";
+          var cards = JSON.parse(localStorage.getItem("cardsData"));
+          // for (let cardStore of cards) {
+          let cardStore = this.findByCardPIDFromCardsData(cards, item.cardPID);
+          var receiptWidth = 44;
+          var dashes = "";
+          while (dashes.length <= receiptWidth) {
+            dashes += "-";
           }
-          receipt += "\n";
+
+          receipt += dashes + "\n";
+          var PID = cardStore.printed_id;
+          var cardText = "Card ID:";
+          receipt += cardText;
+          padSize = receiptWidth - (cardText.length + PID.length);
+          spacer = '';
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          receipt += spacer + PID + "\n";
+
+          if (cardStore.products) {
+
+            for (var i = 0; i < cardStore.products.length; i++) {
+
+              var dataItem = cardStore.products[i];
+
+              var productType = dataItem.product_type;
+              var designator = dataItem.designator;
+              var days = dataItem.days;
+              var rechargesPending = dataItem.recharges_pending;
+              var remainingValue = dataItem.remaining_value;
+              var remainingRides = dataItem.remaining_rides;
+              var start_date = dataItem.start_date_str;
+              var exp_date = dataItem.exp_date_str;
+              var start_date_epoch_days = dataItem.start_date_epoch_days;
+              var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+              var bad_listed = dataItem.is_prod_bad_listed;
+              var textProductType = '';
+              var cardBalance = '';
+              var productDescription = '';
+              var productStatus = '';
+
+              switch (productType) {
+                case 1:
+
+                  if (exp_date_epoch_days > 1) {
+                    cardBalance = "Exp: " + exp_date;
+                  } else {
+                    cardBalance = (days + 1) + " Days";
+                  }
+
+                  productDescription = (days + 1) + " Day Pass";
+
+                  if (rechargesPending > 0) {
+                    productStatus += " (" + rechargesPending + " Pending)"
+                  }
+
+                  break;
+                case 2:
+                  if (1 == remainingRides) {
+                    cardBalance = remainingRides + " Ride";
+                  } else {
+                    cardBalance = remainingRides + " Rides";
+                  }
+                  productDescription = 'Stored Ride Pass';
+                  break;
+                case 3:
+
+                  var remaining_value = 0;
+
+                  if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+                    remaining_value = dataItem.remaining_value / 100;
+                  }
+
+                  productDescription = 'Pay As You Go';
+                  cardBalance = "$" + remaining_value.toFixed(2);
+
+                  break;
+                case 7:
+
+                  productDescription = "Employee Pass";
+
+                  if (exp_date_epoch_days > 1) {
+                    cardBalance = "Exp: " + exp_date;
+                  }
+
+                  break;
+                default:
+                  productDescription = "Unknown Product";
+                  break;
+              }
+
+              // var ticketKey = productType + "_" + designator;
+
+              //  var carddata = new Array(cardStore);
+
+              //  cardStore.products.forEach(cardElement => {
+              JSON.parse(catalog).Offering.forEach(catalogElement => {
+                if (catalogElement.Ticket != undefined) {
+                  if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
+                    //  var catalogdata = {
+                    //    "ticketid": 
+                    //  }
+                    return productDescription = catalogElement.Ticket.Description
+
+                  }
+                }
+              });
+              // });
+
+
+              // don't print anything if your stored value is $0
+              if ((3 != productType) || (0 < remaining_value)) {
+
+                var receiptWidth = 44;
+                var padSize = 0;
+                var maxDescriptionLength = receiptWidth - 16;
+
+                if (productDescription.length >= maxDescriptionLength) {
+                  productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+                }
+
+                receipt += productDescription;
+
+                padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+                var spacer = '';
+
+                while (spacer.length <= (padSize - 1)) {
+                  spacer += " ";
+                }
+
+                receipt += spacer + cardBalance + "\n";
+              }
+            }
+            receipt += "\n";
+          }
+          else {
+            console.log("Receipt printing: No smart cards stored.");
+          }
         }
-        else {
-          console.log("Receipt printing: No smart cards stored.");
-        }
-        // }
       }
 
     })
 
     receipt += "\n\n";
     console.log("receipt", receipt)
+    localStorage.setItem("lastTransactionReceipt", receipt)
     // APOS.util.PrintService.printReceipt(receipt, timestamp);
     this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
     console.log(receipt + 'generateReceipt receipt ');
