@@ -147,3 +147,9 @@
 .select-clerk {
     margin-top: 7px;
 }
+
+.shift-data-set table tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
