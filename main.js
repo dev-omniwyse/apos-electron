@@ -111,6 +111,8 @@ ipcMain.on('readSmartcard', (event, cardname) => {
     if (result.getSuccessSync()) {
         // readSmartCardOnSetEncoder();
         try {
+            var result = posAppletInstance.getCardPIDSync();
+            var result = posAppletInstance.processAutoloadSync();
             var result = posAppletInstance.readCardSync();
         } catch (error) {
             logger.info("error " + error);
@@ -541,7 +543,7 @@ ipcMain.on('deleteProductsFromCard', (event, cardname, encodedCardJson) => {
 ipcMain.on('processAutoLoad', (event, cardname) => {
     var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
     var result = posAppletInstance.processAutoloadSync();
-    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
+    //    event.sender.send('autoLoadResult', '' + result.getSuccessSync());
 });
 
 
