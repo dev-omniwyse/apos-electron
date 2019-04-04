@@ -199,15 +199,15 @@ export class AdminComponent implements OnInit {
   }
 
   getPresentShiftReport() {
-    let userID = localStorage.getItem("userID")
-    let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-    var specificUserDetails = []
-    shiftUsers.forEach(element => {
-      if (element.userID == userID) {
-        specificUserDetails.push(element)
-      }
-    });
-    this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
+    // let userID = localStorage.getItem("userID")
+    // let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+    // var specificUserDetails = []
+    // shiftUsers.forEach(element => {
+    //   if (element.userID == userID) {
+    //     specificUserDetails.push(element)
+    //   }
+    // });
+    this.cdtaService.printAllOrSpecificShiftData(null);
   }
 
   getSalesReports(event) {
