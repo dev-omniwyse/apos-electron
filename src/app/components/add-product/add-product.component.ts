@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -17,6 +17,7 @@ import { TransactionService } from 'src/app/services/Transaction.service';
 import { PaymentType } from 'src/app/models/Payments';
 import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
+import { FormGroup, FormBuilder } from '@angular/forms';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -67,6 +68,8 @@ pcs.on('reader', function (reader) {
     }
   });
 
+ 
+
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
   });
@@ -81,6 +84,9 @@ pcs.on('error', function (err) {
   styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent implements OnInit {
+  currencyForm: FormGroup = this.formBuilder.group({
+    currency:['']
+  })
   merchantise = [];
   merch = [];
   merchantList: any = [];
@@ -177,7 +183,10 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+  constructor(private elementRef:ElementRef,
+    private formBuilder: FormBuilder,
+    private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
       this.isMerchendise = localStorage.getItem("isNonFareProduct") == "true" ? true : false;
@@ -227,6 +236,7 @@ export class AddProductComponent implements OnInit {
 
  
   }
+ 
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
@@ -800,7 +810,8 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
     this.checkoutTotal = this.totalDue;
-    this.totalRemaining = this.totalDue
+    this.totalRemaining = this.totalDue;
+    this.currencyForm.setValue({"currency": this.checkoutTotal});
   }
 
   cancelCheckout() {
@@ -1039,14 +1050,27 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
 
+    textAreaEmpty(){
+      console.log(this.currencyForm.value.currency)
+      if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
+        this.checkoutTotal = this.totalRemaining;
+        this.clearDigit(0);
+      }
+    }
+  
   displayDigit(digit) {
-    
+    debugger;
+    console.log(digit);
     if(this.totalRemaining == this.checkoutTotal) {
       this.checkoutTotal = 0;
-    }
+    } 
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
     this.checkoutTotal += digit;
     this.checkoutTotal = this.checkoutTotal / 100;
+    if(this.currencyForm.value.currency == ''){
+      this.currencyForm.value.currency = ''+ this.checkoutTotal
+    }
+
 
     if (this.isCustomAmount) {
       this.productTotal = Math.round(this.productTotal * 100);

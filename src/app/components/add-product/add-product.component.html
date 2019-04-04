@@ -321,7 +321,28 @@
 </div>
 <div class="container-right-calc" *ngIf="!checkout">
     <div class="cr-r-set">
-        <h1><span class="label label-primary cr-label">${{checkoutTotal | number : '1.2-2'}}</span></h1>
+        <h1>
+            <form [formGroup]="currencyForm">
+                    <input type="text" class="form-control label label-primary cr-label" 
+                    formControlName="currency"
+                    [ngModel]="checkoutTotal | currency: 'USD' : 'symbol-narrow': '1.2-2'"
+                    (ngModelChange) ="textAreaEmpty()"
+                    (keyup.1)="displayDigit('1')"
+                    (keyup.2)="displayDigit('2')"
+                    (keyup.3)="displayDigit('3')"
+                    (keyup.4)="displayDigit('4')"
+                    (keyup.5)="displayDigit('5')"
+                    (keyup.6)="displayDigit('6')"
+                    (keyup.7)="displayDigit('7')"
+                    (keyup.8)="displayDigit('8')"
+                    (keyup.9)="displayDigit('9')"
+                    (keyup.0)="displayDigit('0')"
+                    (keyup.00)="displayDigit('00')" appNumericOnly>
+
+            </form>
+            <!-- <span class="label label-primary cr-label">${{checkoutTotal | number : '1.2-2'}}</span> -->
+         
+        </h1>
         <div class="flex">
             <div class="cr-left">
                 <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
@@ -927,7 +948,9 @@
     </div>
     <div class="container-right-calc">
         <div class="cr-r-set">
-            <h1><span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span></h1>
+            <h1>
+                <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span>
+            </h1>
             <div class="flex">
                 <div class="cr-left">
                     <div class="number-btns-set-3" *ngFor="let digit of numberDigits">
