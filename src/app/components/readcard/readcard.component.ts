@@ -286,17 +286,18 @@ export class ReadcardComponent implements OnInit {
                     // ShoppingCartService.getInstance.shoppingCart = null;
                 });
             }
+            
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
-        this.electronService.ipcRenderer.once('autoLoadResult', (event, data) => {
-            if (data != undefined && data != "") {
-                this.electronService.ipcRenderer.send('readSmartcard', cardName)
-            }
-        });
-        this.electronService.ipcRenderer.send('processAutoLoad', cardName)
+        // this.electronService.ipcRenderer.once('autoLoadResult', (event, data) => {
+        //     if (data != undefined && data != "") {
+        //         this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        //     }
+        // });
+        // this.electronService.ipcRenderer.send('processAutoLoad', cardName)
         // this.electronService.ipcRenderer.send('readSmartcard', cardName)
         console.log('read call', cardName)
-
+        this.electronService.ipcRenderer.send('readSmartcard', cardName);
     }
 
     newFareCard(event) {
