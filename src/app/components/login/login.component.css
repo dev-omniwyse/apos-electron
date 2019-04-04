@@ -81,3 +81,21 @@
     opacity: 1;
     /* Firefox */
 }
+
+.input-sets {
+    position: relative;
+}
+
+.close-icon-set {
+    position: absolute;
+    right: 0;
+    width: 52px;
+    height: 52px;
+    background: #f0f3fa;
+    padding: 16px;
+    display: block;
+}
+
+.input-sets input:focus {
+    outline: none;
+}
