@@ -1060,7 +1060,7 @@ export class AddProductComponent implements OnInit {
   
   displayDigit(digit) {
     console.log(digit);
-    if(this.totalRemaining == this.checkoutTotal) {
+    if(this.totalDue == this.checkoutTotal) {
       this.checkoutTotal = 0;
     } 
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
@@ -1242,7 +1242,10 @@ export class AddProductComponent implements OnInit {
   saveTransactionForMerchandiseAndMagnetic() {
     let userID = localStorage.getItem('userID');
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingcart, this.getUserByUserID(userID));
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
+    let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+    let deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
+    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
     this.handlesaveTransactionForMagneticMerchandiseResult();
     this.electronService.ipcRenderer.send('savaTransactionForMagneticMerchandise', transactionObj);
   }

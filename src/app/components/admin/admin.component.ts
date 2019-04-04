@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { MethodFn } from '@angular/core/src/reflection/types';
 import { MethodCall } from '@angular/compiler';
+import { Utils } from 'src/app/services/Utils.service';
 // import { ConsoleReporter } from 'jasmine';
 // import {setInterval, clearInterval} from 'timers';
 declare var $: any
@@ -142,6 +143,10 @@ export class AdminComponent implements OnInit {
           // }, 2000)
         }
         else if (isSyncDone == true) {
+          let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+          deviceData.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+          deviceData.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+          localStorage.setItem('deviceInfo', JSON.stringify(deviceData));
           this.isCurrentSync = false;
           clearTimeout(timer);
           // clearInterval(this.intervalSyc);
