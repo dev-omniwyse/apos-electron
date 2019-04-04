@@ -4,6 +4,7 @@ import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType 
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
+import { Utils } from 'src/app/services/Utils.service';
 declare var $: any;
 @Component({
   selector: 'app-activation',
@@ -36,6 +37,9 @@ export class ActivationComponent implements OnInit {
     var activationData = this.validJSON(data)
     if (activationData == true) {
       this._ngZone.run(() => {
+        localStorage.removeItem('deviceInfo');
+        let deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
+        localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
         this.carddata = new Array(JSON.parse(data));
         this.password =  this.carddata[0].deviceSetup.password;
         this.organization = this.carddata[0].deviceSetup.organizationName

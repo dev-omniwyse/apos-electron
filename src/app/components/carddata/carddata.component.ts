@@ -8,6 +8,7 @@ import { MediaType } from 'src/app/services/MediaType';
 import { TransactionService } from 'src/app/services/Transaction.service';
 import { debug } from 'util';
 import { timestamp } from 'rxjs/operators';
+import { Utils } from 'src/app/services/Utils.service';
 // import { product_log } from '../../../assets/data/product_catalog'
 declare var pcsc: any;
 declare var $: any;
@@ -328,7 +329,10 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
     debugger;
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
+    let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+    let deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
+    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }

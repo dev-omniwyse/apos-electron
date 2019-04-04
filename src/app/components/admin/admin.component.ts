@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { MethodFn } from '@angular/core/src/reflection/types';
 import { MethodCall } from '@angular/compiler';
+import { Utils } from 'src/app/services/Utils.service';
 // import { ConsoleReporter } from 'jasmine';
 // import {setInterval, clearInterval} from 'timers';
 declare var $: any
@@ -73,7 +74,7 @@ export class AdminComponent implements OnInit {
 
             this.expectedCash = Number(this.expectedCash) + element.paymentAmount
             this.expectedCash = this.expectedCash.toFixed(2)
-            localStorage.setItem("expectedCash",this.expectedCash)
+            localStorage.setItem("expectedCash", this.expectedCash)
             console.log("CASH fareAndNonFareTotal", this.actualCash, this.expectedCash)
 
             this.overShort = (Number(this.actualCash) - this.expectedCash).toFixed(2)
@@ -82,7 +83,7 @@ export class AdminComponent implements OnInit {
           }
 
         });
-       // localStorage.setItem("paymentTypes", data)
+        // localStorage.setItem("paymentTypes", data)
 
 
         this._ngZone.run(() => {
@@ -142,6 +143,10 @@ export class AdminComponent implements OnInit {
           // }, 2000)
         }
         else if (isSyncDone == true) {
+          let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+          deviceData.CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+          deviceData.CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+          localStorage.setItem('deviceInfo', JSON.stringify(deviceData));
           this.isCurrentSync = false;
           clearTimeout(timer);
           // clearInterval(this.intervalSyc);
@@ -193,17 +198,17 @@ export class AdminComponent implements OnInit {
 
   }
 
-getPresentShiftReport(){
-  let userID = localStorage.getItem("userID")
-  let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-  var specificUserDetails = []
-  shiftUsers.forEach(element => {
-    if(element.userID == userID){
-      specificUserDetails.push(element)
-    }
-  });
-  this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
-}
+  getPresentShiftReport() {
+    let userID = localStorage.getItem("userID")
+    let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+    var specificUserDetails = []
+    shiftUsers.forEach(element => {
+      if (element.userID == userID) {
+        specificUserDetails.push(element)
+      }
+    });
+    this.cdtaService.printAllOrSpecificShiftData(specificUserDetails)
+  }
 
   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
@@ -338,7 +343,7 @@ getPresentShiftReport(){
               this.shiftType = "0"
               this.shiftState = "3"
               this.statusOfShiftReport = "Main Shift is Closed"
-            
+
               localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
 
             } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
@@ -385,7 +390,7 @@ getPresentShiftReport(){
         if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
-          localStorage.setItem("expectedCash",this.expectedCash)
+          localStorage.setItem("expectedCash", this.expectedCash)
 
         }
         if (element.closingDrawer != undefined && element.closingDrawer != "") {

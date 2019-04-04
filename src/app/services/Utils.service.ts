@@ -2,6 +2,7 @@ import { ShoppingCartService } from "./ShoppingCart.service";
 import { FareCardService } from "./Farecard.service";
 import { MediaType, TICKET_GROUP } from "./MediaType";
 import { TransactionService } from './Transaction.service';
+import { DeviceInfo } from '../models/DeviceInfo';
 
 export class Utils {
 
@@ -308,13 +309,37 @@ export class Utils {
         } else if (1 == walletLineItems.length && !this.isValidMerchandise(walletLineItems[0])) {
             isEmpty = true;
         }
-        // else {
-        //     for(let index = 0; index < walletLineItems.length; index++){
-        //         if(walletLineItems[index].walletContents){
-
-        //         }
-        //     }
-        // }
         return isEmpty;
+    }
+    createDeviceInfoDefaultRecord() {
+        let deviceInfo = new DeviceInfo();
+        deviceInfo.$CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+        deviceInfo.$CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+        deviceInfo.$LIFETIME_TRANSACTION_COUNT = 0;
+        deviceInfo.$LIFETIME_TRANSACTION_VALUE = 0;
+        deviceInfo.$terminalID = "0";
+        deviceInfo.$failedLoginCount = 0;
+        deviceInfo.$PRESHARE = "";
+        deviceInfo.$operatingMode = "0";
+        return deviceInfo;
+    }
+    increseTransactionCountInDeviceInfo(deviceInfo, transactionObj) {
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_NUMBER++;
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_VALUE += transactionObj.salesAmount;
+
+        deviceInfo.LIFETIME_TRANSACTION_COUNT++;
+        deviceInfo.LIFETIME_TRANSACTION_VALUE += transactionObj.salesAmount;
+
+        return deviceInfo;
+    }
+
+    decreaseTransactionCountInDeviceInfo(deviceInfo, transactionObj) {
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_NUMBER--;
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_VALUE -= transactionObj.salesAmount;
+
+        deviceInfo.LIFETIME_TRANSACTION_COUNT--;
+        deviceInfo.LIFETIME_TRANSACTION_VALUE -= transactionObj.salesAmount;
+
+        return deviceInfo;
     }
 }
