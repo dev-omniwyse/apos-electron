@@ -27,7 +27,6 @@ export class DeviceconfComponent implements OnInit {
     this.CURRENT_UNSYNCED_TRANSACTION_VALUE = deviceData.CURRENT_UNSYNCED_TRANSACTION_VALUE;
     this.LIFETIME_TRANSACTION_COUNT = deviceData.LIFETIME_TRANSACTION_COUNT;
     this.LIFETIME_TRANSACTION_VALUE = deviceData.LIFETIME_TRANSACTION_VALUE;
-    this.maxPayAsYouGo = (this.terminalConfig.MaxStoredValueAmount)/100;
   }
 
 }

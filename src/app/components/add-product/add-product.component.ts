@@ -1061,7 +1061,7 @@ export class AddProductComponent implements OnInit {
   displayDigit(digit) {
     debugger;
     console.log(digit);
-    if(this.totalRemaining == this.checkoutTotal) {
+    if(this.totalDue == this.checkoutTotal) {
       this.checkoutTotal = 0;
     } 
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
