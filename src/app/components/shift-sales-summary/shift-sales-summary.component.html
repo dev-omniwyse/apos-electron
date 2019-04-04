@@ -6,64 +6,61 @@
                 <div class="select-clerk">
                     <label>Clerk: </label>
                     <select [(ngModel)]="selectedValues" (change)="shiftSaleSummary()">
-                <option [ngValue]="undefined" selected>Select</option>
-                <option [ngValue]="0" >--All Sales--</option>
-                <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
-            </select>
+                        <option [ngValue]="undefined" selected>Select</option>
+                        <option [ngValue]="0" >--All Sales--</option>
+                        <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
+                    </select>
                 </div>
-
             </div>
             <div class="col-md-6">
                 <div class="pull-right"><button class="print-summary-white" (click)="printSummaryReceipt();"> PRINT SUMMARY</button></div>
             </div>
             <div class="clearfix"></div>
         </div>
-
         <div class="shift-sales-bottom">
-        <div class="shift-data-sets">
-            <div class="shift-data-set  shift-data-set-table ">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Quanity</th>
-                        <th>Product</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let salesdetail of salesData">
-                        <td>{{salesdetail.quantity}}</td>
-                        <td>{{salesdetail.description}}</td>
-                        <td>${{salesdetail.value}}</td>
-                    </tr>
-                </tbody>
-                    <!-- <tr>
-                    <td>1</td>
-                    <td>Pay As You Go</td>
-                    <td>$30.00</td>
-                </tr> -->
-                </table>
+            <div class="shift-data-sets">
+                <div class="shift-data-set  shift-data-set-table ">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quantity</th>
+                                <th>Product</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let salesdetail of salesData">
+                                <td>{{salesdetail.quantity}}</td>
+                                <td>{{salesdetail.description}}</td>
+                                <td>${{salesdetail.value | number : '1.2-2'}}</td>
+                            </tr>
+                            <div class="clearfix"></div>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="shift-data-set">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Payment Method</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let salePayment of salesPaymentData">
+                                <td>{{salePayment.paymentMethod}}</td>
+                                <td>${{salePayment.paymentAmount | number : '1.2-2'}}</td>
+                            </tr>
+                            <div class="clearfix"></div>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
-            <div class="shift-data-set">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Payment Method</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let salePayment of salesPaymentData">
-                        <td>{{salePayment.paymentMethod}}</td>
-                        <td>${{salePayment.paymentAmount}}</td>
-                    </tr>
-                </tbody>
-                </table>
+            <div>
+                <button class="back-to-admin" [routerLink]="['/admin']" (click)="hidePopUp();"> Back to Admin</button>
+                <button class="totalSold pull-right"> Total Sold : ${{totalSold | number : '1.2-2'}}</button>
             </div>
-        </div>
-        
-            <button class="back-to-admin" [routerLink]="['/admin']" (click)="hidePopUp();"> Back to Admin</button>
-            <button class="totalSold pull-right"> Total Sold : ${{totalSold}}</button>
         </div>
     </div>
 </div>

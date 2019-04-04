@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <p>Please place card {{currentCard?.printed_id}} on the reader."</p>
+                    <p>Please place card {{currentCard?.printed_id}} on the reader.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -80,7 +80,9 @@
                     <p>Card encoded successfully.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="navigateToDashboard()">Ok</button>
+                    <<<<<<< HEAD <button type="button" class="btn btn-default" data-dismiss="modal" (click)="navigateToDashboard()">Ok</button>
+                        =======
+                        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="proceedForSaveTransaction()">Ok</button> >>>>>>> c5d09b3563881cb39d34e98e7aa6a51a8cd8b7f8
                 </div>
             </div>
         </div>
@@ -116,7 +118,7 @@
                     <p>By continuing, the transaction will be canceled and all payments voided</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" href="#returnCheckModal">Yes</button>
                 </div>
             </div>
@@ -148,7 +150,7 @@
 <div *ngIf="isEncodeOnProcess" class="form-group  form-wiz">
     <button class="pull-left btn btn-outline-rounded btn-default card-btns-last" (click)="confirmCancelEncoding()">
         CANCEL</button>
-    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" [disabled]="disableEncode" (click)="checkCorrectCard()"> ENCODE CARD </button>
+    <button #encodeBtn class="pull-right btn btn-outline-rounded btn-info encode-end card-btns-last" (click)="checkCorrectCard()"> ENCODE CARD </button>
 </div>
 
 <div *ngIf="!isEncodeOnProcess" class="form-group  form-wiz">
