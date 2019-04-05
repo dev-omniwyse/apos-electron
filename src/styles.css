@@ -290,6 +290,13 @@ body {
     font-size: 23px;
 }
 
+.flex-devide .page-btns:disabled {
+    background-color: #d65400!important;
+    cursor: not-allowed!important;
+    border-color: #d65400!important;
+    color: #ffc097!important;
+}
+
 .page-btns:hover {
     background-color: #012951;
 }

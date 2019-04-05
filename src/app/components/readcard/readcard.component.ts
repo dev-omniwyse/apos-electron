@@ -115,7 +115,8 @@ export class ReadcardComponent implements OnInit {
     backendSalesReport = []
     paymentReport: any
     shoppingcart: any;
-    bonusRidesCountText : string;
+    active_wallet_status : string;
+    bonusRidesCountText: string;
     nextBonusRidesText: string;
 
     constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
@@ -128,7 +129,7 @@ export class ReadcardComponent implements OnInit {
         localStorage.removeItem("shoppingCart");
         localStorage.removeItem("cardsData");
 
-       
+
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log("print sales data", data)
             if (data != undefined && data.length != 0) {
@@ -168,7 +169,7 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-       
+
 
         //readcardError
 
@@ -178,6 +179,11 @@ export class ReadcardComponent implements OnInit {
             this.showErrorMessages();
         });
 
+        this.electronService.ipcRenderer.on('getCurrentEpochDaysResult', (event, data) => {
+            if (data.length != 0) {
+                //code here
+            }
+        });
 
         this.electronService.ipcRenderer.on('readcardError', (event, data) => {
             this.errorMessage = data;
@@ -187,16 +193,18 @@ export class ReadcardComponent implements OnInit {
     }
 
     showCardContents() {
+        
         // this.electronService.ipcRenderer.on('catalogJsonResult', (event, data) => {
         // if (data != undefined && data != "") {
         this.readCardData = [];
         // this.show = true;
-        this._ngZone.run(() => {                 
+        this._ngZone.run(() => {
             let item = JSON.parse(localStorage.getItem("catalogJSON"));
             this.catalogData = JSON.parse(item).Offering;
             var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
             this.getBonusRidesCount();
             this.getNextBonusRides();
+            this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
             if ((!isMagnetic) && (this.carddata[0] == undefined || this.carddata[0] == ''))
                 return;
             var keepGoing = true;
@@ -216,7 +224,7 @@ export class ReadcardComponent implements OnInit {
                                 else if (cardElement.product_type == 3)
                                     productName = "Pay As You Go"
                                 if (cardElement.product_type == 1) {
-                                    remainingValue = ( cardElement.days + 1 )+ " Days";
+                                    remainingValue = (cardElement.days + 1) + " Days";
                                     var pendingText = (cardElement.recharges_pending > 0) ? " (" + cardElement.recharges_pending + " Pending)" : "";
                                     status = status + pendingText;
                                 }
@@ -269,18 +277,18 @@ export class ReadcardComponent implements OnInit {
                 //     clearTimeout(timer);
                 // }, 1000);
             }
-        }); 
+        });
     }
     showErrorMessages() {
         $("#errorModal").modal('show');
     }
     /* JAVA SERVICE CALL */
 
-    getBonusRidesCount(){
+    getBonusRidesCount() {
         this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.carddata[0]);
     }
-    
-    getNextBonusRides(){
+
+    getNextBonusRides() {
         this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
     }
     readCard(event) {
@@ -449,8 +457,8 @@ export class ReadcardComponent implements OnInit {
     getAllUsersSalesAndPayments() {
         var shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
         shiftStore.forEach(record => {
-           
-           
+
+
             this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
             this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
         });

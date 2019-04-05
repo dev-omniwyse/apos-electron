@@ -31,7 +31,7 @@
                             <div class="flex-devide">
                                 <div class="flex">
                                     <div class="flex-devide">
-                                        <p>{{active_printed_id}} - Active</p>
+                                        <p>{{active_printed_id}} - {{active_wallet_status}}</p>
                                         <p>Fare Code: {{userFarecode}}</p>
                                         <p>Card Exp: {{active_card_expiration_date_str}}</p>
                                     </div>
@@ -775,6 +775,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="newCardValidateModal" role="dialog">
     <div class="modal-dialog modal-sm  modal-dialog-centered">
         <div class="modal-content">
@@ -786,6 +787,23 @@
             <div class="modal-body">
                 <p>Card does not appear to be blank,<br>either add products to existing card,<br>or discard if invalid.
                 </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="inactiveValidation" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Card is inactive</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>

@@ -343,12 +343,12 @@ export class Utils {
         return deviceInfo;
     }
 
-    getIndexOfActiveWallet(cardsData, item){
+    getIndexOfActiveWallet(cardsData, item) {
 
         let cardIndex = -1;
-        for(let index = 0; index < cardsData.length; index++){
+        for (let index = 0; index < cardsData.length; index++) {
 
-            if(item._cardPID == cardsData[index].printed_id){
+            if (item._cardPID == cardsData[index].printed_id) {
                 cardIndex = index;
                 break;
             }
@@ -356,16 +356,59 @@ export class Utils {
         return cardIndex;
     }
 
-    getFareCodeTextForThisWallet(cardData, terminalConfig){
+    getFareCodeTextForThisWallet(cardData, terminalConfig) {
 
         let fareCodeText = "Unknown"
         let fareCodes = terminalConfig.Farecodes;
-        for(let index = 0; index < fareCodes.length; index++){
+        for (let index = 0; index < fareCodes.length; index++) {
             if (cardData.user_profile == fareCodes[index].FareCodeId) {
                 fareCodeText = fareCodes[index].Description;
                 break;
             }
-        }         
+        }
         return fareCodeText;
+    }
+
+    getStatusOfWallet(readCardJson) {
+
+        let cardStatus = "";
+        let isCardExpired = this.isCardExpired(readCardJson);
+        let isCardBadListed = readCardJson.is_card_bad_listed;
+
+        if (isCardExpired === true) {
+            cardStatus = 'EXPIRED';
+        } else if (isCardBadListed === true) {
+            cardStatus = 'INACTIVE';
+        } else {
+            cardStatus = 'Active';
+        }
+
+        return cardStatus;
+    }
+    isCardExpired(data) {
+
+        let currentEpochDays = this.getCurrentEpochDays();
+        var isExpired = false;
+        if (data.card_expiration_date > 0 && data.card_expiration_date < currentEpochDays) {
+            isExpired = true;
+        } else if (data.user_profile_expiration_date > 0 && data.user_profile_expiration_date < currentEpochDays) {
+            isExpired = true;
+        }
+
+        return isExpired;
+    }
+
+    getCurrentEpochDays() {
+        // var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        // var firstDate = new Date(2008, 01, 12);
+        // var secondDate = new Date(2008, 01, 22);
+        // var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
+        
+        var startDate = Date.parse("1970-01-01");
+        var endDate = Date.parse(Date.now.toString());
+        var timeDiff = endDate - startDate;
+        let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+        return daysDiff;
     }
 }

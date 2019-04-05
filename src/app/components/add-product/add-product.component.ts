@@ -10,7 +10,7 @@ import { FareCardService } from 'src/app/services/Farecard.service';
 import { Globals } from 'src/app/global';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
-import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
+import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
@@ -160,6 +160,8 @@ export class AddProductComponent implements OnInit {
   bonusRidesCountText: string;
   nextBonusRidesText: string;
   active_card_expiration_date_str: string;
+  active_printed_id : number;
+  active_wallet_status: string;
   currentWalletLineItem: any = [];
 
   isProductLimitReached = false;
@@ -858,11 +860,17 @@ export class AddProductComponent implements OnInit {
   handleReadCardResult() {
     var readCardListener = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
       var isDuplicateCard = false;
+      
       if (this.isfromAddProduct && data != undefined && data != "") {
         this.isfromAddProduct = false;
+        localStorage.setItem("readCardData", JSON.stringify(data));
+        this.carddata = new Array(JSON.parse(data));
+        let status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
+        if (Constants.INACTIVE == status) {
+          $("#inactiveValidation").modal('show');
+        }
         this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          this.carddata = new Array(JSON.parse(data));
+          
           let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
           ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
@@ -1024,6 +1032,9 @@ export class AddProductComponent implements OnInit {
       this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
       this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
       this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.active_printed_id = this.cardJson[cardIndex].printed_id;
+      this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
+      this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
     }
 
     this.selectedProductCategoryIndex = 0;
