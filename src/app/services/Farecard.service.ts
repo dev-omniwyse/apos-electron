@@ -78,8 +78,6 @@ export class FareCardService {
     updateOfferingCountForThisWallet(offering, walletContents, index) {
         console.log("request for updating wallet contents");
         console.log("Index of duplicate element is :" + index);
-        // walletContents[index].sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(walletContents.cardPID);
-        walletContents[index]._unitPrice = walletContents[index]._unitPrice + offering.UnitPrice;
         walletContents[index]._quantity = walletContents[index]._quantity + 1;
         return walletContents;
     }
