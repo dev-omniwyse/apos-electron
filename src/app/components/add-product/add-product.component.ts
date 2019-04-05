@@ -1158,9 +1158,11 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.checkoutTotal = ''+digit;
+    
     if (this.isCustomAmount) {
       this.productTotal = ''+ digit;
+    } else {
+      this.checkoutTotal = ''+digit;
     }
   }
 
