@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -10,7 +10,7 @@ import { FareCardService } from 'src/app/services/Farecard.service';
 import { Globals } from 'src/app/global';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
-import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
+import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
@@ -68,7 +68,7 @@ pcs.on('reader', function (reader) {
     }
   });
 
- 
+
 
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
@@ -85,7 +85,7 @@ pcs.on('error', function (err) {
 })
 export class AddProductComponent implements OnInit {
   currencyForm: FormGroup = this.formBuilder.group({
-    currency:['']
+    currency: ['']
   });
   customAmountForm: FormGroup = this.formBuilder.group({
     amount: ['']
@@ -156,10 +156,12 @@ export class AddProductComponent implements OnInit {
   };
 
   payment = new PaymentType();
-  userFarecode : any;
-  bonusRidesCountText : string;
+  userFarecode: any;
+  bonusRidesCountText: string;
   nextBonusRidesText: string;
-
+  active_card_expiration_date_str: string;
+  active_printed_id : number;
+  active_wallet_status: string;
   currentWalletLineItem: any = [];
 
   isProductLimitReached = false;
@@ -187,7 +189,7 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private elementRef:ElementRef,
+  constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
 
@@ -238,19 +240,13 @@ export class AddProductComponent implements OnInit {
 
 
 
- 
+
   }
- 
+
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
-    let item = JSON.parse(localStorage.getItem("readCardData"))
-    this.viewCardData = new Array(JSON.parse(item));
-    this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.viewCardData[0]);
-    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-    this.userFarecode = JSON.parse(localStorage.getItem('userProfile'));
-    this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.viewCardData[0], this.terminalConfigJson);
-    
+
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -519,7 +515,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount / 100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -770,14 +766,14 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if(Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+    if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $("#shoppingCartEmptyModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+    if (Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
       $("#emptyMagneticModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -785,14 +781,14 @@ export class AddProductComponent implements OnInit {
       return;
     }
     // this.terminalConfigJson.MaxTransAmount
-    if(this.totalDue > 5000) {
+    if (this.totalDue > this.terminalConfigJson.MaxTransAmount) {
       $("#maxTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(this.totalDue < this.terminalConfigJson.MinTransAmount) {
+    if (this.totalDue < this.terminalConfigJson.MinTransAmount) {
       $("#minTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -865,11 +861,17 @@ export class AddProductComponent implements OnInit {
   handleReadCardResult() {
     var readCardListener = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
       var isDuplicateCard = false;
+      
       if (this.isfromAddProduct && data != undefined && data != "") {
         this.isfromAddProduct = false;
+        localStorage.setItem("readCardData", JSON.stringify(data));
+        this.carddata = new Array(JSON.parse(data));
+        let status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
+        if (Constants.INACTIVE == status) {
+          $("#inactiveValidation").modal('show');
+        }
         this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          this.carddata = new Array(JSON.parse(data));
+          
           let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
           ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
@@ -1025,6 +1027,17 @@ export class AddProductComponent implements OnInit {
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
   activeWallet(item, index) {
+
+    if (item._walletTypeId == MediaType.SMART_CARD_ID) {
+      let cardIndex = Utils.getInstance.getIndexOfActiveWallet(this.cardJson, item);
+      this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
+      this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.active_printed_id = this.cardJson[cardIndex].printed_id;
+      this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
+      this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
+    }
+
     this.selectedProductCategoryIndex = 0;
     this.currentWalletLineItem = item;
     this.currentWalletLineItemIndex = index;
@@ -1344,7 +1357,7 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
-  handleCancelPinPadTransaction(){
+  handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
         $("#creditCardApplyModal").modal("hide")
@@ -1569,7 +1582,7 @@ export class AddProductComponent implements OnInit {
 
   paymentByCheck() { if((+this.checkoutTotal) == 0) {
 
-    $('#invalidAmountModal').modal('show');
+      $('#invalidAmountModal').modal('show');
 
   }else if(this.totalRemaining == (+this.checkoutTotal)) {
       $('#checkModal').modal('show');

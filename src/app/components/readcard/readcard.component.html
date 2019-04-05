@@ -80,7 +80,7 @@
         <div class="flex-devide">
             <div class="flex">
                 <div class="flex-devide">
-                    <p>{{card.printed_id}} - Active</p>
+                    <p>{{card.printed_id}} - {{active_wallet_status}}</p>
                     <p>Fare Code: {{cardType}}</p>
                     <p>Card Exp: {{card.card_expiration_date_str}}</p>
                 </div>
@@ -95,7 +95,7 @@
             <button class="page-btns doNotPrint" (click)="printDiv()"><i class="fa fa-print"></i> Print
                 Summary</button>
 
-            <button class="page-btns doNotPrint" [routerLink]="['/addproduct']"><i class="fa fa-plus-square"></i> Add
+            <button class="page-btns doNotPrint" [disabled]="active_wallet_status == 'INACTIVE'" [routerLink]="['/addproduct']"><i class="fa fa-plus-square"></i> Add
                 New
                 Product to Card</button>
         </div>
