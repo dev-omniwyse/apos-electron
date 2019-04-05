@@ -17,7 +17,7 @@ export class ShiftsComponent implements OnInit {
       })
     numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     zeroDigits: any = ["0", "00"]
-    productTotal: any = 0;
+    productTotal: any = "0";
     openShift: Boolean = true
     hideModalPopup: Boolean = false;
     setShiftStatus: any
@@ -27,8 +27,7 @@ export class ShiftsComponent implements OnInit {
     public selectedValue: any = 0
 
     constructor(private formBuilder: FormBuilder, private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
-
-
+        this.currencyForm.setValue({"currency": this.productTotal});
     }
 
     cashDrawer() {
@@ -39,7 +38,7 @@ export class ShiftsComponent implements OnInit {
             if (element.userID == localStorage.getItem("userID") && element.shiftState == "3") {
                 element.initialOpeningTime = new Date().getTime();
                 element.shiftState = "0";
-                element.openingDrawer = this.productTotal
+                element.openingDrawer = + this.productTotal
                 element.timeOpened = new Date().getTime();
                 localStorage.setItem("disableUntilReOpenShift", "false")
             }
@@ -64,7 +63,7 @@ export class ShiftsComponent implements OnInit {
                     element.shiftState = "3"
                     element.userThatClosedShift = localStorage.getItem("userEmail")
                     element.timeClosed = new Date().getTime();
-                    element.closingDrawer = this.productTotal
+                    element.closingDrawer = + this.productTotal
                     localStorage.setItem("mainShiftClose", mainShiftClose)
                     // this.printSummaryReport();
                 }
@@ -80,7 +79,7 @@ export class ShiftsComponent implements OnInit {
                 if (element.userID == shiftreportUser && element.shiftType == "0") {
                     element.shiftState = "3";
                     element.timeClosed = new Date().getTime();
-                    element.closingDrawer = this.productTotal
+                    element.closingDrawer = + this.productTotal
                     element.userThatClosedShift = localStorage.getItem("userEmail")
                     localStorage.setItem("mainShiftClose", mainShiftClose)
                     // this.printSummaryReport();
@@ -89,7 +88,7 @@ export class ShiftsComponent implements OnInit {
                     if (element.userID == shiftreportUser && element.shiftType == "1" && localStorage.getItem("closingPausedMainShift")!= "true") {
                         element.shiftState = "3";
                         element.timeClosed = new Date().getTime();
-                        element.closingDrawer = this.productTotal
+                        element.closingDrawer = + this.productTotal
                     }
             }
             })
@@ -127,14 +126,21 @@ export class ShiftsComponent implements OnInit {
     textAreaEmpty(){
 
         if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
+            this.currencyForm.value.currency = ''+ this.productTotal
           this.clearDigit(0);
         }
     }
 
+    onBackSpace() {
+        if(this.currencyForm.value.currency != null || this.currencyForm.value.currency != '')
+        // Number(this.currencyForm.value.currency.slice(1))
+        this.productTotal = ''+this.currencyForm.value.currency.slice(1);
+      }
+
     displayDigit(digit) {
-        this.productTotal = Math.round(this.productTotal * 100);
+        this.productTotal = Math.round(+(this.productTotal) * 100).toString();
         this.productTotal += digit;
-        this.productTotal = this.productTotal / 100;
+        this.productTotal = (+(this.productTotal) / 100).toString();
 
         if(this.currencyForm.value.currency == ''){
             this.currencyForm.value.currency = ''+ this.productTotal
