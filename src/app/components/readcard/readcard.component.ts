@@ -548,6 +548,8 @@ export class ReadcardComponent implements OnInit {
 
                     } else if (element.shiftState == "4" && element.shiftType == "0") {
                         this.statusOfShiftReport = "Main Shift is Paused"
+                    }else if (element.shiftState == "0" && element.shiftType == "1"){
+                        this.statusOfShiftReport = ''
                     }
 
                 if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {

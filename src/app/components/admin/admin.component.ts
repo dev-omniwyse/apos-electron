@@ -311,17 +311,7 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(offeringSList) + '}');
   }
 
-  getPresentShiftReport() {
-    // let userID = localStorage.getItem("userID")
-    // let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-    // var specificUserDetails = []
-    // shiftUsers.forEach(element => {
-    //   if (element.userID == userID) {
-    //     specificUserDetails.push(element)
-    //   }
-    // });
-    this.cdtaService.printAllOrSpecificShiftData(null);
-  }
+ }
 
   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
@@ -516,12 +506,12 @@ export class AdminComponent implements OnInit {
 
     shiftReports.forEach(element => {
       if (element.userID == localStorage.getItem("userID")) {
-        if (element.openingDrawer != undefined && element.openingDrawer != "") {
+       // if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
           localStorage.setItem("expectedCash", this.expectedCash)
 
-        }
+        //}
         if (element.closingDrawer != undefined && element.closingDrawer != "") {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
         }
