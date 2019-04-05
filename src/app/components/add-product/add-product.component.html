@@ -138,7 +138,7 @@
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
-                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
+                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}</div>
                     <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
                         <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             <img src="assets/images/icon-rmproduct.png" />
@@ -949,7 +949,26 @@
     <div class="container-right-calc">
         <div class="cr-r-set">
             <h1>
-                <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span>
+                <!-- <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span> -->
+                <form [formGroup]="customAmountForm">
+                        <input type="text" class="form-control label label-primary cr-label" 
+                        formControlName="amount"
+                        [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2'"
+                        (ngModelChange) ="customTextAreaEmpty()"
+                        (keyup.1)="displayDigit('1')"
+                        (keyup.2)="displayDigit('2')"
+                        (keyup.3)="displayDigit('3')"
+                        (keyup.4)="displayDigit('4')"
+                        (keyup.5)="displayDigit('5')"
+                        (keyup.6)="displayDigit('6')"
+                        (keyup.7)="displayDigit('7')"
+                        (keyup.8)="displayDigit('8')"
+                        (keyup.9)="displayDigit('9')"
+                        (keyup.0)="displayDigit('0')"
+                        (keyup.00)="displayDigit('00')"
+                         appNumericOnly>
+    
+                </form>
             </h1>
             <div class="flex">
                 <div class="cr-left">
