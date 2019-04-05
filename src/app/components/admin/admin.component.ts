@@ -375,15 +375,22 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/login'])
 
   }
+
+  openCashDrawerForNoSale() {
+    this.electronService.ipcRenderer.send("openCashDrawer")
+  }
+  
   closePausedMainShift() {
     this.closingPausedMainShift = true
     localStorage.setItem("closingPausedMainShift", this.closingPausedMainShift.toString())
+    this.electronService.ipcRenderer.send("openCashDrawer")
   }
 
   reOpenShift() {
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
+    this.electronService.ipcRenderer.send("openCashDrawer")
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftState == "4") {
         element.shiftState = "0";

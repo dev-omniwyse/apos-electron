@@ -170,6 +170,7 @@ export class ShiftsComponent implements OnInit {
     ngOnInit() {
         let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
         let userId = localStorage.getItem("userID")
+        this.electronService.ipcRenderer.send("openCashDrawer")
         shiftReports.forEach(element => {
             if (localStorage.getItem("closingPausedMainShift") == "true" && element.userID == userId) {
                 this.setShiftStatus = "CLOSE SHIFT"

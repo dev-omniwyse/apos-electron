@@ -585,4 +585,8 @@ ipcMain.on('doPinpadVoidTransaction', (event, transactionAmount) => {
     var result = posAppletInstance.doPinpadVoidTransactionSync(Number(transactionAmount));
     event.sender.send('doPinpadVoidTransactionResult', '' + result.getSuccessSync());
 });
+ipcMain.on('openCashDrawer', (event) => {
+    var result = posAppletInstance.openCashDrawerSync();
+    console.log("openCashDrawer", result)
+});
 /** ADMIN METHODS END HERE*/
