@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <br>
-                <ol class="carousel-indicators">
+                <ol class="carousel-indicators" *ngIf="walletItems.length > 1">
                     <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
                 </ol>
             </div>
@@ -241,7 +241,7 @@
 <div class="btns-set">
     <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
     <button class="btn-orange-bottom" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
-    <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">Cancel Checkout</button>
+    <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">CANCEL CHECKOUT</button>
 </div>
 </div>
 <div class="container-right" *ngIf="checkout">

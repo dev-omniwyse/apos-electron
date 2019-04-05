@@ -256,6 +256,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   proceedForSaveTransaction() {
     if (this.isSmartCardFound()) {
+      this.disableEncode = false;
       this.populatCurrentCard();
       this.getSmartCardWalletContents();
     }

@@ -1389,6 +1389,7 @@ export class AddProductComponent implements OnInit {
       this.isCashApplied = false;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
+      this.electronService.ipcRenderer.send("openCashDrawer")
       $('#myModal').modal('show');
 
     } else if (this.totalRemaining > this.checkoutTotal) {
@@ -1445,6 +1446,7 @@ export class AddProductComponent implements OnInit {
       // this.isVoucherApplied = false;
       this.cashAppliedTotal = this.checkoutTotal
       this.cashBack = this.checkoutTotal - this.totalRemaining;
+      this.electronService.ipcRenderer.send("openCashDrawer")
       $("#myModal").modal('show');
     }
   }
