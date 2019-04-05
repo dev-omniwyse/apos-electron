@@ -179,12 +179,6 @@ export class ReadcardComponent implements OnInit {
             this.showErrorMessages();
         });
 
-        this.electronService.ipcRenderer.on('getCurrentEpochDaysResult', (event, data) => {
-            if (data.length != 0) {
-                //code here
-            }
-        });
-
         this.electronService.ipcRenderer.on('readcardError', (event, data) => {
             this.errorMessage = data;
             this.showErrorMessages();
