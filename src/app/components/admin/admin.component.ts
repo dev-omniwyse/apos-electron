@@ -259,6 +259,19 @@ export class AdminComponent implements OnInit {
 
   }
 
+  
+getPresentShiftReport() {
+  // let userID = localStorage.getItem("userID")
+  // let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+  // var specificUserDetails = []
+  // shiftUsers.forEach(element => {
+  // if (element.userID == userID) {
+  // specificUserDetails.push(element)
+  // }
+  // });
+  this.cdtaService.printAllOrSpecificShiftData(null)
+  }
+
   getTerminalConfigJson() {
     this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
       if (data != undefined && data != "") {
@@ -311,9 +324,7 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(offeringSList) + '}');
   }
 
- }
-
-  getSalesReports(event) {
+   getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
     reliefShif.forEach(element => {
       console.log("sales report", element.shiftType, element.timeOpened, element.timeClosed)
