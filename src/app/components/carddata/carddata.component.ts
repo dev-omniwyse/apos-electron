@@ -158,6 +158,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           }
           else {
             $("#cardModal").modal('show');
+            this.disableEncode = false;
             return;
           }
 
@@ -243,6 +244,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           keyboard: false
         });
         $("#encodeSuccessModal").modal('show');
+        this.disableEncode = false
       }
       else {
         $("#encodeErrorModal").modal({

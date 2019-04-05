@@ -77,7 +77,7 @@ export class ShoppingCartService {
         let subTotal = 0;
         subTotal += walletLineItem._unitPrice ;
         for(let item of walletLineItem._walletContents){
-            subTotal += ( item._unitPrice * item.__quantity );      
+            subTotal += ( item._unitPrice * item._quantity );      
         }
 
         return subTotal;
