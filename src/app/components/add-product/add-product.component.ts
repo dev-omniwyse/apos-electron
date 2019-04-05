@@ -781,7 +781,7 @@ export class AddProductComponent implements OnInit {
       return;
     }
     // this.terminalConfigJson.MaxTransAmount
-    if (this.totalDue > 5000) {
+    if (this.totalDue > this.terminalConfigJson.MaxTransAmount) {
       $("#maxTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
