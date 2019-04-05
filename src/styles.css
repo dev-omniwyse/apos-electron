@@ -660,7 +660,8 @@ button:focus {
 }
 
 .btn-white:active,
-.cancel-btn:active {
+.cancel-btn:active,
+.btn-white-top-cancel-checkout:active {
     background: #013d79!important;
     color: #b2c4d7!important;
     outline: none!important;
