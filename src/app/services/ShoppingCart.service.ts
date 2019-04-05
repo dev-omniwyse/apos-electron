@@ -75,9 +75,9 @@ export class ShoppingCartService {
     
     getSubTotalForCardUID(walletLineItem) {
         let subTotal = 0;
-        subTotal += walletLineItem._unitPrice;
+        subTotal += walletLineItem._unitPrice ;
         for(let item of walletLineItem._walletContents){
-            subTotal += item._unitPrice;      
+            subTotal += ( item._unitPrice * item.__quantity );      
         }
 
         return subTotal;
