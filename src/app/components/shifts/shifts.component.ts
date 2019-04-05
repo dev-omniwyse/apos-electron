@@ -12,7 +12,9 @@ declare var $: any
     styleUrls: ['./shifts.component.css']
 })
 export class ShiftsComponent implements OnInit {
-
+    currencyForm: FormGroup = this.formBuilder.group({
+        currency:['']
+      })
     numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     zeroDigits: any = ["0", "00"]
     productTotal: any = 0;
@@ -122,11 +124,21 @@ export class ShiftsComponent implements OnInit {
 
     }
 
+    textAreaEmpty(){
+
+        if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
+          this.clearDigit(0);
+        }
+    }
+
     displayDigit(digit) {
-        console.log("numberDigits", digit);
         this.productTotal = Math.round(this.productTotal * 100);
         this.productTotal += digit;
         this.productTotal = this.productTotal / 100;
+
+        if(this.currencyForm.value.currency == ''){
+            this.currencyForm.value.currency = ''+ this.productTotal
+          }
         // if (this.productTotal == 0) {
         //   this.productTotal = digit;
         //   // this.productTotal+=digit

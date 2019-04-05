@@ -32,12 +32,12 @@
                                 <div class="flex">
                                     <div class="flex-devide">
                                         <p>{{card?.printed_id}} - Active</p>
-                                        <p>Fare Code: Full</p>
+                                        <p>Fare Code: {{userFarecode}}</p>
                                         <p>Card Exp: {{card?.card_expiration_date_str}}</p>
                                     </div>
                                     <div class="flex-devide">
-                                        <p>Bonus Ride(s): 0</p>
-                                        <p>Next Bonus: 0/4</p>
+                                        <p>Bonus Ride(s): {{bonusRidesCountText}}</p>
+                                        <p>Next Bonus: {{nextBonusRidesText}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
-                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
+                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}</div>
                     <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
                         <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             <img src="assets/images/icon-rmproduct.png" />
@@ -374,7 +374,7 @@
                             <h4 class="modal-title">Error</h4>
                         </div>
                         <div class="modal-body">
-                            <p>Invali Amount</p>
+                            <p>Invalid Amount</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
@@ -527,10 +527,10 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">Are you sure you want use voucher ?</h4>
+                            <h4 class="modal-title">Are you sure you want use voucher?</h4>
                         </div>
                         <div class="modal-body">
-                            <p>By continiuing you confirming that the customer has a voucher for the amount of ${{checkoutTotal | number : '1.2-2'}} that you are using in place of payment</p>
+                            <p>By continuing you confirming that the customer has a voucher for the amount of ${{checkoutTotal | number : '1.2-2'}} that you are using in place of payment</p>
                             <!-- <div class="pop-up-box">
                                 <div class="pull-left">Cash Applied </div>
                                 <div class="pull-right">${{productTotal}}</div>
@@ -949,7 +949,26 @@
     <div class="container-right-calc">
         <div class="cr-r-set">
             <h1>
-                <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span>
+                <!-- <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span> -->
+                <form [formGroup]="customAmountForm">
+                        <input type="text" class="form-control label label-primary cr-label" 
+                        formControlName="amount"
+                        [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2'"
+                        (ngModelChange) ="customTextAreaEmpty()"
+                        (keyup.1)="displayDigit('1')"
+                        (keyup.2)="displayDigit('2')"
+                        (keyup.3)="displayDigit('3')"
+                        (keyup.4)="displayDigit('4')"
+                        (keyup.5)="displayDigit('5')"
+                        (keyup.6)="displayDigit('6')"
+                        (keyup.7)="displayDigit('7')"
+                        (keyup.8)="displayDigit('8')"
+                        (keyup.9)="displayDigit('9')"
+                        (keyup.0)="displayDigit('0')"
+                        (keyup.00)="displayDigit('00')"
+                         appNumericOnly>
+    
+                </form>
             </h1>
             <div class="flex">
                 <div class="cr-left">

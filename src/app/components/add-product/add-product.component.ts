@@ -86,6 +86,9 @@ pcs.on('error', function (err) {
 export class AddProductComponent implements OnInit {
   currencyForm: FormGroup = this.formBuilder.group({
     currency:['']
+  });
+  customAmountForm: FormGroup = this.formBuilder.group({
+    amount: ['']
   })
   merchantise = [];
   merch = [];
@@ -153,8 +156,9 @@ export class AddProductComponent implements OnInit {
   };
 
   payment = new PaymentType();
-
-
+  userFarecode : any;
+  bonusRidesCountText : string;
+  nextBonusRidesText: string;
 
   currentWalletLineItem: any = [];
 
@@ -241,7 +245,12 @@ export class AddProductComponent implements OnInit {
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
     let item = JSON.parse(localStorage.getItem("readCardData"))
-    this.viewCardData = new Array(JSON.parse(item))
+    this.viewCardData = new Array(JSON.parse(item));
+    this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.viewCardData[0]);
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+    this.userFarecode = JSON.parse(localStorage.getItem('userProfile'));
+    this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.viewCardData[0], this.terminalConfigJson);
+    
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -1053,9 +1062,14 @@ export class AddProductComponent implements OnInit {
     textAreaEmpty(){
       console.log(this.currencyForm.value.currency)
       if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
-        this.checkoutTotal = this.totalRemaining;
         this.clearDigit(0);
-      }
+      } 
+    }
+
+    customTextAreaEmpty() {
+      if(this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined){
+        this.clearDigit(0);
+      } 
     }
   
   displayDigit(digit) {
@@ -1075,6 +1089,9 @@ export class AddProductComponent implements OnInit {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
+      if(this.customAmountForm.value.amount == ''){
+        this.customAmountForm.value.amount = ''+ this.productTotal;
+      }
     }
  
   }

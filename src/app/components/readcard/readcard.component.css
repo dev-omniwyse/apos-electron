@@ -54,10 +54,11 @@
     text-align: center;
     background-color: #d65400;
     padding: 0px 10px;
-    width: 100%;
-    margin: 13px auto 50px;
+   width: calc(100% - 30px);
+    margin: 13px auto 0px;
     color: #fff;
     font-size: 26px;
+    position: absolute;
 }
 
 .read-card-btn {

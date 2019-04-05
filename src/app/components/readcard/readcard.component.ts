@@ -321,6 +321,7 @@ export class ReadcardComponent implements OnInit {
             // this.electronService.ipcRenderer.removeAllListeners("readcardResult");
         });
         this.electronService.ipcRenderer.once('autoLoadResult', (event, data) => {
+            console.log(data);
             if (data != undefined && data != "") {
                 this.electronService.ipcRenderer.send('readSmartcard', cardName)
             }
