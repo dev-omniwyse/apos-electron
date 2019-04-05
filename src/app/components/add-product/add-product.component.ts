@@ -1108,7 +1108,7 @@ export class AddProductComponent implements OnInit {
   enterCustomAmount(productTotal) {
     let offering = this.customPayAsYouGo;
     this.customPayAsYouGo = null;
-    offering.UnitPrice = productTotal;
+    offering.UnitPrice = + productTotal;
     console.log(this.customPayAsYouGo);
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);
     this.isCustomAmount = false;
