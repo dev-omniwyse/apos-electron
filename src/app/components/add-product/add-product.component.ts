@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -68,7 +68,7 @@ pcs.on('reader', function (reader) {
     }
   });
 
- 
+
 
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
@@ -85,7 +85,7 @@ pcs.on('error', function (err) {
 })
 export class AddProductComponent implements OnInit {
   currencyForm: FormGroup = this.formBuilder.group({
-    currency:['']
+    currency: ['']
   })
   merchantise = [];
   merch = [];
@@ -153,10 +153,10 @@ export class AddProductComponent implements OnInit {
   };
 
   payment = new PaymentType();
-  userFarecode : any;
-  bonusRidesCountText : string;
+  userFarecode: any;
+  bonusRidesCountText: string;
   nextBonusRidesText: string;
-
+  active_card_expiration_date_str : string;
   currentWalletLineItem: any = [];
 
   isProductLimitReached = false;
@@ -184,7 +184,7 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private elementRef:ElementRef,
+  constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
 
@@ -235,19 +235,13 @@ export class AddProductComponent implements OnInit {
 
 
 
- 
+
   }
- 
+
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
-    let item = JSON.parse(localStorage.getItem("readCardData"))
-    this.viewCardData = new Array(JSON.parse(item));
-    this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.viewCardData[0]);
-    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-    this.userFarecode = JSON.parse(localStorage.getItem('userProfile'));
-    this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.viewCardData[0], this.terminalConfigJson);
-    
+
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -516,7 +510,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount / 100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -767,14 +761,14 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if(Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+    if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $("#shoppingCartEmptyModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+    if (Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
       $("#emptyMagneticModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -782,14 +776,14 @@ export class AddProductComponent implements OnInit {
       return;
     }
     // this.terminalConfigJson.MaxTransAmount
-    if(this.totalDue > 5000) {
+    if (this.totalDue > 5000) {
       $("#maxTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(this.totalDue < this.terminalConfigJson.MinTransAmount) {
+    if (this.totalDue < this.terminalConfigJson.MinTransAmount) {
       $("#minTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -818,7 +812,7 @@ export class AddProductComponent implements OnInit {
     this.checkout = false;
     this.checkoutTotal = this.totalDue;
     this.totalRemaining = this.totalDue;
-    this.currencyForm.setValue({"currency": this.checkoutTotal});
+    this.currencyForm.setValue({ "currency": this.checkoutTotal });
   }
 
   cancelCheckout() {
@@ -1021,6 +1015,14 @@ export class AddProductComponent implements OnInit {
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
   activeWallet(item, index) {
+
+    if (item._walletTypeId == MediaType.SMART_CARD_ID) {
+      let cardIndex = Utils.getInstance.getIndexOfActiveWallet(this.cardJson, item);
+      this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
+      this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson);
+    }
+
     this.selectedProductCategoryIndex = 0;
     this.currentWalletLineItem = item;
     this.currentWalletLineItemIndex = index;
@@ -1056,24 +1058,24 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
 
-    textAreaEmpty(){
-      console.log(this.currencyForm.value.currency)
-      if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
-        this.checkoutTotal = this.totalRemaining;
-        this.clearDigit(0);
-      }
+  textAreaEmpty() {
+    console.log(this.currencyForm.value.currency)
+    if (this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined) {
+      this.checkoutTotal = this.totalRemaining;
+      this.clearDigit(0);
     }
-  
+  }
+
   displayDigit(digit) {
     console.log(digit);
-    if(this.totalDue == this.checkoutTotal) {
+    if (this.totalDue == this.checkoutTotal) {
       this.checkoutTotal = 0;
-    } 
+    }
     this.checkoutTotal = Math.round(this.checkoutTotal * 100);
     this.checkoutTotal += digit;
     this.checkoutTotal = this.checkoutTotal / 100;
-    if(this.currencyForm.value.currency == ''){
-      this.currencyForm.value.currency = ''+ this.checkoutTotal
+    if (this.currencyForm.value.currency == '') {
+      this.currencyForm.value.currency = '' + this.checkoutTotal
     }
 
 
@@ -1082,7 +1084,7 @@ export class AddProductComponent implements OnInit {
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
     }
- 
+
   }
   enterCustomAmount(productTotal) {
     let offering = this.customPayAsYouGo;
@@ -1321,7 +1323,7 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
-  handleCancelPinPadTransaction(){
+  handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
         $("#creditCardApplyModal").modal("hide")
@@ -1357,11 +1359,11 @@ export class AddProductComponent implements OnInit {
   }
 
   paymentByCash() {
-    if(this.checkoutTotal == 0) {
+    if (this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if (this.totalRemaining == this.checkoutTotal) {
+    } else if (this.totalRemaining == this.checkoutTotal) {
       this.isCashApplied = false;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
@@ -1440,11 +1442,11 @@ export class AddProductComponent implements OnInit {
 
 
   paymentByVoucher() {
-    if(this.checkoutTotal == 0) {
+    if (this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    } else if(this.totalRemaining == this.checkoutTotal) {
+    } else if (this.totalRemaining == this.checkoutTotal) {
       $('#voucherModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1542,11 +1544,12 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  paymentByCheck() { if(this.checkoutTotal == 0) {
+  paymentByCheck() {
+    if (this.checkoutTotal == 0) {
 
-    $('#invalidAmountModal').modal('show');
+      $('#invalidAmountModal').modal('show');
 
-  }else if(this.totalRemaining == this.checkoutTotal) {
+    } else if (this.totalRemaining == this.checkoutTotal) {
       $('#checkModal').modal('show');
     }
 
@@ -1622,11 +1625,11 @@ export class AddProductComponent implements OnInit {
 
 
   compApplied() {
-    if(this.checkoutTotal == 0) {
+    if (this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == this.checkoutTotal) {
+    } else if (this.totalRemaining == this.checkoutTotal) {
       $('#compModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1718,11 +1721,11 @@ export class AddProductComponent implements OnInit {
   }
 
   cardApplied() {
-    if(this.checkoutTotal == 0) {
+    if (this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == this.checkoutTotal) {
+    } else if (this.totalRemaining == this.checkoutTotal) {
       $('#creditCardModal').modal('show');
     } else if (this.totalRemaining > this.checkoutTotal) {
       if (this.isCashApplied) {
@@ -1798,7 +1801,7 @@ export class AddProductComponent implements OnInit {
         // this.doPinPadTransaction()
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
-        this.cardAppliedTotal= this.shoppingcart._payments[indexOfPayment].amount;
+        this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.cardAppliedTotal = true;
         // this.doPinPadTransaction();

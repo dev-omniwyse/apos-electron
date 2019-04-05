@@ -27,13 +27,13 @@
                         <h4 class="modal-title">Card Summary</h4>
                     </div>
                     <div class="modal-body">
-                        <div *ngFor="let card of viewCardData ">
+                        <!-- <div *ngFor="let card of viewCardData "> -->
                             <div class="flex-devide">
                                 <div class="flex">
                                     <div class="flex-devide">
-                                        <p>{{card?.printed_id}} - Active</p>
+                                        <p>{{active_printed_id}} - Active</p>
                                         <p>Fare Code: {{userFarecode}}</p>
-                                        <p>Card Exp: {{card?.card_expiration_date_str}}</p>
+                                        <p>Card Exp: {{active_card_expiration_date_str}}</p>
                                     </div>
                                     <div class="flex-devide">
                                         <p>Bonus Ride(s): {{bonusRidesCountText}}</p>
@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <!-- </div> -->
                         <div class="content-container container-padding">
                             <h1></h1>
                         </div>

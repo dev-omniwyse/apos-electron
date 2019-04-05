@@ -342,4 +342,30 @@ export class Utils {
 
         return deviceInfo;
     }
+
+    getIndexOfActiveWallet(cardsData, item){
+
+        let cardIndex = -1;
+        for(let index = 0; index < cardsData.length; index++){
+
+            if(item._cardPID == cardsData[index].printed_id){
+                cardIndex = index;
+                break;
+            }
+        }
+        return cardIndex;
+    }
+
+    getFareCodeTextForThisWallet(cardData, terminalConfig){
+
+        let fareCodeText = "Unknown"
+        let fareCodes = terminalConfig.Farecodes;
+        for(let index = 0; index < fareCodes.length; index++){
+            if (cardData.user_profile == fareCodes[index].FareCodeId) {
+                fareCodeText = fareCodes[index].Description;
+                break;
+            }
+        }         
+        return fareCodeText;
+    }
 }
