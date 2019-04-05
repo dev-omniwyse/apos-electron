@@ -8,7 +8,64 @@ import { Utils } from 'src/app/services/Utils.service';
 // import { ConsoleReporter } from 'jasmine';
 // import {setInterval, clearInterval} from 'timers';
 declare var $: any
+declare var pcsc: any;
+var pcs = pcsc();
+var cardName: any = "";
+pcs.on('reader', function (reader) {
+  console.log('reader', reader);
+  console.log('New reader detected', reader.name);
 
+  reader.on('error', function (err) {
+    console.log('Error(', this.name, '):', err.message);
+  });
+
+  reader.on('status', function (status) {
+    console.log('Status(', this.name, '):', status);
+    /* check what has changed */
+    const changes = this.state ^ status.state;
+    if (changes) {
+      if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+        console.log("card removed");/* card removed */
+        reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Disconnected');
+          }
+        });
+      } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+        cardName = reader.name
+        console.log("sample", cardName)
+        console.log("card inserted");/* card inserted */
+        reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Protocol(', reader.name, '):', protocol);
+            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('Data received', data);
+                console.log('Data base64', data.toString('base64'));
+                // reader.close();
+                // pcs.close();
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+
+  reader.on('end', function () {
+    console.log('Reader', this.name, 'removed');
+  });
+});
+
+pcs.on('error', function (err) {
+  console.log('PCSC error', err.message);
+});
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -30,12 +87,14 @@ export class AdminComponent implements OnInit {
   overShort: any = 0
   synCompleted: any
   numOfAttempts = 0;
-  maxLoopingCount = 600;
+  maxLoopingCount = 0;
   public deviceInfoNew: Boolean = false
   intervalSyc: any
   configData: any
   SyncMethod: any
   isCurrentSync: Boolean = false;
+  catalogData = [];
+  terminalConfigJson: any = [];
   public fareTotal: any = 0
   public nonFareTotal: any = 0
   public fareAndNonFareTotal: any = 0
@@ -130,7 +189,7 @@ export class AdminComponent implements OnInit {
           console.log("isSyncDone", isSyncDone)
           timer = setTimeout(() => {
 
-            if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < 600) {
+            if (this.isCurrentSync && !isSyncDone && this.numOfAttempts < this.maxLoopingCount) {
               this.numOfAttempts++;
               this.electronService.ipcRenderer.send('isSyncCompleted')
             }
@@ -149,6 +208,8 @@ export class AdminComponent implements OnInit {
           localStorage.setItem('deviceInfo', JSON.stringify(deviceData));
           this.isCurrentSync = false;
           clearTimeout(timer);
+          this.getTerminalConfigJson();
+          this.getProductCatalogJson();
           // clearInterval(this.intervalSyc);
           $("#continueSyncModal").modal("hide")
           $("#successSyncModal").modal("show")
@@ -196,6 +257,58 @@ export class AdminComponent implements OnInit {
     });
 
 
+  }
+
+  getTerminalConfigJson() {
+    this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          localStorage.setItem('terminalConfigJson', data);
+          this.terminalConfigJson = JSON.parse(data);
+          this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
+          this.cdtaService.setterminalNumber(JSON.parse(data).SerialNumber);
+        });
+      }
+    });
+    this.electronService.ipcRenderer.send("terminalConfigcall");
+  }
+
+  getProductCatalogJson() {
+    this.electronService.ipcRenderer.once('getProductCatalogResult', (event, data) => {
+      localStorage.setItem('catalogJSON', JSON.stringify(data));
+      let item = JSON.parse(localStorage.getItem("catalogJSON"));
+      this.catalogData = JSON.parse(item).Offering;
+      this.setOffering();
+    });
+    this.electronService.ipcRenderer.send('productCatalogJson', cardName)
+  }
+
+
+  setOffering() {
+    let offeringSList = [];
+    this.catalogData.forEach(element => {
+      // if ((element.Ticket != undefined && element.Ticket != "") || element.IsMerchandise) {
+      var jsonObj: any = {
+        "OfferingId": element.OfferingId,
+        "ProductIdentifier": element.ProductIdentifier,
+        "Description": element.Description,
+        "UnitPrice": element.UnitPrice,
+        "IsTaxable": element.IsTaxable,
+        "IsMerchandise": element.IsMerchandise,
+        "IsAccountBased": element.IsAccountBased,
+        "IsCardBased": element.IsCardBased
+      }
+      // var jsonObj:any = { "OfferingId": element.OfferingId, "ProductIdentifier":element.ProductIdentifier ,"Description": element.Ticket.TicketType.Description };
+      offeringSList.push(jsonObj);
+      // }
+    });
+    // var tempJson:string = '[{"TicketId": 3, "Description": test1},{"TicketId": 4, "Description": test1}]'
+    this.electronService.ipcRenderer.once('saveOfferingResult', (event, data) => {
+      if (data != undefined && data != "") {
+        console.log('Offerings Success');
+      }
+    });
+    this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(offeringSList) + '}');
   }
 
   getPresentShiftReport() {
@@ -329,7 +442,8 @@ export class AdminComponent implements OnInit {
   ngOnInit() {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
-
+    this.terminalConfigJson = JSON.parse(localStorage.getItem("terminalConfigJson"));
+    this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
     shiftReports.forEach(element => {
       if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "false") {
         this.closingPausedMainShift = true
