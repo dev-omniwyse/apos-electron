@@ -149,6 +149,16 @@ ul {
     margin: 0 5px;
 }
 
+.btn-orange-slide:active {
+    background-color: #7fc0ff;
+    color: #d65400;
+}
+
+.btn-white-slide:active {
+    background-color: #7fc0ff;
+    color: #fff;
+}
+
 .btn-white-cancel {
     background-color: #fff;
     border: 1px solid #c3c3c3;
@@ -187,6 +197,15 @@ ul {
     width: 50%;
     text-transform: uppercase;
     margin-left: 10px;
+}
+
+.btn-orange:active,
+.btn-orange-bottom:active {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
 }
 
 .header-l {
@@ -320,6 +339,12 @@ ul {
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
     /* IE6-9 */
+}
+
+.flex-right-items .custom-products button:active,
+.flex-right-items .products button:active {
+    background: #7fc0ff;
+    color: #fff;
 }
 
 .container-right h1 {
@@ -641,6 +666,10 @@ ul {
     position: relative;
     margin: 1px 0 10px;
     float: left;
+}
+
+.cardBtn:active {
+    background-color: #013d79;
 }
 
 .cardBtn .cardBtn:disabled,
