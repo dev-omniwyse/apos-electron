@@ -23,16 +23,16 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Quantity</th>
+                                <th width="20%">Quantity</th>
                                 <th>Product</th>
-                                <th>Value</th>
+                                <th width="20%">Value</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let salesdetail of salesData">
-                                <td>{{salesdetail.quantity}}</td>
+                                <td width="20%">{{salesdetail.quantity}}</td>
                                 <td>{{salesdetail.description}}</td>
-                                <td>${{salesdetail.value | number : '1.2-2'}}</td>
+                                <td width="20%">${{salesdetail.value | number : '1.2-2'}}</td>
                             </tr>
                             <div class="clearfix"></div>
                         </tbody>
@@ -43,13 +43,13 @@
                         <thead>
                             <tr>
                                 <th>Payment Method</th>
-                                <th>Amount</th>
+                                <th width="20%">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let salePayment of salesPaymentData">
                                 <td>{{salePayment.paymentMethod}}</td>
-                                <td>${{salePayment.paymentAmount | number : '1.2-2'}}</td>
+                                <td width="20%">${{salePayment.paymentAmount | number : '1.2-2'}}</td>
                             </tr>
                             <div class="clearfix"></div>
                         </tbody>
