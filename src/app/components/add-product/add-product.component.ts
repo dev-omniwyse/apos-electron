@@ -86,6 +86,9 @@ pcs.on('error', function (err) {
 export class AddProductComponent implements OnInit {
   currencyForm: FormGroup = this.formBuilder.group({
     currency: ['']
+  });
+  customAmountForm: FormGroup = this.formBuilder.group({
+    amount: ['']
   })
   merchantise = [];
   merch = [];
@@ -156,7 +159,7 @@ export class AddProductComponent implements OnInit {
   userFarecode: any;
   bonusRidesCountText: string;
   nextBonusRidesText: string;
-  active_card_expiration_date_str : string;
+  active_card_expiration_date_str: string;
   currentWalletLineItem: any = [];
 
   isProductLimitReached = false;
@@ -1061,7 +1064,12 @@ export class AddProductComponent implements OnInit {
   textAreaEmpty() {
     console.log(this.currencyForm.value.currency)
     if (this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined) {
-      this.checkoutTotal = this.totalRemaining;
+      this.clearDigit(0);
+    }
+  }
+
+  customTextAreaEmpty() {
+    if (this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined) {
       this.clearDigit(0);
     }
   }
@@ -1083,6 +1091,9 @@ export class AddProductComponent implements OnInit {
       this.productTotal = Math.round(this.productTotal * 100);
       this.productTotal += digit;
       this.productTotal = (this.productTotal / 100);
+      if (this.customAmountForm.value.amount == '') {
+        this.customAmountForm.value.amount = '' + this.productTotal;
+      }
     }
 
   }
