@@ -392,6 +392,14 @@
     margin: 5px 0;
 }
 
+.cr-right-btns button:active {
+    background-color: #013d79;
+    border: 1px solid #013d79;
+    color: #fff;
+    box-shadow: none;
+    outline: none;
+}
+
 .cr-right-btns button i {
     margin-top: 8px;
 }
