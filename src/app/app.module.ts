@@ -30,6 +30,7 @@ import { EnvironmentComponent } from './components/environment/environment.compo
 import { SlickModule } from 'ngx-slick';
 import { Globals } from './global';
 import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
+import { NoCommaPipe } from './pipe/no-comma.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +53,8 @@ import { NumericOnlyDirective } from './components/add-product/numeric-only.dire
     ShiftsComponent,
     AddMagneticProductComponent,
     EnvironmentComponent,
-    NumericOnlyDirective 
+    NumericOnlyDirective,
+    NoCommaPipe 
     
   ],
   imports: [

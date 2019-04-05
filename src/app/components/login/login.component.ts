@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { CdtaService } from '../../cdta.service';
 import { ElectronService } from 'ngx-electron';
+import { Utils } from 'src/app/services/Utils.service';
 
 declare var $: any
 
@@ -60,6 +61,11 @@ export class LoginComponent implements OnInit {
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != "") {
                 // this.loading = false
+                let localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+                if(null == localDeviceInfo || undefined == localDeviceInfo){
+                    let deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
+                    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
+                }                
                 this.userdata = JSON.parse(data)
                 localStorage.removeItem("readCardData");
                 localStorage.setItem("userID", this.userdata.personId)

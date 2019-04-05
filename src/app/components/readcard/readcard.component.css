@@ -54,7 +54,7 @@
     text-align: center;
     background-color: #d65400;
     padding: 0px 10px;
-   width: calc(100% - 30px);
+    width: calc(100% - 30px);
     margin: 13px auto 0px;
     color: #fff;
     font-size: 26px;
@@ -71,6 +71,11 @@
     background-color: #3b80c3;
     color: #fff;
     border-radius: 10px;
+}
+
+.read-card-btn:active,
+.cardBtn:active {
+    background-color: #013d79;
 }
 
 .read-card-btn i {
@@ -164,4 +169,12 @@ button:disabled {
 
 .arrow_right:before {
     font-size: 40px;
+}
+
+.cancel-btn-pop:active {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
 }

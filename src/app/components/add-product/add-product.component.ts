@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef} from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren, AfterViewInit, ElementRef } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -10,7 +10,7 @@ import { FareCardService } from 'src/app/services/Farecard.service';
 import { Globals } from 'src/app/global';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
-import { MediaType, TICKET_GROUP, TICKET_TYPE } from 'src/app/services/MediaType';
+import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
@@ -68,7 +68,7 @@ pcs.on('reader', function (reader) {
     }
   });
 
- 
+
 
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
@@ -85,7 +85,7 @@ pcs.on('error', function (err) {
 })
 export class AddProductComponent implements OnInit {
   currencyForm: FormGroup = this.formBuilder.group({
-    currency:['']
+    currency: ['']
   });
   customAmountForm: FormGroup = this.formBuilder.group({
     amount: ['']
@@ -96,7 +96,7 @@ export class AddProductComponent implements OnInit {
   merchantiseList: any = [];
   MagneticList: any = [];
   productCardList: any = [];
-  productTotal: any = 0;
+  productTotal: any = "0";
   checkout = true;
   payPricing: any = [];
   cardJson: any = [];
@@ -143,7 +143,7 @@ export class AddProductComponent implements OnInit {
   productCheckOut: boolean = false;
   isNew: boolean = false;
   totalDue: any = [];
-  checkoutTotal: any = 0;
+  checkoutTotal: string ;
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
   isCustomAmount = false;
@@ -156,10 +156,12 @@ export class AddProductComponent implements OnInit {
   };
 
   payment = new PaymentType();
-  userFarecode : any;
-  bonusRidesCountText : string;
+  userFarecode: any;
+  bonusRidesCountText: string;
   nextBonusRidesText: string;
-
+  active_card_expiration_date_str: string;
+  active_printed_id : number;
+  active_wallet_status: string;
   currentWalletLineItem: any = [];
 
   isProductLimitReached = false;
@@ -187,7 +189,7 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
 
-  constructor(private elementRef:ElementRef,
+  constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
 
@@ -238,19 +240,13 @@ export class AddProductComponent implements OnInit {
 
 
 
- 
+
   }
- 
+
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
-    let item = JSON.parse(localStorage.getItem("readCardData"))
-    this.viewCardData = new Array(JSON.parse(item));
-    this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.viewCardData[0]);
-    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-    this.userFarecode = JSON.parse(localStorage.getItem('userProfile'));
-    this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.viewCardData[0], this.terminalConfigJson);
-    
+
     this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
     console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
@@ -519,7 +515,7 @@ export class AddProductComponent implements OnInit {
     })
 
     // if ((remainingValue + selectProduct.Ticket.Value) <= 200)
-    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount/100)
+    if ((remainingValue + selectProduct.Ticket.Value) <= this.terminalConfigJson.MaxStoredValueAmount / 100)
       canAddPayAsYouGoBool = true;
     else
       canAddPayAsYouGoBool = false;
@@ -770,14 +766,14 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
-    if(Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+    if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $("#shoppingCartEmptyModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+    if (Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
       $("#emptyMagneticModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -785,14 +781,14 @@ export class AddProductComponent implements OnInit {
       return;
     }
     // this.terminalConfigJson.MaxTransAmount
-    if(this.totalDue > 5000) {
+    if (this.totalDue > this.terminalConfigJson.MaxTransAmount) {
       $("#maxTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
       });
       return;
     }
-    if(this.totalDue < this.terminalConfigJson.MinTransAmount) {
+    if (this.totalDue < this.terminalConfigJson.MinTransAmount) {
       $("#minTransactionModal").modal({
         backdrop: 'static',
         keyboard: false
@@ -819,9 +815,10 @@ export class AddProductComponent implements OnInit {
     localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
     localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
     this.checkout = false;
-    this.checkoutTotal = this.totalDue;
+    this.checkoutTotal = this.totalDue.toString();
     this.totalRemaining = this.totalDue;
     this.currencyForm.setValue({"currency": this.checkoutTotal});
+    this.customAmountForm.setValue({"amount": this.productTotal});
   }
 
   cancelCheckout() {
@@ -864,11 +861,17 @@ export class AddProductComponent implements OnInit {
   handleReadCardResult() {
     var readCardListener = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
       var isDuplicateCard = false;
+      
       if (this.isfromAddProduct && data != undefined && data != "") {
         this.isfromAddProduct = false;
+        localStorage.setItem("readCardData", JSON.stringify(data));
+        this.carddata = new Array(JSON.parse(data));
+        let status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
+        if (Constants.INACTIVE == status) {
+          $("#inactiveValidation").modal('show');
+        }
         this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          this.carddata = new Array(JSON.parse(data));
+          
           let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
           ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
@@ -1024,6 +1027,17 @@ export class AddProductComponent implements OnInit {
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() : (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
   activeWallet(item, index) {
+
+    if (item._walletTypeId == MediaType.SMART_CARD_ID) {
+      let cardIndex = Utils.getInstance.getIndexOfActiveWallet(this.cardJson, item);
+      this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
+      this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson);
+      this.active_printed_id = this.cardJson[cardIndex].printed_id;
+      this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
+      this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
+    }
+
     this.selectedProductCategoryIndex = 0;
     this.currentWalletLineItem = item;
     this.currentWalletLineItemIndex = index;
@@ -1060,45 +1074,54 @@ export class AddProductComponent implements OnInit {
   }
 
     textAreaEmpty(){
-      console.log(this.currencyForm.value.currency)
       if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
+        this.currencyForm.value.currency = ''+ this.checkoutTotal
+        this.clearDigit(0);
+      } 
+    }
+    onBackSpace() {
+      if(this.currencyForm.value.currency != null || this.currencyForm.value.currency != '')
+      // Number(this.currencyForm.value.currency.slice(1))
+      this.checkoutTotal = ''+this.currencyForm.value.currency.slice(1);
+    }
+    customTextAreaEmpty() {
+      if(this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined){
+        this.customAmountForm.value.amount = ''+ this.productTotal
         this.clearDigit(0);
       } 
     }
 
-    customTextAreaEmpty() {
-      if(this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined){
-        this.clearDigit(0);
-      } 
+    onCustomAmountBackSpace() {
+      if(this.customAmountForm.value.amount != null || this.customAmountForm.value.amount != '')
+      // Number(this.currencyForm.value.currency.slice(1))
+      this.productTotal = ''+this.customAmountForm.value.amount.slice(1);
     }
   
   displayDigit(digit) {
     console.log(digit);
-    if(this.totalDue == this.checkoutTotal) {
-      this.checkoutTotal = 0;
-    } 
-    this.checkoutTotal = Math.round(this.checkoutTotal * 100);
-    this.checkoutTotal += digit;
-    this.checkoutTotal = this.checkoutTotal / 100;
-    if(this.currencyForm.value.currency == ''){
-      this.currencyForm.value.currency = ''+ this.checkoutTotal
-    }
-
-
     if (this.isCustomAmount) {
-      this.productTotal = Math.round(this.productTotal * 100);
+      this.productTotal = Math.round(+(this.productTotal) * 100).toString();
       this.productTotal += digit;
-      this.productTotal = (this.productTotal / 100);
+      this.productTotal = (+(this.productTotal )/ 100).toString();
       if(this.customAmountForm.value.amount == ''){
         this.customAmountForm.value.amount = ''+ this.productTotal;
       }
+    } else {
+      if(this.totalDue == this.checkoutTotal) {
+        this.checkoutTotal = "0";
+      } 
+      this.checkoutTotal = Math.round(+(this.checkoutTotal) * 100).toString();
+      this.checkoutTotal += digit;
+      this.checkoutTotal =(+(this.checkoutTotal) / 100).toString();
+      if(this.currencyForm.value.currency == ''){
+        this.currencyForm.value.currency = ''+ this.checkoutTotal
+      }
     }
- 
   }
   enterCustomAmount(productTotal) {
     let offering = this.customPayAsYouGo;
     this.customPayAsYouGo = null;
-    offering.UnitPrice = productTotal;
+    offering.UnitPrice = + productTotal;
     console.log(this.customPayAsYouGo);
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);
     this.isCustomAmount = false;
@@ -1113,7 +1136,7 @@ export class AddProductComponent implements OnInit {
 
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
-    this.checkoutTotal = this.totalDue;
+    this.checkoutTotal = this.totalDue.toString();
   }
 
   displayMagneticsSubtotal(products: any, isTotalList) {
@@ -1148,9 +1171,11 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    this.checkoutTotal = digit;
+    
     if (this.isCustomAmount) {
-      this.productTotal = digit;
+      this.productTotal = ''+ digit;
+    } else {
+      this.checkoutTotal = ''+digit;
     }
   }
 
@@ -1332,7 +1357,7 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
   }
 
-  handleCancelPinPadTransaction(){
+  handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
         $("#creditCardApplyModal").modal("hide")
@@ -1368,18 +1393,18 @@ export class AddProductComponent implements OnInit {
   }
 
   paymentByCash() {
-    if(this.checkoutTotal == 0) {
+    if(+this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if (this.totalRemaining == this.checkoutTotal) {
+    }else if (this.totalRemaining == +(this.checkoutTotal) ) {
       this.isCashApplied = false;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
       this.electronService.ipcRenderer.send("openCashDrawer")
       $('#myModal').modal('show');
 
-    } else if (this.totalRemaining > this.checkoutTotal) {
+    } else if (this.totalRemaining > +this.checkoutTotal) {
 
       if (this.isVoucherApplied) {
         this.isVoucherApplied = true;
@@ -1409,30 +1434,30 @@ export class AddProductComponent implements OnInit {
       if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+        this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
         let indexOfPayment = this.checkIsPaymentMethodExists(2);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
-          payment.$amount = this.checkoutTotal;
+          payment.$amount = (+this.checkoutTotal);
           payment.$paymentMethodId = 2;
           payment.$comment = null;
           this.shoppingcart._payments.push(payment);
           this.cashAppliedTotal = payment.$amount;
           this.isCashApplied = true;
-          this.checkoutTotal = 0;
+          this.checkoutTotal = "0";
         } else {
-          this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+          this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
           this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           this.isCashApplied = true;
-          this.checkoutTotal = 0;
+          this.checkoutTotal = "0";
         }
 
       }
-    } else if (this.totalRemaining < this.checkoutTotal) {
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
       // this.isCashApplied = true;
       // this.isVoucherApplied = false;
       this.cashAppliedTotal = this.checkoutTotal
-      this.cashBack = this.checkoutTotal - this.totalRemaining;
+      this.cashBack = ( +this.checkoutTotal) - this.totalRemaining;
       this.electronService.ipcRenderer.send("openCashDrawer")
       $("#myModal").modal('show');
     }
@@ -1441,7 +1466,7 @@ export class AddProductComponent implements OnInit {
   cashApplied() {
     let payment = new PaymentType();
     payment.$paymentMethodId = 2
-    payment.$amount = this.checkoutTotal
+    payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
     if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
@@ -1453,13 +1478,13 @@ export class AddProductComponent implements OnInit {
 
 
   paymentByVoucher() {
-    if(this.checkoutTotal == 0) {
+    if(+this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    } else if(this.totalRemaining == this.checkoutTotal) {
+    } else if(this.totalRemaining == (+this.checkoutTotal) ){
       $('#voucherModal').modal('show');
-    } else if (this.totalRemaining > this.checkoutTotal) {
+    } else if (this.totalRemaining > (+this.checkoutTotal) ){
       if (this.isCashApplied) {
         this.isCashApplied = true;
       } else {
@@ -1493,7 +1518,7 @@ export class AddProductComponent implements OnInit {
       }
 
     }
-    else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
+    else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1502,35 +1527,35 @@ export class AddProductComponent implements OnInit {
 
   voucherModalApply() {
     if (this.totalDue == this.checkoutTotal) {
-      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.voucherRemaining = this.totalRemaining;
       let payment = new PaymentType();
       payment.$paymentMethodId = 11
-      payment.$amount = this.checkoutTotal
+      payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
       if (this.checkIsPaymentMethodExists(11) == -1) {
         this.shoppingcart._payments.push(payment);
       }
     } else {
-      this.totalRemaining = this.totalRemaining - this.checkoutTotal;
+      this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       this.voucherRemaining = this.totalRemaining;
       let indexOfPayment = this.checkIsPaymentMethodExists(11);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
-        payment.$amount = this.checkoutTotal;
+        payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 11;
         payment.$comment = null;
         this.shoppingcart._payments.push(payment);
         console.log(this.shoppingcart._payments)
         this.voucherAppliedTotal = payment.$amount;
         this.isVoucherApplied = true;
-        this.checkoutTotal = 0;
+        this.checkoutTotal = "0";
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
         this.voucherAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         console.log(this.shoppingcart._payments)
         this.isVoucherApplied = true;
-        this.checkoutTotal = 0;
+        this.checkoutTotal = "0";
       }
 
     }
@@ -1555,15 +1580,15 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  paymentByCheck() { if(this.checkoutTotal == 0) {
+  paymentByCheck() { if((+this.checkoutTotal) == 0) {
 
-    $('#invalidAmountModal').modal('show');
+      $('#invalidAmountModal').modal('show');
 
-  }else if(this.totalRemaining == this.checkoutTotal) {
+  }else if(this.totalRemaining == (+this.checkoutTotal)) {
       $('#checkModal').modal('show');
     }
 
-    else if (this.totalRemaining > this.checkoutTotal) {
+    else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
       } else {
@@ -1591,30 +1616,30 @@ export class AddProductComponent implements OnInit {
       if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-        this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+        this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
         let indexOfPayment = this.checkIsPaymentMethodExists(3);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
-          payment.$amount = this.checkoutTotal;
+          payment.$amount = (+this.checkoutTotal);
           payment.$paymentMethodId = 3;
           payment.$comment = null;
           this.shoppingcart._payments.push(payment);
           console.log(this.shoppingcart._payments)
           this.checkAppliedTotal = payment.$amount;
           this.isCheckApplied = true;
-          this.checkoutTotal = 0;
+          this.checkoutTotal = "0";
         } else {
-          this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+          this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
           this.checkAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           console.log(this.shoppingcart._payments)
           this.isCheckApplied = true;
-          this.checkoutTotal = 0;
+          this.checkoutTotal = "0";
         }
 
       }
 
     }
-    else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
+    else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
   }
@@ -1622,7 +1647,7 @@ export class AddProductComponent implements OnInit {
   checkApplied() {
     let payment = new PaymentType();
     payment.$paymentMethodId = 3
-    payment.$amount = this.checkoutTotal
+    payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
     if (this.checkIsPaymentMethodExists(3) == -1) {
       this.shoppingcart._payments.push(payment);
@@ -1635,13 +1660,13 @@ export class AddProductComponent implements OnInit {
 
 
   compApplied() {
-    if(this.checkoutTotal == 0) {
+    if((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == this.checkoutTotal) {
+    }else if(this.totalRemaining == (+this.checkoutTotal)) {
       $('#compModal').modal('show');
-    } else if (this.totalRemaining > this.checkoutTotal) {
+    } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
       } else {
@@ -1670,7 +1695,7 @@ export class AddProductComponent implements OnInit {
       } else {
         $('#compModal').modal('show');
       }
-    } else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
+    } else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1682,37 +1707,37 @@ export class AddProductComponent implements OnInit {
   }
 
   compensation() {
-    if (this.totalRemaining == this.checkoutTotal) {
+    if (this.totalRemaining == (+this.checkoutTotal)) {
       let indexOfPayment = this.checkIsPaymentMethodExists(8);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
-        payment.$amount = this.checkoutTotal;
+        payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 8;
         payment.$comment = this.reasonForComp;
         this.shoppingcart._payments.push(payment);
       }
       this.electronService.ipcRenderer.send('compensation');
       this.saveTransaction();
-    } else if (this.totalRemaining > this.checkoutTotal) {
-      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+    } else if (this.totalRemaining > (+this.checkoutTotal)) {
+      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.compDue = this.totalRemaining;
       let indexOfPayment = this.checkIsPaymentMethodExists(8);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
-        payment.$amount = this.checkoutTotal;
+        payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 8;
         payment.$comment = this.reasonForComp;
         this.shoppingcart._payments.push(payment);
         // this.cashAppliedTotal = payment.$amount;
         this.isCompApplied = true;
         this.applyCompShow = false;
-        this.checkoutTotal = 0;
+        this.checkoutTotal = "0";
       } else {
-        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.isCompApplied = true;
         this.applyCompShow = false;
-        this.checkoutTotal = 0;
+        this.checkoutTotal = "0";
       }
 
     }
@@ -1731,13 +1756,13 @@ export class AddProductComponent implements OnInit {
   }
 
   cardApplied() {
-    if(this.checkoutTotal == 0) {
+    if((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == this.checkoutTotal) {
+    }else if(this.totalRemaining == (+this.checkoutTotal)) {
       $('#creditCardModal').modal('show');
-    } else if (this.totalRemaining > this.checkoutTotal) {
+    } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
       } else {
@@ -1779,38 +1804,38 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (this.totalRemaining.toFixed(2) < this.checkoutTotal.toFixed(2)) {
+    } else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
       $('#voucherErrorModal').modal('show');
     }
   }
 
   cardPayment() {
-    if (this.totalRemaining == this.checkoutTotal) {
+    if (this.totalRemaining == (+this.checkoutTotal)) {
       let indexOfPayment = this.checkIsPaymentMethodExists(9);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
-        payment.$amount = this.checkoutTotal;
+        payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 9;
         payment.$comment = null;
         this.shoppingcart._payments.push(payment);
       }
       this.doPinPadTransaction();
     } else {
-      this.totalRemaining = +(this.totalRemaining - this.checkoutTotal).toFixed(2);
+      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.cardAppliedTotal = this.checkoutTotal;
       let indexOfPayment = this.checkIsPaymentMethodExists(9);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
-        payment.$amount = this.checkoutTotal;
+        payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 9;
         payment.$comment = null;
         this.shoppingcart._payments.push(payment);
         // this.cashAppliedTotal = payment.$amount;
         this.isCardApplied = true;
-        this.checkoutTotal = 0;
+        this.checkoutTotal = "0";
         // this.doPinPadTransaction()
       } else {
-        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
         this.cardAppliedTotal= this.shoppingcart._payments[indexOfPayment].amount;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.cardAppliedTotal = true;
