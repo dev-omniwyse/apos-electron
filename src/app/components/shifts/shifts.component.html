@@ -14,7 +14,7 @@
                 <form [formGroup]="currencyForm">
                         <input type="text" class="form-control label label-primary cr-label" 
                         formControlName="currency"
-                        [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2'"
+                        [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2' | noComma"
                         (ngModelChange) ="textAreaEmpty()"
                         (keyup.1)="displayDigit('1')"
                         (keyup.2)="displayDigit('2')"
@@ -26,7 +26,9 @@
                         (keyup.8)="displayDigit('8')"
                         (keyup.9)="displayDigit('9')"
                         (keyup.0)="displayDigit('0')"
-                        (keyup.00)="displayDigit('00')" appNumericOnly>
+                        (keyup.00)="displayDigit('00')" 
+                        (keyup.backspace)="onBackSpace()"
+                        appNumericOnly>
     
                 </form>
             </h1>
