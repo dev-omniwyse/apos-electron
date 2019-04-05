@@ -869,6 +869,7 @@ export class AddProductComponent implements OnInit {
         let status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
         if (Constants.INACTIVE == status) {
           $("#inactiveValidation").modal('show');
+          return ;
         }
         this._ngZone.run(() => {
           
@@ -881,6 +882,7 @@ export class AddProductComponent implements OnInit {
           });
           if (isDuplicateCard) {
             $("#newCardValidationModal").modal('show');
+            return;
           }
           else {
             if (isExistingCard) {
