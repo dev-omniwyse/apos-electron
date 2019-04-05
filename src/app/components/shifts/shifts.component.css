@@ -276,14 +276,22 @@
     /* IE6-9 */
 }
 
+.cr-left button:active {
+    background: #7fc0ff;
+    color: #fff!important;
+}
+
 @media (max-width: 1400px) {
     .cr-left button {
-        padding: 4.1vh 3.2vh;
+        padding: 3.1vh 3.2vh;
     }
     .cr-left .number-btns-set-1 button,
     .cr-left .number-btns-set-2 button,
     .cr-left .number-btns-set-3 button {
-        font-size: 2.5vh;
+        font-size: 3.5vh;
+    }
+    .cr-right button {
+        font-size: 4vh;
     }
 }
 

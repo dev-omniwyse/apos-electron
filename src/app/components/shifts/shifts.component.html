@@ -1,7 +1,7 @@
 <div class="main-container">
     <div class="container-left">
         <div style="font-size:3vh">{{setShiftStatus}}</div><br/>
-        <div style="font-size:2vh" *ngIf="expectedCash != 0 ">Expecting Cash Total: ${{expectedCash}}</div><br/>
+        <div style="font-size:2vh" *ngIf="expectedCash != 1 ">Expecting Cash Total: ${{expectedCash | number : '1.2-2'}}</div><br/>
         <div style="font-size:2vh; color:#013d79"> {{setShiftText}}</div>
         <div class="btns-set posi-bottom">
             <button class="btn-white" [routerLink]="['/admin']" (click)="hidePopUp();">CANCEL</button>

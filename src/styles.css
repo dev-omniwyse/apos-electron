@@ -433,6 +433,24 @@ body {
     width: 50%;
 }
 
+.modal-footer .btn-default:active,
+.read-card-btn-orange:active {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
+}
+
+.btn-default.focus,
+.btn-default:focus {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
+}
+
 .modal-footer .btn-default:hover {
     background-color: #d65400;
     border: 1px solid #d65400;
@@ -552,6 +570,12 @@ button:disabled {
     border: 1px solid #dedede!important;
 }
 
+.cancel-btn:active {
+    background: #013d79!important;
+    color: #b2c4d7!important;
+    border: 1px solid #013d79!important;
+}
+
 .card-btns-last {
     padding: 31px 60px!important;
     font-size: 23px;
@@ -608,7 +632,7 @@ button:disabled {
 }
 
 button:focus {
-    outline: none;
+    outline: none!important;
 }
 
 .modal-footer .btn-cancel {
@@ -623,8 +647,27 @@ button:focus {
     text-transform: uppercase;
 }
 
+.modal-footer .btn-default:active,
+.read-card-btn-orange:active,
+.print-report:active,
+.back-to-sales:active,
+.cr-right button:active {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
+}
 
-@media (min-width: 768px){
+.btn-white:active,
+.cancel-btn:active,
+.btn-white-top-cancel-checkout:active {
+    background: #013d79!important;
+    color: #b2c4d7!important;
+    outline: none!important;
+}
+
+@media (min-width: 768px) {
     .modal-dialog {
         margin: 0 auto!important;
     }

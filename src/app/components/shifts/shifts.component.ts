@@ -176,6 +176,7 @@ export class ShiftsComponent implements OnInit {
     ngOnInit() {
         let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
         let userId = localStorage.getItem("userID")
+        this.electronService.ipcRenderer.send("openCashDrawer")
         shiftReports.forEach(element => {
             if (localStorage.getItem("closingPausedMainShift") == "true" && element.userID == userId) {
                 this.setShiftStatus = "CLOSE SHIFT"
@@ -185,7 +186,7 @@ export class ShiftsComponent implements OnInit {
             else
                 if ((element.shiftType == "0" && element.shiftState == "3") && element.userID == userId) {
                     this.setShiftStatus = "OPEN SHIFT"
-                    this.expectedCash = 0
+                    this.expectedCash = 1
                     this.setShiftText = "Enter the total opening amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "0" && element.shiftState == "0") && element.userID == userId) {
                     this.setShiftStatus = "CLOSE SHIFT"
@@ -193,7 +194,7 @@ export class ShiftsComponent implements OnInit {
                     this.setShiftText = "Enter the total closing amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "1" && element.shiftState == "3") && element.userID == userId) {
                     this.setShiftStatus = "RELIEF SHIFT"
-                    this.expectedCash = 0
+                    this.expectedCash = 1
                     this.setShiftText = "Enter the total opening amount in the till and Tap 'Enter' "
                 } else if ((element.shiftType == "1" && element.shiftState == "0") && element.userID == userId) {
                     this.setShiftStatus = "CLOSE RELIEF SHIFT"
