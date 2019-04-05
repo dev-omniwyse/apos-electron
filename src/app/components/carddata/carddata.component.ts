@@ -255,6 +255,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   proceedForSaveTransaction() {
+    $("#encodeSuccessModal").modal('hide');
     if (this.isSmartCardFound()) {
       this.disableEncode = false;
       this.populatCurrentCard();
