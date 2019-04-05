@@ -138,7 +138,7 @@
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
-                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice}}</div>
+                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}</div>
                     <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
                         <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             <img src="assets/images/icon-rmproduct.png" />
