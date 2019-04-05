@@ -395,12 +395,12 @@ export class AdminComponent implements OnInit {
 
     shiftReports.forEach(element => {
       if (element.userID == localStorage.getItem("userID")) {
-        if (element.openingDrawer != undefined && element.openingDrawer != "") {
+       // if (element.openingDrawer != undefined && element.openingDrawer != "") {
           this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
           this.expectedCash = this.openingDrawerBal
           localStorage.setItem("expectedCash", this.expectedCash)
 
-        }
+        //}
         if (element.closingDrawer != undefined && element.closingDrawer != "") {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2)
         }

@@ -153,7 +153,7 @@ export class LoginComponent implements OnInit {
         //    // this.hideAndShowLogout = false
         //    // localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
         //    } 
-
+        localStorage.removeItem("expectedCash")
         localStorage.removeItem("mainShiftClosed")
         localStorage.removeItem("mainShiftClose")
 
