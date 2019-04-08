@@ -1539,7 +1539,7 @@ export class AddProductComponent implements OnInit {
       }
 
     }
-    else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
+    else if (this.totalRemaining< (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1661,7 +1661,7 @@ export class AddProductComponent implements OnInit {
       }
 
     }
-    else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
+    else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
   }
@@ -1717,7 +1717,7 @@ export class AddProductComponent implements OnInit {
       } else {
         $('#compModal').modal('show');
       }
-    } else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1826,7 +1826,7 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (this.totalRemaining.toFixed(2) < (+this.checkoutTotal).toFixed(2)) {
+    } else if (this.totalRemaining< (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
   }
