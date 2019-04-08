@@ -24,6 +24,7 @@ ul {
     border-radius: 5px;
     margin: 0 5px;
     padding: 20px;
+    position: relative;
 }
 
 .container-right {
@@ -111,6 +112,12 @@ ul {
     width: 100%;
     padding: 1.3vh;
     text-transform: uppercase;
+}
+
+.posi-bottom {
+    position: absolute;
+    bottom: 10px;
+    width: calc(100% - 40px);
 }
 
 .btn-white {
@@ -463,11 +470,10 @@ ul {
     /* IE6-9 */
 }
 
-.cr-left button:active{
+.cr-left button:active {
     background: #7fc0ff;
     color: #fff!important;
 }
-
 
 .cr-right button {
     width: 100%;
@@ -475,8 +481,8 @@ ul {
     border: 1px solid #d65400;
     border-radius: 5px;
     color: #fff;
-    font-size: 1.9vh;
-    padding: 2.85vh 15px;
+    font-size: 2.1vh!important;
+    padding: 2.50vh 15px;
     margin: 1% 0;
 }
 
@@ -754,4 +760,28 @@ ul {
 .btndefault:disabled {
     color: #aeaeae;
     cursor: not-allowed;
+}
+
+.btn-cancel {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    border-radius: 5px;
+    color: #333333;
+    font-size: 2.5vh;
+    padding: 5vh 1.5vh;
+    width: 100%;
+}
+
+@media (max-width: 1400px) {
+    .cr-left button {
+        padding: 3.1vh 3.2vh;
+    }
+    .cr-left .number-btns-set-1 button,
+    .cr-left .number-btns-set-2 button,
+    .cr-left .number-btns-set-3 button {
+        font-size: 3.5vh;
+    }
+    .cr-right button {
+        font-size: 4vh;
+    }
 }
