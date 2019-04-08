@@ -173,9 +173,22 @@ export class ShiftsComponent implements OnInit {
             }
         })
     }
+    handleOpenCashDrawerResult() {
+        this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
+          if (data != undefined && data != "") {
+            if (data) {
+                console.log("cash drawer opened Sucessfully");
+            }
+            else{
+              console.log("cash drawer open Failed")
+            }
+          }
+        });
+      }
     ngOnInit() {
         let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
         let userId = localStorage.getItem("userID")
+        this.handleOpenCashDrawerResult();
         this.electronService.ipcRenderer.send("openCashDrawer")
         shiftReports.forEach(element => {
             if (localStorage.getItem("closingPausedMainShift") == "true" && element.userID == userId) {

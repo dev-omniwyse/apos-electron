@@ -143,7 +143,7 @@ export class AddProductComponent implements OnInit {
   productCheckOut: boolean = false;
   isNew: boolean = false;
   totalDue: any = [];
-  checkoutTotal: string ;
+  checkoutTotal: string;
   isWallet: boolean = false;
   currentWalletsSummary: any = [];
   isCustomAmount = false;
@@ -160,7 +160,7 @@ export class AddProductComponent implements OnInit {
   bonusRidesCountText: string;
   nextBonusRidesText: string;
   active_card_expiration_date_str: string;
-  active_printed_id : number;
+  active_printed_id: number;
   active_wallet_status: string;
   currentWalletLineItem: any = [];
 
@@ -817,8 +817,8 @@ export class AddProductComponent implements OnInit {
     this.checkout = false;
     this.checkoutTotal = this.totalDue.toString();
     this.totalRemaining = this.totalDue;
-    this.currencyForm.setValue({"currency": this.checkoutTotal});
-    this.customAmountForm.setValue({"amount": this.productTotal});
+    this.currencyForm.setValue({ "currency": this.checkoutTotal });
+    this.customAmountForm.setValue({ "amount": this.productTotal });
   }
 
   cancelCheckout() {
@@ -861,7 +861,7 @@ export class AddProductComponent implements OnInit {
   handleReadCardResult() {
     var readCardListener = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
       var isDuplicateCard = false;
-      
+
       if (this.isfromAddProduct && data != undefined && data != "") {
         this.isfromAddProduct = false;
         localStorage.setItem("readCardData", JSON.stringify(data));
@@ -869,10 +869,10 @@ export class AddProductComponent implements OnInit {
         let status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
         if (Constants.INACTIVE == status) {
           $("#inactiveValidation").modal('show');
-          return ;
+          return;
         }
         this._ngZone.run(() => {
-          
+
           let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
           ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
@@ -1075,48 +1075,48 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
 
-    textAreaEmpty(){
-      if(this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined){
-        this.currencyForm.value.currency = ''+ this.checkoutTotal
-        this.clearDigit(0);
-      } 
+  textAreaEmpty() {
+    if (this.currencyForm.value.currency == '' || this.currencyForm.value.currency == undefined) {
+      this.currencyForm.value.currency = '' + this.checkoutTotal
+      this.clearDigit(0);
     }
-    onBackSpace() {
-      if(this.currencyForm.value.currency != null || this.currencyForm.value.currency != '')
+  }
+  onBackSpace() {
+    if (this.currencyForm.value.currency != null || this.currencyForm.value.currency != '')
       // Number(this.currencyForm.value.currency.slice(1))
-      this.checkoutTotal = ''+this.currencyForm.value.currency.slice(1);
+      this.checkoutTotal = '' + this.currencyForm.value.currency.slice(1);
+  }
+  customTextAreaEmpty() {
+    if (this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined) {
+      this.customAmountForm.value.amount = '' + this.productTotal
+      this.clearDigit(0);
     }
-    customTextAreaEmpty() {
-      if(this.customAmountForm.value.amount == '' || this.customAmountForm.value.amount == undefined){
-        this.customAmountForm.value.amount = ''+ this.productTotal
-        this.clearDigit(0);
-      } 
-    }
+  }
 
-    onCustomAmountBackSpace() {
-      if(this.customAmountForm.value.amount != null || this.customAmountForm.value.amount != '')
+  onCustomAmountBackSpace() {
+    if (this.customAmountForm.value.amount != null || this.customAmountForm.value.amount != '')
       // Number(this.currencyForm.value.currency.slice(1))
-      this.productTotal = ''+this.customAmountForm.value.amount.slice(1);
-    }
-  
+      this.productTotal = '' + this.customAmountForm.value.amount.slice(1);
+  }
+
   displayDigit(digit) {
     console.log(digit);
     if (this.isCustomAmount) {
       this.productTotal = Math.round(+(this.productTotal) * 100).toString();
       this.productTotal += digit;
-      this.productTotal = (+(this.productTotal )/ 100).toString();
-      if(this.customAmountForm.value.amount == ''){
-        this.customAmountForm.value.amount = ''+ this.productTotal;
+      this.productTotal = (+(this.productTotal) / 100).toString();
+      if (this.customAmountForm.value.amount == '') {
+        this.customAmountForm.value.amount = '' + this.productTotal;
       }
     } else {
-      if(this.totalDue == this.checkoutTotal) {
+      if (this.totalDue == this.checkoutTotal) {
         this.checkoutTotal = "0";
-      } 
+      }
       this.checkoutTotal = Math.round(+(this.checkoutTotal) * 100).toString();
       this.checkoutTotal += digit;
-      this.checkoutTotal =(+(this.checkoutTotal) / 100).toString();
-      if(this.currencyForm.value.currency == ''){
-        this.currencyForm.value.currency = ''+ this.checkoutTotal
+      this.checkoutTotal = (+(this.checkoutTotal) / 100).toString();
+      if (this.currencyForm.value.currency == '') {
+        this.currencyForm.value.currency = '' + this.checkoutTotal
       }
     }
   }
@@ -1173,11 +1173,11 @@ export class AddProductComponent implements OnInit {
 
   clearDigit(digit) {
     console.log("numberDigits", digit);
-    
+
     if (this.isCustomAmount) {
-      this.productTotal = ''+ digit;
+      this.productTotal = '' + digit;
     } else {
-      this.checkoutTotal = ''+digit;
+      this.checkoutTotal = '' + digit;
     }
   }
 
@@ -1367,6 +1367,23 @@ export class AddProductComponent implements OnInit {
     });
   }
 
+  handleOpenCashDrawerResult() {
+    this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
+      if (data != undefined && data != "") {
+        if (data) {
+            console.log("cash drawer opened Sucessfully");
+        }
+        else{
+          console.log("cash drawer open Failed")
+        }
+      }
+    });
+  }
+
+  openCashDrawer(){
+    this.electronService.ipcRenderer.send("openCashDrawer")
+  }
+
   cancelPinPadTransaction() {
     this.handleCancelPinPadTransaction();
     this.electronService.ipcRenderer.send('cancelPinpadTransaction');
@@ -1395,15 +1412,16 @@ export class AddProductComponent implements OnInit {
   }
 
   paymentByCash() {
-    if(+this.checkoutTotal == 0) {
+    if (+this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if (this.totalRemaining == +(this.checkoutTotal) ) {
+    } else if (this.totalRemaining == +(this.checkoutTotal)) {
       this.isCashApplied = false;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
-      this.electronService.ipcRenderer.send("openCashDrawer")
+      this.handleOpenCashDrawerResult();
+      this.openCashDrawer();
       $('#myModal').modal('show');
 
     } else if (this.totalRemaining > +this.checkoutTotal) {
@@ -1459,8 +1477,9 @@ export class AddProductComponent implements OnInit {
       // this.isCashApplied = true;
       // this.isVoucherApplied = false;
       this.cashAppliedTotal = this.checkoutTotal
-      this.cashBack = ( +this.checkoutTotal) - this.totalRemaining;
-      this.electronService.ipcRenderer.send("openCashDrawer")
+      this.cashBack = (+this.checkoutTotal) - this.totalRemaining;
+      this.handleOpenCashDrawerResult();
+      this.openCashDrawer();
       $("#myModal").modal('show');
     }
   }
@@ -1480,13 +1499,13 @@ export class AddProductComponent implements OnInit {
 
 
   paymentByVoucher() {
-    if(+this.checkoutTotal == 0) {
+    if (+this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    } else if(this.totalRemaining == (+this.checkoutTotal) ){
+    } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#voucherModal').modal('show');
-    } else if (this.totalRemaining > (+this.checkoutTotal) ){
+    } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
       } else {
@@ -1582,11 +1601,12 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  paymentByCheck() { if((+this.checkoutTotal) == 0) {
+  paymentByCheck() {
+    if ((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-  }else if(this.totalRemaining == (+this.checkoutTotal)) {
+    } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#checkModal').modal('show');
     }
 
@@ -1662,11 +1682,11 @@ export class AddProductComponent implements OnInit {
 
 
   compApplied() {
-    if((+this.checkoutTotal) == 0) {
+    if ((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == (+this.checkoutTotal)) {
+    } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#compModal').modal('show');
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
@@ -1758,11 +1778,11 @@ export class AddProductComponent implements OnInit {
   }
 
   cardApplied() {
-    if((+this.checkoutTotal) == 0) {
+    if ((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
 
-    }else if(this.totalRemaining == (+this.checkoutTotal)) {
+    } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#creditCardModal').modal('show');
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
@@ -1838,7 +1858,7 @@ export class AddProductComponent implements OnInit {
         // this.doPinPadTransaction()
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
-        this.cardAppliedTotal= this.shoppingcart._payments[indexOfPayment].amount;
+        this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
         this.cardAppliedTotal = true;
         // this.doPinPadTransaction();

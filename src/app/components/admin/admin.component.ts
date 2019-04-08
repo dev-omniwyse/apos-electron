@@ -377,21 +377,42 @@ getPresentShiftReport() {
 
   }
 
+  handleOpenCashDrawerResult() {
+    this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
+      if (data != undefined && data != "") {
+        if (data) {
+            console.log("cash drawer opened Sucessfully");
+        }
+        else{
+          console.log("cash drawer open Failed")
+        }
+      }
+    });
+  }
+
   openCashDrawerForNoSale() {
+    this. handleOpenCashDrawerResult();
+    this.openCashDrawer();
+    
+  }
+
+  openCashDrawer(){
     this.electronService.ipcRenderer.send("openCashDrawer")
   }
   
   closePausedMainShift() {
     this.closingPausedMainShift = true
     localStorage.setItem("closingPausedMainShift", this.closingPausedMainShift.toString())
-    this.electronService.ipcRenderer.send("openCashDrawer")
+    this. handleOpenCashDrawerResult();
+    this.openCashDrawer();
   }
 
   reOpenShift() {
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
-    this.electronService.ipcRenderer.send("openCashDrawer")
+    this. handleOpenCashDrawerResult();
+    this.openCashDrawer();
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftState == "4") {
         element.shiftState = "0";

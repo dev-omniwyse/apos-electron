@@ -59,7 +59,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-    //  win.webContents.openDevTools()
+     win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -587,6 +587,7 @@ ipcMain.on('doPinpadVoidTransaction', (event, transactionAmount) => {
 });
 ipcMain.on('openCashDrawer', (event) => {
     var result = posAppletInstance.openCashDrawerSync();
-    console.log("openCashDrawer", result)
+    console.log("openCashDrawer", result.getSuccessSync());
+    event.sender.send('openCashDrawerResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/
