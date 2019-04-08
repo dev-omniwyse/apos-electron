@@ -69,7 +69,7 @@
                 </tr>
                 <tr>
                     <td>Max Pay As You Go:</td>
-                    <td>{{terminal.numberOfPayAsYouGoPassesULC}}</td>
+                    <td>{{terminal.MaxStoredValueAmount/100}}</td>
                 </tr>
                 <tr>
                     <td>Min Trans. Amount:</td>
@@ -89,19 +89,19 @@
                 </tr>
                 <tr>
                     <td>Current Unsynced Trans. Count:</td>
-                    <td>0</td>
+                    <td>{{CURRENT_UNSYNCED_TRANSACTION_NUMBER}}</td>
                 </tr>
                 <tr>
                     <td>Current Unsynced Trans. Value:</td>
-                    <td>0</td>
+                    <td>{{CURRENT_UNSYNCED_TRANSACTION_VALUE}}</td>
                 </tr>
                 <tr>
                     <td>Lifetime Transaction Count:</td>
-                    <td>0</td>
+                    <td>{{LIFETIME_TRANSACTION_COUNT}}</td>
                 </tr>
                 <tr>
                     <td>Lifetime Transaction Value:</td>
-                    <td>0</td>
+                    <td>{{LIFETIME_TRANSACTION_VALUE}}</td>
                 </tr>
             </table>
         </div>

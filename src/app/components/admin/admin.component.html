@@ -58,9 +58,9 @@
                       Close Main Shift 
                     </button>
                         <button class="arrow_right" data-toggle="modal" data-target="#reliefShiftModal">
-                      Pause Main Shift For Relief Shift 
+                      Pause Main Shift for Relief Shift 
                     </button>
-                        <button class="arrow_right" data-toggle="modal" data-target="#noSale">
+                        <button class="arrow_right" data-toggle="modal" data-target="#noSale" (click) = "openCashDrawerForNoSale();">
                       NO SALE 
                     </button>
                         <button class="arrow_right" [routerLink]="['/shift_sales']" (click)="getSalesReports();">

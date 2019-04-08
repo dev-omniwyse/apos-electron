@@ -12,10 +12,10 @@
     width: 100%;
     border-radius: 5px;
     border: 1px solid #c4c4c4;
-    margin: 15px 0;
+    margin: 0 0 3vh 0;
     color: #3b80c2;
-    padding: 46px 0;
-    font-size: 16px;
+    padding: 4vh 0;
+    font-size: 2.75vh;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fdfdfd+9,fbfbfb+50,f8f8f8+75,f6f6f6+100 */
     background: #ffffff;
     /* Old browsers */
@@ -27,6 +27,11 @@
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6', GradientType=0);
     /* IE6-9 */
+}
+
+.env-containter button:active {
+    background: #7fc0ff;
+    color: #fff;
 }
 
 .modal-custom-pop {
@@ -59,4 +64,10 @@
     border-radius: 12px!important;
     background: transparent!important;
     border: 1px solid #ccc!important;
+}
+
+.modal-custom-pop .modal-footer .btn-cancel-no:active {
+    background: #013d79!important;
+    color: #b2c4d7!important;
+    outline: none!important;
 }

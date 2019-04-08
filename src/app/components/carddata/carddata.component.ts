@@ -8,6 +8,7 @@ import { MediaType } from 'src/app/services/MediaType';
 import { TransactionService } from 'src/app/services/Transaction.service';
 import { debug } from 'util';
 import { timestamp } from 'rxjs/operators';
+import { Utils } from 'src/app/services/Utils.service';
 // import { product_log } from '../../../assets/data/product_catalog'
 declare var pcsc: any;
 declare var $: any;
@@ -157,6 +158,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           }
           else {
             $("#cardModal").modal('show');
+            this.disableEncode = false;
             return;
           }
 
@@ -185,14 +187,15 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   handleSaveTransactionResult() {
+    this.disableEncode = false;
     var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
       console.log("data", data)
       if (data != undefined && data != "") {
         this._ngZone.run(() => {
-          $("#encodeSuccessModal").modal({
-            backdrop: 'static',
-            keyboard: false
-          });
+          // $("#encodeSuccessModal").modal({
+          //   backdrop: 'static',
+          //   keyboard: false
+          // });
           this.navigateToDashboard();
           var timestamp = new Date().getTime();
           // this.cdtaService.generateReceipt(timestamp)
@@ -236,7 +239,12 @@ export class CarddataComponent implements OnInit, OnChanges {
           });
         }
         this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
+        $("#encodeSuccessModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
         $("#encodeSuccessModal").modal('show');
+        this.disableEncode = false
       }
       else {
         $("#encodeErrorModal").modal({
@@ -245,10 +253,13 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
     });
+    this.disableEncode = false;
   }
 
   proceedForSaveTransaction() {
+    $("#encodeSuccessModal").modal('hide');
     if (this.isSmartCardFound()) {
+      this.disableEncode = false;
       this.populatCurrentCard();
       this.getSmartCardWalletContents();
     }
@@ -314,6 +325,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
 
   initiateSaveTransaction() {
+    this.disableEncode = true;
     var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
     this.isFromCardComponent = true;
     if (this.isNew) {
@@ -328,7 +340,10 @@ export class CarddataComponent implements OnInit, OnChanges {
 
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
     debugger;
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
+    let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+    let deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
+    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
@@ -577,7 +592,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           "ticket_id": element._offering.Ticket.TicketId,
           "designator_details": 0,
           "is_linked_to_user_profile": false,
-          "remaining_value": (element._unitPrice * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
+          "remaining_value": (element._quantity * element._unitPrice * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
           "isAccountBased": element._isAccountBased,
           "isCardBased": element._isCardBased
         }

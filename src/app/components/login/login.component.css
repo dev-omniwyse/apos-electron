@@ -72,6 +72,14 @@
     margin-top: 40px;
 }
 
+.login-container button:active {
+    background-color: #fff!important;
+    border: 1px solid #cccccc!important;
+    color: #d65400!important;
+    box-shadow: none!important;
+    outline: none!important;
+}
+
 .login-container button:hover {
     background-color: #D64900;
 }

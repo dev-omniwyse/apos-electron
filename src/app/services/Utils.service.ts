@@ -2,6 +2,7 @@ import { ShoppingCartService } from "./ShoppingCart.service";
 import { FareCardService } from "./Farecard.service";
 import { MediaType, TICKET_GROUP } from "./MediaType";
 import { TransactionService } from './Transaction.service';
+import { DeviceInfo } from '../models/DeviceInfo';
 
 export class Utils {
 
@@ -308,13 +309,106 @@ export class Utils {
         } else if (1 == walletLineItems.length && !this.isValidMerchandise(walletLineItems[0])) {
             isEmpty = true;
         }
-        // else {
-        //     for(let index = 0; index < walletLineItems.length; index++){
-        //         if(walletLineItems[index].walletContents){
-
-        //         }
-        //     }
-        // }
         return isEmpty;
+    }
+    createDeviceInfoDefaultRecord() {
+        let deviceInfo = new DeviceInfo();
+        deviceInfo.$CURRENT_UNSYNCED_TRANSACTION_NUMBER = 0;
+        deviceInfo.$CURRENT_UNSYNCED_TRANSACTION_VALUE = 0;
+        deviceInfo.$LIFETIME_TRANSACTION_COUNT = 0;
+        deviceInfo.$LIFETIME_TRANSACTION_VALUE = 0;
+        deviceInfo.$terminalID = "0";
+        deviceInfo.$failedLoginCount = 0;
+        deviceInfo.$PRESHARE = "";
+        deviceInfo.$operatingMode = "0";
+        return deviceInfo;
+    }
+    increseTransactionCountInDeviceInfo(deviceInfo, transactionObj) {
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_NUMBER++;
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_VALUE += transactionObj.salesAmount;
+
+        deviceInfo.LIFETIME_TRANSACTION_COUNT++;
+        deviceInfo.LIFETIME_TRANSACTION_VALUE += transactionObj.salesAmount;
+
+        return deviceInfo;
+    }
+
+    decreaseTransactionCountInDeviceInfo(deviceInfo, transactionObj) {
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_NUMBER--;
+        deviceInfo.CURRENT_UNSYNCED_TRANSACTION_VALUE -= transactionObj.salesAmount;
+
+        deviceInfo.LIFETIME_TRANSACTION_COUNT--;
+        deviceInfo.LIFETIME_TRANSACTION_VALUE -= transactionObj.salesAmount;
+
+        return deviceInfo;
+    }
+
+    getIndexOfActiveWallet(cardsData, item) {
+
+        let cardIndex = -1;
+        for (let index = 0; index < cardsData.length; index++) {
+
+            if (item._cardPID == cardsData[index].printed_id) {
+                cardIndex = index;
+                break;
+            }
+        }
+        return cardIndex;
+    }
+
+    getFareCodeTextForThisWallet(cardData, terminalConfig) {
+
+        let fareCodeText = "Unknown"
+        let fareCodes = terminalConfig.Farecodes;
+        for (let index = 0; index < fareCodes.length; index++) {
+            if (cardData.user_profile == fareCodes[index].FareCodeId) {
+                fareCodeText = fareCodes[index].Description;
+                break;
+            }
+        }
+        return fareCodeText;
+    }
+
+    getStatusOfWallet(readCardJson) {
+
+        let cardStatus = "";
+        let isCardExpired = this.isCardExpired(readCardJson);
+        let isCardBadListed = readCardJson.is_card_bad_listed;
+
+        if (isCardExpired === true) {
+            cardStatus = 'EXPIRED';
+        } else if (isCardBadListed === true) {
+            cardStatus = 'INACTIVE';
+        } else {
+            cardStatus = 'Active';
+        }
+
+        return cardStatus;
+    }
+    isCardExpired(data) {
+
+        let currentEpochDays = this.getCurrentEpochDays();
+        var isExpired = false;
+        if (data.card_expiration_date > 0 && data.card_expiration_date < currentEpochDays) {
+            isExpired = true;
+        } else if (data.user_profile_expiration_date > 0 && data.user_profile_expiration_date < currentEpochDays) {
+            isExpired = true;
+        }
+
+        return isExpired;
+    }
+
+    getCurrentEpochDays() {
+        // var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        // var firstDate = new Date(2008, 01, 12);
+        // var secondDate = new Date(2008, 01, 22);
+        // var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
+        
+        var startDate = Date.parse("1970-01-01");
+        var endDate = Date.parse(Date.now.toString());
+        var timeDiff = endDate - startDate;
+        let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+        return daysDiff;
     }
 }
