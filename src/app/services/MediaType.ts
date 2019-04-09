@@ -8,7 +8,10 @@ export enum Constants {
     MERCHANDISE_TEXT = "Merch*",
     MAGNETICS_TEXT = "Magnetic ",
     CHARGE = "Charge",
-    INACTIVE = "INACTIVE"
+    INACTIVE = "INACTIVE",
+    FREQUENT_RIDE = "Frequent Ride",
+    STORED_RIDE = "Stored Ride",
+    STORED_VALUE = "Pay As You Go"
 }
 
 export enum TICKET_GROUP {

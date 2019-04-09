@@ -115,11 +115,11 @@
                 <th>Status</th>
                 <th>Balance</th>
             </tr>
-            <tr *ngFor="let product of readCardData">
+            <tr *ngFor="let product of cardContents">
                 <td>{{product.product}}</td>
                 <td>{{product.description}}</td>
                 <td>{{product.status}}</td>
-                <td>{{product.remainingValue}}</td>
+                <td>{{product.balance}}</td>
             </tr>
             <!-- <tr>
 				<td>Frequent Rider</td>

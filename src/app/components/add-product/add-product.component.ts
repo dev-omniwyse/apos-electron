@@ -188,7 +188,7 @@ export class AddProductComponent implements OnInit {
   reasonForComp = '';
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
-
+  cardContents = [];
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -246,9 +246,6 @@ export class AddProductComponent implements OnInit {
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
-
-    this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
-    console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
@@ -329,7 +326,7 @@ export class AddProductComponent implements OnInit {
         switch (element.product_type) {
           case 1:
             if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount)
-              this.isProductLimitReached = true;
+              this.isProductLimitReached = true; 
             break;
           case 2:
             if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255)
@@ -404,7 +401,7 @@ export class AddProductComponent implements OnInit {
     //   return canAddProduct;
 
     let currentProductCount = this.getProductCountFromExistingCard(selectedItem)
-    if (currentProductCount > 4) {
+    if (currentProductCount > this.terminalConfigJson.NumberOfProducts) {
       canAddProduct = false;
       return canAddProduct;
     }
@@ -1038,6 +1035,8 @@ export class AddProductComponent implements OnInit {
       this.active_printed_id = this.cardJson[cardIndex].printed_id;
       this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
       this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
+      let ticketMap = new Map(JSON.parse(localStorage.getItem('ticketMap')));
+      this.cardContents = Utils.getInstance.getWalletProducts(this.cardJson[cardIndex], ticketMap);
     }
 
     this.selectedProductCategoryIndex = 0;
