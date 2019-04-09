@@ -1,8 +1,9 @@
 import { ShoppingCartService } from "./ShoppingCart.service";
 import { FareCardService } from "./Farecard.service";
-import { MediaType, TICKET_GROUP } from "./MediaType";
+import { MediaType, TICKET_GROUP, Constants } from "./MediaType";
 import { TransactionService } from './Transaction.service';
 import { DeviceInfo } from '../models/DeviceInfo';
+import { CardSummary } from '../models/CardContetns';
 
 export class Utils {
 
@@ -269,7 +270,7 @@ export class Utils {
 
     getNextBonusRidesCount(cardData, terminalConfig) {
         let bonusRideThreshold = terminalConfig.BonusRideThreshold;
-        var bonus_ride_counter = 0;
+        let bonus_ride_counter = 0;
 
         // cardStore.products.forEach(cardElement => {
         cardData.products.forEach(fItem => {
@@ -388,7 +389,7 @@ export class Utils {
     isCardExpired(data) {
 
         let currentEpochDays = this.getCurrentEpochDays();
-        var isExpired = false;
+        let isExpired = false;
         if (data.card_expiration_date > 0 && data.card_expiration_date < currentEpochDays) {
             isExpired = true;
         } else if (data.user_profile_expiration_date > 0 && data.user_profile_expiration_date < currentEpochDays) {
@@ -399,16 +400,217 @@ export class Utils {
     }
 
     getCurrentEpochDays() {
-        // var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-        // var firstDate = new Date(2008, 01, 12);
-        // var secondDate = new Date(2008, 01, 22);
-        // var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
-        
-        var startDate = Date.parse("1970-01-01");
-        var endDate = Date.parse(Date.now.toString());
-        var timeDiff = endDate - startDate;
+        let startDate = Date.parse("1970-01-01");
+        let endDate = Date.parse(Date.now.toString());
+        let timeDiff = endDate - startDate;
         let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
         return daysDiff;
+    }
+
+    getWalletProducts(carddata, ticketMap) {
+
+        let prodcts = [];
+        carddata.products.forEach(product => {
+            let cardSummary = new CardSummary();
+            let productType = product.product_type;
+
+            cardSummary.$product = this.getProductTypeBasedOnProductTypeID(productType);
+
+
+            let days = product.days;
+            let recharges_pending = product.recharges_pending;
+            let remainingValue = product.remaining_value;
+            let remainingRides = product.remaining_rides;
+            let start_date = product.start_date_str;
+            let exp_date = product.exp_date_str;
+            let start_date_epoch_days = product.start_date_epoch_days;
+            let exp_date_epoch_days = product.exp_date_epoch_days;
+            let designator = product.designator;
+            let bad_listed = product.is_prod_bad_listed;
+            let addTime = 0;
+
+            let currentEpochDays = this.getCurrentEpochDays();
+            if (null != product.add_time) {
+                addTime = product.add_time;
+            }
+
+            if (true == product.is_prod_bad_listed) {
+                cardSummary.$status = "Inactive";
+            }
+            else if (exp_date_epoch_days > 1 && exp_date_epoch_days < currentEpochDays && TICKET_GROUP.PERIOD_PASS != productType) {
+                cardSummary.$status = "Expired";
+            } else if (start_date_epoch_days == 65535) {
+                // rolling start
+                cardSummary.$status = "Active";
+            } else {
+                cardSummary.$status = "Active";
+            }
+            if (0 == remainingRides) {
+                cardSummary.$status = product.status;
+            }
+            let cardBalance = "";
+            let productStatus = "";
+            var d = new Date();
+            var currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
+            switch (productType) {
+                case TICKET_GROUP.PERIOD_PASS:
+                    if (exp_date_epoch_days > 0) {
+
+                        cardBalance = "Exp: " + this.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + this.getProductExpirationTime(addTime);
+
+                    } else {
+
+                        cardBalance = (days + 1) + " Days";
+                    }
+
+                    if (0 != exp_date_epoch_days && 65535 != exp_date_epoch_days) {
+                        // exp date on the card is essentially the day BEFORE the expiration...but at midnight.
+                        if ((exp_date_epoch_days) < currentEpochDays) {
+                            productStatus = "Expired";
+                        }
+                        // product expires TODAY, check the time against addTime on the card
+                        else if ((exp_date_epoch_days) == currentEpochDays) {
+                            if (addTime <= currentMinutesInDay) {
+                                productStatus = "Expired";
+                            }
+                        }
+                    }
+                    else {
+                        if (start_date_epoch_days != 65535) {
+                            if ((start_date_epoch_days + days + 1) < currentEpochDays) {
+                                productStatus = "Expired";
+                            }
+                            else if ((start_date_epoch_days + days + 1) == currentEpochDays) {
+
+                                if (addTime <= currentMinutesInDay) {
+                                    productStatus = "Expired";
+                                }
+                            }
+                        }
+                    }
+                    if (recharges_pending) {
+                        productStatus += " (" + recharges_pending + " Pending)"
+                    }
+
+                    break;
+                case TICKET_GROUP.RIDE:
+                    if (1 == remainingRides) {
+                        cardBalance = remainingRides + " Ride";
+                    }
+                    else {
+                        cardBalance = remainingRides + " Rides";
+                    }
+                    // productDescription = APOS.util.Config.PRODUCT_NAME.STORED_RIDE;
+                    break;
+                case TICKET_GROUP.VALUE:
+
+                    let remaining_value = 0;
+
+                    if (product.remaining_value && product.remaining_value > 0) {
+                        remaining_value = product.remaining_value / 100;
+                    }
+
+                    // textProductType = APOS.util.Config.PRODUCT_NAME.STORED_VALUE;
+                    // textProductType = 'sdsd';
+
+                    cardBalance = "$ " + remaining_value.toFixed(2);
+                    // productDescription = APOS.util.Config.PRODUCT_NAME.STORED_VALUE;
+                    break;
+                default:
+                    // textProductType = "Unknown Product";
+                    break;
+            }
+            cardSummary.$balance = cardBalance;
+
+            cardSummary.$description = this.getProductDescription(product, ticketMap);
+            prodcts.push(cardSummary);
+        });
+        return prodcts
+    }
+
+    getProductDescription(product, ticketMap) {
+        let description = "Unknown";
+
+        var ticketKey = product.product_type + "_" + product.designator;
+        if( ticketMap.size != 0 && ticketMap.get(ticketKey) != undefined ) {
+            description = ticketMap.get(ticketKey);
+        }
+        return description;
+    }
+
+    pushTicketToMap(element, ticketMap) {
+
+        if (element.Ticket != null) {
+            var ticket = element.Ticket;
+
+            if (ticket.Group != null && ticket.Designator != null) {
+                var ticketKey = ticket.Group + "_" + ticket.Designator;
+                ticketMap.set(ticketKey, ticket.Description);
+            }
+        }
+        return ticketMap;
+    }
+    getProductTypeBasedOnProductTypeID(product_typeId) {
+
+        let productName = "Unknown";
+
+        switch (product_typeId) {
+            case 1:
+                productName = Constants.FREQUENT_RIDE;
+                break;
+            case 2:
+                productName = Constants.STORED_RIDE;
+                break;
+            case 3:
+                productName = Constants.STORED_VALUE;
+                break;
+            default:
+                break;
+        }
+        return productName;
+    }
+
+    getProductExpirationDate(exp_date_epoch_days, addTime) {
+
+        let expDate = new Date(1970, 0, 1, 0, 0, 0);
+
+        let expDateDays = exp_date_epoch_days;
+
+        expDate.setDate(expDate.getDate() + expDateDays);
+
+        // Ext.Date.patterns = {
+        //     ShortDate: "m/d/Y"
+        // };
+
+        let expirationDate = new Date().setMilliseconds(expDate.getMilliseconds());
+        // let expirationDate = (Ext.Date.format(expDate, Ext.Date.patterns.ShortDate));
+        // console.log("expirationDate " + expirationDate);
+        return expirationDate;
+    }
+
+    getProductExpirationTime(addTime) {
+        let d = new Date();
+
+        if (addTime === 0) {
+            d.setHours(23, 59, 59, 0)
+        } else {
+            // set your hour to midnight
+            d.setHours(0, 0, 0, 0);
+            d = new Date(d.getTime() + (addTime * 60000));
+        }
+
+
+        // Ext.Date.patterns = {
+        //     ShortDate: "h:i A"
+        // };
+
+        let expirationTime = (new Date().setMilliseconds(d.getTime())).toLocaleString();
+
+        if ('0' === expirationTime.charAt(0)) {
+            expirationTime = expirationTime.substring(1);
+        }
+
+        return expirationTime;
     }
 }

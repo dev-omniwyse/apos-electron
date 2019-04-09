@@ -24,9 +24,9 @@ export class DeviceconfComponent implements OnInit {
     this.terminalData = new Array(JSON.parse(this.terminalConfig));
     let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
     this.CURRENT_UNSYNCED_TRANSACTION_NUMBER = deviceData.CURRENT_UNSYNCED_TRANSACTION_NUMBER;
-    this.CURRENT_UNSYNCED_TRANSACTION_VALUE = deviceData.CURRENT_UNSYNCED_TRANSACTION_VALUE;
+    this.CURRENT_UNSYNCED_TRANSACTION_VALUE = ( deviceData.CURRENT_UNSYNCED_TRANSACTION_VALUE ).toFixed(2);
     this.LIFETIME_TRANSACTION_COUNT = deviceData.LIFETIME_TRANSACTION_COUNT;
-    this.LIFETIME_TRANSACTION_VALUE = deviceData.LIFETIME_TRANSACTION_VALUE;
+    this.LIFETIME_TRANSACTION_VALUE = ( deviceData.LIFETIME_TRANSACTION_VALUE ).toFixed(2);
   }
 
 }
