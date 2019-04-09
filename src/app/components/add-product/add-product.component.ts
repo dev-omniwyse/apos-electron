@@ -326,7 +326,7 @@ export class AddProductComponent implements OnInit {
         switch (element.product_type) {
           case 1:
             if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount)
-              this.isProductLimitReached = true; 
+              this.isProductLimitReached = true;
             break;
           case 2:
             if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255)
@@ -1377,16 +1377,16 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
       if (data != undefined && data != "") {
         if (data) {
-            console.log("cash drawer opened Sucessfully");
+          console.log("cash drawer opened Sucessfully");
         }
-        else{
+        else {
           console.log("cash drawer open Failed")
         }
       }
     });
   }
 
-  openCashDrawer(){
+  openCashDrawer() {
     this.electronService.ipcRenderer.send("openCashDrawer")
   }
 
@@ -1510,6 +1510,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#voucherModal').modal('show');
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
@@ -1539,13 +1540,13 @@ export class AddProductComponent implements OnInit {
       if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-
+        this.openCashDrawer();
         $('#voucherModal').modal('show');
 
       }
 
     }
-    else if (this.totalRemaining< (+this.checkoutTotal)) {
+    else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1613,6 +1614,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#checkModal').modal('show');
     }
 
@@ -1832,7 +1834,7 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (this.totalRemaining< (+this.checkoutTotal)) {
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
   }

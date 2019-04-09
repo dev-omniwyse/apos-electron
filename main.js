@@ -546,6 +546,19 @@ ipcMain.on('processAutoLoad', (event, cardname) => {
     event.sender.send('autoLoadResult', '' + result.getSuccessSync());
 });
 
+ipcMain.on('printRefundReceipt', (event, receiptContents, date) => {
+    //var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    date = java.newLong(Number(date));
+    var result = posAppletInstance.printRefundReceiptSync(receiptContents, date);
+    event.sender.send('printRefundReceiptResult', '' + result);
+});
+
+ipcMain.on('printCardSummary', (event, receipt, PID, username, date) => {
+    date = java.newLong(Number(date));
+   // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
+    var result = posAppletInstance.printCardSummarySync(receipt, PID, username, date);
+    event.sender.send('printCardSummaryResult', + result);
+});
 
 ipcMain.on('navigateToGenfare', (event, urlToNavigate) => {
     shell = require('electron').shell;
