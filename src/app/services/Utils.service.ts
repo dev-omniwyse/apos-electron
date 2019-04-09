@@ -120,7 +120,6 @@ export class Utils {
     genearateMagneticSequenceNumber(shoppingCart) {
         let currentSequence = 0;
         let lastCardPID = null;
-        debugger;
         for (let item of shoppingCart._walletLineItem) {
             if (item._walletTypeId == MediaType.MAGNETIC_ID) {
                 lastCardPID = item._cardPID;

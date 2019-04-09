@@ -369,7 +369,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     let userID = localStorage.getItem('userID');
 
     let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    debugger;
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
     let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
     let deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);

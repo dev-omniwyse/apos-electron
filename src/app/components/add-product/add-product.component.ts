@@ -149,6 +149,7 @@ export class AddProductComponent implements OnInit {
   isCustomAmount = false;
   walletItems = [];
   walletItemContents = [];
+  isCardPaymentCancelled:boolean = false;
   slideConfig = {
     "slidesToShow": 2, dots: true, "infinite": false,
     "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
@@ -1064,9 +1065,9 @@ export class AddProductComponent implements OnInit {
     this.currentWalletLineItemIndex = index;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-    if(this.currentWalletLineItem._walletTypeId == MediaType.MAGNETIC_ID){
+    if (this.currentWalletLineItem._walletTypeId == MediaType.MAGNETIC_ID) {
       this.isMagnetic = true;
-    } else if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
+    } else if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
       this.isMerchendise = true;
     } else {
       this.isMagnetic = false;
@@ -1336,7 +1337,7 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  proceedToSaveTransaction(){
+  proceedToSaveTransaction() {
     this.saveTransaction();
   }
 
@@ -1344,9 +1345,11 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('getPinpadTransactionDataResult', (event, data) => {
       console.log("creditcardTransaction ", data);
       if (data) {
+        if (this.isCardPaymentCancelled)
+          return;
         localStorage.setItem("pinPadTransactionData", data);
         $("#creditCardSuccessModal").modal("show");
-      }else{
+      } else {
         $("#creditCardFailureModal").modal("show")
       }
     });
@@ -1356,6 +1359,8 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('getPinpadTransactionStatusResult', (event, data) => {
       console.log("transaction Status CreditCArd", data);
       if (data != undefined && data != "") {
+        if (this.isCardPaymentCancelled)
+          return;
         if (data == 0 && this.numOfAttempts < 600) {
           var timer = setTimeout(() => {
             this.numOfAttempts++;
@@ -1363,7 +1368,7 @@ export class AddProductComponent implements OnInit {
             this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
           }, 1000);
         } else {
-          if(data != 1){
+          if (data != 1) {
             $("#creditCardApplyModal").modal("hide")
             $("#creditCardFailureModal").modal("show");
             return;
@@ -1380,6 +1385,8 @@ export class AddProductComponent implements OnInit {
   handleDoPinPadTransactionResult() {
     var doPinPadTransactionResultListener: any = this.electronService.ipcRenderer.once('doPinPadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
+        if (this.isCardPaymentCancelled)
+          return;
         this.handlegetPinpadTransactionStatusResult();
         this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
       }
@@ -1388,6 +1395,7 @@ export class AddProductComponent implements OnInit {
 
   doPinPadTransaction() {
     this.numOfAttempts = 0;
+    this.isCardPaymentCancelled = false;
     $("#creditCardModal").modal("hide")
     $("#creditCardApplyModal").modal("show")
     this.handleDoPinPadTransactionResult();
@@ -1397,6 +1405,7 @@ export class AddProductComponent implements OnInit {
   handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
       if (data != undefined && data != "") {
+        this.isCardPaymentCancelled = true;
         $("#creditCardApplyModal").modal("hide")
       }
     });
