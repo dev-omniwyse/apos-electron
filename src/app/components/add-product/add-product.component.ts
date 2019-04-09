@@ -1044,7 +1044,14 @@ export class AddProductComponent implements OnInit {
     this.currentWalletLineItemIndex = index;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
+    if(this.currentWalletLineItem._walletTypeId == MediaType.MAGNETIC_ID){
+      this.isMagnetic = true;
+    } else if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
+      this.isMerchendise = true;
+    } else {
+      this.isMagnetic = false;
+      this.isMerchendise = false;
+    }
     if (this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
       this.isMerchendise = true;
       this.clickOnMerch();

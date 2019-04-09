@@ -12,9 +12,9 @@
         <div class="header-l">
             <img src="assets/images/icon-cart.png" />
             <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
+            <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
                 CARD</button>
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
+            <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
                     CARD</button>
 
             <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
