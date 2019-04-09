@@ -188,7 +188,7 @@ export class AddProductComponent implements OnInit {
   reasonForComp = '';
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
-
+  cardContents = [];
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -246,9 +246,6 @@ export class AddProductComponent implements OnInit {
 
   ngOnInit() {
     this.selectedProductCategoryIndex = 0
-
-    this.cardProductData = JSON.parse(localStorage.getItem("cardProductData"))
-    console.log("viewCardData", this.viewCardData)
     this.shoppingcart = JSON.parse(localStorage.getItem("shoppingCart"));
     console.log(this.shoppingcart);
     this.frequentRide();
@@ -404,7 +401,7 @@ export class AddProductComponent implements OnInit {
     //   return canAddProduct;
 
     let currentProductCount = this.getProductCountFromExistingCard(selectedItem)
-    if (currentProductCount > 4) {
+    if (currentProductCount > this.terminalConfigJson.NumberOfProducts) {
       canAddProduct = false;
       return canAddProduct;
     }
@@ -1038,6 +1035,8 @@ export class AddProductComponent implements OnInit {
       this.active_printed_id = this.cardJson[cardIndex].printed_id;
       this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
       this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
+      let ticketMap = new Map(JSON.parse(localStorage.getItem('ticketMap')));
+      this.cardContents = Utils.getInstance.getWalletProducts(this.cardJson[cardIndex], ticketMap);
     }
 
     this.selectedProductCategoryIndex = 0;
@@ -1371,16 +1370,16 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
       if (data != undefined && data != "") {
         if (data) {
-            console.log("cash drawer opened Sucessfully");
+          console.log("cash drawer opened Sucessfully");
         }
-        else{
+        else {
           console.log("cash drawer open Failed")
         }
       }
     });
   }
 
-  openCashDrawer(){
+  openCashDrawer() {
     this.electronService.ipcRenderer.send("openCashDrawer")
   }
 
@@ -1504,6 +1503,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#voucherModal').modal('show');
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
@@ -1533,13 +1533,13 @@ export class AddProductComponent implements OnInit {
       if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-
+        this.openCashDrawer();
         $('#voucherModal').modal('show');
 
       }
 
     }
-    else if (this.totalRemaining< (+this.checkoutTotal)) {
+    else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1607,6 +1607,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#checkModal').modal('show');
     }
 
@@ -1827,7 +1828,7 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (this.totalRemaining< (+this.checkoutTotal)) {
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
   }

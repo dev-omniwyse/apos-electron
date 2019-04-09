@@ -4,7 +4,7 @@ import { ElectronService } from 'ngx-electron';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SSL_OP_NO_TICKET } from 'constants';
 import { encode } from 'punycode';
-import { MediaType } from 'src/app/services/MediaType';
+import { MediaType, TICKET_GROUP } from 'src/app/services/MediaType';
 import { TransactionService } from 'src/app/services/Transaction.service';
 import { debug } from 'util';
 import { timestamp } from 'rxjs/operators';
@@ -220,19 +220,49 @@ export class CarddataComponent implements OnInit, OnChanges {
           //dont try to update wallletContents..
         } else {
           this._ngZone.run(() => {
-            for (let index = 0; index < resultObj.length; index++) {
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._slot = resultObj[index].slotNumber;
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._status = resultObj[index].status;
+                
+              for(let item of this.shoppingCart._walletLineItem[this.cardIndex]._walletContents){
+                      
+                   for(let productItem of resultObj) {
 
-              if (resultObj[index].product_type == 3)
-                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._balance = resultObj[index].balance / 100;
-              else
-                this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._balance = resultObj[index].balance;
+                       if(productItem.ticket_id == item._offering.Ticket.TicketId) {
+                           
+                           item._status = productItem.status;
+                           item._slot = productItem.slotNumber;
+                           
+                           let balance = 0;
+                           if(item._offering.Ticket.Group == TICKET_GROUP.VALUE) {
+                               balance = productItem.balance / 100;
+                           } else {
+                               balance = productItem.balance;
+                           }
 
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._rechargesPending = resultObj[index].recharges_pending;
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._expirationDate = resultObj[index].exp_date;
-              this.shoppingCart._walletLineItem[this.cardIndex]._walletContents[index]._startDate = resultObj[index].start_date;
-            }
+                           let startDateEpochDays = 0;
+                           if(productItem.start_date_epoch_days) {
+                               startDateEpochDays = productItem.start_date_epoch_days;
+                           }
+                           
+                           let expDateEpochDays = 0;
+                           if(productItem.exp_date_epoch_days) {
+                               expDateEpochDays = productItem.exp_date_epoch_days;
+                           }
+                           
+                           let rechargesPending = 0;
+                           if(productItem.recharges_pending) {
+                               rechargesPending = productItem.recharges_pending;
+                           }
+                           
+                           item._balance = balance;
+                           item._startDate = startDateEpochDays;
+                           item._expirationDate = expDateEpochDays;
+                           item._rechargesPending = rechargesPending;
+                       
+                       }
+                   }
+              }
+          // }
+          
+          // this.shoppingCart._walletLineItem[this.cardIndex].cardExpiration = expirationDateEpochDays;
             this.encodedCardsData[this.currentCard.printed_id] = JSON.stringify(this.encodeJsonData);
 
 
@@ -629,6 +659,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   initiateCancelEncoding(index) {
     let cardPID = this.getKeyForCancelEncode(index);
+    this.cdtaService.generateRefundReceipt();
     if (cardPID == undefined) {
       this.prePaidTransactionObject();
       if (this.checkIfCreditCardPaymentExists()) {

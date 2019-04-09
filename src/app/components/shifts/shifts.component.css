@@ -218,12 +218,11 @@
     width: 100%;
     display: block;
     text-align: right;
-    padding: 2.5vh 1.5vh;
+    padding: 5vh 1.5vh;
     border-radius: 0;
-    font-size: 3vh;
+    font-size: 6vh;
     font-weight: 100;
-    margin-bottom: 4.5vh;
-    margin-top: 1vh;
+    margin-bottom: 3vh
 }
 
 .cr-left {

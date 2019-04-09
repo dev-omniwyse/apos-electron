@@ -5,6 +5,7 @@ import { catchError, tap, map } from 'rxjs/operators';
 import { ElectronService } from 'ngx-electron';
 import { MediaType } from './services/MediaType';
 // import { product_log } from '../assets/data/'
+import { DatePipe } from '@angular/common';
 const httpOptions = {
   headers: new HttpHeaders(
     {
@@ -25,7 +26,7 @@ const apiUrl = "https://api.qe.gfcp.io/services/data-api/v1/wpf/id_card/updateEx
 
 export class CdtaService {
 
-  constructor(private http: HttpClient, private electronService: ElectronService, private _ngZone: NgZone) {
+  constructor(private http: HttpClient, private datePipe: DatePipe, private electronService: ElectronService, private _ngZone: NgZone) {
 
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
 
@@ -59,6 +60,25 @@ export class CdtaService {
       }
     });
 
+    this.electronService.ipcRenderer.on('printRefundReceiptResult', (event, data) => {
+      if (data != undefined && data != "") {
+        //alert("print Summary Payments Report Result Done")
+        console.log("printRefundReceiptResult", data)
+        this._ngZone.run(() => {
+          this.electronService.ipcRenderer.removeAllListeners("printRefundReceiptResult")
+          //  this.electronService.ipcRenderer.removeAllListeners("paymentsDataResult")
+
+        });
+      }
+    });
+    this.electronService.ipcRenderer.on('printCardSummaryResult', (event, data) => {
+      if (data != undefined && data != "") {
+        console.log("print card summary done", data)
+        this._ngZone.run(() => {
+
+        });
+      }
+    });
 
   }
 
@@ -1243,6 +1263,822 @@ export class CdtaService {
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
   }
 
+  generateRefundReceipt() {
+
+    console.log("generateRefundReceipt: called generateRefundReceipt()");
+
+    var paymentTypeText = '';
+    var refundReceipt = "";
+    //var lastReceiptStore = localStorage.getItem("receiptStore");
+    //var refundsStore = localStorage.getItem("refundsstore");
+
+    var refundTransactionRecord = null;
+    var transactionID = '';
+    var totalDue = 0;
+    var cardStore = JSON.parse(localStorage.getItem("cardsData"));
+    // var cardStoreUltralightC = localStorage.getItem("cardstoreUltralightClocal");
+    var PID = null;
+    var padSize = 0;
+    var secondPadSize = 0;
+    var middlePadSize = 0;
+    var receiptWidth = 44;
+    var maxDescriptionLength = (receiptWidth / 2) - 5;
+    var costText = '';
+    var nonEncodeableProducts = '';
+    var nonFareProducts = '';
+    // var terminalConfig = JSON.parse(localStorage.getItem("terminalConfigJson"));
+    var dashes = "";
+    var starBar = "";
+
+    refundTransactionRecord = JSON.parse(localStorage.getItem("shoppingCart"));
+    transactionID = refundTransactionRecord._transactionID;
+
+    // var refundStoreRecord = refundsStore.getAt(0);
+    // console.log(refundStoreRecord + "refundStoreRecord...............")
+    // if (null != refundStoreRecord) {
+
+    //     transactionID = refundStoreRecord.data.transID;
+    // }
+
+    while (dashes.length <= receiptWidth) {
+      dashes += "-";
+    }
+    dashes += "\n";
+
+    while (starBar.length <= receiptWidth) {
+      starBar += "*";
+    }
+    starBar += "\n";
+
+    if (null != cardStore.length) {
+      PID = cardStore.printed_id;
+    }
+    // else if (null != cardStoreUltralightC.getAt(0)) {
+    //     PID = cardStoreUltralightC.getAt(0).get('printed_id');
+    // }
+
+    refundReceipt += "\n" + this.centerText("REFUNDED  TRANSACTION") + "\n\n";
+
+
+    var productDescription = '';
+    var quantity = 0;
+    var cart = this.getCart();
+
+    if (cart._walletLineItem.length == 0) {
+      cart = null
+    }
+
+    cart._walletLineItem.forEach(walletLineItem => {
+      var walletContentData = walletLineItem._walletContents
+      //if (MediaType.SMART_CARD_ID == walletLineItem._walletTypeId) {
+      padSize = 0;
+      secondPadSize = 0;
+      middlePadSize = Math.floor(receiptWidth / 2) + 3;
+
+      productDescription = walletLineItem._description;
+
+      if (null == productDescription || undefined == productDescription) {
+        productDescription = '';
+      }
+
+      if (productDescription.length >= maxDescriptionLength) {
+        productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+      }
+
+      var cards = JSON.parse(localStorage.getItem("cardsData"));
+      // for (let cardStore of cards) {
+      let cardStore = this.findByCardPIDFromCardsData(cards, walletLineItem._cardPID);
+
+      refundReceipt += "\n";
+      if (cardStore != null) {
+        refundReceipt += this.centerText("CARD: " + cardStore.printed_id);
+      }
+
+      refundReceipt += "\n\n";
+
+      refundReceipt += productDescription;
+
+      padSize = middlePadSize - productDescription.length;
+
+      var spacer = '';
+      var quantityofCards = 1;
+
+      while (spacer.length <= (padSize - 1)) {
+        spacer += " ";
+      }
+
+      refundReceipt += spacer + quantityofCards;
+
+      if (true == walletLineItem._newCard) {
+        costText = '$' + walletLineItem._unitPrice.toFixed(2);
+
+        secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (quantityofCards).toString().length);
+
+        spacer = '';
+
+        while (spacer.length <= (secondPadSize - 1)) {
+          spacer += " ";
+        }
+
+        refundReceipt += spacer + costText;
+      }
+
+      refundReceipt += "\n";
+
+      walletContentData.forEach(contentItem => {
+        padSize = 0;
+        secondPadSize = 0;
+        middlePadSize = Math.floor(receiptWidth / 2) + 3;
+
+        productDescription = contentItem._description;
+
+        if (null == productDescription || undefined == productDescription) {
+          productDescription = '';
+        }
+
+        if (productDescription.length >= maxDescriptionLength) {
+          productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+        }
+
+        //refundReceipt += "\n";
+        refundReceipt += productDescription;
+
+        padSize = middlePadSize - productDescription.length;
+
+        var spacer = '';
+
+        while (spacer.length <= (padSize - 1)) {
+          spacer += " ";
+        }
+
+        refundReceipt += spacer + contentItem._quantity;
+
+        costText = '$' + (contentItem._unitPrice * contentItem._quantity).toFixed(2);
+
+        secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (contentItem._quantity).toString().length);
+
+        spacer = '';
+
+        while (spacer.length <= (secondPadSize - 1)) {
+          spacer += " ";
+        }
+
+        refundReceipt += spacer + costText;
+
+        refundReceipt += "\n";
+      });
+      // Ext.each(walletLineItem.WalletContents, function (contentItem, contentIdx) {
+
+      // });
+      //}
+    });
+
+    // Ext.each(cart.data.WalletLineItems, function (walletLineItem, idx) {
+
+    // });
+
+    var productLineItem = null;
+
+    console.log("Trying to print magnetics refund receipt");
+    var cart1 = this.getCart();
+    if (cart1._walletLineItem.length == 0) {
+      cart1 = null;
+    }
+    if (null != cart1) {
+
+      cart1._walletLineItem.forEach(item => {
+
+        if (item._walletTypeId == 10) {
+
+          padSize = 0;
+          secondPadSize = 0;
+          middlePadSize = Math.floor(receiptWidth / 2) + 3;
+
+          productDescription = item._description;
+
+          if (null == productDescription || undefined == productDescription) {
+            productDescription = '';
+          }
+
+          if (productDescription.length >= maxDescriptionLength) {
+            productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+          }
+
+          nonEncodeableProducts += productDescription;
+
+          padSize = middlePadSize - productDescription.length;
+
+          var spacer = '';
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          var quantityMagentic = "1";
+
+          nonEncodeableProducts += spacer + quantityMagentic;
+
+          costText = '$' + item._unitPrice.toFixed(2);
+
+          secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + quantityMagentic.length);
+
+          spacer = '';
+
+          while (spacer.length <= (secondPadSize - 1)) {
+            spacer += " ";
+          }
+
+          nonEncodeableProducts += spacer + costText;
+
+          nonEncodeableProducts += "\n";
+
+        }
+      });
+      // Ext.each(cart._walletLineItems, function (item, idx) {
+
+      // });
+    }
+
+    console.log("Trying to print non-fare refund receipt");
+
+    // if (cart != null) {
+    //     Ext.each(cart.data.ProductLineItems, function (item, idx) {
+
+    //         padSize = 0;
+    //         secondPadSize = 0;
+    //         middlePadSize = Math.floor(receiptWidth / 2) + 3;
+
+    //         var productDescription = item.description + "";
+
+    //         if (null == productDescription || undefined == productDescription) {
+    //             productDescription = '';
+    //         }
+
+    //         if (productDescription.length >= maxDescriptionLength) {
+    //             productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+    //         }
+
+    //         nonFareProducts += productDescription;
+
+    //         padSize = middlePadSize - productDescription.length;
+
+    //         var spacer = '';
+
+    //         while (spacer.length <= (padSize - 1)) {
+    //             spacer += " ";
+    //         }
+
+    //         var nonFareQuantity = item.quantity + '';
+
+    //         nonFareProducts += spacer + nonFareQuantity;
+    //         costText = '$' + item.unitPrice.toFixed(2);
+
+    //         secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + nonFareQuantity.length);
+
+    //         spacer = '';
+
+    //         console.log("secondPadSize:" + secondPadSize)
+
+    //         while (spacer.length <= (secondPadSize - 1)) {
+    //             spacer += " ";
+    //         }
+
+    //         console.log("spacer [" + spacer + "]");
+
+    //         nonFareProducts += spacer + costText;
+
+    //         nonFareProducts += "\n";
+
+    //     });
+    // }
+
+    // Build payments info
+
+    var paymentLabel;
+    var cashTotal;
+    // var checkTotal;
+    // var creditTotal;
+    // var farecardTotal;
+    // var voucherTotal;
+    // var storedValueTotal;
+    // var compTotal;
+    // var totalPaymentCost;
+    // var paymentsReport = "";
+
+    var paymentsReport = "",
+      totalPaymentCount: any = 0,
+      totalPaymentCost: any = 0,
+      costText = '',
+      checkTotal: any = 0,
+      creditTotal: any = 0,
+      farecardTotal: any = 0,
+      voucherTotal: any = 0,
+      compTotal: any = 0,
+      storedValueTotal: any = 0;
+
+    var cashCount: any = 0,
+      checkCount: any = 0,
+      creditCount: any = 0,
+      farecardCount: any = 0,
+      voucherCount: any = 0,
+      compCount: any = 0,
+      storedValueCount: any = 0,
+      paymentMethod: any,
+      paymentAmount: any = 0,
+      paymentMethodCount: any = 0;
+    var cashTotal: any = 0;
+    // paymentReportCount = Object.keys(paymentReport).length;
+    var getReport = this.getCart();
+    var paymentReport = getReport._payments
+
+    for (var i = 0; i < paymentReport.length; i++) {
+
+      paymentMethod = Number(paymentReport[i].paymentMethodId);
+      paymentAmount = Number(paymentReport[i].amount);
+      //  paymentMethodCount = paymentReport[i].paymentMethodCount;
+
+      totalPaymentCost += paymentAmount;
+      //totalPaymentCount += paymentMethodCount;
+      console.log("Payment Method: " + paymentMethod);
+      switch (paymentMethod) {
+        case 3:
+          checkTotal = Number(paymentReport[i].amount);
+          // checkCount = paymentReport[i].paymentMethodCount;
+          break;
+
+        case 2:
+          cashTotal = Number(paymentReport[i].amount);
+          // cashCount = paymentReport[i].paymentMethodCount;
+          break;
+
+        case 11:
+          voucherTotal = Number(paymentReport[i].amount);
+          // voucherCount = paymentReport[i].paymentMethodCount;
+          break;
+        case 8:
+          compTotal = Number(paymentReport[i].amount);
+          // compCount = paymentReport[i].paymentMethodCount;
+          break;
+
+        case 12:
+          storedValueTotal = Number(paymentReport[i].amount);
+          // storedValueCount = paymentReport[i].paymentMethodCount;
+          break;
+
+        case 10:
+          farecardTotal = Number(paymentReport[i].amount);
+          // farecardCount = paymentReport[i].paymentMethodCount;
+          break;
+
+        case 9:
+          creditTotal = Number(paymentReport[i].amount);
+          // creditCount = paymentReport[i].paymentMethodCount;
+          break;
+      }
+    }
+
+
+    //cashTotal = refundTransactionRecord.data.totalCashApplied;
+    if (0 < cashTotal) {
+      paymentLabel = "Cash      ";
+      costText = "          $" + cashTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    //checkTotal = refundTransactionRecord.data.totalCheckApplied;
+    if (0 < checkTotal) {
+      paymentLabel = "Check     ";
+      costText = "          $" + checkTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    // creditTotal = refundTransactionRecord.data.totalCreditApplied;
+    if (0 < creditTotal) {
+      paymentLabel = "Credit    ";
+      costText = "          $" + creditTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    // farecardTotal = refundTransactionRecord.data.totalFarecardsApplied;
+    if (0 < farecardTotal) {
+      paymentLabel = "Fare Card ";
+      costText = "          $" + farecardTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    // voucherTotal = refundTransactionRecord.data.totalVouchersApplied;
+    if (0 < voucherTotal) {
+      paymentLabel = "Voucher   ";
+      costText = "          $" + voucherTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    //storedValueTotal = refundTransactionRecord.data.totalStoredValueApplied;
+    if (0 < storedValueTotal) {
+      paymentLabel = 'Pay As You Go';
+      costText = "          $" + storedValueTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    // compTotal = refundTransactionRecord.data.totalCompApplied;
+    if (0 < compTotal) {
+      paymentLabel = "Comp      ";
+      costText = "          $" + compTotal.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 10);
+      costText = costText.substring(costText.length - 34);
+      paymentsReport += "\n" + paymentLabel + costText;
+    }
+
+    //totalPaymentCost = refundTransactionRecord.data.totalPaymentsApplied;
+    if (0 < totalPaymentCost) {
+      paymentLabel = "TOTAL REFUND:  ";
+      costText = "          $" + totalPaymentCost.toFixed(2);
+      costText = "                              " + costText.substring(costText.length - 15);
+      costText = costText.substring(costText.length - 29);
+      paymentsReport += "\n" + paymentLabel + costText + "\n";
+    }
+
+    //Print card summary
+
+    var cardBalance = this.getCardSummary(0);
+
+
+
+    try {
+
+      var receiptContents =
+        refundReceipt +
+        nonEncodeableProducts +
+        nonFareProducts +
+        dashes +
+        paymentsReport +
+        "\n" +
+        starBar +
+        cardBalance;
+
+      // if (0 != lastReceiptStore.getCount()) {
+      //     var receiptRecord = lastReceiptStore.getAt(0);
+      //     if (null != receiptRecord) {
+      //         receiptRecord.set('last_receipt', refundReceipt);
+      //     }
+      // }
+      // else {
+      //     lastReceiptStore.add({ last_receipt: receiptContents });
+      // }
+      // console.log("printRefundReceipt..." + receiptContents);
+      this.electronService.ipcRenderer.send("printRefundReceipt", receiptContents, new Date().getTime());
+
+    } catch (e) {
+      console.log("ERROR! Exception printing receipt.");
+    }
+
+    return refundReceipt;
+
+  }
+
+
+  getCardSummary(cardCount) {
+    var cardProductsStore
+    if (cardCount == 1) {
+      cardProductsStore = JSON.parse(localStorage.getItem('readCardData'));
+      cardProductsStore =  new Array(JSON.parse(cardProductsStore))
+    } else {
+      cardProductsStore = JSON.parse(localStorage.getItem("cardsData"))
+    }
+    var receipt = '';
+    var addTime = 0;
+
+    // print a report for each product on the card
+    cardProductsStore.forEach(productRecord => {
+      addTime = 0;
+      var products = productRecord.products;
+      products.forEach(dataItem => {
+        var productType = dataItem.product_type;
+        var designator = dataItem.designator;
+        var days = dataItem.days;
+        var rechargesPending = dataItem.recharges_pending;
+        // var remainingValue = dataItem.remaining_value;
+        var remainingRides = dataItem.remaining_rides;
+        //var start_date = dataItem.start_date_str;
+        var exp_date = dataItem.exp_date_str;
+        // var start_date_epoch_days = dataItem.start_date_epoch_days;
+        var exp_date_epoch_days = dataItem.exp_date_epoch_days;
+        //var bad_listed = dataItem.is_prod_bad_listed;
+
+        if (null != dataItem.add_time) {
+          addTime = dataItem.add_time;
+        }
+
+        var cardBalance = '';
+        var productExpirationTime = "";
+        var productDescription = '';
+        var productStatus = '';
+
+        switch (productType) {
+          case 1:
+
+            if (parseInt(exp_date_epoch_days) > 0) {
+              cardBalance = "Exp: " + this.getProductExpirationDate(exp_date_epoch_days, addTime);
+              productExpirationTime = this.getProductExpirationTime(addTime);
+            } else {
+              cardBalance = (days + 1) + " Days";
+            }
+
+            productDescription = (days + 1) + " Day Pass";
+
+            break;
+          case 2:
+            if (1 == remainingRides) {
+              cardBalance = remainingRides + " Ride";
+            } else {
+              cardBalance = remainingRides + " Rides";
+            }
+            productDescription = 'Stored Ride Pass';
+            break;
+          case 3:
+
+            var remaining_value = 0;
+
+            if (dataItem.remaining_value && dataItem.remaining_value > 0) {
+              remaining_value = dataItem.remaining_value / 100;
+            }
+
+            productDescription = 'Pay As You Go';
+            cardBalance = "$ " + remaining_value.toFixed(2);
+
+            break;
+          case 7:
+
+            productDescription = "Employee Pass";
+
+            if (exp_date_epoch_days > 0) {
+              cardBalance = "Exp: " + exp_date;
+            }
+
+            break;
+          default:
+            productDescription = "Unknown Product";
+            break;
+        }
+
+        var ticketKey = productType + "_" + designator;
+
+        // if (APOS.util.Config.ticketMap.containsKey(ticketKey)) {
+        //     productDescription = APOS.util.Config.ticketMap.get(ticketKey);
+        // }
+
+        var receiptWidth = 44;
+
+        // 16 is the magic number here because it's how long the expiration date would be
+        //    for an active period pass
+        var maxDescriptionLength = receiptWidth - 16;
+
+        var pendingProductDescription = "";
+        if ((1 == productType) && (rechargesPending)) {
+
+          //
+          var rechargesText = " (" + rechargesPending + " Pending)";
+          if ((rechargesText.length + productDescription.length) < maxDescriptionLength) {
+            productDescription += rechargesText;
+          } else {
+            pendingProductDescription = "  " + rechargesText;
+          }
+        }
+
+        // don't print anything if your stored value is $0
+        if ((3 != productType) || (0 < remaining_value)) {
+
+
+          var padSize = 0;
+
+
+          if (productDescription.length >= maxDescriptionLength) {
+            productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
+          }
+
+          receipt += productDescription;
+
+          padSize = receiptWidth - (productDescription.length + cardBalance.length);
+
+          var spacer = '';
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          receipt += spacer + cardBalance + "\n";
+
+          // put the period pass expiration time or extra pending passes on the next line so it fits
+          if ("" !== productExpirationTime || "" !== pendingProductDescription) {
+            spacer = '';
+            padSize = receiptWidth - (pendingProductDescription.length + productExpirationTime.length);
+
+            while (spacer.length <= (padSize - 1)) {
+              spacer += " ";
+            }
+
+            receipt += pendingProductDescription + spacer + productExpirationTime + "\n\n";
+          } else {
+            receipt += "\n";
+          }
+        } else {
+          console.log("Summary printer says stored value was $0");
+        }
+
+      });
+    });
+
+    return receipt;
+
+  }
+
+  getCurrentTransaction() {
+
+    this.verifyTransactionStore();
+
+    var currentTransactionStore = JSON.parse(localStorage.getItem("shoppingCart"))
+
+    var currentTransaction;
+
+    if (currentTransactionStore.length > 0) {
+      currentTransaction = currentTransactionStore
+    }
+
+    return currentTransaction;
+  }
+
+  verifyTransactionStore() {
+
+    var currentTransactionStore = JSON.parse(localStorage.getItem("shoppingCart"))
+    // currentTransactionStore.sync();
+    var storeCount = currentTransactionStore.length;
+
+    if (0 == storeCount) {
+      // just add one record to get it back to having one empty record
+      currentTransactionStore = []
+      currentTransactionStore.push({
+        transactionID: '',
+        totalPaymentsApplied: 0,
+        numPaymentTypes: 0,
+        totalCashApplied: 0,
+        cashBack: 0,
+        totalCheckApplied: 0,
+        totalCreditApplied: 0,
+        totalFarecardsApplied: 0,
+        totalVouchersApplied: 0,
+        storedValueCardPID: '',
+        storedValueCardUID: '',
+        storedValueSlot: 0,
+        storedValueBalance: 0,
+        totalStoredValueApplied: 0,
+        totalCompApplied: 0,
+        currentCompApplied: 0,
+        compReason: '',
+        creditUsed: false,
+        debitUsed: false,
+        x_trans_id: '',
+        x_auth_code: '',
+        x_issuer: 0,
+        x_last4: '',
+        x_amount: '',
+        x_response_code: '',
+        x_response_reason_text: '',
+        fareCode: ''
+      });
+    }
+    else if (1 < storeCount) {
+      for (var i = 1; i < storeCount; i++) {
+        currentTransactionStore.removeAt(i);
+      }
+    }
+  }
+
+  getCart() {
+    //"use strict";
+    var cartStore = JSON.parse(localStorage.getItem("shoppingCart"));
+
+    var cart;
+
+    if (cartStore._walletLineItem.length > 0) {
+      cart = cartStore
+
+    } else {
+      // initialize cart
+      cart = []
+      var newCart = {
+        _walletLineItem: []
+      };
+
+      cart.push(newCart);
+      // this.cartStore.sync();
+      //cart = cartStore
+
+    }
+
+    return cart;
+  }
+
+  centerText(textToCenter) {
+    var centeredText = '';
+    var textLength = textToCenter.toString().length;
+    var receiptWidth = 44;
+
+    var middlePadSize = Math.floor(receiptWidth / 2);
+
+    var padSize = middlePadSize - (Math.ceil(textLength / 2));
+
+    var spacer = '';
+
+    while (spacer.length <= (padSize - 1)) {
+      spacer += " ";
+    }
+
+    centeredText = spacer + textToCenter;
+
+    return centeredText;
+  }
+
+
+  getProductExpirationDate(exp_date_epoch_days, addTime) {
+
+    console.log("exp_date_epoch_days: " + exp_date_epoch_days);
+
+    var expDate = new Date(1970, 0, 1, 0, 0, 0);
+
+    var expDateDays = exp_date_epoch_days;
+
+    /* if(addTime === 0) {
+        expDateDays = expDateDays - 1;
+    } */
+
+    expDate.setDate(expDate.getDate() + expDateDays);
+
+
+    // var ShortDate =  "m/d/Y"
+    var expirationDate = this.datePipe.transform(expDate, "m/d/Y")
+
+    //(Ext.Date.format(expDate, ShortDate));
+    console.log("expirationDate " + expirationDate);
+    return expirationDate;
+  }
+
+  getProductExpirationTime(addTime) {
+    var d = new Date();
+    if (addTime === 0) {
+      d.setHours(23, 59, 59, 0)
+    } else {
+      // set your hour to midnight
+      d.setHours(0, 0, 0, 0);
+      d = new Date(d.getTime() + (addTime * 60000));
+    }
+    // Ext.Date.patterns = {
+    //     ShortDate: "h:i A"
+    // };
+    var expirationTime = this.datePipe.transform(d, "h:i A")
+    if ('0' === expirationTime.charAt(0)) {
+      expirationTime = expirationTime.substring(1);
+    }
+    return expirationTime;
+  }
+
+  printCardSummary() {
+    var PID = null;
+    var cardStore = JSON.parse(localStorage.getItem('readCardData'));
+    cardStore = new Array(JSON.parse(cardStore))
+    var loginStore = JSON.parse(localStorage.getItem("shiftReport"));
+    var username = '';
+    // if (null != cardStore.getAt(0)) {
+    //     PID = cardStore.getAt(0).get('printed_id');
+    // }
+    cardStore.forEach(element => {
+        PID = element.printed_id
+    });
+
+    // get current user
+    // if (0 < loginStore.getCount()) {
+    //     username = loginStore.getAt(0).get('userID');
+    // }
+    username = localStorage.getItem("userID")
+
+    var receipt = this.getCardSummary(1);
+    try {
+        this.electronService.ipcRenderer.send("printCardSummary", receipt, PID, username, new Date().getTime());
+    } catch (e) {
+        console.log("Exception printing card summary.");
+    }
+}
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }

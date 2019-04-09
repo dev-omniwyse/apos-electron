@@ -28,19 +28,19 @@
                     </div>
                     <div class="modal-body">
                         <!-- <div *ngFor="let card of viewCardData "> -->
-                            <div class="flex-devide">
-                                <div class="flex">
-                                    <div class="flex-devide">
-                                        <p>{{active_printed_id}} - {{active_wallet_status}}</p>
-                                        <p>Fare Code: {{userFarecode}}</p>
-                                        <p>Card Exp: {{active_card_expiration_date_str}}</p>
-                                    </div>
-                                    <div class="flex-devide">
-                                        <p>Bonus Ride(s): {{bonusRidesCountText}}</p>
-                                        <p>Next Bonus: {{nextBonusRidesText}}</p>
-                                    </div>
+                        <div class="flex-devide">
+                            <div class="flex">
+                                <div class="flex-devide">
+                                    <p>{{active_printed_id}} - {{active_wallet_status}}</p>
+                                    <p>Fare Code: {{userFarecode}}</p>
+                                    <p>Card Exp: {{active_card_expiration_date_str}}</p>
+                                </div>
+                                <div class="flex-devide">
+                                    <p>Bonus Ride(s): {{bonusRidesCountText}}</p>
+                                    <p>Next Bonus: {{nextBonusRidesText}}</p>
                                 </div>
                             </div>
+                        </div>
                         <!-- </div> -->
                         <div class="content-container container-padding">
                             <h1></h1>
@@ -53,11 +53,11 @@
                                     <th>Status</th>
                                     <th>Balance</th>
                                 </tr>
-                                <tr *ngFor="let product of cardProductData">
+                                <tr *ngFor="let product of cardContents">
                                     <td>{{product.product}}</td>
                                     <td>{{product.description}}</td>
                                     <td>{{product.status}}</td>
-                                    <td>{{product.remainingValue}}</td>
+                                    <td>{{product.balance}}</td>
                                 </tr>
                                 <!-- <tr>
                                 <td>Frequent Rider</td>
@@ -323,27 +323,13 @@
     <div class="cr-r-set">
         <h1>
             <form [formGroup]="currencyForm">
-                    <input type="text" class="form-control label label-primary cr-label" 
-                    formControlName="currency"
-                    [ngModel]="checkoutTotal | currency: 'USD' : 'symbol-narrow': '1.2-2' | noComma"
-                    (ngModelChange) ="textAreaEmpty()"
-                    (keyup.1)="displayDigit('1')"
-                    (keyup.2)="displayDigit('2')"
-                    (keyup.3)="displayDigit('3')"
-                    (keyup.4)="displayDigit('4')"
-                    (keyup.5)="displayDigit('5')"
-                    (keyup.6)="displayDigit('6')"
-                    (keyup.7)="displayDigit('7')"
-                    (keyup.8)="displayDigit('8')"
-                    (keyup.9)="displayDigit('9')"
-                    (keyup.0)="displayDigit('0')"
-                    (keyup.00)="displayDigit('00')"
-                    (keyup.backspace)="onBackSpace()"
-                     appNumericOnly>
+                <input type="text" class="form-control label label-primary cr-label" formControlName="currency" [ngModel]="checkoutTotal | currency: 'USD' : 'symbol-narrow': '1.2-2' | noComma" (ngModelChange)="textAreaEmpty()" (keyup.1)="displayDigit('1')" (keyup.2)="displayDigit('2')"
+                    (keyup.3)="displayDigit('3')" (keyup.4)="displayDigit('4')" (keyup.5)="displayDigit('5')" (keyup.6)="displayDigit('6')" (keyup.7)="displayDigit('7')" (keyup.8)="displayDigit('8')" (keyup.9)="displayDigit('9')" (keyup.0)="displayDigit('0')"
+                    (keyup.00)="displayDigit('00')" (keyup.backspace)="onBackSpace()" appNumericOnly>
 
             </form>
             <!-- <span class="label label-primary cr-label">${{checkoutTotal | number : '1.2-2'}}</span> -->
-         
+
         </h1>
         <div class="flex">
             <div class="cr-left">
@@ -962,8 +948,11 @@
     <div class="container-left">
         <h2>CUSTOM AMOUNT</h2>
         <p class="pay-amount">Enter the Pay As You Go amount to add to the card.</p>
-        <div class="btns-set">
+        <!-- <div class="btns-set">
             <button class="btn-white-cancel" (click)="closeCustomAmount()">Cancel</button>
+        </div> -->
+        <div class="btns-set posi-bottom">
+            <button class="btn-cancel" (click)="closeCustomAmount()">CANCEL</button>
         </div>
     </div>
     <div class="container-right-calc">
@@ -971,24 +960,10 @@
             <h1>
                 <!-- <span class="label label-primary cr-label">${{productTotal | number : '1.2-2'}}</span> -->
                 <form [formGroup]="customAmountForm">
-                        <input type="text" class="form-control label label-primary cr-label" 
-                        formControlName="amount"
-                        [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2' | noComma"
-                        (ngModelChange) ="customTextAreaEmpty()"
-                        (keyup.1)="displayDigit('1')"
-                        (keyup.2)="displayDigit('2')"
-                        (keyup.3)="displayDigit('3')"
-                        (keyup.4)="displayDigit('4')"
-                        (keyup.5)="displayDigit('5')"
-                        (keyup.6)="displayDigit('6')"
-                        (keyup.7)="displayDigit('7')"
-                        (keyup.8)="displayDigit('8')"
-                        (keyup.9)="displayDigit('9')"
-                        (keyup.0)="displayDigit('0')"
-                        (keyup.00)="displayDigit('00')"
-                        (keyup.backspace) ='onCustomAmountBackSpace()'
-                         appNumericOnly>
-    
+                    <input type="text" class="form-control label label-primary cr-label" formControlName="amount" [ngModel]="productTotal | currency: 'USD' : 'symbol-narrow': '1.2-2' | noComma" (ngModelChange)="customTextAreaEmpty()" (keyup.1)="displayDigit('1')" (keyup.2)="displayDigit('2')"
+                        (keyup.3)="displayDigit('3')" (keyup.4)="displayDigit('4')" (keyup.5)="displayDigit('5')" (keyup.6)="displayDigit('6')" (keyup.7)="displayDigit('7')" (keyup.8)="displayDigit('8')" (keyup.9)="displayDigit('9')" (keyup.0)="displayDigit('0')"
+                        (keyup.00)="displayDigit('00')" (keyup.backspace)='onCustomAmountBackSpace()' appNumericOnly>
+
                 </form>
             </h1>
             <div class="flex">
