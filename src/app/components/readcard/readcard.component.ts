@@ -334,6 +334,11 @@ export class ReadcardComponent implements OnInit {
 
     }
 
+
+    printSummaryOfCard(){
+        this.cdtaservice.printCardSummary();
+    }
+
     newFareCard(event) {
         localStorage.removeItem('shoppingCart');
         ShoppingCartService.getInstance.shoppingCart = null;
