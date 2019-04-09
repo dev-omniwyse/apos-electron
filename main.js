@@ -555,6 +555,7 @@ ipcMain.on('printRefundReceipt', (event, receiptContents, date) => {
 
 ipcMain.on('printCardSummary', (event, receipt, PID, username, date) => {
     date = java.newLong(Number(date));
+    console.log("printCardSummary receipt", receipt)
    // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
     var result = posAppletInstance.printCardSummarySync(receipt, PID, username, date);
     event.sender.send('printCardSummaryResult', + result);
