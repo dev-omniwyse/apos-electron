@@ -189,6 +189,7 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
   cardContents = [];
+  badlistedProductModalText = "";
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -326,7 +327,7 @@ export class AddProductComponent implements OnInit {
         switch (element.product_type) {
           case 1:
             if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount)
-              this.isProductLimitReached = true; 
+              this.isProductLimitReached = true;
             break;
           case 2:
             if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255)
@@ -423,9 +424,6 @@ export class AddProductComponent implements OnInit {
         return true;
       return false;
     }
-
-
-
 
     return canAddProduct;
   }
@@ -598,7 +596,29 @@ export class AddProductComponent implements OnInit {
     return message
   }
 
+  checkIsBadListedProductOnWallet(selectedItem) {
+    let flag = false;
+    for (let product of this.currentCard.products) {
+
+      if (selectedItem.Ticket.Group == product.product_type && (selectedItem.Ticket.Designator == product.designator)) {
+        if (product.is_prod_bad_listed == true) {
+          flag = true;
+          break;
+        }
+      }
+    }
+    return flag;
+  }
   addProductToWallet(product) {
+
+    if (this.checkIsBadListedProductOnWallet(product)) {
+      this.badlistedProductModalText = "Product is deactivated or suspended on this card.";
+      $("#badlistedProductModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return;
+    }
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
         this.maxLimitErrorMessages = this.getProductLimitMessage()
@@ -686,7 +706,7 @@ export class AddProductComponent implements OnInit {
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
 
-
+    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
   }
   removeCardfromCardJSON() {
     // this.cardJson.for
@@ -1044,7 +1064,14 @@ export class AddProductComponent implements OnInit {
     this.currentWalletLineItemIndex = index;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
+    if(this.currentWalletLineItem._walletTypeId == MediaType.MAGNETIC_ID){
+      this.isMagnetic = true;
+    } else if(this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
+      this.isMerchendise = true;
+    } else {
+      this.isMagnetic = false;
+      this.isMerchendise = false;
+    }
     if (this.shoppingcart._walletLineItem[0]._walletTypeId == item._walletTypeId) {
       this.isMerchendise = true;
       this.clickOnMerch();
@@ -1379,16 +1406,16 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
       if (data != undefined && data != "") {
         if (data) {
-            console.log("cash drawer opened Sucessfully");
+          console.log("cash drawer opened Sucessfully");
         }
-        else{
+        else {
           console.log("cash drawer open Failed")
         }
       }
     });
   }
 
-  openCashDrawer(){
+  openCashDrawer() {
     this.electronService.ipcRenderer.send("openCashDrawer")
   }
 
@@ -1512,6 +1539,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#voucherModal').modal('show');
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
@@ -1541,13 +1569,13 @@ export class AddProductComponent implements OnInit {
       if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
-
+        this.openCashDrawer();
         $('#voucherModal').modal('show');
 
       }
 
     }
-    else if (this.totalRemaining< (+this.checkoutTotal)) {
+    else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
 
@@ -1615,6 +1643,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      this.openCashDrawer();
       $('#checkModal').modal('show');
     }
 
@@ -1776,6 +1805,7 @@ export class AddProductComponent implements OnInit {
 
   cancelCompensation() {
     this.applyCompShow = false;
+    this.reason = true;
   }
 
   compensationReason(value) {
@@ -1834,7 +1864,7 @@ export class AddProductComponent implements OnInit {
 
         // }
       }
-    } else if (this.totalRemaining< (+this.checkoutTotal)) {
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
       $('#voucherErrorModal').modal('show');
     }
   }

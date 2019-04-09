@@ -14,6 +14,12 @@ export enum Constants {
     STORED_VALUE = "Pay As You Go"
 }
 
+export enum PRODUCT_NAME {
+    STORED_RIDE = 'Stored Ride Pass',
+    STORED_VALUE = 'Pay As You Go',
+    PERIOD_PASS = 'Frequent Rider'
+}
+
 export enum TICKET_GROUP {
     PERIOD_PASS = 1,
     RIDE = 2,

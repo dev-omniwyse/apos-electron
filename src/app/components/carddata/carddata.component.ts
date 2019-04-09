@@ -659,6 +659,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   initiateCancelEncoding(index) {
     let cardPID = this.getKeyForCancelEncode(index);
+    this.cdtaService.generateRefundReceipt();
     if (cardPID == undefined) {
       this.prePaidTransactionObject();
       if (this.checkIfCreditCardPaymentExists()) {

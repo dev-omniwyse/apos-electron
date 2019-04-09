@@ -1,6 +1,6 @@
 import { ShoppingCartService } from "./ShoppingCart.service";
 import { FareCardService } from "./Farecard.service";
-import { MediaType, TICKET_GROUP, Constants } from "./MediaType";
+import { MediaType, TICKET_GROUP, Constants, PRODUCT_NAME } from "./MediaType";
 import { TransactionService } from './Transaction.service';
 import { DeviceInfo } from '../models/DeviceInfo';
 import { CardSummary } from '../models/CardContetns';
@@ -429,30 +429,31 @@ export class Utils {
             let designator = product.designator;
             let bad_listed = product.is_prod_bad_listed;
             let addTime = 0;
-
+            let productStatus = "";
             let currentEpochDays = this.getCurrentEpochDays();
             if (null != product.add_time) {
                 addTime = product.add_time;
             }
 
             if (true == product.is_prod_bad_listed) {
-                cardSummary.$status = "Inactive";
+                productStatus = "Inactive";
             }
             else if (exp_date_epoch_days > 1 && exp_date_epoch_days < currentEpochDays && TICKET_GROUP.PERIOD_PASS != productType) {
-                cardSummary.$status = "Expired";
+                productStatus = "Expired";
             } else if (start_date_epoch_days == 65535) {
                 // rolling start
-                cardSummary.$status = "Active";
+                productStatus = "Active";
             } else {
-                cardSummary.$status = "Active";
+                productStatus = "Active";
             }
             if (0 == remainingRides) {
-                cardSummary.$status = product.status;
+                productStatus = product.status;
             }
             let cardBalance = "";
-            let productStatus = "";
+            
             var d = new Date();
             var currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
+            let productDescription = "";
             switch (productType) {
                 case TICKET_GROUP.PERIOD_PASS:
                     if (exp_date_epoch_days > 0) {
@@ -463,7 +464,7 @@ export class Utils {
 
                         cardBalance = (days + 1) + " Days";
                     }
-
+                    productDescription = (days + 1) + " Day Pass";
                     if (0 != exp_date_epoch_days && 65535 != exp_date_epoch_days) {
                         // exp date on the card is essentially the day BEFORE the expiration...but at midnight.
                         if ((exp_date_epoch_days) < currentEpochDays) {
@@ -501,7 +502,7 @@ export class Utils {
                     else {
                         cardBalance = remainingRides + " Rides";
                     }
-                    // productDescription = APOS.util.Config.PRODUCT_NAME.STORED_RIDE;
+                    productDescription = PRODUCT_NAME.STORED_RIDE;
                     break;
                 case TICKET_GROUP.VALUE:
 
@@ -515,22 +516,26 @@ export class Utils {
                     // textProductType = 'sdsd';
 
                     cardBalance = "$ " + remaining_value.toFixed(2);
-                    // productDescription = APOS.util.Config.PRODUCT_NAME.STORED_VALUE;
+                    productDescription = PRODUCT_NAME.STORED_VALUE;
                     break;
                 default:
                     // textProductType = "Unknown Product";
                     break;
             }
             cardSummary.$balance = cardBalance;
-
-            cardSummary.$description = this.getProductDescription(product, ticketMap);
+            let description = this.getProductDescription(product, ticketMap);
+            if(description != undefined) {
+                productDescription = description;
+            }
+            cardSummary.$status = productStatus;
+            cardSummary.$description = productDescription;
             prodcts.push(cardSummary);
         });
         return prodcts
     }
 
     getProductDescription(product, ticketMap) {
-        let description = "Unknown";
+        let description = undefined;
 
         var ticketKey = product.product_type + "_" + product.designator;
         if( ticketMap.size != 0 && ticketMap.get(ticketKey) != undefined ) {

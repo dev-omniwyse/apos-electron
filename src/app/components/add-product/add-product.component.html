@@ -12,9 +12,9 @@
         <div class="header-l">
             <img src="assets/images/icon-cart.png" />
             <!-- <button  [disabled]="isMagnetic" class="btn-white-top">View Card</button> -->
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
+            <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
                 CARD</button>
-            <button [disabled]="isMagnetic" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
+            <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
                     CARD</button>
 
             <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
@@ -660,7 +660,7 @@
                                 </div> -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">No, Cancel</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal">No, Cancel</button>
                             <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
                             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="compApplication()">Yes, Continue</button>
                         </div>
@@ -712,6 +712,23 @@
             </div>
             <div class="modal-body">
                 <p>{{maxLimitErrorMessages}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="badlistedProductModal" role="dialog">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{badlistedProductModalText}}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>

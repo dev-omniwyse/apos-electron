@@ -15,6 +15,16 @@
     width: 100%;
 }
 
+.process-comp-btn-white  button{
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: white;
+    padding: 50px 0px;
+    color: #3b80c3;
+    font-size: 20px;
+    margin: 10px;
+    width: 100%;
+}
 
 .process-cota-head{
     border-bottom: 1px solid #ccc;
