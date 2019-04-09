@@ -18,10 +18,12 @@ export class CompComponent implements OnInit {
   @Output() compensationReason = new EventEmitter();
   @Input() reason: boolean;
   @Input() reasonForComp: string;
+  compBtn: boolean = true;
 
   // public reason: Boolean = true
   // public reasonForComp: string
   public buttonArray = ["DEFECTIVE CARD", "LOST CARD", "SCHEDULE DELAYS", "OTHERS"]
+  compSelectedIndex: any;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
    
     
@@ -30,7 +32,10 @@ export class CompComponent implements OnInit {
   }
 
 
-  compReason(value) {
+  compReason(value,i) {
+    this.compBtn = false;
+    this.compSelectedIndex = i;
+    console.log(i);
     this.compensationReason.emit(value);
     // this.reasonForComp = value
     // if (this.reason == true && value == "OTHERS") {

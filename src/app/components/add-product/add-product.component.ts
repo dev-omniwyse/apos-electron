@@ -1769,6 +1769,7 @@ export class AddProductComponent implements OnInit {
 
   cancelCompensation() {
     this.applyCompShow = false;
+    this.reason = true;
   }
 
   compensationReason(value) {
