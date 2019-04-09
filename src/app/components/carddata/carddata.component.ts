@@ -456,7 +456,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
-    localStorage.removeItem("catalogJSON");
+    // localStorage.removeItem("catalogJSON");
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
@@ -490,7 +490,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
     localStorage.removeItem("cardsData");
-    localStorage.removeItem("catalogJSON");
+    // localStorage.removeItem("catalogJSON");
     localStorage.removeItem("readCardData");
     this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
