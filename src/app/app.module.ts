@@ -31,6 +31,7 @@ import { SlickModule } from 'ngx-slick';
 import { Globals } from './global';
 import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
 import { NoCommaPipe } from './pipe/no-comma.pipe';
+import { DatePipe } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -68,7 +69,7 @@ import { NoCommaPipe } from './pipe/no-comma.pipe';
     NgxLoadingModule.forRoot({}),
     SlickModule.forRoot()
   ],
-  providers: [CdtaService, Globals],
+  providers: [CdtaService, DatePipe, Globals],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

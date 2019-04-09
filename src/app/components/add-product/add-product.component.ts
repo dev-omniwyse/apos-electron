@@ -1505,6 +1505,7 @@ export class AddProductComponent implements OnInit {
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#voucherModal').modal('show');
+      this.openCashDrawer();
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
@@ -1608,6 +1609,7 @@ export class AddProductComponent implements OnInit {
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#checkModal').modal('show');
+      this.openCashDrawer();
     }
 
     else if (this.totalRemaining > (+this.checkoutTotal)) {
