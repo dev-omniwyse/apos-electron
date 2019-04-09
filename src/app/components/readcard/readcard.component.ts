@@ -483,29 +483,31 @@ export class ReadcardComponent implements OnInit {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
             let userId = localStorage.getItem("userID")
             shiftReports.forEach(element => {
-                if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
-                    this.statusOfShiftReport = "Main Shift is Closed"
-                } else
-                    if (element.shiftState == "3" && element.shiftType == "0") {
+                if (element.userID == userId) {
+                    if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                         this.statusOfShiftReport = "Main Shift is Closed"
+                    } else
+                        if (element.shiftState == "3" && element.shiftType == "0") {
+                            this.statusOfShiftReport = "Main Shift is Closed"
 
-                    } else if (element.shiftState == "4" && element.shiftType == "0") {
-                        this.statusOfShiftReport = "Main Shift is Paused"
-                    } else if (element.shiftState == "0" && element.shiftType == "1") {
-                        this.statusOfShiftReport = ''
+                        } else if (element.shiftState == "4" && element.shiftType == "0") {
+                            this.statusOfShiftReport = "Main Shift is Paused"
+                        } else if (element.shiftState == "0" && element.shiftType == "1") {
+                            this.statusOfShiftReport = ''
+                        }
+
+                    if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
+                        this.statusOfShiftReport = "Main Shift is Closed"
+                        this.disableCards = true
+                    } else if (element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
+                        this.disableCards = true
+                    } else if (element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
+                        this.disableCards = true
+                    } else if (localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")) {
+                        this.disableCards = true
+                    } else {
+                        this.disableCards = false
                     }
-
-                if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
-                    this.statusOfShiftReport = "Main Shift is Closed"
-                    this.disableCards = true
-                } else if (element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
-                    this.disableCards = true
-                } else if (element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
-                    this.disableCards = true
-                } else if (localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")) {
-                    this.disableCards = true
-                } else {
-                    this.disableCards = false
                 }
             })
         }
