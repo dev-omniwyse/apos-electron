@@ -686,7 +686,7 @@ export class AddProductComponent implements OnInit {
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
 
-
+    this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
   }
   removeCardfromCardJSON() {
     // this.cardJson.for

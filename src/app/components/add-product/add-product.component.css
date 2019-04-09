@@ -96,7 +96,7 @@ ul {
     background-color: #fff;
     border: 1px solid #c3c3c3;
     border-radius: 5px;
-    color: #999999;
+    color: #202020;
     font-size: 2.2vh;
     padding: 2.5vh 15px;
     width: calc(85%);
@@ -740,9 +740,10 @@ ul {
     margin: 0 5px;
 }
 
-.carousel-indicators .active {
+
+/* .carousel-indicators .active {
     background: #013d79;
-}
+} */
 
 #Carousel-products {
     height: calc(100vh - 380px);
@@ -763,6 +764,11 @@ ul {
 }
 
 .btn-white-top:disabled {
+    color: #aeaeae;
+    cursor: not-allowed;
+}
+
+.btn-white-top-cancel:disabled {
     color: #aeaeae;
     cursor: not-allowed;
 }
