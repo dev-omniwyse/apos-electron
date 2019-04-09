@@ -455,6 +455,40 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="creditCardFailureModal" role="dialog">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title"> Error </h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Error accured processing card</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="creditCardSuccessModal" role="dialog">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title"> Success! </h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Credit Card Transaction Successfull</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="proceedToSaveTransaction()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="checkModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">

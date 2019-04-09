@@ -559,12 +559,12 @@ ipcMain.on('doPinPadTransaction', (event, transactionAmount) => {
 
 ipcMain.on('getPinpadTransactionStatus', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionStatusSync();
-    event.sender.send('getPinpadTransactionStatusResult', '' + result.getSuccessSync());
+    event.sender.send('getPinpadTransactionStatusResult', '' + result.getValueSync());
 });
 
 ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionDataSync();
-    event.sender.send('getPinpadTransactionDataResult', '' + result.getValueSync());
+    event.sender.send('getPinpadTransactionDataResult', '' + result.getSuccessSync());
 });
 
 ipcMain.on('cancelPinpadTransaction', (event, transactionAmount) => {

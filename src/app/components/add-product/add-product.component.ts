@@ -1309,14 +1309,18 @@ export class AddProductComponent implements OnInit {
 
   }
 
-  handle
+  proceedToSaveTransaction(){
+    this.saveTransaction();
+  }
 
   handlegetPinpadTransactionDataResult() {
     this.electronService.ipcRenderer.once('getPinpadTransactionDataResult', (event, data) => {
       console.log("creditcardTransaction ", data);
-      if (data != undefined && data != "") {
+      if (data) {
         localStorage.setItem("pinPadTransactionData", data);
-        this.saveTransaction();
+        $("#creditCardSuccessModal").modal("show");
+      }else{
+        $("#creditCardFailureModal").modal("show")
       }
     });
   }
@@ -1325,13 +1329,18 @@ export class AddProductComponent implements OnInit {
     this.electronService.ipcRenderer.once('getPinpadTransactionStatusResult', (event, data) => {
       console.log("transaction Status CreditCArd", data);
       if (data != undefined && data != "") {
-        if (data == false && this.numOfAttempts < 600) {
+        if (data == 0 && this.numOfAttempts < 600) {
           var timer = setTimeout(() => {
             this.numOfAttempts++;
             this.handlegetPinpadTransactionStatusResult();
             this.electronService.ipcRenderer.send('getPinpadTransactionStatus')
           }, 1000);
         } else {
+          if(data != 1){
+            $("#creditCardApplyModal").modal("hide")
+            $("#creditCardFailureModal").modal("show");
+            return;
+          }
           clearTimeout(timer);
           $("#creditCardApplyModal").modal("hide")
           this.handlegetPinpadTransactionDataResult();
