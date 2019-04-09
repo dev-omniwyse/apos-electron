@@ -1265,7 +1265,7 @@ export class CdtaService {
 
   generateRefundReceipt() {
 
-    console.log("generateRefundReceipt: called generateRefundReceipt()");
+    console.log('refund Receipt ');
 
     var paymentTypeText = '';
     var refundReceipt = "";
@@ -1334,8 +1334,11 @@ export class CdtaService {
       padSize = 0;
       secondPadSize = 0;
       middlePadSize = Math.floor(receiptWidth / 2) + 3;
+      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
 
-      productDescription = walletLineItem._description;
+      } else {
+        productDescription = walletLineItem._description;
+      }
 
       if (null == productDescription || undefined == productDescription) {
         productDescription = '';
@@ -1361,8 +1364,12 @@ export class CdtaService {
       padSize = middlePadSize - productDescription.length;
 
       var spacer = '';
-      var quantityofCards = 1;
-
+      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
+        var quantityofCards:any = "";
+      }else{
+        quantityofCards = 1;
+       
+      }
       while (spacer.length <= (padSize - 1)) {
         spacer += " ";
       }
@@ -1494,77 +1501,13 @@ export class CdtaService {
 
         }
       });
-      // Ext.each(cart._walletLineItems, function (item, idx) {
-
-      // });
     }
 
     console.log("Trying to print non-fare refund receipt");
 
-    // if (cart != null) {
-    //     Ext.each(cart.data.ProductLineItems, function (item, idx) {
-
-    //         padSize = 0;
-    //         secondPadSize = 0;
-    //         middlePadSize = Math.floor(receiptWidth / 2) + 3;
-
-    //         var productDescription = item.description + "";
-
-    //         if (null == productDescription || undefined == productDescription) {
-    //             productDescription = '';
-    //         }
-
-    //         if (productDescription.length >= maxDescriptionLength) {
-    //             productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
-    //         }
-
-    //         nonFareProducts += productDescription;
-
-    //         padSize = middlePadSize - productDescription.length;
-
-    //         var spacer = '';
-
-    //         while (spacer.length <= (padSize - 1)) {
-    //             spacer += " ";
-    //         }
-
-    //         var nonFareQuantity = item.quantity + '';
-
-    //         nonFareProducts += spacer + nonFareQuantity;
-    //         costText = '$' + item.unitPrice.toFixed(2);
-
-    //         secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + nonFareQuantity.length);
-
-    //         spacer = '';
-
-    //         console.log("secondPadSize:" + secondPadSize)
-
-    //         while (spacer.length <= (secondPadSize - 1)) {
-    //             spacer += " ";
-    //         }
-
-    //         console.log("spacer [" + spacer + "]");
-
-    //         nonFareProducts += spacer + costText;
-
-    //         nonFareProducts += "\n";
-
-    //     });
-    // }
-
-    // Build payments info
 
     var paymentLabel;
     var cashTotal;
-    // var checkTotal;
-    // var creditTotal;
-    // var farecardTotal;
-    // var voucherTotal;
-    // var storedValueTotal;
-    // var compTotal;
-    // var totalPaymentCost;
-    // var paymentsReport = "";
-
     var paymentsReport = "",
       totalPaymentCount: any = 0,
       totalPaymentCost: any = 0,
@@ -1751,17 +1694,43 @@ export class CdtaService {
 
   getCardSummary(cardCount) {
     var cardProductsStore
+    var cards  = ''
+    var  receipt = '';
     if (cardCount == 1) {
       cardProductsStore = JSON.parse(localStorage.getItem('readCardData'));
-      cardProductsStore =  new Array(JSON.parse(cardProductsStore))
+      cardProductsStore = new Array(JSON.parse(cardProductsStore))
     } else {
       cardProductsStore = JSON.parse(localStorage.getItem("cardsData"))
+      cards += "\n\n              Card(s) Balance    \n\n";
+      receipt += cards
     }
-    var receipt = '';
+  
     var addTime = 0;
+    var dashes = "";
+    var receiptWidth = 44
 
-    // print a report for each product on the card
+    while (dashes.length <= receiptWidth) {
+      dashes += "-";
+    }
+    var padSize = 0
+    var cardText = "Card ID:";
+
     cardProductsStore.forEach(productRecord => {
+
+      if (cardCount != 1) {
+        //receipt += cards
+        var spacer = '';
+        var PID = productRecord.printed_id
+        receipt += cardText;
+        padSize = receiptWidth - (cardText.length + PID.length);
+        while (spacer.length <= (padSize - 1)) {
+          spacer += " ";
+        }
+        receipt += spacer + PID + "\n";
+        receipt += dashes
+        receipt += "\n"
+      }
+
       addTime = 0;
       var products = productRecord.products;
       products.forEach(dataItem => {
@@ -2063,7 +2032,7 @@ export class CdtaService {
     //     PID = cardStore.getAt(0).get('printed_id');
     // }
     cardStore.forEach(element => {
-        PID = element.printed_id
+      PID = element.printed_id
     });
 
     // get current user
@@ -2074,11 +2043,11 @@ export class CdtaService {
 
     var receipt = this.getCardSummary(1);
     try {
-        this.electronService.ipcRenderer.send("printCardSummary", receipt, PID, username, new Date().getTime());
+      this.electronService.ipcRenderer.send("printCardSummary", receipt, PID, username, new Date().getTime());
     } catch (e) {
-        console.log("Exception printing card summary.");
+      console.log("Exception printing card summary.");
     }
-}
+  }
 
   login(username: string, password: string): Observable<any> {
     let userInfo = { username: username, password: password }
