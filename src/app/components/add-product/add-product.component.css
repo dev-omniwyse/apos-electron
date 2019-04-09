@@ -762,6 +762,11 @@ ul {
     cursor: not-allowed;
 }
 
+.btn-white-top:disabled {
+    color: #aeaeae;
+    cursor: not-allowed;
+}
+
 .btn-cancel {
     background-color: #fff;
     border: 1px solid #c3c3c3;
