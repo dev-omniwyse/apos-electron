@@ -149,7 +149,7 @@ export class AddProductComponent implements OnInit {
   isCustomAmount = false;
   walletItems = [];
   walletItemContents = [];
-  isCardPaymentCancelled:boolean = false;
+  isCardPaymentCancelled: boolean = false;
   slideConfig = {
     "slidesToShow": 2, dots: true, "infinite": false,
     "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
@@ -612,7 +612,7 @@ export class AddProductComponent implements OnInit {
   }
   addProductToWallet(product) {
 
-    if (this.checkIsBadListedProductOnWallet(product)) {
+    if (this.currentWalletLineItem._walletTypeId == MediaType.SMART_CARD_ID && this.checkIsBadListedProductOnWallet(product)) {
       this.badlistedProductModalText = "Product is deactivated or suspended on this card.";
       $("#badlistedProductModal").modal({
         backdrop: 'static',
@@ -1528,6 +1528,14 @@ export class AddProductComponent implements OnInit {
     }
   }
 
+  checkIfCreditCardApplied() {
+    if (this.cardApplied) {
+      this.doPinPadTransaction();
+      return;
+    }
+    this.saveTransaction();
+  }
+
   cashApplied() {
     let payment = new PaymentType();
     payment.$paymentMethodId = 2
@@ -1536,9 +1544,7 @@ export class AddProductComponent implements OnInit {
     if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }
-
-    this.saveTransaction();
-
+    this.checkIfCreditCardApplied();
   }
 
 
@@ -1634,7 +1640,8 @@ export class AddProductComponent implements OnInit {
   }
 
   vocherPayment() {
-    this.saveTransaction();
+    this.checkIfCreditCardApplied();
+    // this.saveTransaction();
   }
 
   notToApplyvoucher() {
@@ -1721,7 +1728,8 @@ export class AddProductComponent implements OnInit {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
-    this.saveTransaction();
+    this.checkIfCreditCardApplied();
+    // this.saveTransaction();
   }
 
 
@@ -1785,7 +1793,8 @@ export class AddProductComponent implements OnInit {
         this.shoppingcart._payments.push(payment);
       }
       this.electronService.ipcRenderer.send('compensation');
-      this.saveTransaction();
+      this.checkIfCreditCardApplied();
+      // this.saveTransaction();
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.compDue = this.totalRemaining;
