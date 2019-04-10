@@ -486,9 +486,10 @@ export class ReadcardComponent implements OnInit {
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         if (localStorage.getItem("shiftReport") != undefined) {
             let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-            let userId = localStorage.getItem("userID")
+            let userId = String(JSON.parse(localStorage.getItem("userID"))).trim();
             shiftReports.forEach(element => {
-                if (element.userID == userId) {
+                // let elementUserId = String(element.userID).trim();
+                // if (elementUserId == userId) {
                     if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                         this.statusOfShiftReport = "Main Shift is Closed"
                     } else
@@ -513,7 +514,7 @@ export class ReadcardComponent implements OnInit {
                     } else {
                         this.disableCards = false
                     }
-                }
+                // }
             })
         }
     }
