@@ -1409,10 +1409,10 @@ export class AddProductComponent implements OnInit {
 
   handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
-      if (data != undefined && data != "") {
+      // if (data != undefined && data != "") {
         this.isCardPaymentCancelled = true;
         $("#creditCardApplyModal").modal("hide")
-      }
+      // }
     });
   }
 
@@ -1536,9 +1536,10 @@ export class AddProductComponent implements OnInit {
   checkIfCreditCardApplied() {
     if (this.isCardApplied) {
       this.doPinPadTransaction();
-      return;
     }
-    this.saveTransaction();
+    else{
+      this.saveTransaction();
+    }
   }
 
   cashApplied() {

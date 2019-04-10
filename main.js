@@ -583,7 +583,7 @@ ipcMain.on('getPinpadTransactionData', (event, transactionAmount) => {
 
 ipcMain.on('cancelPinpadTransaction', (event, transactionAmount) => {
     var result = posAppletInstance.cancelPinpadTransactionSync();
-    event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
+    event.sender.send('cancelPinpadTransactionResult', '' + result.getSuccessSync());
 });
 
 ipcMain.on('getPinpadTransactionStatusEncode', (event, transactionAmount) => {
