@@ -391,17 +391,6 @@ export class AddProductComponent implements OnInit {
       return true;
     }
 
-    // this.currentWalletLineItem._walletContents.forEach(walletContent => {
-    //   if (canAddProduct)
-    //     return;
-    //   if (walletContent.offering.OfferingId == selectedItem.OfferingId) {
-    //     canAddProduct = true;
-    //   }
-    // })
-
-    // if (canAddProduct)
-    //   return canAddProduct;
-
     let currentProductCount = this.getProductCountFromExistingCard(selectedItem)
     if (currentProductCount > this.terminalConfigJson.NumberOfProducts) {
       canAddProduct = false;
@@ -524,8 +513,9 @@ export class AddProductComponent implements OnInit {
 
     this.currentCard.products.forEach(product => {
       var key = product.product_type + ":" + product.designator
-      if (productMap.get(key) == undefined)
-        productMap.set(key, 1)
+      if (productMap.get(key) == undefined) {
+        productMap.set(key, 1);
+      }
     })
 
     this.currentWalletLineItem._walletContents.forEach(walletContent => {
@@ -535,10 +525,12 @@ export class AddProductComponent implements OnInit {
     })
 
     var newKey = selectProduct.Ticket.Group + ":" + selectProduct.Ticket.Designator;
-    if (productMap.get(newKey))
+    if (productMap.get(newKey)) {
       return productMap.size;
-    else
-      return productMap.size + 1
+    }
+    else {
+      return productMap.size + 1;
+    }
   }
 
 
@@ -630,12 +622,9 @@ export class AddProductComponent implements OnInit {
         return;
       }
     }
-    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
+    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
-    // let response = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem);
-    // localStorage.setItem('shoppingCart', JSON.stringify(response));
 
   }
 
@@ -1151,8 +1140,9 @@ export class AddProductComponent implements OnInit {
     let offering = this.customPayAsYouGo;
     this.customPayAsYouGo = null;
     offering.UnitPrice = + productTotal;
-    console.log(this.customPayAsYouGo);
-    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem);
+    //to recognize that this is a custom offering and to update based on it.
+    let thisIsCustomOffering = true;
+    this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, offering, this.currentWalletLineItem, thisIsCustomOffering);
     this.isCustomAmount = false;
     this.productTotal = 0;
     this.frequentRide();
@@ -1410,8 +1400,8 @@ export class AddProductComponent implements OnInit {
   handleCancelPinPadTransaction() {
     this.electronService.ipcRenderer.once('cancelPinpadTransactionResult', (event, data) => {
       // if (data != undefined && data != "") {
-        this.isCardPaymentCancelled = true;
-        $("#creditCardApplyModal").modal("hide")
+      this.isCardPaymentCancelled = true;
+      $("#creditCardApplyModal").modal("hide")
       // }
     });
   }
@@ -1537,7 +1527,7 @@ export class AddProductComponent implements OnInit {
     if (this.isCardApplied) {
       this.doPinPadTransaction();
     }
-    else{
+    else {
       this.saveTransaction();
     }
   }
