@@ -1324,6 +1324,11 @@ export class AddProductComponent implements OnInit {
 
   saveTransaction() {
     try {
+      this.isCardApplied = false;
+      this.isCashApplied = false;
+      this.isVoucherApplied = false;
+      this.isCheckApplied = false;
+      this.isCompApplied = false;
       localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
       if (this.isSmartCardFound()) {
         this.router.navigate(['/carddata']);
@@ -1529,7 +1534,7 @@ export class AddProductComponent implements OnInit {
   }
 
   checkIfCreditCardApplied() {
-    if (this.cardApplied) {
+    if (this.isCardApplied) {
       this.doPinPadTransaction();
       return;
     }
@@ -1793,6 +1798,7 @@ export class AddProductComponent implements OnInit {
         this.shoppingcart._payments.push(payment);
       }
       this.electronService.ipcRenderer.send('compensation');
+      this.applyCompShow = false;
       this.checkIfCreditCardApplied();
       // this.saveTransaction();
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
