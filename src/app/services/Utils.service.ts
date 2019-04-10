@@ -400,7 +400,7 @@ export class Utils {
 
     getCurrentEpochDays() {
         let startDate = Date.parse("1970-01-01");
-        let endDate = Date.parse(Date.now.toString());
+        let endDate = Date.parse(new Date().toString());
         let timeDiff = endDate - startDate;
         let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
@@ -457,7 +457,11 @@ export class Utils {
                 case TICKET_GROUP.PERIOD_PASS:
                     if (exp_date_epoch_days > 0) {
 
-                        cardBalance = "Exp: " + this.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + this.getProductExpirationTime(addTime);
+                        let exp = new Date (product.exp_date_str);
+                        exp.setTime(exp.getTime()+addTime);
+                        // let expTime  = new Date();
+                        // expTime.setTime(addTime);
+                        cardBalance = "Exp: " +product.exp_date_str+" "+exp.getHours()+":"+exp.getMinutes();
 
                     } else {
 
@@ -576,45 +580,21 @@ export class Utils {
     }
 
     getProductExpirationDate(exp_date_epoch_days, addTime) {
+    // 	console.log("exp_date_epoch_days: " + exp_date_epoch_days);
+    	
+    	var expDate = new Date(1970, 0, 1, 0, 0, 0);
+    	
+    //     var expDateDays = exp_date_epoch_days;
+        
+        // (addTime * 60000)
+    //     let startDate = Date.parse("1970-01-01");
+    //     let endDate = Date.parse(Date.now.toString());
+    //     let timeDiff = endDate - startDate;
+    //     // let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
-        let expDate = new Date(1970, 0, 1, 0, 0, 0);
-
-        let expDateDays = exp_date_epoch_days;
-
-        expDate.setDate(expDate.getDate() + expDateDays);
-
-        // Ext.Date.patterns = {
-        //     ShortDate: "m/d/Y"
-        // };
-
-        let expirationDate = new Date().setMilliseconds(expDate.getMilliseconds());
-        // let expirationDate = (Ext.Date.format(expDate, Ext.Date.patterns.ShortDate));
-        // console.log("expirationDate " + expirationDate);
+    //     var expirationDate = (new Date(expDate + expDateDays));
+    //     console.log("expirationDate " +expirationDate);
+    var expirationDate = new Date(expDate.getTime() + exp_date_epoch_days*addTime*60000);
         return expirationDate;
-    }
-
-    getProductExpirationTime(addTime) {
-        let d = new Date();
-
-        if (addTime === 0) {
-            d.setHours(23, 59, 59, 0)
-        } else {
-            // set your hour to midnight
-            d.setHours(0, 0, 0, 0);
-            d = new Date(d.getTime() + (addTime * 60000));
-        }
-
-
-        // Ext.Date.patterns = {
-        //     ShortDate: "h:i A"
-        // };
-
-        let expirationTime = (new Date().setMilliseconds(d.getTime())).toLocaleString();
-
-        if ('0' === expirationTime.charAt(0)) {
-            expirationTime = expirationTime.substring(1);
-        }
-
-        return expirationTime;
     }
 }
