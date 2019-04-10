@@ -1,4 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import * as Hammer from 'hammerjs';
+
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators,ReactiveFormsModule,FormsModule } from '@angular/forms';
@@ -32,6 +34,12 @@ import { Globals } from './global';
 import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
 import { NoCommaPipe } from './pipe/no-comma.pipe';
 import { DatePipe } from '@angular/common';
+
+export class HammerConfig extends HammerGestureConfig {
+  overrides = <any>{
+    'swipe': { direction: Hammer.DIRECTION_ALL }
+  };
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,7 +77,11 @@ import { DatePipe } from '@angular/common';
     NgxLoadingModule.forRoot({}),
     SlickModule.forRoot()
   ],
-  providers: [CdtaService, DatePipe, Globals],
+  providers: [CdtaService, DatePipe, Globals,
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: HammerConfig
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

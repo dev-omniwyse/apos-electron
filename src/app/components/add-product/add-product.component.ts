@@ -17,13 +17,15 @@ import { TransactionService } from 'src/app/services/Transaction.service';
 import { PaymentType } from 'src/app/models/Payments';
 import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
+import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
 var cardName: any;
 var isExistingCard = false;
-
+var hammertime = new Hammer(document.body);
+hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
 pcs.on('reader', function (reader) {
   reader.on('error', function (err) {
     console.log('Error(', this.name, '):', err.message);
@@ -68,8 +70,6 @@ pcs.on('reader', function (reader) {
     }
   });
 
-
-
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
   });
@@ -90,6 +90,7 @@ export class AddProductComponent implements OnInit {
   customAmountForm: FormGroup = this.formBuilder.group({
     amount: ['']
   })
+
   merchantise = [];
   merch = [];
   merchantList: any = [];
@@ -150,6 +151,8 @@ export class AddProductComponent implements OnInit {
   walletItems = [];
   walletItemContents = [];
   isCardPaymentCancelled: boolean = false;
+  currentWalletLineProduct: any = 0;
+  currentWalletMerchProduct: any = 0;
   slideConfig = {
     "slidesToShow": 2, dots: true, "infinite": false,
     "autoplay": false, "prevArrow": false, "slidesPerRow": 2,
@@ -190,6 +193,9 @@ export class AddProductComponent implements OnInit {
   isCardApplied: boolean = false;
   cardAppliedTotal: any;
   cardContents = [];
+  tab_num = 0;
+  selected = 0;
+  SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
@@ -254,6 +260,7 @@ export class AddProductComponent implements OnInit {
     if (this.isMerchendise) {
       this.clickOnMerch();
     }
+
     // let item = JSON.parse(localStorage.getItem("catalogJSON"));
     // this.productJson = JSON.parse(item).Offering;
     // console.log(this.productJson);
@@ -1934,6 +1941,51 @@ export class AddProductComponent implements OnInit {
       }
     }
     return indexOfPayment;
+  }
+
+  swipe(eType,k) {
+    this.currentWalletLineItemIndex = k
+    console.log(eType);
+    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItems.length-1){
+      this.currentWalletLineItemIndex++;
+      console.log("movin left")
+    }
+    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+      console.log("movin right");
+      this.currentWalletLineItemIndex--;
+    }
+  }
+  productSwipe(eType,k) {
+    this.currentWalletLineProduct = k
+    console.log(eType);
+    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length-1){
+      this.currentWalletLineProduct++;
+      console.log("movin left")
+    }
+    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+      console.log("movin right");
+      this.currentWalletLineProduct--;
+    }
+  }
+  productMerchSwipe(eType , k) {
+    this.currentWalletMerchProduct = k
+    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length-1){
+      this.currentWalletMerchProduct++;
+    }
+    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+      this.currentWalletMerchProduct--;
+    }
+  }
+  walletItemsIndicator(i) {
+    this.currentWalletLineItemIndex = i;
+  }
+
+  walletLineProductIndicator(i) {
+    this.currentWalletLineProduct = i;
+  }
+
+  walletLineMerchProductIndicator(i) {
+    this.currentWalletMerchProduct = i;
   }
 }
 

@@ -71,7 +71,7 @@ ul {
 }
 
 .sub-total hr {
-    margin: 3vh 0 3vh 0;
+    margin: 1vh 0 1vh 0;
     border-bottom: 1px solid #eeeeee;
     border-top: 1px solid #9a9a9a;
 }
@@ -384,12 +384,12 @@ ul {
     color: #000;
     margin-bottom: 10px;
     overflow: hidden;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 100;
 }
 
 .container-l-app .label div {
-    padding: 10px
+    padding: 7px
 }
 
 .container-l-app .label div.pull-right {
@@ -608,9 +608,10 @@ ul {
     }
     .sub-total {
         margin: 1vh 0;
+        height: 17vh;
     }
     .container-l-app {
-        height: 42vh;
+        height: 39vh;
     }
     .btn-orange,
     .btn-white-top {
@@ -623,12 +624,6 @@ ul {
         font-size: 3.5vh;
         padding: 2.5vh 52px;
         margin-top: 91%;
-    }
-    .sub-total {
-        margin: 1vh 0;
-    }
-    .container-l-app {
-        height: 42vh;
     }
     .btn-white-top-cancel {
         width: calc(100% - 12vh);
