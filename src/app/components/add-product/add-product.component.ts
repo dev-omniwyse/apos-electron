@@ -841,20 +841,11 @@ export class AddProductComponent implements OnInit {
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
-    if(this.isCardApplied = true){
-      // doVoidTransaction();
-    }
-    this.isCashApplied = false;
-    this.isVoucherApplied = false;
-    this.isCheckApplied = false;
-    this.isCardApplied = false;
-    this.shoppingcart._payments = [];
-    this.getTotalDue(this.shoppingcart);
-
+  
   }
 
   doVoidTransaction() {
-    this.doPinpadVoidTransaction(1.0) 
+    this.doPinpadVoidTransaction(this.cardAppliedTotal) 
   }
 
 
@@ -899,25 +890,27 @@ export class AddProductComponent implements OnInit {
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
 
-        //this.navigateToReadCard();
-        //apply that money on the right hand side
-        //crdit applied = amount
+      
       }
     });
   }
 
-
-
-
-
-
-
-
-
-
   cancelCheckOutConfirmation() {
     this.productCheckOut = false;
     this.checkout = true;
+    console.log(this.isCardApplied);
+    if(this.isCardApplied){
+      
+      $("#cancelCheckoutModal").modal('hide');
+      this.doVoidTransaction();
+    }
+
+    this.isCashApplied = false;
+    this.isVoucherApplied = false;
+    this.isCheckApplied = false;
+    this.isCardApplied = false;
+    this.shoppingcart._payments = [];
+    this.getTotalDue(this.shoppingcart);
 
   }
 
