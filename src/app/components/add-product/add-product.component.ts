@@ -841,6 +841,9 @@ export class AddProductComponent implements OnInit {
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
+    if(this.isCardApplied = true){
+      doVoidTransaction();
+    }
     this.isCashApplied = false;
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
@@ -849,6 +852,68 @@ export class AddProductComponent implements OnInit {
     this.getTotalDue(this.shoppingcart);
 
   }
+
+  doVoidTransaction() {
+    this.doPinpadVoidTransaction(1.0) 
+  }
+
+
+  doPinpadVoidTransaction(amount) {
+    this.handleDoPinpadVoidTransactionResult();
+    this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount)
+  }
+
+  handleDoPinpadVoidTransactionResult() {
+    var doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.once('doPinpadVoidTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          this.handleGetPinpadTransactionStatusEncodeResult();
+          this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+        });
+      }
+    });
+  }
+
+  handleGetPinpadTransactionStatusEncodeResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionStatusEncodeResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
+      if (data != undefined && data != "") {
+        if (data == false && this.numOfAttempts < 120) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.handleGetPinpadTransactionStatusEncodeResult();
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          this.handleGetPinpadTransactionDataEncodeResult();
+          this.electronService.ipcRenderer.send('getPinpadTransactionDataEncode')
+        }
+      }
+    });
+  }
+
+  handleGetPinpadTransactionDataEncodeResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionDataEncodeResult', (event, data) => {
+      console.log("creditcardTransaction ", data);
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data);
+
+        //this.navigateToReadCard();
+        //apply that money on the right hand side
+        //crdit applied = amount
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+
 
   cancelCheckOutConfirmation() {
     this.productCheckOut = false;
