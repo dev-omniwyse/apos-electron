@@ -29,7 +29,7 @@ export class FareCardService {
     // shoppingCart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
 
     //add Offering to WalletContent
-    addFareProduct(shoppingCart, offering, walletLineItem) {
+    addFareProduct(shoppingCart, offering, walletLineItem, requestFromCustomOffering) {
 
         // FareCardService.getInstance.getWalletContentsForGivenUID(walletLineItem.cardPID);
         let indexOfWalletInShoppingCart = ShoppingCartService.getInstance.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
@@ -38,7 +38,7 @@ export class FareCardService {
         let index = FareCardService.getInstance.getWalletContentIndexForOffering(offering, walletContents);
         if (-1 != index) {
             console.log("Is Existing Offering? increase qunatity.");
-            walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering, walletContents, index);
+            walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering, walletContents, index, requestFromCustomOffering);
             shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents = walletContents;
             walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents;
         } else {
@@ -75,10 +75,14 @@ export class FareCardService {
         return index;
     }
 
-    updateOfferingCountForThisWallet(offering, walletContents, index) {
+    updateOfferingCountForThisWallet(offering, walletContents, index, isCustomOffering) {
         console.log("request for updating wallet contents");
         console.log("Index of duplicate element is :" + index);
-        walletContents[index]._quantity = walletContents[index]._quantity + 1;
+        if(isCustomOffering){
+            walletContents[index]._unitPrice = walletContents[index]._unitPrice + offering.UnitPrice;
+        } else {
+            walletContents[index]._quantity = walletContents[index]._quantity + 1;
+        }
         return walletContents;
     }
 
