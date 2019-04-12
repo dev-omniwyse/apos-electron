@@ -837,11 +837,11 @@ export class AddProductComponent implements OnInit {
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
-  
+
   }
 
   doVoidTransaction() {
-    this.doPinpadVoidTransaction(this.cardAppliedTotal) 
+    this.doPinpadVoidTransaction(this.cardAppliedTotal)
   }
 
 
@@ -886,7 +886,7 @@ export class AddProductComponent implements OnInit {
       if (data != undefined && data != "") {
         localStorage.setItem("pinPadTransactionData", data);
 
-      
+
       }
     });
   }
@@ -895,8 +895,8 @@ export class AddProductComponent implements OnInit {
     this.productCheckOut = false;
     this.checkout = true;
     console.log(this.isCardApplied);
-    if(this.isCardApplied){
-      
+    if (this.isCardApplied) {
+
       $("#cancelCheckoutModal").modal('hide');
       this.doVoidTransaction();
     }
@@ -1398,7 +1398,7 @@ export class AddProductComponent implements OnInit {
   }
 
   proceedToSaveTransaction() {
-    if (this.totalRemaining == (+this.checkoutTotal)){
+    if (this.totalRemaining == (+this.checkoutTotal)) {
       this.saveTransaction();
     }
   }
@@ -1411,40 +1411,40 @@ export class AddProductComponent implements OnInit {
           return;
         localStorage.setItem("pinPadTransactionData", data);
 
-      if (this.totalRemaining == (+this.checkoutTotal)) {
-      let indexOfPayment = this.checkIsPaymentMethodExists(9);
-      if (indexOfPayment == -1) {
-        let payment = new PaymentType();
-        payment.$amount = (+this.checkoutTotal);
-        payment.$paymentMethodId = 9;
-        payment.$comment = null;
-        this.shoppingcart._payments.push(payment);
-        $("#creditCardSuccessModal").modal("show");
+        if (this.totalRemaining == (+this.checkoutTotal)) {
+          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          if (indexOfPayment == -1) {
+            let payment = new PaymentType();
+            payment.$amount = (+this.checkoutTotal);
+            payment.$paymentMethodId = 9;
+            payment.$comment = null;
+            this.shoppingcart._payments.push(payment);
+            $("#creditCardSuccessModal").modal("show");
 
-      }
-      // this.doPinPadTransaction();
-    } else {
-      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-      this.cardAppliedTotal = this.checkoutTotal;
-      let indexOfPayment = this.checkIsPaymentMethodExists(9);
-      if (indexOfPayment == -1) {
-        let payment = new PaymentType();
-        payment.$amount = (+this.checkoutTotal);
-        payment.$paymentMethodId = 9;
-        payment.$comment = null;
-        this.shoppingcart._payments.push(payment);
-        this.isCardApplied = true;
-        this.checkoutTotal = "0";
-        $("#creditCardSuccessModal").modal("show");
+          }
+          // this.doPinPadTransaction();
+        } else {
+          this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+          this.cardAppliedTotal = this.checkoutTotal;
+          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          if (indexOfPayment == -1) {
+            let payment = new PaymentType();
+            payment.$amount = (+this.checkoutTotal);
+            payment.$paymentMethodId = 9;
+            payment.$comment = null;
+            this.shoppingcart._payments.push(payment);
+            this.isCardApplied = true;
+            this.checkoutTotal = "0";
+            $("#creditCardSuccessModal").modal("show");
 
-      } else {
-        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
-        this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
-        this.isCardApplied = true;
-        $("#creditCardSuccessModal").modal("show");
+          } else {
+            this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
+            this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+            this.isCardApplied = true;
+            $("#creditCardSuccessModal").modal("show");
 
-      }
-    }
+          }
+        }
       } else {
         $("#creditCardFailureModal").modal("show")
       }
@@ -1633,7 +1633,7 @@ export class AddProductComponent implements OnInit {
     }
   }
 
-  doSaveTransaction(){
+  doSaveTransaction() {
     this.saveTransaction();
   }
 
@@ -1940,6 +1940,10 @@ export class AddProductComponent implements OnInit {
   }
 
   cardApplied() {
+    if (this.isCardApplied) {
+      $('#creditCardDuplicateModal').modal('show');
+      return;
+    }
     if ((+this.checkoutTotal) == 0) {
 
       $('#invalidAmountModal').modal('show');
@@ -2040,36 +2044,36 @@ export class AddProductComponent implements OnInit {
     return indexOfPayment;
   }
 
-  swipe(eType,k) {
+  swipe(eType, k) {
     this.currentWalletLineItemIndex = k
     console.log(eType);
-    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItems.length-1){
+    if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItems.length - 1) {
       this.currentWalletLineItemIndex++;
       console.log("movin left")
     }
-    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+    else if (eType === this.SWIPE_ACTION.RIGHT && k > 0) {
       console.log("movin right");
       this.currentWalletLineItemIndex--;
     }
   }
-  productSwipe(eType,k) {
+  productSwipe(eType, k) {
     this.currentWalletLineProduct = k
     console.log(eType);
-    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length-1){
+    if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletLineProduct++;
       console.log("movin left")
     }
-    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+    else if (eType === this.SWIPE_ACTION.RIGHT && k > 0) {
       console.log("movin right");
       this.currentWalletLineProduct--;
     }
   }
-  productMerchSwipe(eType , k) {
+  productMerchSwipe(eType, k) {
     this.currentWalletMerchProduct = k
-    if(eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length-1){
+    if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletMerchProduct++;
     }
-    else if(eType === this.SWIPE_ACTION.RIGHT &&  k > 0){
+    else if (eType === this.SWIPE_ACTION.RIGHT && k > 0) {
       this.currentWalletMerchProduct--;
     }
   }
