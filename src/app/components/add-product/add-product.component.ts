@@ -19,7 +19,6 @@ import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { FLAGS } from '@angular/core/src/render3/interfaces/view';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -198,6 +197,7 @@ export class AddProductComponent implements OnInit {
   selected = 0;
   SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
+  maxSyncLimitReached = false;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -220,7 +220,8 @@ export class AddProductComponent implements OnInit {
         console.log("currentCard" + JSON.stringify(this.currentCard));
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-      console.log(this.readCarddata);
+      let deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+      this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(this.terminalConfigJson, deviceInfo);
       if (!this.isMagnetic) {
         // this.checkIsCardNew();
       }
