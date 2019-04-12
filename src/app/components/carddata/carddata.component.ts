@@ -102,6 +102,10 @@ export class CarddataComponent implements OnInit, OnChanges {
   isEncodeOnProcess: Boolean = true;
   encodedJsonCardIndex = 0;
   numOfAttempts = 0;
+  message: string;
+  lastItem: any;
+  title: string;
+  commaFlag: boolean;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
@@ -705,6 +709,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   confirmCancelEncoding() {
     $("#confirmCancelEncodeModal").modal('show');
+    this.getRefundTitle();
   }
 
 
@@ -1170,4 +1175,64 @@ export class CarddataComponent implements OnInit, OnChanges {
     console.log(receipt + 'generateReceipt receipt ');
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
   }
+
+  getRefundTitle() {
+    let count = 0;
+    let commaFlag = false;
+    this.message = "Please give the customer back  ";
+    this.title = "Return "
+    if(this.shoppingCart._payments.length >2) {
+      commaFlag = true;
+    }
+    this.shoppingCart._payments.forEach(element => {
+      
+        if(this.shoppingCart._payments.length !=0 && (count == this.shoppingCart._payments.length-1)){
+          this.title = this.title + " and "
+          this.message = this.message + " and ";
+
+          commaFlag = false;
+        }
+        if(count!=0 && commaFlag) {
+          this.title = this.title + ', '
+          this.message = this.message + ', '
+        }
+      switch (element.paymentMethodId) {
+        case 2:
+        this.title = this.title + "Cash";
+        this.message = this.message + "cash"
+        break;
+
+        case 3:
+        this.title = this.title + "Check";
+        this.message = this.message + "check"
+        break;
+
+        case 11:
+        this.title = this.title + "Voucher";
+        this.message = this.message + "voucher"
+        break;
+
+        case  9:
+        this.title = this.title + "Credit";
+        this.message = this.message + "credit"
+        break;
+
+        default: 
+        this.message = "please give the customer cash back"
+      }
+      
+      count++;
+    });
+
+
+ 
+
+
+
+
+  }
+
+  // getRefundMessage() {
+
+  // }
 }
