@@ -830,18 +830,76 @@ export class AddProductComponent implements OnInit {
 
   cancelCheckout() {
     $("#cancelCheckoutModal").modal('show');
+  
+  }
+
+  doVoidTransaction() {
+    this.doPinpadVoidTransaction(this.cardAppliedTotal) 
+  }
+
+
+  doPinpadVoidTransaction(amount) {
+    this.handleDoPinpadVoidTransactionResult();
+    this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount)
+  }
+
+  handleDoPinpadVoidTransactionResult() {
+    var doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.once('doPinpadVoidTransactionResult', (event, data) => {
+      if (data != undefined && data != "") {
+        this._ngZone.run(() => {
+          this.handleGetPinpadTransactionStatusEncodeResult();
+          this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+        });
+      }
+    });
+  }
+
+  handleGetPinpadTransactionStatusEncodeResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionStatusEncodeResult', (event, data) => {
+      console.log("transaction Status CreditCArd", data);
+      if (data != undefined && data != "") {
+        if (data == false && this.numOfAttempts < 120) {
+          var timer = setTimeout(() => {
+            this.numOfAttempts++;
+            this.handleGetPinpadTransactionStatusEncodeResult();
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+          }, 1000);
+        } else {
+          clearTimeout(timer);
+          this.handleGetPinpadTransactionDataEncodeResult();
+          this.electronService.ipcRenderer.send('getPinpadTransactionDataEncode')
+        }
+      }
+    });
+  }
+
+  handleGetPinpadTransactionDataEncodeResult() {
+    this.electronService.ipcRenderer.once('getPinpadTransactionDataEncodeResult', (event, data) => {
+      console.log("creditcardTransaction ", data);
+      if (data != undefined && data != "") {
+        localStorage.setItem("pinPadTransactionData", data);
+
+      
+      }
+    });
+  }
+
+  cancelCheckOutConfirmation() {
+    this.productCheckOut = false;
+    this.checkout = true;
+    console.log(this.isCardApplied);
+    if(this.isCardApplied){
+      
+      $("#cancelCheckoutModal").modal('hide');
+      this.doVoidTransaction();
+    }
+
     this.isCashApplied = false;
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
     this.isCardApplied = false;
     this.shoppingcart._payments = [];
     this.getTotalDue(this.shoppingcart);
-
-  }
-
-  cancelCheckOutConfirmation() {
-    this.productCheckOut = false;
-    this.checkout = true;
 
   }
 
@@ -1333,7 +1391,9 @@ export class AddProductComponent implements OnInit {
   }
 
   proceedToSaveTransaction() {
-    this.saveTransaction();
+    if (this.totalRemaining == (+this.checkoutTotal)){
+      this.saveTransaction();
+    }
   }
 
   handlegetPinpadTransactionDataResult() {
@@ -1343,7 +1403,41 @@ export class AddProductComponent implements OnInit {
         if (this.isCardPaymentCancelled)
           return;
         localStorage.setItem("pinPadTransactionData", data);
+
+      if (this.totalRemaining == (+this.checkoutTotal)) {
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = (+this.checkoutTotal);
+        payment.$paymentMethodId = 9;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
         $("#creditCardSuccessModal").modal("show");
+
+      }
+      // this.doPinPadTransaction();
+    } else {
+      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+      this.cardAppliedTotal = this.checkoutTotal;
+      let indexOfPayment = this.checkIsPaymentMethodExists(9);
+      if (indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = (+this.checkoutTotal);
+        payment.$paymentMethodId = 9;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        this.isCardApplied = true;
+        this.checkoutTotal = "0";
+        $("#creditCardSuccessModal").modal("show");
+
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
+        this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        this.isCardApplied = true;
+        $("#creditCardSuccessModal").modal("show");
+
+      }
+    }
       } else {
         $("#creditCardFailureModal").modal("show")
       }
@@ -1394,7 +1488,7 @@ export class AddProductComponent implements OnInit {
     $("#creditCardModal").modal("hide")
     $("#creditCardApplyModal").modal("show")
     this.handleDoPinPadTransactionResult();
-    this.electronService.ipcRenderer.send('doPinPadTransaction', (this.totalDue * 100));
+    this.electronService.ipcRenderer.send('doPinPadTransaction', (+this.checkoutTotal * 100));
   }
 
   handleCancelPinPadTransaction() {
@@ -1837,6 +1931,7 @@ export class AddProductComponent implements OnInit {
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
       $('#creditCardModal').modal('show');
+      this.doPinPadTransaction();
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       if (this.isCashApplied) {
         this.isCashApplied = true;
@@ -1867,6 +1962,7 @@ export class AddProductComponent implements OnInit {
       } else {
 
         $('#creditCardModal').modal('show');
+        this.doPinPadTransaction();
         // if (this.isCardApplied) {
         //   $('#creditCardModal').modal('show');
         //   this.cardAppliedTotal = this.checkAppliedTotal + this.checkoutTotal
@@ -1884,40 +1980,36 @@ export class AddProductComponent implements OnInit {
     }
   }
 
-  cardPayment() {
-    if (this.totalRemaining == (+this.checkoutTotal)) {
-      let indexOfPayment = this.checkIsPaymentMethodExists(9);
-      if (indexOfPayment == -1) {
-        let payment = new PaymentType();
-        payment.$amount = (+this.checkoutTotal);
-        payment.$paymentMethodId = 9;
-        payment.$comment = null;
-        this.shoppingcart._payments.push(payment);
-      }
-      this.doPinPadTransaction();
-    } else {
-      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-      this.cardAppliedTotal = this.checkoutTotal;
-      let indexOfPayment = this.checkIsPaymentMethodExists(9);
-      if (indexOfPayment == -1) {
-        let payment = new PaymentType();
-        payment.$amount = (+this.checkoutTotal);
-        payment.$paymentMethodId = 9;
-        payment.$comment = null;
-        this.shoppingcart._payments.push(payment);
-        // this.cashAppliedTotal = payment.$amount;
-        this.isCardApplied = true;
-        this.checkoutTotal = "0";
-        // this.doPinPadTransaction()
-      } else {
-        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
-        this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
-        // this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
-        this.cardAppliedTotal = true;
-        // this.doPinPadTransaction();
-      }
-    }
-  }
+  // cardPayment() {
+  //   if (this.totalRemaining == (+this.checkoutTotal)) {
+  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     if (indexOfPayment == -1) {
+  //       let payment = new PaymentType();
+  //       payment.$amount = (+this.checkoutTotal);
+  //       payment.$paymentMethodId = 9;
+  //       payment.$comment = null;
+  //       this.shoppingcart._payments.push(payment);
+  //     }
+  //     this.doPinPadTransaction();
+  //   } else {
+  //     this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+  //     this.cardAppliedTotal = this.checkoutTotal;
+  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     if (indexOfPayment == -1) {
+  //       let payment = new PaymentType();
+  //       payment.$amount = (+this.checkoutTotal);
+  //       payment.$paymentMethodId = 9;
+  //       payment.$comment = null;
+  //       this.shoppingcart._payments.push(payment);
+  //       this.isCardApplied = true;
+  //       this.checkoutTotal = "0";
+  //     } else {
+  //       this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
+  //       this.cardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+  //       this.cardAppliedTotal = true;
+  //     }
+  //   }
+  // }
 
 
   checkIsPaymentMethodExists(paymentMethodId) {
