@@ -449,19 +449,19 @@ export class Utils {
                 productStatus = product.status;
             }
             let cardBalance = "";
-            
-            var d = new Date();
-            var currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
+
+            let d = new Date();
+            let currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
             let productDescription = "";
             switch (productType) {
                 case TICKET_GROUP.PERIOD_PASS:
                     if (exp_date_epoch_days > 0) {
 
-                        let exp = new Date (product.exp_date_str);
-                        exp.setTime(exp.getTime()+addTime);
+                        let exp = new Date(product.exp_date_str);
+                        exp.setTime(exp.getTime() + addTime);
                         // let expTime  = new Date();
                         // expTime.setTime(addTime);
-                        cardBalance = "Exp: " +product.exp_date_str+" "+exp.getHours()+":"+exp.getMinutes();
+                        cardBalance = "Exp: " + product.exp_date_str + " " + exp.getHours() + ":" + exp.getMinutes();
 
                     } else {
 
@@ -527,7 +527,7 @@ export class Utils {
             }
             cardSummary.$balance = cardBalance;
             let description = this.getProductDescription(product, ticketMap);
-            if(description != undefined) {
+            if (description != undefined) {
                 productDescription = description;
             }
             cardSummary.$status = productStatus;
@@ -540,8 +540,8 @@ export class Utils {
     getProductDescription(product, ticketMap) {
         let description = undefined;
 
-        var ticketKey = product.product_type + "_" + product.designator;
-        if( ticketMap.size != 0 && ticketMap.get(ticketKey) != undefined ) {
+        let ticketKey = product.product_type + "_" + product.designator;
+        if (ticketMap.size != 0 && ticketMap.get(ticketKey) != undefined) {
             description = ticketMap.get(ticketKey);
         }
         return description;
@@ -550,10 +550,10 @@ export class Utils {
     pushTicketToMap(element, ticketMap) {
 
         if (element.Ticket != null) {
-            var ticket = element.Ticket;
+            let ticket = element.Ticket;
 
             if (ticket.Group != null && ticket.Designator != null) {
-                var ticketKey = ticket.Group + "_" + ticket.Designator;
+                let ticketKey = ticket.Group + "_" + ticket.Designator;
                 ticketMap.set(ticketKey, ticket.Description);
             }
         }
@@ -580,26 +580,26 @@ export class Utils {
     }
 
     getProductExpirationDate(exp_date_epoch_days, addTime) {
-    // 	console.log("exp_date_epoch_days: " + exp_date_epoch_days);
-    	
-    	var expDate = new Date(1970, 0, 1, 0, 0, 0);
-    	
-    //     var expDateDays = exp_date_epoch_days;
-        
-        // (addTime * 60000)
-    //     let startDate = Date.parse("1970-01-01");
-    //     let endDate = Date.parse(Date.now.toString());
-    //     let timeDiff = endDate - startDate;
-    //     // let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        // 	console.log("exp_date_epoch_days: " + exp_date_epoch_days);
 
-    //     var expirationDate = (new Date(expDate + expDateDays));
-    //     console.log("expirationDate " +expirationDate);
-    var expirationDate = new Date(expDate.getTime() + exp_date_epoch_days*addTime*60000);
+        let expDate = new Date(1970, 0, 1, 0, 0, 0);
+
+        //     let expDateDays = exp_date_epoch_days;
+
+        // (addTime * 60000)
+        //     let startDate = Date.parse("1970-01-01");
+        //     let endDate = Date.parse(Date.now.toString());
+        //     let timeDiff = endDate - startDate;
+        //     // let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+        //     let expirationDate = (new Date(expDate + expDateDays));
+        //     console.log("expirationDate " +expirationDate);
+        let expirationDate = new Date(expDate.getTime() + exp_date_epoch_days * addTime * 60000);
         return expirationDate;
     }
     isProductExpiredDesfire(exp_date_epoch_days, addTime) {
-        var isExpired = false;
-        var currentEpochDays = this.getCurrentEpochDays();
+        let isExpired = false;
+        let currentEpochDays = this.getCurrentEpochDays();
 
         if (0 != exp_date_epoch_days && 65535 != exp_date_epoch_days) {
             // exp date on the card is essentially the day BEFORE the expiration...but at midnight.
@@ -609,8 +609,8 @@ export class Utils {
             // product expires TODAY, check the time against addTime on the card
             else if (exp_date_epoch_days == currentEpochDays) {
 
-                var d = new Date();
-                var currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
+                let d = new Date();
+                let currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
 
                 if (addTime <= currentMinutesInDay) {
                     isExpired = true;
@@ -619,5 +619,49 @@ export class Utils {
         }
 
         return isExpired;
+    }
+
+    checkSyncLimitsHit(terminalRecordData, deviceInfo) {
+
+        let maxNumber = null;
+        let maxValue = null;
+
+        let currentNumber = null;
+        let currentValue = null;
+
+        if (null != terminalRecordData) {
+            maxNumber = terminalRecordData.MaxUnsyncedTransactionNumber;
+            maxValue = terminalRecordData.MaxUnsyncedTransactionValue;
+        }
+
+        currentNumber = deviceInfo.CURRENT_UNSYNCED_TRANSACTION_NUMBER;
+        currentValue = deviceInfo.CURRENT_UNSYNCED_TRANSACTION_VALUE;
+
+        if ((currentNumber != null) && (maxNumber != null) && (currentNumber >= (maxNumber * .75))) {
+            console.log("Number of unsynced transactions " + currentNumber + " is high, limit is " + maxNumber);
+            // if (syncTrigger) {
+            //     console.log("Triggering elevated sync.");
+            //     posApplet.triggerElevatedSync();
+            // }
+            if (currentNumber >= (maxNumber)) {
+                console.log("Max transactions limit reached: " + currentNumber + " over limit " + maxNumber);
+                return true;
+            }
+        } else if ((currentValue != null) && (maxValue != null) && (currentValue >= (maxValue * .75))) {
+            console.log("Number of unsynced transactions " + currentValue + " is high, limit is " + maxValue);
+            // if (syncTrigger) {
+            //     console.log("Triggering elevated sync.");
+            //     posApplet.triggerElevatedSync();
+            // }
+            if (currentValue >= (maxValue)) {
+                console.log("Max transactions limit reached: " + currentValue + " over limit " + maxValue);
+                return true;
+            }
+        } else {
+            console.log("Sync check, not performing sync: " + currentNumber + " of " + maxNumber + ", and " + currentValue + " of " + maxValue);
+        }
+
+        return false;
+
     }
 }
