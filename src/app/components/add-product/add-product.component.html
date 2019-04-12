@@ -84,17 +84,17 @@
                 </div>
             </ngx-slick> -->
 
-            <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
+            <div id="Carousel" class="carousel slide col-lg-10 col-offset-2" data-ride="carousel">
 
 
                 <div class="carousel-inner">
-                    <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'">
+                    <div *ngFor="let item of walletItems; let k = index" (swipeleft)="swipe($event.type,k)" (swiperight)="swipe($event.type, k)" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'">
                         <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item" (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
                     </div>
                 </div>
                 <br>
                 <ol class="carousel-indicators" *ngIf="walletItems.length > 1">
-                    <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
+                    <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" (click)="walletItemsIndicator(i)" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
                 </ol>
             </div>
             <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
@@ -258,7 +258,7 @@
         <div class="flex-wrap flex-right-items flex-contain-full-w1" *ngIf="!regularRoute">
             <div id="Carousel-products" class="carousel slide">
                 <div class="carousel-inner">
-                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'">
+                    <div *ngFor="let item of walletItemContents; let k = index" (swipeleft)="productSwipe($event.type, k)" (swiperight)="productSwipe($event.type, k)" [ngClass]="k == currentWalletLineProduct ? 'item active' : 'item'">
                         <div class="products" *ngFor="let currentItem of item">
                             <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
 
@@ -267,7 +267,7 @@
                 </div>
                 <br>
                 <ol class="carousel-indicators" *ngIf="merchantise.length > 6">
-                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
+                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" (click)="walletLineProductIndicator(i)" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineProduct? 'active' : ''"></li>
                 </ol>
             </div>
 
@@ -291,7 +291,7 @@
             <!-- </div> -->
             <div id="Carousel-products" class="carousel slide">
                 <div class="carousel-inner">
-                    <div *ngFor="let item of walletItemContents; let k = index" [ngClass]="k == 0 ? 'item active' : 'item'">
+                    <div *ngFor="let item of walletItemContents; let k = index" (swipeleft)="productMerchSwipe($event.type, k)" (swiperight)="productMerchSwipe($event.type, k)" [ngClass]="k == currentWalletMerchProduct ? 'item active' : 'item'">
                         <div class="products" *ngFor="let currentItem of item">
                             <button class="cardBtn" (click)="addProductToWallet(currentItem)">{{currentItem.Description}}<br />${{currentItem.UnitPrice}}</button>
 
@@ -299,8 +299,8 @@
                     </div>
                 </div>
                 <br>
-                <ol class="carousel-indicators" *ngIf="merchantise.length > 8">
-                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0? 'active' : ''"></li>
+                <ol class="carousel-indicators" *ngIf="merchantise.length > 6">
+                    <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" (click)="walletLineMerchProductIndicator(i)" [attr.data-slide-to]="i" [ngClass]="i == currentWalletMerchProduct? 'active' : ''"></li>
                 </ol>
             </div>
             <!-- </div> -->
@@ -438,6 +438,23 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="creditCardDuplicateModal" role="dialog">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Error</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Credit/Debit card can't be applied more than once</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="creditCardErrorModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
@@ -455,6 +472,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal fade" id="creditCardFailureModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
@@ -472,6 +490,7 @@
                     </div>
                 </div>
             </div>
+     
             <div class="modal fade" id="creditCardSuccessModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
@@ -481,7 +500,7 @@
                         </div>
 
                         <div class="modal-body">
-                            <p>Credit Card Transaction Successfull</p>
+                            <p>Successfully processed credit card</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="proceedToSaveTransaction()">Ok</button>
@@ -489,6 +508,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal fade" id="checkModal" role="dialog">
                 <div class="modal-dialog modal-sm modal-dialog-centered">
                     <div class="modal-content">
@@ -712,23 +732,6 @@
             </div>
             <div class="modal-body">
                 <p>{{maxLimitErrorMessages}}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="badlistedProductModal" role="dialog">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                <h4 class="modal-title">Error</h4>
-            </div>
-            <div class="modal-body">
-                <p>{{badlistedProductModalText}}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
