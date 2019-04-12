@@ -597,4 +597,27 @@ export class Utils {
     var expirationDate = new Date(expDate.getTime() + exp_date_epoch_days*addTime*60000);
         return expirationDate;
     }
+    isProductExpiredDesfire(exp_date_epoch_days, addTime) {
+        var isExpired = false;
+        var currentEpochDays = this.getCurrentEpochDays();
+
+        if (0 != exp_date_epoch_days && 65535 != exp_date_epoch_days) {
+            // exp date on the card is essentially the day BEFORE the expiration...but at midnight.
+            if (exp_date_epoch_days < currentEpochDays) {
+                isExpired = true;
+            }
+            // product expires TODAY, check the time against addTime on the card
+            else if (exp_date_epoch_days == currentEpochDays) {
+
+                var d = new Date();
+                var currentMinutesInDay = (d.getHours() * 60) + d.getMinutes();
+
+                if (addTime <= currentMinutesInDay) {
+                    isExpired = true;
+                }
+            }
+        }
+
+        return isExpired;
+    }
 }
