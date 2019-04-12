@@ -595,7 +595,7 @@ ul {
     padding: 1.5vh;
     border: 1px solid #ccc;
     overflow: auto;
-    height: 42vh;
+    height: 39vh;
 }
 
 @media (max-width: 1550px) {
