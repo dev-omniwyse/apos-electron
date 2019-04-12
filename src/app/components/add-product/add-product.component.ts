@@ -1633,6 +1633,10 @@ export class AddProductComponent implements OnInit {
     }
   }
 
+  doSaveTransaction(){
+    this.saveTransaction();
+  }
+
   cashApplied() {
     let payment = new PaymentType();
     payment.$paymentMethodId = 2
@@ -1641,7 +1645,8 @@ export class AddProductComponent implements OnInit {
     if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }
-    this.checkIfCreditCardApplied();
+    this.doSaveTransaction();
+    // this.checkIfCreditCardApplied();
   }
 
 
@@ -1737,8 +1742,9 @@ export class AddProductComponent implements OnInit {
   }
 
   vocherPayment() {
-    this.checkIfCreditCardApplied();
+    // this.checkIfCreditCardApplied();
     // this.saveTransaction();
+    this.doSaveTransaction();
   }
 
   notToApplyvoucher() {
@@ -1825,8 +1831,9 @@ export class AddProductComponent implements OnInit {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
-    this.checkIfCreditCardApplied();
-    // this.saveTransaction();
+    // this.checkIfCreditCardApplied();
+    //this.saveTransaction();
+    this.doSaveTransaction();
   }
 
 
@@ -1891,8 +1898,9 @@ export class AddProductComponent implements OnInit {
       }
       this.electronService.ipcRenderer.send('compensation');
       this.applyCompShow = false;
-      this.checkIfCreditCardApplied();
+      // this.checkIfCreditCardApplied();
       // this.saveTransaction();
+      this.doSaveTransaction();
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.compDue = this.totalRemaining;
