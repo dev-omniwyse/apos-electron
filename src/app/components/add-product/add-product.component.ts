@@ -1337,6 +1337,9 @@ export class AddProductComponent implements OnInit {
       if (element._walletTypeId == MediaType.SMART_CARD_ID) {
         isSmartcardFound = true;
       }
+      if(!element._isNew && (0 == element._walletContents.length) ){
+        isSmartcardFound = false;
+      }
     });
     return isSmartcardFound;
   }
