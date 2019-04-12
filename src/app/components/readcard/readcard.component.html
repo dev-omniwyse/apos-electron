@@ -20,10 +20,15 @@
                 </button>
             </div>
         </div>
+
+        <div class="col-md-8">
+            <div *ngIf="maxSyncLimitReached">{{maxSyncLimitReachedText}}</div>
+        </div>
+
         <div class="col-md-6">
             <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
             <div class="container-padding flex-column home-btns-set-padd">
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" data-toggle="modal" data-target="#myModal">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" data-toggle="modal" data-target="#myModal">
                     New Fare Card
                     
                 </button>
@@ -31,7 +36,7 @@
                     Existing Fare Card
                   
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="nonFareProduct()">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" (click)="nonFareProduct()">
                     Non-Fare Product
                   
                 </button>
@@ -95,7 +100,7 @@
             <button class="page-btns doNotPrint" (click)="printSummaryOfCard();"><i class="fa fa-print"></i> Print
                 Summary</button>
 
-            <button class="page-btns doNotPrint" [disabled]="active_wallet_status == 'INACTIVE'" [routerLink]="['/addproduct']"><i class="fa fa-plus-square"></i> Add
+            <button class="page-btns doNotPrint" [disabled]="active_wallet_status == 'INACTIVE' || maxSyncLimitReached" [routerLink]="['/addproduct']"><i class="fa fa-plus-square"></i> Add
                 New
                 Product to Card</button>
         </div>

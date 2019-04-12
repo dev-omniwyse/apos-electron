@@ -119,6 +119,8 @@ export class ReadcardComponent implements OnInit {
     bonusRidesCountText: string;
     nextBonusRidesText: string;
     cardContents = [];
+    maxSyncLimitReached = false;
+    maxSyncLimitReachedText = "";
     ticketMap = new Map();
     constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
         route.params.subscribe(val => {
@@ -129,7 +131,11 @@ export class ReadcardComponent implements OnInit {
         localStorage.removeItem("readCardData");
         localStorage.removeItem("shoppingCart");
         localStorage.removeItem("cardsData");
-
+        
+        let deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+        
+        this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(JSON.parse(localStorage.getItem('terminalConfigJson')), deviceInfo);
+        this.maxSyncLimitReachedText = "This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.";
 
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log("print sales data", data)

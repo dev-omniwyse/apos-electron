@@ -197,6 +197,7 @@ export class AddProductComponent implements OnInit {
   selected = 0;
   SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
+  maxSyncLimitReached = false;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -219,7 +220,8 @@ export class AddProductComponent implements OnInit {
         console.log("currentCard" + JSON.stringify(this.currentCard));
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-      console.log(this.readCarddata);
+      let deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+      this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(this.terminalConfigJson, deviceInfo);
       if (!this.isMagnetic) {
         // this.checkIsCardNew();
       }
@@ -403,14 +405,20 @@ export class AddProductComponent implements OnInit {
       canAddProduct = false;
       return canAddProduct;
     }
+    let onlyPayAsYouGoAllowed = false;
+    if (this.terminalConfigJson.NumberOfProducts - 1 == currentProductCount) {
+      if (!this.isThereAnyActivePayAsYouGoProduct()) {
+        onlyPayAsYouGoAllowed = true;
+      }
+    }
 
-    if (this.isFrequentProduct(selectedItem)) {
+    if (!onlyPayAsYouGoAllowed && this.isFrequentProduct(selectedItem)) {
       if (this.isCounttReachedForFrequentRide(selectedItem))
         return true;
       return false;
     }
 
-    if (this.isStoreRideProduct(selectedItem)) {
+    if (!onlyPayAsYouGoAllowed && this.isStoreRideProduct(selectedItem)) {
       if (this.isCounttReachedForStoreRide(selectedItem))
         return true;
       return false;
@@ -424,8 +432,16 @@ export class AddProductComponent implements OnInit {
 
     return canAddProduct;
   }
-
-
+  isThereAnyActivePayAsYouGoProduct() {
+    let isExist = false;
+    for (let product of this.currentCard.products) {
+      if (product.product_type == TICKET_GROUP.VALUE && this.isValidProduct(product)) {
+          isExist = true;
+        break;
+      }
+    }
+    return isExist;
+  }
   isFrequentProduct(selectedItem) {
     if (selectedItem.Ticket.Group == 1)
       return true;
@@ -514,13 +530,27 @@ export class AddProductComponent implements OnInit {
     return canAddPayAsYouGoBool
   }
 
+  isValidProduct(product) {
+    let flag = true;
+
+    if (product.product_type != TICKET_GROUP.VALUE &&
+      Utils.getInstance.isProductExpiredDesfire(product.exp_date_epoch_days, product.add_time) && product.recharges_pending == 0) {
+      flag = false;
+    } else if (product.product_type == TICKET_GROUP.RIDE && product.remaining_rides == 0) {
+      console.log("Item had no remaining rides.");
+      // product can be overwritten
+      flag = false;
+    }
+
+    return flag;
+  }
 
   getProductCountFromExistingCard(selectProduct: any) {
     var productMap = new Map();
 
     this.currentCard.products.forEach(product => {
       var key = product.product_type + ":" + product.designator
-      if (productMap.get(key) == undefined) {
+      if (productMap.get(key) == undefined && this.isValidProduct(product)) {
         productMap.set(key, 1);
       }
     })
