@@ -205,6 +205,7 @@ export class LoginComponent implements OnInit {
 
                         } else if (element.shiftState == "0" && element.shiftType == "1" && element.userEmail != "") {
                             this.ownedByUserBoolean = false
+                            localStorage.removeItem("closingPausedMainShift")
 
                         }
             })

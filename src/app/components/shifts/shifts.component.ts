@@ -86,7 +86,7 @@ export class ShiftsComponent implements OnInit {
                    // this.cdtaService.printAllOrSpecificShiftData(null)
 
                 } else
-                    if (element.userID == shiftreportUser && element.shiftType == "1" && localStorage.getItem("closingPausedMainShift") != "true") {
+                    if (element.userID == shiftreportUser && element.shiftType == "1") {
                         element.shiftState = "3";
                         element.timeClosed = new Date().getTime();
                         element.closingDrawer = + this.productTotal
@@ -177,7 +177,7 @@ export class ShiftsComponent implements OnInit {
         this.hideModalPopup = true
         localStorage.setItem("hideModalPopup", this.hideModalPopup.toString())
         if (localStorage.getItem("closingPausedMainShift") == "true") {
-            localStorage.setItem("closingPausedMainShift", "false")
+            localStorage.removeItem("closingPausedMainShift")
         }
         let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
         let userId = localStorage.getItem("userID")
