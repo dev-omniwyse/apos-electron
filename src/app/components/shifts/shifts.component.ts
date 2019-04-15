@@ -102,7 +102,11 @@ export class ShiftsComponent implements OnInit {
          */
         shiftStore.forEach(element => {
             if (localStorage.getItem("closingPausedMainShift") == "true") {
-                this.cdtaService.printAllOrSpecificShiftData(null)
+                if(element.userID == shiftreportUser){
+                    this.cdtaService.printAllOrSpecificShiftData(null)
+                }else{
+
+                }
             } else {
                 if (element.userID == shiftreportUser && element.shiftType == "0") {
                     this.cdtaService.printAllOrSpecificShiftData(null)
