@@ -57,11 +57,6 @@ export class FareCardService {
             walletContent.startDate = 0;
             walletContent.expirationDate = 0;
             walletContent.rechargesPending = 0;
-            if(MediaType.MERCHANDISE_ID == walletLineItem._walletTypeId){
-                walletContent.taxRate = offering.TaxRate;
-                walletContent.taxAmount = +(offering.UnitPrice*(offering.TaxRate)/100).toFixed(2);
-                //item._unitPrice*(item._tax)/100).toFixed(2)
-            }            
             shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents.push(walletContent);
             walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents
         }

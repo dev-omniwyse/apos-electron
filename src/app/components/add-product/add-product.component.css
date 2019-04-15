@@ -752,9 +752,6 @@ ul {
 .remove-icon img {
     width: 20px;
 }
-.remove-icon {
-    height: 48px;
-}
 
 .btndefault:disabled {
     color: #aeaeae;
@@ -793,8 +790,4 @@ ul {
     .cr-right button {
         font-size: 4vh;
     }
-}
-
-.padding-5 {
-    padding: 3px !important;
 }
