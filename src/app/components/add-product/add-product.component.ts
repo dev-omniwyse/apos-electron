@@ -198,6 +198,7 @@ export class AddProductComponent implements OnInit {
   SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
   maxSyncLimitReached = false;
+  fadeStatus: boolean;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -1022,6 +1023,7 @@ export class AddProductComponent implements OnInit {
   // stored ride values
   storedValue() {
     this.selectedProductCategoryIndex = 1;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
@@ -1030,6 +1032,7 @@ export class AddProductComponent implements OnInit {
   }
   frequentRide() {
     this.selectedProductCategoryIndex = 0;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
@@ -1046,6 +1049,7 @@ export class AddProductComponent implements OnInit {
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
@@ -2104,6 +2108,7 @@ export class AddProductComponent implements OnInit {
   }
   productMerchSwipe(eType, k) {
     this.currentWalletMerchProduct = k
+    this.fadeStatus = true;
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletMerchProduct++;
     }
