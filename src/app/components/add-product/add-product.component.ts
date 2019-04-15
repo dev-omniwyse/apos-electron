@@ -2083,19 +2083,15 @@ export class AddProductComponent implements OnInit {
   }
   productSwipe(eType, k) {
     this.currentWalletLineProduct = k
-    console.log(eType);
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletLineProduct++;
-      console.log("movin left")
     }
     else if (eType === this.SWIPE_ACTION.RIGHT && k > 0) {
-      console.log("movin right");
       this.currentWalletLineProduct--;
     }
   }
   productMerchSwipe(eType, k) {
     this.currentWalletMerchProduct = k
-    this.fadeStatus = true;
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletMerchProduct++;
     }
