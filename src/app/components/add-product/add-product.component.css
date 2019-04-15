@@ -507,6 +507,7 @@ ul {
     background-color: #013D7B;
     padding: 10px;
     height: calc(100vh - 164px);
+    position: relative;
 }
 
 .nav-pills>li>a {
@@ -721,7 +722,11 @@ ul {
 .carousel-indicators {
     /* left: 0;
 	top: auto; */
-    bottom: -7px;
+    bottom: 15px;
+}
+
+.btns-mag .carousel-indicators {
+    bottom: -8px;
 }
 
 
@@ -740,9 +745,10 @@ ul {
     background: #013d79;
 } */
 
-#Carousel-products {
+
+/* #Carousel-products {
     height: calc(100vh - 380px);
-}
+} */
 
 .cont-products-head {
     font-size: 2vh;
@@ -790,4 +796,27 @@ ul {
     .cr-right button {
         font-size: 4vh;
     }
+}
+
+.swipe-height .item {
+    height: calc(100vh - 255px);
+}
+
+.swipe-anim .carousel {
+    opacity: 0;
+}
+
+.swipe-anim .fades {
+    opacity: 1!important;
+    transition: opacity 0.5s linear;
+}
+
+.custom-products {
+    margin-top: -120px;
+    text-align: right;
+    margin-right: -20px;
+}
+
+.pay-as-go~.carousel-indicators {
+    bottom: 155px;
 }
