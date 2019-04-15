@@ -1186,7 +1186,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
     this.shoppingCart._payments.forEach(element => {
       
-        if(this.shoppingCart._payments.length !=0 && (count == this.shoppingCart._payments.length-1)){
+        if(count >= 1){
           this.title = this.title + " and "
           this.message = this.message + " and ";
 
@@ -1218,10 +1218,14 @@ export class CarddataComponent implements OnInit, OnChanges {
         break;
 
         default: 
-        this.message = "please give the customer cash back"
+        this.message = "Please give the customer back "
       }
       
       count++;
+      
+      if(element.paymentMethodId == 8) {
+        count--;
+      }
     });
 
 
