@@ -618,10 +618,10 @@ export class AddProductComponent implements OnInit {
     let message = "Limit Reached"
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
-        message = "Cannot Add more than one Product"
+        message = "Cannot add more than one product."
         break;
       case MediaType.SMART_CARD_ID:
-        message = "Max Product limit reached."
+        message = "Max product limit reached."
         break;
     }
     return message
