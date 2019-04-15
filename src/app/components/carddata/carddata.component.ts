@@ -1185,17 +1185,16 @@ export class CarddataComponent implements OnInit, OnChanges {
       commaFlag = true;
     }
     this.shoppingCart._payments.forEach(element => {
-      
-        if(count >= 1){
-          this.title = this.title + " and "
-          this.message = this.message + " and ";
+      if(this.shoppingCart._payments.length !=0 && (0 != this.shoppingCart._payments.length-1 ) && (count == this.shoppingCart._payments.length-1)){
+        this.title = this.title + " and "
+        this.message = this.message + " and ";
 
-          commaFlag = false;
-        }
-        if(count!=0 && commaFlag) {
-          this.title = this.title + ', '
-          this.message = this.message + ', '
-        }
+        commaFlag = false;
+      }
+      if(count!=0 && commaFlag) {
+        this.title = this.title + ', '
+        this.message = this.message + ', '
+      }
       switch (element.paymentMethodId) {
         case 2:
         this.title = this.title + "Cash";
@@ -1222,7 +1221,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
       
       count++;
-      
+
       if(element.paymentMethodId == 8) {
         count--;
       }

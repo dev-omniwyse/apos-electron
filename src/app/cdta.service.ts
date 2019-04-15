@@ -1066,8 +1066,9 @@ export class CdtaService {
       // if the payment method is cash, you want to give the full amount tendered.
       //    that is the amount we stored + the change due
       if (null != paymentId) {
+        changeDue = paymentRecord.cashback;
         if (2 == paymentId) {
-          paymentAmount = "          $" + (changeDue + Number(paymentRecord.amount)).toFixed(2);
+          paymentAmount = "          $" + Number(paymentRecord.amount).toFixed(2);
         } else {
           if (paymentRecord.amount != null) {
             paymentAmount = "          $" + Number(paymentRecord.amount).toFixed(2);

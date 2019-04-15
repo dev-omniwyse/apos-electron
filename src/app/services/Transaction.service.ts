@@ -170,6 +170,7 @@ export class TransactionService {
             paymentInfo.$paymentMethodId = item.paymentMethodId;
             paymentInfo.$amount = item.amount;
             paymentInfo.$comment = item.comment;
+            paymentInfo.$cashback = item.cashback;
             payments.push(paymentInfo);
         }
         transaction.$payments = payments;

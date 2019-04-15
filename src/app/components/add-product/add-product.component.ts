@@ -200,6 +200,7 @@ export class AddProductComponent implements OnInit {
   message: string;
   title: string;
   cancelCheckoutcash: boolean;
+  maxSyncLimitReached = false;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -222,7 +223,8 @@ export class AddProductComponent implements OnInit {
         console.log("currentCard" + JSON.stringify(this.currentCard));
       }
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-      console.log(this.readCarddata);
+      let deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+      this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(this.terminalConfigJson, deviceInfo);
       if (!this.isMagnetic) {
         // this.checkIsCardNew();
       }
@@ -406,14 +408,20 @@ export class AddProductComponent implements OnInit {
       canAddProduct = false;
       return canAddProduct;
     }
+    let onlyPayAsYouGoAllowed = false;
+    if (this.terminalConfigJson.NumberOfProducts - 1 == currentProductCount) {
+      if (!this.isThereAnyActivePayAsYouGoProduct()) {
+        onlyPayAsYouGoAllowed = true;
+      }
+    }
 
-    if (this.isFrequentProduct(selectedItem)) {
+    if (!onlyPayAsYouGoAllowed && this.isFrequentProduct(selectedItem)) {
       if (this.isCounttReachedForFrequentRide(selectedItem))
         return true;
       return false;
     }
 
-    if (this.isStoreRideProduct(selectedItem)) {
+    if (!onlyPayAsYouGoAllowed && this.isStoreRideProduct(selectedItem)) {
       if (this.isCounttReachedForStoreRide(selectedItem))
         return true;
       return false;
@@ -427,8 +435,16 @@ export class AddProductComponent implements OnInit {
 
     return canAddProduct;
   }
-
-
+  isThereAnyActivePayAsYouGoProduct() {
+    let isExist = false;
+    for (let product of this.currentCard.products) {
+      if (product.product_type == TICKET_GROUP.VALUE && this.isValidProduct(product)) {
+          isExist = true;
+        break;
+      }
+    }
+    return isExist;
+  }
   isFrequentProduct(selectedItem) {
     if (selectedItem.Ticket.Group == 1)
       return true;
@@ -517,13 +533,27 @@ export class AddProductComponent implements OnInit {
     return canAddPayAsYouGoBool
   }
 
+  isValidProduct(product) {
+    let flag = true;
+
+    if (product.product_type != TICKET_GROUP.VALUE &&
+      Utils.getInstance.isProductExpiredDesfire(product.exp_date_epoch_days, product.add_time) && product.recharges_pending == 0) {
+      flag = false;
+    } else if (product.product_type == TICKET_GROUP.RIDE && product.remaining_rides == 0) {
+      console.log("Item had no remaining rides.");
+      // product can be overwritten
+      flag = false;
+    }
+
+    return flag;
+  }
 
   getProductCountFromExistingCard(selectProduct: any) {
     var productMap = new Map();
 
     this.currentCard.products.forEach(product => {
       var key = product.product_type + ":" + product.designator
-      if (productMap.get(key) == undefined) {
+      if (productMap.get(key) == undefined && this.isValidProduct(product)) {
         productMap.set(key, 1);
       }
     })
@@ -1321,6 +1351,9 @@ export class AddProductComponent implements OnInit {
       if (element._walletTypeId == MediaType.SMART_CARD_ID) {
         isSmartcardFound = true;
       }
+      if(!element._isNew && (0 == element._walletContents.length) ){
+        isSmartcardFound = false;
+      }
     });
     return isSmartcardFound;
   }
@@ -1682,6 +1715,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 2
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
+    payment.$cashback = this.cashBack;
     if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }
@@ -2159,23 +2193,22 @@ export class AddProductComponent implements OnInit {
     let commaFlag = false;
     this.message = " ";
     this.title = " "
-    if(this.shoppingcart._payments.length >2 && count > 2) {
+    if(this.shoppingcart._payments.length >2) {
       commaFlag = true;
     }
     this.shoppingcart._payments.forEach(element => {
-    
-        if(count>=1){
-          this.title = this.title + " and "
-          // this.message = this.message + " and ";
+      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
+        this.title = this.title + " and "
+        this.message = this.message + " and ";
 
-          commaFlag = false;
-        }
-        if(count!=0 && commaFlag) {
-          this.title = this.title + ', '
-          // this.message = this.message + ', '
-        }
-
+        commaFlag = false;
+      }
+      if(count!=0 && commaFlag) {
+        this.title = this.title + ', '
+        this.message = this.message + ', '
+      }
       switch (element.paymentMethodId) {
+
         case 2:
         this.title = this.title + "Cash";
         this.message = this.message + "Return change to customer."
@@ -2204,7 +2237,7 @@ export class AddProductComponent implements OnInit {
       }
       
       count++;
-
+     
       if(element.paymentMethodId == 8) {
         count--;
       }
@@ -2221,17 +2254,16 @@ export class AddProductComponent implements OnInit {
       commaFlag = true;
     }
     this.shoppingcart._payments.forEach(element => {
-      
-        if(count >= 1){
-          this.title = this.title + " and "
-          this.message = this.message + " and ";
+      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
+        this.title = this.title + " and "
+        this.message = this.message + " and ";
 
-          commaFlag = false;
-        }
-        if(count!=0 && commaFlag) {
-          this.title = this.title + ', '
-          this.message = this.message + ', '
-        }
+        commaFlag = false;
+      }
+      if(count!=0 && commaFlag) {
+        this.title = this.title + ', '
+        this.message = this.message + ', '
+      }
       switch (element.paymentMethodId) {
         case 2:
         this.title = this.title + "Cash";

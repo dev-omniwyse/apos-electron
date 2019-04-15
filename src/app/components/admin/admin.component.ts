@@ -474,11 +474,11 @@ getPresentShiftReport() {
     this.terminalConfigJson = JSON.parse(localStorage.getItem("terminalConfigJson"));
     this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
     shiftReports.forEach(element => {
-      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "false") {
-        this.closingPausedMainShift = true
-        this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
+      // if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "false") {
+      //   this.closingPausedMainShift = true
+      //   this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
 
-      } else
+      // } else
         if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
           this.closingPausedMainShift = true
           this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
