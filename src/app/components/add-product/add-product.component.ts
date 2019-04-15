@@ -647,7 +647,7 @@ export class AddProductComponent implements OnInit {
         backdrop: 'static',
         keyboard: false
       });
-      return;
+      return false;
     }
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
@@ -656,7 +656,7 @@ export class AddProductComponent implements OnInit {
           backdrop: 'static',
           keyboard: false
         });
-        return;
+        return false;
       }
     }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
@@ -1037,6 +1037,14 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
   customAmount(item) {
+    if (!this.isTotalproductCountForCardreached(item)) {
+      this.maxLimitErrorMessages = this.getProductLimitMessage()
+      $("#maxCardLimitModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return false;
+    }
     this.customPayAsYouGo = item;
     this.isCustomAmount = true;
     // this.router.navigate(['/custom-amount'])
