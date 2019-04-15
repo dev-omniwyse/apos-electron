@@ -259,17 +259,17 @@ export class AdminComponent implements OnInit {
 
   }
 
-  
-getPresentShiftReport() {
-  // let userID = localStorage.getItem("userID")
-  // let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
-  // var specificUserDetails = []
-  // shiftUsers.forEach(element => {
-  // if (element.userID == userID) {
-  // specificUserDetails.push(element)
-  // }
-  // });
-  this.cdtaService.printAllOrSpecificShiftData(null)
+
+  getPresentShiftReport() {
+    // let userID = localStorage.getItem("userID")
+    // let shiftUsers = JSON.parse(localStorage.getItem("shiftReport"));
+    // var specificUserDetails = []
+    // shiftUsers.forEach(element => {
+    // if (element.userID == userID) {
+    // specificUserDetails.push(element)
+    // }
+    // });
+    this.cdtaService.printAllOrSpecificShiftData(null)
   }
 
   getTerminalConfigJson() {
@@ -324,7 +324,7 @@ getPresentShiftReport() {
     this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(offeringSList) + '}');
   }
 
-   getSalesReports(event) {
+  getSalesReports(event) {
     let reliefShif = JSON.parse(localStorage.getItem("shiftReport"));
     reliefShif.forEach(element => {
       console.log("sales report", element.shiftType, element.timeOpened, element.timeClosed)
@@ -373,17 +373,22 @@ getPresentShiftReport() {
     })
     localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
 
+    if (localStorage.getItem("expectedCash") != undefined) {
+      var mainUserExpectedCash = localStorage.getItem("expectedCash");
+      localStorage.setItem("mainUserExpectedCash",mainUserExpectedCash)
+    } else {
+      localStorage.setItem("mainUserExpectedCash",this.expectedCash)
+    }
     this.router.navigate(['/login'])
-
   }
 
   handleOpenCashDrawerResult() {
     this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
       if (data != undefined && data != "") {
         if (data) {
-            console.log("cash drawer opened Sucessfully");
+          console.log("cash drawer opened Sucessfully");
         }
-        else{
+        else {
           console.log("cash drawer open Failed")
         }
       }
@@ -391,19 +396,19 @@ getPresentShiftReport() {
   }
 
   openCashDrawerForNoSale() {
-    this. handleOpenCashDrawerResult();
+    this.handleOpenCashDrawerResult();
     this.openCashDrawer();
-    
+
   }
 
-  openCashDrawer(){
+  openCashDrawer() {
     this.electronService.ipcRenderer.send("openCashDrawer")
   }
-  
+
   closePausedMainShift() {
     this.closingPausedMainShift = true
     localStorage.setItem("closingPausedMainShift", this.closingPausedMainShift.toString())
-    this. handleOpenCashDrawerResult();
+    this.handleOpenCashDrawerResult();
     this.openCashDrawer();
   }
 
@@ -411,7 +416,7 @@ getPresentShiftReport() {
 
     let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
     let shiftreportUser = localStorage.getItem("userID")
-    this. handleOpenCashDrawerResult();
+    this.handleOpenCashDrawerResult();
     this.openCashDrawer();
     shiftStore.forEach(element => {
       if (element.userID == shiftreportUser && element.shiftState == "4") {
@@ -479,69 +484,69 @@ getPresentShiftReport() {
       //   this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
 
       // } else
-        if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
-          this.closingPausedMainShift = true
-          this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
+      if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "true") {
+        this.closingPausedMainShift = true
+        this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
+      } else
+        if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+          this.shiftType = "0"
+          this.shiftState = "3"
+          this.mainshiftCloser = true
+          this.statusOfShiftReport = "Main Shift is Closed"
+          localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
         } else
-          if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
+          if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0") {
             this.shiftType = "0"
             this.shiftState = "3"
-            this.mainshiftCloser = true
             this.statusOfShiftReport = "Main Shift is Closed"
+
             localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
-          } else
-            if (element.shiftState == "3" && element.userID == userId && element.shiftType == "0") {
-              this.shiftType = "0"
-              this.shiftState = "3"
-              this.statusOfShiftReport = "Main Shift is Closed"
 
-              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+          } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
+            this.shiftState = "0"
+            this.shiftType = "0"
 
-            } else if (element.shiftState == "0" && element.shiftType == "0" && element.userID == userId) {
-              this.shiftState = "0"
-              this.shiftType = "0"
-
-              this.statusOfShiftReport = "Main Shift is Opened"
-              if (localStorage.getItem("hideModalPopup") == "true") {
-                $("#readyForSaleModal").modal('hide');
-              } else {
-                $("#readyForSaleModal").modal('show');
-              }
-
-            } else if (element.shiftState == "4" && element.userID == userId && element.shiftType == "0") {
-              this.shiftType = "0"
-              this.shiftState = "4"
-              this.statusOfShiftReport = "Main Shift is Paused"
-              localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
-            } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
-              this.shiftType = "1"
-              this.shiftState = "3"
-              // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
-              //   this.mainshiftCloser = true
-              // } else {
-              //   this.shiftType = "1"
-              //   this.shiftState = "3"
-              //  this.statusOfShiftReport = "Main Shift is Paused "
-              // }
-              this.statusOfShiftReport = "Main Shift is Paused "
-            } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
-              this.shiftType = "1";
-              this.shiftState = "0"
-              if (localStorage.getItem("hideModalPopup") == "true") {
-                $("#readyForSaleModal").modal('hide');
-              } else {
-                $("#readyForSaleModal").modal('show');
-              }
-              this.statusOfShiftReport = "Relief Shift is Opened"
+            this.statusOfShiftReport = "Main Shift is Opened"
+            if (localStorage.getItem("hideModalPopup") == "true") {
+              $("#readyForSaleModal").modal('hide');
+            } else {
+              $("#readyForSaleModal").modal('show');
             }
+
+          } else if (element.shiftState == "4" && element.userID == userId && element.shiftType == "0") {
+            this.shiftType = "0"
+            this.shiftState = "4"
+            this.statusOfShiftReport = "Main Shift is Paused"
+            localStorage.setItem("ShiftOpenPauseStatus", this.statusOfShiftReport)
+          } else if (element.shiftState == "3" && element.userID == userId && element.shiftType == "1") {
+            this.shiftType = "1"
+            this.shiftState = "3"
+            // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
+            //   this.mainshiftCloser = true
+            // } else {
+            //   this.shiftType = "1"
+            //   this.shiftState = "3"
+            //  this.statusOfShiftReport = "Main Shift is Paused "
+            // }
+            this.statusOfShiftReport = "Main Shift is Paused "
+          } else if (element.shiftState == "0" && element.userID == userId && element.shiftType == "1") {
+            this.shiftType = "1";
+            this.shiftState = "0"
+            if (localStorage.getItem("hideModalPopup") == "true") {
+              $("#readyForSaleModal").modal('hide');
+            } else {
+              $("#readyForSaleModal").modal('show');
+            }
+            this.statusOfShiftReport = "Relief Shift is Opened"
+          }
     });
 
     shiftReports.forEach(element => {
       if (element.userID == localStorage.getItem("userID")) {
-       // if (element.openingDrawer != undefined && element.openingDrawer != "") {
-          this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
-          this.expectedCash = this.openingDrawerBal
-          localStorage.setItem("expectedCash", this.expectedCash)
+        // if (element.openingDrawer != undefined && element.openingDrawer != "") {
+        this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2)
+        this.expectedCash = this.openingDrawerBal
+        localStorage.setItem("expectedCash", this.expectedCash)
 
         //}
         if (element.closingDrawer != undefined && element.closingDrawer != "") {

@@ -211,9 +211,9 @@ export class ShiftsComponent implements OnInit {
         this.handleOpenCashDrawerResult();
         this.electronService.ipcRenderer.send("openCashDrawer")
         shiftReports.forEach(element => {
-            if (localStorage.getItem("closingPausedMainShift") == "true" && element.userID == userId) {
+            if (localStorage.getItem("closingPausedMainShift") == "true") {
                 this.setShiftStatus = "CLOSE SHIFT"
-                this.expectedCash = localStorage.getItem("expectedCash")
+                this.expectedCash = localStorage.getItem("mainUserExpectedCash")
                 this.setShiftText = "Enter the total closing amount in the till and Tap 'Enter' "
             }
             else
