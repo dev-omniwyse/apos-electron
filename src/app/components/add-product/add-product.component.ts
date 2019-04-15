@@ -201,6 +201,7 @@ export class AddProductComponent implements OnInit {
   title: string;
   cancelCheckoutcash: boolean;
   maxSyncLimitReached = false;
+  fadeStatus: boolean;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -620,10 +621,10 @@ export class AddProductComponent implements OnInit {
     let message = "Limit Reached"
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
-        message = "Cannot Add more than one Product"
+        message = "Cannot add more than one product."
         break;
       case MediaType.SMART_CARD_ID:
-        message = "Max Product limit reached."
+        message = "Max product limit reached."
         break;
     }
     return message
@@ -650,7 +651,7 @@ export class AddProductComponent implements OnInit {
         backdrop: 'static',
         keyboard: false
       });
-      return;
+      return false;
     }
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
@@ -659,7 +660,7 @@ export class AddProductComponent implements OnInit {
           backdrop: 'static',
           keyboard: false
         });
-        return;
+        return false;
       }
     }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
@@ -1036,6 +1037,7 @@ export class AddProductComponent implements OnInit {
   // stored ride values
   storedValue() {
     this.selectedProductCategoryIndex = 1;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
@@ -1044,6 +1046,7 @@ export class AddProductComponent implements OnInit {
   }
   frequentRide() {
     this.selectedProductCategoryIndex = 0;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
@@ -1051,6 +1054,14 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
   customAmount(item) {
+    if (!this.isTotalproductCountForCardreached(item)) {
+      this.maxLimitErrorMessages = this.getProductLimitMessage()
+      $("#maxCardLimitModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return false;
+    }
     this.customPayAsYouGo = item;
     this.isCustomAmount = true;
     // this.router.navigate(['/custom-amount'])
@@ -1060,6 +1071,7 @@ export class AddProductComponent implements OnInit {
   }
   payValue() {
     this.selectedProductCategoryIndex = 2;
+    this.currentWalletLineProduct = 0;
     this.merchantise = [];
     let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
     let list = FilterOfferings.getInstance.filterFareOfferings(item.Offering, TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
@@ -1459,7 +1471,7 @@ export class AddProductComponent implements OnInit {
         localStorage.setItem("pinPadTransactionData", data);
 
         if (this.totalRemaining == (+this.checkoutTotal)) {
-          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9, this.shoppingcart);
           if (indexOfPayment == -1) {
             let payment = new PaymentType();
             payment.$amount = (+this.checkoutTotal);
@@ -1476,7 +1488,7 @@ export class AddProductComponent implements OnInit {
         } else {
           this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
           this.cardAppliedTotal = this.checkoutTotal;
-          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9, this.shoppingcart);
           if (indexOfPayment == -1) {
             let payment = new PaymentType();
             payment.$amount = (+this.checkoutTotal);
@@ -1656,7 +1668,7 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-        let indexOfPayment = this.checkIsPaymentMethodExists(2);
+        let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = (+this.checkoutTotal);
@@ -1716,7 +1728,7 @@ export class AddProductComponent implements OnInit {
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
     payment.$cashback = this.cashBack;
-    if (this.checkIsPaymentMethodExists(2) == -1) {
+    if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
       this.shoppingcart._payments.push(payment);
     }
     this.getRefundTitle();
@@ -1783,13 +1795,13 @@ export class AddProductComponent implements OnInit {
       payment.$paymentMethodId = 11
       payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
-      if (this.checkIsPaymentMethodExists(11) == -1) {
+      if (Utils.getInstance.checkIsPaymentMethodExists(11, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
       }
     } else {
       this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       this.voucherRemaining = this.totalRemaining;
-      let indexOfPayment = this.checkIsPaymentMethodExists(11);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(11, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -1891,7 +1903,7 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-        let indexOfPayment = this.checkIsPaymentMethodExists(3);
+        let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = (+this.checkoutTotal);
@@ -1923,7 +1935,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 3
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
-    if (this.checkIsPaymentMethodExists(3) == -1) {
+    if (Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart) == -1) {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
@@ -1987,7 +1999,7 @@ export class AddProductComponent implements OnInit {
 
   compensation() {
     if (this.totalRemaining == (+this.checkoutTotal)) {
-      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -2003,7 +2015,7 @@ export class AddProductComponent implements OnInit {
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.compDue = this.totalRemaining;
-      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -2100,7 +2112,7 @@ export class AddProductComponent implements OnInit {
 
   // cardPayment() {
   //   if (this.totalRemaining == (+this.checkoutTotal)) {
-  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9);
   //     if (indexOfPayment == -1) {
   //       let payment = new PaymentType();
   //       payment.$amount = (+this.checkoutTotal);
@@ -2112,7 +2124,7 @@ export class AddProductComponent implements OnInit {
   //   } else {
   //     this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
   //     this.cardAppliedTotal = this.checkoutTotal;
-  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9);
   //     if (indexOfPayment == -1) {
   //       let payment = new PaymentType();
   //       payment.$amount = (+this.checkoutTotal);
@@ -2129,19 +2141,6 @@ export class AddProductComponent implements OnInit {
   //   }
   // }
 
-
-  checkIsPaymentMethodExists(paymentMethodId) {
-    let indexOfPayment = -1;
-    let payments = this.shoppingcart._payments;
-    for (let index = 0; index < payments.length; index++) {
-      if (paymentMethodId == payments[index].paymentMethodId) {
-        indexOfPayment = index;
-        console.log(indexOfPayment)
-        break;
-      }
-    }
-    return indexOfPayment;
-  }
 
   swipe(eType, k) {
     this.currentWalletLineItemIndex = k
@@ -2169,6 +2168,7 @@ export class AddProductComponent implements OnInit {
   }
   productMerchSwipe(eType, k) {
     this.currentWalletMerchProduct = k
+    this.fadeStatus = true;
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletMerchProduct++;
     }
