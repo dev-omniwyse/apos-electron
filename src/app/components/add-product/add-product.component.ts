@@ -198,6 +198,7 @@ export class AddProductComponent implements OnInit {
   SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
   maxSyncLimitReached = false;
+  taxTotal = 0;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -662,7 +663,7 @@ export class AddProductComponent implements OnInit {
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
+    this.getNonFareTotalTax(this.currentWalletLineItem);
   }
 
   getSelectedMerchProductData(merch) {
@@ -732,7 +733,7 @@ export class AddProductComponent implements OnInit {
     }
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
   }
   removeCardfromCardJSON() {
@@ -765,6 +766,7 @@ export class AddProductComponent implements OnInit {
     this.currentWalletLineItem = this.currentWalletLineItem;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     this.productToRemove = null;
   }
 
@@ -1149,6 +1151,7 @@ export class AddProductComponent implements OnInit {
     this.currentWalletLineItemIndex = index;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     if (this.currentWalletLineItem._walletTypeId == MediaType.MAGNETIC_ID) {
       this.isMagnetic = true;
     } else if (this.currentWalletLineItem._walletTypeId == MediaType.MERCHANDISE_ID) {
@@ -1241,13 +1244,17 @@ export class AddProductComponent implements OnInit {
     this.isCustomAmount = false;
     this.productTotal = 0;
     this.frequentRide();
-    this.getSubTotal(this.currentWalletLineItem);
+    this.getSubTotal(this.currentWalletLineItem);    
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
   }
   getSubTotal(currentWalletLineItem) {
     this.subTotal = ShoppingCartService.getInstance.getSubTotalForCardUID(currentWalletLineItem);
   }
 
+  getNonFareTotalTax(currentWalletLineItem){
+    this.taxTotal = ShoppingCartService.getInstance.getNonFareTotalTax(currentWalletLineItem);
+  }
   getTotalDue(shoppingCart) {
     this.totalDue = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
     this.checkoutTotal = this.totalDue.toString();

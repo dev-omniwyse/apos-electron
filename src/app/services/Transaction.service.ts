@@ -35,7 +35,7 @@ export class TransactionService {
         }
         let transaction = new Transaction();
         let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
-        let taxAmount = ShoppingCartService.getInstance.getTax();
+        let taxAmount = ShoppingCartService.getInstance.getNonFareTotalTax(walletLineItem[0]);
         let timeStamp = shoppingCart._transactionID;
 
         transaction.$userID = userData.userEmail;
@@ -182,7 +182,7 @@ export class TransactionService {
         let items = [];
         for (let nonFareItem of wallet._walletContents) {
             let item = new Items();
-            let totalTax = nonFareItem._tax * nonFareItem._quantity;
+            let totalTax = nonFareItem._taxAmount * nonFareItem._quantity;
             let totalItemCost = nonFareItem._offering.UnitPrice * nonFareItem._quantity;
             totalItemCost += totalTax;
 
@@ -200,7 +200,7 @@ export class TransactionService {
             item.$totalCost = totalItemCost;
             item.$userID = userData.userID;
             item.$shiftID = userData.shiftID;
-            item.$tax = totalTax;
+            item.$tax = nonFareItem._taxAmount;
             item.$fareCode = null;
             item.$timestamp = timeStamp;
             item.$shiftType = +userData.shiftType;

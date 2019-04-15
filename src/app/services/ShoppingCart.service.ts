@@ -1,11 +1,12 @@
 import { ShoppingCart } from "../models/ShoppingCart";
 import { WalletLineItem } from '../models/WalletLineItem';
+import { MediaType } from './MediaType';
 
 export class ShoppingCartService {
 
     private static _shoppingCartService = new ShoppingCartService();
 
-    private _shoppingCart : ShoppingCart;
+    private _shoppingCart: ShoppingCart;
 
     public static get getInstance() {
         return ShoppingCartService._shoppingCartService;
@@ -23,17 +24,17 @@ export class ShoppingCartService {
      * Getter shoppingCart
      * @return {ShoppingCart}
      */
-	public get shoppingCart(): ShoppingCart {
-		return this._shoppingCart;
-	}
+    public get shoppingCart(): ShoppingCart {
+        return this._shoppingCart;
+    }
 
     /**
      * Setter shoppingCart
      * @param {ShoppingCart} value
      */
-	public set shoppingCart(value: ShoppingCart) {
-		this._shoppingCart = value;
-	}
+    public set shoppingCart(value: ShoppingCart) {
+        this._shoppingCart = value;
+    }
 
 
     createLocalStoreForShoppingCart() {
@@ -49,7 +50,7 @@ export class ShoppingCartService {
     }
 
     getWalletContentsForGivenUID(shoppingCart, activeUID) {
-        let walletContents = null;        
+        let walletContents = null;
         let walletLineItems = null == shoppingCart._walletLineItem ? [] : shoppingCart._walletLineItem;
         //refactor..
         for (let i = 0; i < walletLineItems.length; i++) {
@@ -72,21 +73,34 @@ export class ShoppingCartService {
         return walletLineItem;
     }
 
-    
+
     getSubTotalForCardUID(walletLineItem) {
         let subTotal = 0;
-        subTotal += walletLineItem._unitPrice ;
-        for(let item of walletLineItem._walletContents){
-            subTotal += ( item._unitPrice * item._quantity );      
+        subTotal += walletLineItem._unitPrice;
+        for (let item of walletLineItem._walletContents) {
+            subTotal += (item._unitPrice * item._quantity);
         }
-
+        if (MediaType.MERCHANDISE_ID == walletLineItem._walletTypeId) {
+            subTotal += this.getNonFareTotalTax(walletLineItem);
+        }
         return subTotal;
     }
 
-    getGrandTotal(shoppingCart){
+    getNonFareTotalTax(walletLineItem) {
+        let taxTotal = 0;
+        if (MediaType.MERCHANDISE_ID == walletLineItem._walletTypeId) {
+            let walletContents = walletLineItem._walletContents;
+            for (let item of walletContents) {
+                taxTotal += item._quantity * item._taxAmount;
+            }
+        }
+        return taxTotal;
+    }
+
+    getGrandTotal(shoppingCart) {
 
         let total = 0;
-        for(let item of shoppingCart._walletLineItem) {
+        for (let item of shoppingCart._walletLineItem) {
             total += this.getSubTotalForCardUID(item);
         }
         return total;
@@ -99,17 +113,17 @@ export class ShoppingCartService {
      * @param selectedItem 
      * @param isWallet this is a flag check to verify wallet Or Not
      */
-    removeItem(shoppingCart, walletLineItem, selectedItem, isWallet){
+    removeItem(shoppingCart, walletLineItem, selectedItem, isWallet) {
 
         let index = -1;
-        if(isWallet){
+        if (isWallet) {
             index = this.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
             shoppingCart._walletLineItem.splice(index, 1);
-            
+
         } else {
             let walletContents = walletLineItem._walletContents;
-            for(let indexOfOffering = 0; indexOfOffering < walletContents.length; indexOfOffering++) {
-                if(walletContents[indexOfOffering].offering.OfferingId == selectedItem.offering.OfferingId){
+            for (let indexOfOffering = 0; indexOfOffering < walletContents.length; indexOfOffering++) {
+                if (walletContents[indexOfOffering].offering.OfferingId == selectedItem.offering.OfferingId) {
                     index = indexOfOffering;
                     break;
                 }
@@ -121,11 +135,11 @@ export class ShoppingCartService {
         return shoppingCart;
     }
 
-    getIndexOfWalletLineItem(shoppingCart, item){
+    getIndexOfWalletLineItem(shoppingCart, item) {
         let index = -1;
         let wallet = shoppingCart._walletLineItem;
-        for(let i=0; i<wallet.length;i++){
-            if(wallet[i]._cardPID == item._cardPID){
+        for (let i = 0; i < wallet.length; i++) {
+            if (wallet[i]._cardPID == item._cardPID) {
                 index = i;
                 break;
             }
@@ -133,21 +147,21 @@ export class ShoppingCartService {
         return index;
     }
 
-    getIndexOfWalletContent(shoppingCart, item){
+    getIndexOfWalletContent(shoppingCart, item) {
 
         let index = -1;
         index = this.getWalletContentsForGivenUID(shoppingCart, item._cardUID);
         return index;
     }
-    isGivenItemIsAWallet(item){
+    isGivenItemIsAWallet(item) {
 
-        if ( item instanceof WalletLineItem ) {
+        if (item instanceof WalletLineItem) {
             return true;
         }
         return false;
     }
 
-    getTax(){
+    getTax() {
         return 0;
     }
 }
