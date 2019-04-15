@@ -1630,7 +1630,7 @@ export class AddProductComponent implements OnInit {
       payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
       this.cashAppliedTotal = payment.$amount
-      if (this.checkIsPaymentMethodExists(2) == -1) {
+      if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
       }
       this.getRefundTitle();
@@ -1700,7 +1700,7 @@ export class AddProductComponent implements OnInit {
       payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
       this.cashAppliedTotal = payment.$amount
-      if (this.checkIsPaymentMethodExists(2) == -1) {
+      if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
       }
       this.getRefundTitle();
@@ -1851,7 +1851,7 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
-      let indexOfPayment = this.checkIsPaymentMethodExists(3);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
