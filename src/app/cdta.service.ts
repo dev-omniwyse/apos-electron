@@ -1073,6 +1073,9 @@ export class CdtaService {
           let indexOfCashPayment = Utils.getInstance.checkIsPaymentMethodExists(2, shoppingCart);
           if (-1 != indexOfCashPayment) {
             changeDue = shoppingCart._payments[indexOfCashPayment].cashback;
+            if(undefined == changeDue){
+              changeDue = 0;
+            }
           }
           paymentAmount = "          $" + Number(paymentRecord.amount).toFixed(2);
         } else {
@@ -1097,7 +1100,7 @@ export class CdtaService {
       var changeDueLabel = "CHANGE DUE:              ";
       var changeDueStr = "";
 
-      changeDueStr = "$" + changeDue.toFixed(2);
+      changeDueStr = "$" + (changeDue.toFixed(2));
       changeDueStr = "                    " + changeDueStr;
 
       changeDueStr = changeDueStr.substring(changeDueStr.length - 20);

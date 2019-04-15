@@ -197,6 +197,9 @@ export class AddProductComponent implements OnInit {
   selected = 0;
   SWIPE_ACTION = { LEFT: 'swipeleft', RIGHT: 'swiperight' }
   badlistedProductModalText = "";
+  message: string;
+  title: string;
+  cancelCheckoutcash: boolean;
   maxSyncLimitReached = false;
   fadeStatus: boolean;
   constructor(private elementRef: ElementRef,
@@ -618,10 +621,10 @@ export class AddProductComponent implements OnInit {
     let message = "Limit Reached"
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
-        message = "Cannot Add more than one Product"
+        message = "Cannot add more than one product."
         break;
       case MediaType.SMART_CARD_ID:
-        message = "Max Product limit reached."
+        message = "Max product limit reached."
         break;
     }
     return message
@@ -648,7 +651,7 @@ export class AddProductComponent implements OnInit {
         backdrop: 'static',
         keyboard: false
       });
-      return;
+      return false;
     }
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
@@ -657,7 +660,7 @@ export class AddProductComponent implements OnInit {
           backdrop: 'static',
           keyboard: false
         });
-        return;
+        return false;
       }
     }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
@@ -923,14 +926,25 @@ export class AddProductComponent implements OnInit {
   }
 
   cancelCheckOutConfirmation() {
-    this.productCheckOut = false;
-    this.checkout = true;
-    console.log(this.isCardApplied);
+    this.cashBack = this.cashAppliedTotal;
+    if(this.isCashApplied){
+    this.cancelCheckoutcash= true;
+    } else {
+      this.cancelCheckoutcash = false;
+    }
+    this.getRefundCancelCheckoutTitle() ;
+    $("#cancelCheckoutModal").modal('hide');
+    $("#amountApplyCancelModal").modal('show');
+   
     if (this.isCardApplied) {
-
       $("#cancelCheckoutModal").modal('hide');
       this.doVoidTransaction();
     }
+  }
+
+  refundConfirmation(){
+    this.productCheckOut = false;
+    this.checkout = true;
 
     this.isCashApplied = false;
     this.isVoucherApplied = false;
@@ -1040,6 +1054,14 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
   customAmount(item) {
+    if (!this.isTotalproductCountForCardreached(item)) {
+      this.maxLimitErrorMessages = this.getProductLimitMessage()
+      $("#maxCardLimitModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return false;
+    }
     this.customPayAsYouGo = item;
     this.isCustomAmount = true;
     // this.router.navigate(['/custom-amount'])
@@ -1459,6 +1481,9 @@ export class AddProductComponent implements OnInit {
             $("#creditCardSuccessModal").modal("show");
 
           }
+          this.getRefundTitle();
+          $("#creditCardSuccessModal").modal("hide");
+          $('#amountApplyModal').modal('show');
           // this.doPinPadTransaction();
         } else {
           this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
@@ -1594,12 +1619,23 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == +(this.checkoutTotal)) {
-      this.isCashApplied = false;
+      this.isCashApplied = true;
+      this.cancelCheckoutcash = true;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
       this.handleOpenCashDrawerResult();
       this.openCashDrawer();
-      $('#myModal').modal('show');
+      let payment = new PaymentType();
+      payment.$paymentMethodId = 2
+      payment.$amount = (+this.checkoutTotal)
+      payment.$comment = null;
+      this.cashAppliedTotal = payment.$amount
+      if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
+        this.shoppingcart._payments.push(payment);
+      }
+      this.getRefundTitle();
+      $('#amountApplyModal').modal('show');
+      // this.doSaveTransaction();
 
     } else if (this.totalRemaining > +this.checkoutTotal) {
 
@@ -1641,23 +1677,36 @@ export class AddProductComponent implements OnInit {
           this.shoppingcart._payments.push(payment);
           this.cashAppliedTotal = payment.$amount;
           this.isCashApplied = true;
+          this.cancelCheckoutcash = true;
           this.checkoutTotal = "0";
         } else {
           this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
           this.cashAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
           this.isCashApplied = true;
+          this.cancelCheckoutcash = true;
           this.checkoutTotal = "0";
         }
 
       }
     } else if (this.totalRemaining < (+this.checkoutTotal)) {
-      // this.isCashApplied = true;
+       this.isCashApplied = true;
       // this.isVoucherApplied = false;
       this.cashAppliedTotal = this.checkoutTotal
       this.cashBack = (+this.checkoutTotal) - this.totalRemaining;
       this.handleOpenCashDrawerResult();
       this.openCashDrawer();
-      $("#myModal").modal('show');
+      let payment = new PaymentType();
+      payment.$paymentMethodId = 2
+      payment.$amount = (+this.checkoutTotal)
+      payment.$comment = null;
+      payment.$cashback = this.cashBack;
+      this.cashAppliedTotal = payment.$amount
+      if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
+        this.shoppingcart._payments.push(payment);
+      }
+      this.getRefundTitle();
+      $('#amountApplyModal').modal('show');
+      // $("#myModal").modal('show');
     }
   }
 
@@ -1683,6 +1732,8 @@ export class AddProductComponent implements OnInit {
     if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
       this.shoppingcart._payments.push(payment);
     }
+    this.getRefundTitle();
+    $('#amountApplyModal').modal('show');
     this.doSaveTransaction();
     // this.checkIfCreditCardApplied();
   }
@@ -1774,7 +1825,8 @@ export class AddProductComponent implements OnInit {
     if (this.voucherRemaining !== 0) {
       $('#voucherApplyModal').modal('hide');
     } else if (this.voucherRemaining == 0) {
-      $('#voucherApplyModal').modal('show');
+      this.getRefundTitle();
+      $('#amountApplyModal').modal('show');
     }
     // $('#voucherApplyModal').modal('show');
   }
@@ -1800,8 +1852,27 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == (+this.checkoutTotal)) {
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart);
+      if (indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = (+this.checkoutTotal);
+        payment.$paymentMethodId = 3;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        console.log(this.shoppingcart._payments)
+        this.checkAppliedTotal = payment.$amount;
+        this.isCheckApplied = true;
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
+        this.checkAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        console.log(this.shoppingcart._payments)
+        this.isCheckApplied = true;
+      }
+      
       this.openCashDrawer();
-      $('#checkModal').modal('show');
+      this.getRefundTitle();
+      $('#amountApplyModal').modal('show');
+      // $('#checkModal').modal('show');
     }
 
     else if (this.totalRemaining > (+this.checkoutTotal)) {
@@ -1874,6 +1945,9 @@ export class AddProductComponent implements OnInit {
     this.doSaveTransaction();
   }
 
+  amountApplied() {
+    this.doSaveTransaction();
+  }
 
 
 
@@ -2083,19 +2157,15 @@ export class AddProductComponent implements OnInit {
   }
   productSwipe(eType, k) {
     this.currentWalletLineProduct = k
-    console.log(eType);
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletLineProduct++;
-      console.log("movin left")
     }
     else if (eType === this.SWIPE_ACTION.RIGHT && k > 0) {
-      console.log("movin right");
       this.currentWalletLineProduct--;
     }
   }
   productMerchSwipe(eType, k) {
     this.currentWalletMerchProduct = k
-    this.fadeStatus = true;
     if (eType === this.SWIPE_ACTION.LEFT && k < this.walletItemContents.length - 1) {
       this.currentWalletMerchProduct++;
     }
@@ -2114,5 +2184,123 @@ export class AddProductComponent implements OnInit {
   walletLineMerchProductIndicator(i) {
     this.currentWalletMerchProduct = i;
   }
+
+  getRefundTitle() {
+    let count = 0;
+    let commaFlag = false;
+    this.message = " ";
+    this.title = " "
+    if(this.shoppingcart._payments.length >2) {
+      commaFlag = true;
+    }
+    this.shoppingcart._payments.forEach(element => {
+      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
+        this.title = this.title + " and "
+        this.message = this.message + " and ";
+
+        commaFlag = false;
+      }
+      if(count!=0 && commaFlag) {
+        this.title = this.title + ', '
+        this.message = this.message + ', '
+      }
+      switch (element.paymentMethodId) {
+
+        case 2:
+        this.title = this.title + "Cash";
+        this.message = this.message + "Return change to customer."
+        break;
+
+        case 3:
+        this.title = this.title + "Check";
+        this.message = this.message + "Place the check in the drawer."
+        break;
+
+        case 11:
+        this.title = this.title + "Voucher";
+        this.message = this.message + "Place the voucher in the drawer."
+        break;
+
+        case  9:
+        this.title = this.title + "Credit";
+        this.message = this.message + "Credit Applied."
+        break;
+
+   
+
+        default: 
+        this.message = ""
+        this.title = ""
+      }
+      
+      count++;
+     
+      if(element.paymentMethodId == 8) {
+        count--;
+      }
+    });
+
+  }
+
+  getRefundCancelCheckoutTitle() {
+    let count = 0;
+    let commaFlag = false;
+    this.message = "Please give the customer back  ";
+    this.title = "Return "
+    if(this.shoppingcart._payments.length >2) {
+      commaFlag = true;
+    }
+    this.shoppingcart._payments.forEach(element => {
+      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
+        this.title = this.title + " and "
+        this.message = this.message + " and ";
+
+        commaFlag = false;
+      }
+      if(count!=0 && commaFlag) {
+        this.title = this.title + ', '
+        this.message = this.message + ', '
+      }
+      switch (element.paymentMethodId) {
+        case 2:
+        this.title = this.title + "Cash";
+        this.message = this.message + "cash"
+        break;
+
+        case 3:
+        this.title = this.title + "Check";
+        this.message = this.message + "check"
+        break;
+
+        case 11:
+        this.title = this.title + "Voucher";
+        this.message = this.message + "voucher"
+        break;
+
+        case  9:
+        this.title = this.title + "Credit";
+        this.message = this.message + "credit"
+        break;
+
+        default: 
+        this.message = "Please give the customer back "
+      }
+      
+      count++;
+      
+      if(element.paymentMethodId == 8) {
+        count--;
+      }
+    });
+
+
+ 
+
+
+
+
+  }
+
+ 
 }
 

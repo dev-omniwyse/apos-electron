@@ -817,6 +817,6 @@ ul {
     margin-right: -20px;
 }
 
-.pay-as-go~.carousel-indicators {
-    bottom: 155px;
+.pay-as-tab .carousel-indicators {
+    bottom: 145px;
 }
