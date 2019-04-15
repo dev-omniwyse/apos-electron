@@ -59,12 +59,6 @@
                                     <td>{{product.status}}</td>
                                     <td>{{product.balance}}</td>
                                 </tr>
-                                <!-- <tr>
-                                <td>Frequent Rider</td>
-                                <td>31 Day Pass</td>
-                                <td>{{product.status}}</td>
-                                <td>{{product.balance}}</td>
-                                </tr> -->
                             </table>
                         </div>
                     </div>
@@ -74,7 +68,6 @@
                 </div>
             </div>
         </div>
-        <!-- new code  -->
         <div class="btns-mag">
             <!-- <ngx-slick class="slider" #slickModal="slick-modal" [config]="slideConfig">
                 <div ngxSlickItem *ngFor="let item of shoppingcart._walletLineItem; let i = index" class="slide">
@@ -97,33 +90,6 @@
                     <li data-target="#Carousel" *ngFor="let x of walletItems; let i = index" (click)="walletItemsIndicator(i)" [attr.data-slide-to]="i" [ngClass]="i == currentWalletLineItemIndex? 'active' : ''"></li>
                 </ol>
             </div>
-            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem;let i = index" >
-                                    <div [ngClass] = "i == 0? active : '' ">
-                                        <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
-                                  </div>
-                                </div> -->
-            <!-- <div class="item active">
-                                <button type="button" class="btn btn-info">Button</button>
-                        </div>
-                       <div class="item">
-                            <button type="button" class="btn btn-info">Button</button>
-                        </div>
-                       <div class="item">
-                            <button type="button" class="btn btn-info">Button</button>
-                        </div> -->
-
-            <!-- <a class="left carousel-control" href="#Carousel" data-slide="prev">
-                        <span class="glyphicon glyphicon-chevron-left"></span>
-                    </a>
-                    <a class="right carousel-control" href="#Carousel" data-slide="next">
-                        <span class="glyphicon glyphicon-chevron-right"></span>
-                    </a> -->
-
-            <!-- <div class="slide" *ngFor="let item of shoppingcart._walletLineItem">
-                <div class="col-md-6">
-                    <button class="btn-white-slide" (click)="activeWallet(item)">{{item._cardPID}}</button>
-                </div>
-            </div> -->
         </div>
         <div class="container-l-app">
             <div>
@@ -138,68 +104,29 @@
             </div>
             </span>
             <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
-                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}</div>
+                <div class="pull-left padding-5">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}
+                    <br>
+                    <div *ngIf="isMerchendise">Tax({{item._taxRate}}%)&nbsp; ${{item._taxAmount | number : '1.2-2'}}</div>
+                </div>
                     <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
                         <!-- <span class="glyphicon glyphicon-minus-sign"></span> -->
             <img src="assets/images/icon-rmproduct.png" />
         </div>
 
         </span>
-        <!-- <div class="" *ngFor="let merch of merchantList; let j = index">
-            <span *ngIf="productCardList[j] == currentCard.printed_id" class="label label-default">
-                       <div class="pull-left">{{quantityList[j]}} &nbsp; {{merch.Description}} &nbsp;
-                          {{merch.Ticket.Price}}
-                       </div>
-                       <div class="pull-right"
-                          (click)="(isMagnetic)?removeMagneticProduct(merch):removeProduct(merch)"><span
-                          class="glyphicon glyphicon-minus-sign"></span></div>
-        </span>
-    </div> -->
     </div>
-    <!-- 
-                 <div *ngIf="isMagnetic">
-                     <span class="label label-default">
-                                 <div class="pull-left">1 New Magnetics</div>
-                 
-                                 <div class="pull-right" (click)="removeMagneticCard()"><span
-                                         class="glyphicon glyphicon-minus-sign"></span></div>
-                 
-                 </span>
-                 <div class="" *ngFor="let merch of MagneticList; let j = index">
-                 
-                     <span *ngIf="magneticIds[j] == currentMagneticIndex" class="label label-default">
-                                     <div class="pull-left">{{merch.Description}} &nbsp; {{merch.Ticket.Price}}</div>
-                 
-                                     <div class="pull-right" (click)="removeMagneticProduct(merch)"><span
-                                             class="glyphicon glyphicon-minus-sign"></span></div>
-                 
-                 </span>
-                 </div>
-                 </div> -->
-    <!-- <div *ngIf="isMerchendise">
-                 <span *ngIf="isMerchendise"> NON FARE PRODUCTS</span>
-                 
-                 <div class="" *ngFor="let merch of merchantiseList; let k = index">
-                     <span class="label label-default">
-                 
-                 
-                                     <div class="pull-left">{{merch.quantity}} &nbsp; {{merch.Description}} &nbsp;
-                                         {{merch.UnitPrice}}</div>
-                 
-                                     <div class="pull-right" (click)="removeMerchProduct(merch)"><span
-                                             class="glyphicon glyphicon-minus-sign"></span></div>
-                 
-                 </span>
-                 </div>
-                 </div> -->
+    
 </div>
 <div class="sub-total " *ngIf="!isCashApplied && !isVoucherApplied && !isCheckApplied && !isCardApplied">
     <div class="flex">
         <div class="float-left" *ngIf="!isMerchendise">Fare Products Subtotal</div>
-        <div class="float-left" *ngIf="isMerchendise">Non - Fare Products Subtotal</div>
+        <div class="float-left" *ngIf="isMerchendise">Non-Fare Products Subtotal</div>
         <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
     </div>
-
+    <div class="flex" *ngIf="isMerchendise">
+        <div class="float-left" >Non-Fare Products Tax Subtotal</div>
+        <div class="float-right">${{taxTotal | number : '1.2-2'}}</div>
+    </div>
     <hr>
     <div class="flex totals">
         <div class="float-left">Total Due</div>
@@ -274,21 +201,11 @@
             <div class="custom-products" *ngIf="walletItemContents.length !=0">
                 <button class="cardBtn" *ngIf="selectedProductCategoryIndex == '2'" (click)="customAmount(walletItemContents[0][0])">Custom Amount</button>
             </div>
-
-            <!-- <div class="products" *ngFor="let merch of merchantise | slice:0:5"> -->
-            <!-- <button class="cardBtn" (click)="(isMagnetic)?getSelectedMagneticProductData(merch):getSelectedProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-
-            <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-            <!-- </div> -->
             <div *ngIf="merchantise.length == 0">
                 <h4 class="nodata">No Products Found</h4>
             </div>
         </div>
         <div class=" flex-wrap flex-right-items flex-contain-full-w2" *ngIf="regularRoute">
-            <!-- <div *ngFor="let merch of merchantise"> -->
-            <!-- <button class="cardBtn" (click)="getSelectedMerchProductData(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-            <!-- <button class="cardBtn" (click)="addProductToWallet(merch)">{{merch.Description}}<br />${{merch.UnitPrice}}</button> -->
-            <!-- </div> -->
             <div id="Carousel-products" class="carousel slide">
                 <div class="carousel-inner">
                     <div *ngFor="let item of walletItemContents; let k = index" (swipeleft)="productMerchSwipe($event.type, k)" (swiperight)="productMerchSwipe($event.type, k)" [ngClass]="k == currentWalletMerchProduct ? 'item active' : 'item'">
@@ -303,19 +220,6 @@
                     <li data-target="#Carousel-products" *ngFor="let x of walletItemContents; let i = index" (click)="walletLineMerchProductIndicator(i)" [attr.data-slide-to]="i" [ngClass]="i == currentWalletMerchProduct? 'active' : ''"></li>
                 </ol>
             </div>
-            <!-- </div> -->
-
-            <!-- <div id="Carousel" class="carousel slide col-lg-10 col-offset-2">
-             
-            
-                <div class="carousel-inner">
-                    <div *ngFor="let item of walletItems; let k = index" [ngClass]="k == currentWalletLineItemIndex ? 'item active' : 'item'" >
-                        <button [ngClass]="{'btn-white-slide': currentItem != currentWalletLineItem,'btn-orange-slide': currentItem == currentWalletLineItem }" *ngFor="let currentItem of item"  (click)="activeWallet(currentItem,k)">{{currentItem._cardPID}}</button>
-                    </div>
-                </div>
-                <br>
-                
-        </div> -->
         </div>
     </div>
 </div>
