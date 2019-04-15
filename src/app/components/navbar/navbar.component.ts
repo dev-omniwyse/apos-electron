@@ -1,10 +1,11 @@
-import { Component, OnInit,Output, ChangeDetectorRef, NgZone, AfterViewInit, ViewChild, Type } from '@angular/core';
+import { Component, OnInit, Output, ChangeDetectorRef, NgZone, AfterViewInit, ViewChild, Type } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-import {formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
+import { environment } from '../../../environments/environment'
 
 declare var $: any
 @Component({
@@ -16,7 +17,7 @@ export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
   terminalNumber: any = undefined;
-  hideAndShowLogout : Boolean 
+  hideAndShowLogout: Boolean
   today = new Date();
   versionDate = new Date();
   // @Output()  hideHeader;
@@ -28,10 +29,10 @@ export class NavbarComponent implements OnInit {
         else
           this.hideHeader = true;
       });
-      this.subscription = this.cdtaservice.terminalNumber$.subscribe(
-        mission => {
-         this.terminalNumber = mission;
-        });
+    this.subscription = this.cdtaservice.terminalNumber$.subscribe(
+      mission => {
+        this.terminalNumber = mission;
+      });
   }
 
   logOut() {
@@ -51,7 +52,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("shiftReport");
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
-    //  localStorage.removeItem("hideModalPopup")
+      //  localStorage.removeItem("hideModalPopup")
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login'])
     }
@@ -69,7 +70,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem("shiftReport");
       localStorage.removeItem("mainShiftClose")
       localStorage.removeItem("closingPausedMainShift")
-     // localStorage.removeItem("mainShiftClosedByAnyUser")
+      // localStorage.removeItem("mainShiftClosedByAnyUser")
       //localStorage.removeItem("hideModalPopup")
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login'])
@@ -77,9 +78,13 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem("userEmail")
   }
 
-  navigateToGenfare(){
-    var urlToNavigate = "https://tarc-"+localStorage.getItem("environment")+".gfcp.io";
-    this.electronService.ipcRenderer.send('navigateToGenfare',urlToNavigate);
+  navigateToGenfare() {
+    var urlToNavigate = "";
+    if (environment.production)
+      urlToNavigate = "https://gfilink.ridetarc.org";
+    else
+      urlToNavigate = "https://tarc-" + localStorage.getItem("environment") + ".gfcp.io";
+    this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
     // var shell = require('electron').shell;
     // event.preventDefault();
     // shell.openExternal("https://github.com");
@@ -90,8 +95,8 @@ export class NavbarComponent implements OnInit {
     let item = localStorage.getItem("header");
     setInterval(() => {
       this.today = new Date();
-      }, 1000); 
-    
+    }, 1000);
+
     // if( localStorage.getItem("hideAndShowLogout") == undefined){
     //   this.hideAndShowLogout = false
     //   localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
@@ -101,7 +106,7 @@ export class NavbarComponent implements OnInit {
 
     setInterval(() => {
       this.today = new Date();
-    }, 1000); 
+    }, 1000);
   }
   // export class AppComponent  {
   //   today= new Date();

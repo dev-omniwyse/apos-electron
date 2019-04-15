@@ -1445,7 +1445,7 @@ export class AddProductComponent implements OnInit {
         localStorage.setItem("pinPadTransactionData", data);
 
         if (this.totalRemaining == (+this.checkoutTotal)) {
-          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9, this.shoppingcart);
           if (indexOfPayment == -1) {
             let payment = new PaymentType();
             payment.$amount = (+this.checkoutTotal);
@@ -1459,7 +1459,7 @@ export class AddProductComponent implements OnInit {
         } else {
           this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
           this.cardAppliedTotal = this.checkoutTotal;
-          let indexOfPayment = this.checkIsPaymentMethodExists(9);
+          let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9, this.shoppingcart);
           if (indexOfPayment == -1) {
             let payment = new PaymentType();
             payment.$amount = (+this.checkoutTotal);
@@ -1628,7 +1628,7 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-        let indexOfPayment = this.checkIsPaymentMethodExists(2);
+        let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = (+this.checkoutTotal);
@@ -1676,7 +1676,7 @@ export class AddProductComponent implements OnInit {
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
     payment.$cashback = this.cashBack;
-    if (this.checkIsPaymentMethodExists(2) == -1) {
+    if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
       this.shoppingcart._payments.push(payment);
     }
     this.doSaveTransaction();
@@ -1741,13 +1741,13 @@ export class AddProductComponent implements OnInit {
       payment.$paymentMethodId = 11
       payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
-      if (this.checkIsPaymentMethodExists(11) == -1) {
+      if (Utils.getInstance.checkIsPaymentMethodExists(11, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
       }
     } else {
       this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       this.voucherRemaining = this.totalRemaining;
-      let indexOfPayment = this.checkIsPaymentMethodExists(11);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(11, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -1829,7 +1829,7 @@ export class AddProductComponent implements OnInit {
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
-        let indexOfPayment = this.checkIsPaymentMethodExists(3);
+        let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
           payment.$amount = (+this.checkoutTotal);
@@ -1861,7 +1861,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 3
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
-    if (this.checkIsPaymentMethodExists(3) == -1) {
+    if (Utils.getInstance.checkIsPaymentMethodExists(3, this.shoppingcart) == -1) {
       this.shoppingcart._payments.push(payment);
       console.log(this.shoppingcart._payments)
     }
@@ -1922,7 +1922,7 @@ export class AddProductComponent implements OnInit {
 
   compensation() {
     if (this.totalRemaining == (+this.checkoutTotal)) {
-      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -1938,7 +1938,7 @@ export class AddProductComponent implements OnInit {
     } else if (this.totalRemaining > (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.compDue = this.totalRemaining;
-      let indexOfPayment = this.checkIsPaymentMethodExists(8);
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
       if (indexOfPayment == -1) {
         let payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
@@ -2035,7 +2035,7 @@ export class AddProductComponent implements OnInit {
 
   // cardPayment() {
   //   if (this.totalRemaining == (+this.checkoutTotal)) {
-  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9);
   //     if (indexOfPayment == -1) {
   //       let payment = new PaymentType();
   //       payment.$amount = (+this.checkoutTotal);
@@ -2047,7 +2047,7 @@ export class AddProductComponent implements OnInit {
   //   } else {
   //     this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
   //     this.cardAppliedTotal = this.checkoutTotal;
-  //     let indexOfPayment = this.checkIsPaymentMethodExists(9);
+  //     let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(9);
   //     if (indexOfPayment == -1) {
   //       let payment = new PaymentType();
   //       payment.$amount = (+this.checkoutTotal);
@@ -2064,19 +2064,6 @@ export class AddProductComponent implements OnInit {
   //   }
   // }
 
-
-  checkIsPaymentMethodExists(paymentMethodId) {
-    let indexOfPayment = -1;
-    let payments = this.shoppingcart._payments;
-    for (let index = 0; index < payments.length; index++) {
-      if (paymentMethodId == payments[index].paymentMethodId) {
-        indexOfPayment = index;
-        console.log(indexOfPayment)
-        break;
-      }
-    }
-    return indexOfPayment;
-  }
 
   swipe(eType, k) {
     this.currentWalletLineItemIndex = k

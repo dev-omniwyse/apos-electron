@@ -130,6 +130,19 @@ export class Utils {
         return (currentSequence + 1);
     }
 
+    checkIsPaymentMethodExists(paymentMethodId, shoppingcart) {
+        let indexOfPayment = -1;
+        let payments = shoppingcart._payments;
+        for (let index = 0; index < payments.length; index++) {
+          if (paymentMethodId == payments[index].paymentMethodId) {
+            indexOfPayment = index;
+            console.log(indexOfPayment)
+            break;
+          }
+        }
+        return indexOfPayment;
+      }
+
     getActiveWalletLineItem(cart) {
 
         let lastIndex = cart._walletLineItem.length - 1;

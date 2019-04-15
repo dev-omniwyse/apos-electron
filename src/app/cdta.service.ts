@@ -6,6 +6,7 @@ import { ElectronService } from 'ngx-electron';
 import { MediaType } from './services/MediaType';
 // import { product_log } from '../assets/data/'
 import { DatePipe } from '@angular/common';
+import { Utils } from './services/Utils.service';
 const httpOptions = {
   headers: new HttpHeaders(
     {
@@ -1066,8 +1067,13 @@ export class CdtaService {
       // if the payment method is cash, you want to give the full amount tendered.
       //    that is the amount we stored + the change due
       if (null != paymentId) {
-        changeDue = paymentRecord.cashback;
+
         if (2 == paymentId) {
+          let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
+          let indexOfCashPayment = Utils.getInstance.checkIsPaymentMethodExists(2, shoppingCart);
+          if (-1 != indexOfCashPayment) {
+            changeDue = shoppingCart._payments[indexOfCashPayment].cashback;
+          }
           paymentAmount = "          $" + Number(paymentRecord.amount).toFixed(2);
         } else {
           if (paymentRecord.amount != null) {
