@@ -2,15 +2,32 @@
 export class PaymentType {
 
 
-    private comment:string;
-    constructor(private paymentMethodId?: number, private amount?: number) {
-        
+    constructor(private paymentMethodId?: number, private amount?: number,
+        private comment?: string, private cashback?: number) {
+
     }
 
-/**
-     * Getter $paymentMethodId
-     * @return {string}
+
+    /**
+     * Getter $cashback
+     * @return {number}
      */
+    public get $cashback(): number {
+        return this.cashback;
+    }
+
+    /**
+     * Setter $cashback
+     * @param {number} value
+     */
+    public set $cashback(value: number) {
+        this.cashback = value;
+    }
+
+    /**
+         * Getter $paymentMethodId
+         * @return {string}
+         */
     public get $comment(): string {
         return this.comment;
     }
