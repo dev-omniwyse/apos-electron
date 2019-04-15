@@ -179,6 +179,7 @@ export class LoginComponent implements OnInit {
                     if (localStorage.getItem("closingPausedMainShift") == "true") {
                         localStorage.removeItem("closingPausedMainShift")
                     }
+                    localStorage.removeItem("mainUserExpectedCash")
                 } else
                     if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
                         this.statusOfShiftReportBoolean = true
