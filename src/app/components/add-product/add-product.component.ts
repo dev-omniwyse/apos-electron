@@ -618,10 +618,10 @@ export class AddProductComponent implements OnInit {
     let message = "Limit Reached"
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.MAGNETIC_ID:
-        message = "Cannot Add more than one Product"
+        message = "Cannot add more than one product."
         break;
       case MediaType.SMART_CARD_ID:
-        message = "Max Product limit reached."
+        message = "Max product limit reached."
         break;
     }
     return message
@@ -648,7 +648,7 @@ export class AddProductComponent implements OnInit {
         backdrop: 'static',
         keyboard: false
       });
-      return;
+      return false;
     }
     if (!this.isMerchendise) {
       if (!this.isTotalproductCountForCardreached(product)) {
@@ -657,7 +657,7 @@ export class AddProductComponent implements OnInit {
           backdrop: 'static',
           keyboard: false
         });
-        return;
+        return false;
       }
     }
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
@@ -1040,6 +1040,14 @@ export class AddProductComponent implements OnInit {
     this.merchantise = list;
   }
   customAmount(item) {
+    if (!this.isTotalproductCountForCardreached(item)) {
+      this.maxLimitErrorMessages = this.getProductLimitMessage()
+      $("#maxCardLimitModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+      return false;
+    }
     this.customPayAsYouGo = item;
     this.isCustomAmount = true;
     // this.router.navigate(['/custom-amount'])
