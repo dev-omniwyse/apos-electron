@@ -1679,6 +1679,7 @@ export class AddProductComponent implements OnInit {
     payment.$paymentMethodId = 2
     payment.$amount = (+this.checkoutTotal)
     payment.$comment = null;
+    payment.$cashback = this.cashBack;
     if (this.checkIsPaymentMethodExists(2) == -1) {
       this.shoppingcart._payments.push(payment);
     }

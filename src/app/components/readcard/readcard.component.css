@@ -164,7 +164,13 @@ button:disabled {
 }
 
 .home-btns-set-padd {
-    padding: 14vh 0 0 0;
+    padding: 5vh 0 0 0;
+}
+
+.maxSyncLimit {
+
+    padding-top: 2%;
+    font-size: 18px;
 }
 
 .arrow_right:before {

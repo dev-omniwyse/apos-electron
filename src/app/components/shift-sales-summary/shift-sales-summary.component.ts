@@ -143,9 +143,9 @@ export class ShiftSalesSummaryComponent implements OnInit {
     let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
     let userId = localStorage.getItem("userID")
 
-    if (localStorage.getItem("closingPausedMainShift") == "true") {
-      localStorage.setItem("closingPausedMainShift", "false")
-    }
+    // if (localStorage.getItem("closingPausedMainShift") == "true") {
+    //   localStorage.removeItem("closingPausedMainShift")
+    // }
     shiftReports.forEach(element => {
       if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
         localStorage.setItem("hideModalPopup", "true")
