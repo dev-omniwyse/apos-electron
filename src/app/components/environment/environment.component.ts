@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { CdtaService } from 'src/app/cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 declare var $: any;
 
 @Component({
@@ -14,27 +14,27 @@ export class EnvironmentComponent implements OnInit {
   showView = false;
   isFromSetup = false;
   selectedEnvironment = {};
-  environments = [{"name" : "DEMO","value":"demo"},{"name" : "DEV", "value": "dev"},{"name" : "INTG", "value": "intg"},{"name" : "LOCAL", "value": "local"},{"name" : "PREP", "value": "prep"},{"name" : "QA", "value": "qa"},{"name" : "QE", "value": "qe"},{"name" : "STAGING", "value": "staging"},{"name" : "UAT", "value": "uat"}]
+  environments = [{ "name": "DEMO", "value": "demo" }, { "name": "DEV", "value": "dev" }, { "name": "INTG", "value": "intg" }, { "name": "LOCAL", "value": "local" }, { "name": "PREP", "value": "prep" }, { "name": "QA", "value": "qa" }, { "name": "QE", "value": "qe" }, { "name": "STAGING", "value": "staging" }, { "name": "UAT", "value": "uat" }]
 
-  constructor(private cdtaservice: CdtaService, private electronService:ElectronService, private router: Router, private _ngZone: NgZone) {
+  constructor(private cdtaservice: CdtaService, private electronService: ElectronService, private router: Router, private _ngZone: NgZone) {
     console.log(environment.production)
     this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
       if (data != undefined && data != "" && this.isFromSetup) {
-          this.isFromSetup = false;
-          localStorage.setItem('terminalConfigJson',data)
-          this._ngZone.run(() => {
-            if(JSON.parse(data).EquipmentId !=0){
-              this.cdtaservice.announceHeaderShowHide("hideHeader");
-              this.router.navigate(['/login'])
-            } else {
-                this.showView = true;
-            }
-          });
+        this.isFromSetup = false;
+        localStorage.setItem('terminalConfigJson', data)
+        this._ngZone.run(() => {
+          if (JSON.parse(data).EquipmentId != 0) {
+            this.cdtaservice.announceHeaderShowHide("hideHeader");
+            this.router.navigate(['/login'])
+          } else {
+            this.showView = true;
+          }
+        });
       }
-  });
-  if(environment.production) {
-    this.router.navigate(['/setup'])
-  }
+    });
+    if (environment.production) {
+      this.router.navigate(['/setup'])
+    }
   }
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class EnvironmentComponent implements OnInit {
       backdrop: 'static',
       keyboard: false
     });
-    localStorage.setItem('environment',environment.value)
+    localStorage.setItem('environment', environment.value)
     // this.router.navigate(['/setup'])
   }
   navigateToDashboard() {
