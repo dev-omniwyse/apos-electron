@@ -23,7 +23,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
     this.electronService.ipcRenderer.on('allSalesResult', (event, data, userID, shiftType) => {
       console.log("sales data", data)
-      if (data != undefined && data.length != 0) {
+      if (data != undefined && data.length != 0 && data != "[]") {
         this._ngZone.run(() => {
           if (this.selectedValue == 0) {
             this.salesData = JSON.parse(data);
@@ -44,8 +44,8 @@ export class ShiftSalesSummaryComponent implements OnInit {
     });
 
     this.electronService.ipcRenderer.on('allPaymentsResult', (event, data, userID, shiftType) => {
-      console.log("sales data", data)
-      if (data != undefined && data.length != 0) {
+      console.log("payment data", data)
+      if (data != undefined && data.length != 0 && data != "[]") {
 
         this._ngZone.run(() => {
           if (this.selectedValue == 0) {
@@ -57,7 +57,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
               this.backendPaymentReport.push(paymentReport[report]);
             }
             console.log(" this.backendPaymentReport", this.backendPaymentReport)
-            localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+           // localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
 
             this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
           } else {

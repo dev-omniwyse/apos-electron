@@ -200,48 +200,51 @@ export class CdtaService {
     // paymentReportCount = Object.keys(paymentReport).length;
 
     for (var i = 0; i < paymentReport.length; i++) {
+      
+      if (paymentReport[i].paymentMethod != undefined) {
 
-      paymentMethod = paymentReport[i].paymentMethod;
-      paymentAmount = Number(paymentReport[i].paymentAmount);
-      paymentMethodCount = paymentReport[i].paymentMethodCount;
+        paymentMethod = paymentReport[i].paymentMethod;
+        paymentAmount = Number(paymentReport[i].paymentAmount);
+        paymentMethodCount = paymentReport[i].paymentMethodCount;
 
-      totalPaymentCost += paymentAmount;
-      totalPaymentCount += paymentMethodCount;
-      console.log("Payment Method: " + paymentMethod);
-      switch (paymentMethod) {
-        case 'CHECK':
-          checkTotal = Number(paymentReport[i].paymentAmount);
-          checkCount = paymentReport[i].paymentMethodCount;
-          break;
+        totalPaymentCost += paymentAmount;
+        totalPaymentCount += paymentMethodCount;
+        console.log("Payment Method: " + paymentMethod);
+        switch (paymentMethod) {
+          case 'CHECK':
+            checkTotal = Number(paymentReport[i].paymentAmount);
+            checkCount = paymentReport[i].paymentMethodCount;
+            break;
 
-        case 'CASH':
-          cashTotal = Number(paymentReport[i].paymentAmount);
-          cashCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 'CASH':
+            cashTotal = Number(paymentReport[i].paymentAmount);
+            cashCount = paymentReport[i].paymentMethodCount;
+            break;
 
-        case 'VOUCHER':
-          voucherTotal = Number(paymentReport[i].paymentAmount);
-          voucherCount = paymentReport[i].paymentMethodCount;
-          break;
-        case 'COMP':
-          compTotal = Number(paymentReport[i].paymentAmount);
-          compCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 'VOUCHER':
+            voucherTotal = Number(paymentReport[i].paymentAmount);
+            voucherCount = paymentReport[i].paymentMethodCount;
+            break;
+          case 'COMP':
+            compTotal = Number(paymentReport[i].paymentAmount);
+            compCount = paymentReport[i].paymentMethodCount;
+            break;
 
-        case 'STORED_VALUE':
-          storedValueTotal = Number(paymentReport[i].paymentAmount);
-          storedValueCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 'STORED_VALUE':
+            storedValueTotal = Number(paymentReport[i].paymentAmount);
+            storedValueCount = paymentReport[i].paymentMethodCount;
+            break;
 
-        case 'EXISTING_FARECARD':
-          farecardTotal = Number(paymentReport[i].paymentAmount);
-          farecardCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 'EXISTING_FARECARD':
+            farecardTotal = Number(paymentReport[i].paymentAmount);
+            farecardCount = paymentReport[i].paymentMethodCount;
+            break;
 
-        case 'CREDIT':
-          creditTotal = Number(paymentReport[i].paymentAmount);
-          creditCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 'CREDIT':
+            creditTotal = Number(paymentReport[i].paymentAmount);
+            creditCount = paymentReport[i].paymentMethodCount;
+            break;
+        }
       }
     }
 
@@ -438,59 +441,60 @@ export class CdtaService {
 
         //var productObj = productReport[i];
         productDescription = productReportJSON[i].description;
-        productValue = productReportJSON[i].value;
-        productQuantity = productReportJSON[i].quantity;
-        totalQuantity += parseFloat(productQuantity);
-        totalAmountSold += parseFloat(productValue);
 
-        //isMerchandise == 1 Means it is a Merchandise add Amount  
-        isMerchandise = productReportJSON[i].isMerchandise;
+        if (productDescription != undefined) {
+          productValue = productReportJSON[i].value;
+          productQuantity = productReportJSON[i].quantity;
+          totalQuantity += parseFloat(productQuantity);
+          totalAmountSold += parseFloat(productValue);
+          //isMerchandise == 1 Means it is a Merchandise add Amount  
+          isMerchandise = productReportJSON[i].isMerchandise;
 
-        if (isMerchandise == 1) {
-          totalNonFareProductsSoldInShift += parseFloat(productValue);
-        } else {
-          totalFareProductsSoldInShift += parseFloat(productValue);
+          if (isMerchandise == 1) {
+            totalNonFareProductsSoldInShift += parseFloat(productValue);
+          } else {
+            totalFareProductsSoldInShift += parseFloat(productValue);
+          }
+          if (i == 0) {
+            productDescription = "\n" + productDescription
+          }
+          if (productDescription.length >= maxDescriptionLength) {
+            productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+          }
+
+
+
+          productsReport += "\n\n";
+          productsReport = productDescription;
+
+          currentProductSum = productQuantity;
+
+          padSize = middlePadSize - productDescription.length - (currentProductSum.toString()).length;
+
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          productsReport += spacer + currentProductSum;
+
+
+
+
+          var costText = '$' + parseFloat(productValue).toFixed(2);
+
+          secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (currentProductSum.toString()).length);
+
+          spacer = '';
+
+          while (spacer.length <= secondPadSize) {
+            spacer += " ";
+          }
+
+          productsReport += spacer + costText + "\n\n";
+
+          totalProductsReport += productsReport;
         }
-        if (i == 0) {
-          productDescription = "\n" + productDescription
-        }
-        if (productDescription.length >= maxDescriptionLength) {
-          productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
-        }
-
-
-
-        productsReport += "\n\n";
-        productsReport = productDescription;
-
-        currentProductSum = productQuantity;
-
-        padSize = middlePadSize - productDescription.length - (currentProductSum.toString()).length;
-
-
-        while (spacer.length <= (padSize - 1)) {
-          spacer += " ";
-        }
-
-        productsReport += spacer + currentProductSum;
-
-
-
-
-        var costText = '$' + parseFloat(productValue).toFixed(2);
-
-        secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (currentProductSum.toString()).length);
-
-        spacer = '';
-
-        while (spacer.length <= secondPadSize) {
-          spacer += " ";
-        }
-
-        productsReport += spacer + costText + "\n\n";
-
-        totalProductsReport += productsReport;
-
       }
 
       totalAmountBilledInShift = totalFareProductsSoldInShift + totalNonFareProductsSoldInShift;
@@ -511,6 +515,7 @@ export class CdtaService {
       drawerReport = this.generateTerminalReport(totalFareProductsSoldInShift, totalNonFareProductsSoldInShift, totalAmountBilledInShift, userID, shiftType, expectedCashInDrawer);
       // add totals
       var productsReportTotalLabel = "TOTAL:    ";
+
       costText = "          $" + parseFloat(totalAmountSold).toFixed(2);
 
       costText = costText.substring(costText.length - 10);
@@ -1073,7 +1078,7 @@ export class CdtaService {
           let indexOfCashPayment = Utils.getInstance.checkIsPaymentMethodExists(2, shoppingCart);
           if (-1 != indexOfCashPayment) {
             changeDue = shoppingCart._payments[indexOfCashPayment].cashback;
-            if(undefined == changeDue){
+            if (undefined == changeDue) {
               changeDue = 0;
             }
           }
@@ -1344,7 +1349,7 @@ export class CdtaService {
       padSize = 0;
       secondPadSize = 0;
       middlePadSize = Math.floor(receiptWidth / 2) + 3;
-      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
+      if (walletLineItem._description == "Merch*" || walletLineItem._description == "1New Magnetics") {
 
       } else {
         productDescription = walletLineItem._description;
@@ -1374,11 +1379,11 @@ export class CdtaService {
       padSize = middlePadSize - productDescription.length;
 
       var spacer = '';
-      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
-        var quantityofCards:any = "";
-      }else{
+      if (walletLineItem._description == "Merch*" || walletLineItem._description == "1New Magnetics") {
+        var quantityofCards: any = "";
+      } else {
         quantityofCards = 1;
-       
+
       }
       while (spacer.length <= (padSize - 1)) {
         spacer += " ";
@@ -1704,8 +1709,8 @@ export class CdtaService {
 
   getCardSummary(cardCount) {
     var cardProductsStore
-    var cards  = ''
-    var  receipt = '';
+    var cards = ''
+    var receipt = '';
     if (cardCount == 1) {
       cardProductsStore = JSON.parse(localStorage.getItem('readCardData'));
       cardProductsStore = new Array(JSON.parse(cardProductsStore))
@@ -1714,7 +1719,7 @@ export class CdtaService {
       cards += "\n\n              Card(s) Balance    \n\n";
       receipt += cards
     }
-  
+
     var addTime = 0;
     var dashes = "";
     var receiptWidth = 44
