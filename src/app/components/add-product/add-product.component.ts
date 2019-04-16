@@ -202,6 +202,7 @@ export class AddProductComponent implements OnInit {
   cancelCheckoutcash: boolean;
   maxSyncLimitReached = false;
   fadeStatus: boolean;
+  isCashBack: boolean;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
     private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -926,15 +927,32 @@ export class AddProductComponent implements OnInit {
   }
 
   cancelCheckOutConfirmation() {
-    this.cashBack = this.cashAppliedTotal;
+    
     if(this.isCashApplied){
     this.cancelCheckoutcash= true;
     } else {
       this.cancelCheckoutcash = false;
     }
-    this.getRefundCancelCheckoutTitle() ;
-    $("#cancelCheckoutModal").modal('hide');
-    $("#amountApplyCancelModal").modal('show');
+    if(this.shoppingcart._payments.length != 0) {
+      this.cashBack = this.cashAppliedTotal;
+      this.getRefundCancelCheckoutTitle() ;
+      $("#cancelCheckoutModal").modal('hide');
+      $("#amountApplyCancelModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+    } else {
+      $("#cancelCheckoutModal").modal('hide');
+      this.productCheckOut = false;
+      this.checkout = true;
+      this.isCashApplied = false;
+      this.isVoucherApplied = false;
+      this.isCheckApplied = false;
+      this.isCardApplied = false;
+      this.shoppingcart._payments = [];
+      this.getTotalDue(this.shoppingcart);
+    }
+  
    
     if (this.isCardApplied) {
       $("#cancelCheckoutModal").modal('hide');
@@ -1478,12 +1496,16 @@ export class AddProductComponent implements OnInit {
             payment.$paymentMethodId = 9;
             payment.$comment = null;
             this.shoppingcart._payments.push(payment);
+            this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
             $("#creditCardSuccessModal").modal("show");
 
           }
           this.getRefundTitle();
           $("#creditCardSuccessModal").modal("hide");
-          $('#amountApplyModal').modal('show');
+          $("#amountApplyModal").modal({
+            backdrop: 'static',
+            keyboard: false
+          });
           // this.doPinPadTransaction();
         } else {
           this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
@@ -1619,8 +1641,8 @@ export class AddProductComponent implements OnInit {
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == +(this.checkoutTotal)) {
-      this.isCashApplied = true;
-      this.cancelCheckoutcash = true;
+      this.cashBack = 0;
+      // this.cancelCheckoutcash = true;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
       this.handleOpenCashDrawerResult();
@@ -1630,13 +1652,18 @@ export class AddProductComponent implements OnInit {
       payment.$amount = (+this.checkoutTotal)
       payment.$comment = null;
       payment.$cashback = this.cashBack;
-      this.cashAppliedTotal = payment.$amount
+      this.cashAppliedTotal = payment.$amount;
+      this.isCashApplied = true;
+      this.isCashBack = true;
       if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
+        this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       }
       this.getRefundTitle();
-      $('#amountApplyModal').modal('show');
-      // this.doSaveTransaction();
+      $("#amountApplyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
 
     } else if (this.totalRemaining > +this.checkoutTotal) {
 
@@ -1679,6 +1706,7 @@ export class AddProductComponent implements OnInit {
           this.shoppingcart._payments.push(payment);
           this.cashAppliedTotal = payment.$amount;
           this.isCashApplied = true;
+          this.isCashBack = true;
           this.cancelCheckoutcash = true;
           this.checkoutTotal = "0";
         } else {
@@ -1693,6 +1721,7 @@ export class AddProductComponent implements OnInit {
     } else if (this.totalRemaining < (+this.checkoutTotal)) {
        this.isCashApplied = true;
       // this.isVoucherApplied = false;
+      this.isCashBack = true;
       this.cashAppliedTotal = this.checkoutTotal
       this.cashBack = (+this.checkoutTotal) - this.totalRemaining;
       this.handleOpenCashDrawerResult();
@@ -1703,11 +1732,18 @@ export class AddProductComponent implements OnInit {
       payment.$comment = null;
       payment.$cashback = this.cashBack;
       this.cashAppliedTotal = payment.$amount
-      if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart);
+      if (indexOfPayment == -1) {
         this.shoppingcart._payments.push(payment);
+      } else{
+        this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal); 
+        this.shoppingcart._payments[indexOfPayment].cashback = this.cashBack;
       }
       this.getRefundTitle();
-      $('#amountApplyModal').modal('show');
+      $("#amountApplyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       // $("#myModal").modal('show');
     }
   }
@@ -1723,21 +1759,6 @@ export class AddProductComponent implements OnInit {
 
   doSaveTransaction() {
     this.saveTransaction();
-  }
-
-  cashApplied() {
-    let payment = new PaymentType();
-    payment.$paymentMethodId = 2
-    payment.$amount = (+this.checkoutTotal)
-    payment.$comment = null;
-    payment.$cashback = this.cashBack;
-    if (Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart) == -1) {
-      this.shoppingcart._payments.push(payment);
-    }
-    this.getRefundTitle();
-    $('#amountApplyModal').modal('show');
-    this.doSaveTransaction();
-    // this.checkIfCreditCardApplied();
   }
 
 
@@ -1791,8 +1812,9 @@ export class AddProductComponent implements OnInit {
   }
 
   voucherModalApply() {
-    if (this.totalDue == this.checkoutTotal) {
+    if (this.totalDue == (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+      this.voucherAppliedTotal = (+this.checkoutTotal);
       this.voucherRemaining = this.totalRemaining;
       let payment = new PaymentType();
       payment.$paymentMethodId = 11
@@ -1800,7 +1822,10 @@ export class AddProductComponent implements OnInit {
       payment.$comment = null;
       if (Utils.getInstance.checkIsPaymentMethodExists(11, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
+        
       }
+      this.isVoucherApplied = true;
+    
     } else {
       this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       this.voucherRemaining = this.totalRemaining;
@@ -1828,8 +1853,12 @@ export class AddProductComponent implements OnInit {
       $('#voucherApplyModal').modal('hide');
     } else if (this.voucherRemaining == 0) {
       this.getRefundTitle();
-      $('#amountApplyModal').modal('show');
+      $("#amountApplyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
     }
+   
     // $('#voucherApplyModal').modal('show');
   }
 
@@ -1864,6 +1893,7 @@ export class AddProductComponent implements OnInit {
         console.log(this.shoppingcart._payments)
         this.checkAppliedTotal = payment.$amount;
         this.isCheckApplied = true;
+        this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += (+this.checkoutTotal);
         this.checkAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
@@ -1873,7 +1903,10 @@ export class AddProductComponent implements OnInit {
       
       this.openCashDrawer();
       this.getRefundTitle();
-      $('#amountApplyModal').modal('show');
+      $("#amountApplyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       // $('#checkModal').modal('show');
     }
 
@@ -2192,54 +2225,60 @@ export class AddProductComponent implements OnInit {
     let commaFlag = false;
     this.message = " ";
     this.title = " "
-    if(this.shoppingcart._payments.length >2) {
+    let payments = [];
+    payments = this.shoppingcart._payments;
+    let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
+    if(-1 != indexOfPayment){
+      payments.splice(indexOfPayment,1)
+    }
+
+    if(payments.length >2) {
       commaFlag = true;
     }
-    this.shoppingcart._payments.forEach(element => {
-      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
-        this.title = this.title + " and "
-        this.message = this.message + " and ";
-
-        commaFlag = false;
-      }
-      if(count!=0 && commaFlag) {
-        this.title = this.title + ', '
-        this.message = this.message + ', '
-      }
-      switch (element.paymentMethodId) {
-
-        case 2:
-        this.title = this.title + "Cash";
-        this.message = this.message + "Return change to customer."
-        break;
-
-        case 3:
-        this.title = this.title + "Check";
-        this.message = this.message + "Place the check in the drawer."
-        break;
-
-        case 11:
-        this.title = this.title + "Voucher";
-        this.message = this.message + "Place the voucher in the drawer."
-        break;
-
-        case  9:
-        this.title = this.title + "Credit";
-        this.message = this.message + "Credit Applied."
-        break;
-
-   
-
-        default: 
-        this.message = ""
-        this.title = ""
-      }
-      
-      count++;
+    payments.forEach(element => {
+    
+        if(payments.length !=0 && (0 != payments.length-1 ) && (count == payments.length-1)){
+          this.title = this.title + " and "
+          this.message = this.message + " and ";
+  
+          commaFlag = false;
+        }
+        if(count!=0 && commaFlag) {
+          this.title = this.title + ', '
+        }
+        switch (element.paymentMethodId) {
+  
+          case 2:
+          this.title = this.title + "Cash";
+          this.message = this.message + "Return change to customer."
+          break;
+  
+          case 3:
+          this.title = this.title + "Check";
+          this.message = this.message + "Place the check in the drawer."
+          break;
+  
+          case 11:
+          this.title = this.title + "Voucher";
+          this.message = this.message + "Place the voucher in the drawer."
+          break;
+  
+          case  9:
+          this.title = this.title + "Credit";
+          this.message = this.message + "Credit Applied."
+          break;
+  
      
-      if(element.paymentMethodId == 8) {
-        count--;
-      }
+  
+          default: 
+          this.message = ""
+          this.title = ""
+        }
+        
+        count++;
+      
+ 
+    
     });
 
   }
@@ -2248,12 +2287,18 @@ export class AddProductComponent implements OnInit {
     let count = 0;
     let commaFlag = false;
     this.message = "Please give the customer back  ";
-    this.title = "Return "
-    if(this.shoppingcart._payments.length >2) {
+    this.title = "Return ";
+    let payments = [];
+    payments = this.shoppingcart._payments;
+    let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingcart);
+    if(-1 != indexOfPayment){
+      payments.splice(indexOfPayment,1)
+    }
+    if(payments.length >2) {
       commaFlag = true;
     }
-    this.shoppingcart._payments.forEach(element => {
-      if(this.shoppingcart._payments.length !=0 && (0 != this.shoppingcart._payments.length-1 ) && (count == this.shoppingcart._payments.length-1)){
+    payments.forEach(element => {
+      if(payments.length !=0 && (0 != payments.length-1 ) && (count == payments.length-1)){
         this.title = this.title + " and "
         this.message = this.message + " and ";
 
@@ -2290,9 +2335,7 @@ export class AddProductComponent implements OnInit {
       
       count++;
       
-      if(element.paymentMethodId == 8) {
-        count--;
-      }
+ 
     });
 
 
