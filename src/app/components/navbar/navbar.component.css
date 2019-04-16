@@ -63,3 +63,15 @@
     padding: 10px 15px;
     width: calc(50% - 10px);
 }
+
+.header-btn-menu svg{
+    fill: black;
+    width: 13px;
+    margin-left: 6px;
+    height: 13px;
+    margin-top: -3px;
+}
+
+ .header-btn-menu:focus svg {
+    fill:#d65400!important;
+}
