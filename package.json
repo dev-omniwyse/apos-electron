@@ -33,7 +33,7 @@
       "buildResources": "dist"
     },
     "nsis": {
-      "runAfterFinish": true,
+      "runAfterFinish": false,
       "perMachine": true
     }
   },
