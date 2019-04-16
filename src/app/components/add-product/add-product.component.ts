@@ -1649,7 +1649,7 @@ export class AddProductComponent implements OnInit {
       this.openCashDrawer();
       let payment = new PaymentType();
       payment.$paymentMethodId = 2
-      payment.$amount = (+this.checkoutTotal)
+      payment.$amount = (+this.checkoutTotal) - this.cashBack;
       payment.$comment = null;
       payment.$cashback = this.cashBack;
       this.cashAppliedTotal = payment.$amount;
@@ -1699,7 +1699,7 @@ export class AddProductComponent implements OnInit {
         let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(2, this.shoppingcart);
         if (indexOfPayment == -1) {
           let payment = new PaymentType();
-          payment.$amount = (+this.checkoutTotal);
+          payment.$amount = (+this.checkoutTotal) - this.cashBack;
           payment.$paymentMethodId = 2;
           payment.$comment = null;
           payment.$cashback = this.cashBack;
@@ -1728,7 +1728,7 @@ export class AddProductComponent implements OnInit {
       this.openCashDrawer();
       let payment = new PaymentType();
       payment.$paymentMethodId = 2
-      payment.$amount = (+this.checkoutTotal)
+      payment.$amount = (+this.checkoutTotal) - this.cashBack;
       payment.$comment = null;
       payment.$cashback = this.cashBack;
       this.cashAppliedTotal = payment.$amount
