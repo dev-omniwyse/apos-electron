@@ -1160,12 +1160,14 @@ export class CdtaService {
               var cardBalance = '';
               var productDescription = '';
               var productStatus = '';
-
+              var addTime = 0
               switch (productType) {
                 case 1:
-
+                if (null != dataItem.add_time) {
+                  addTime = dataItem.add_time;
+                }
                   if (exp_date_epoch_days > 1) {
-                    cardBalance = "Exp: " + exp_date;
+                    cardBalance = "Exp: " + Utils.getInstance.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + Utils.getInstance.getProductExpirationTime(addTime) ;
                   } else {
                     cardBalance = (days + 1) + " Days";
                   }
@@ -1769,8 +1771,8 @@ export class CdtaService {
           case 1:
 
             if (parseInt(exp_date_epoch_days) > 0) {
-              cardBalance = "Exp: " + this.getProductExpirationDate(exp_date_epoch_days, addTime);
-              productExpirationTime = this.getProductExpirationTime(addTime);
+              cardBalance = "Exp: " + Utils.getInstance.getProductExpirationDate(exp_date_epoch_days, addTime);
+              productExpirationTime = Utils.getInstance.getProductExpirationTime(addTime);
             } else {
               cardBalance = (days + 1) + " Days";
             }
