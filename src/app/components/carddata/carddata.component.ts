@@ -1180,51 +1180,58 @@ export class CarddataComponent implements OnInit, OnChanges {
     let count = 0;
     let commaFlag = false;
     this.message = "Please give the customer back  ";
-    this.title = "Return "
-    if(this.shoppingCart._payments.length >2) {
+    this.title = "Return ";
+    let payments = [];
+    payments = this.shoppingCart._payments;
+    let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingCart);
+    if(-1 != indexOfPayment){
+      payments.splice(indexOfPayment,1)
+    }
+    if(payments.length >2) {
       commaFlag = true;
     }
-    this.shoppingCart._payments.forEach(element => {
-      if(this.shoppingCart._payments.length !=0 && (0 != this.shoppingCart._payments.length-1 ) && (count == this.shoppingCart._payments.length-1)){
-        this.title = this.title + " and "
-        this.message = this.message + " and ";
-
-        commaFlag = false;
-      }
-      if(count!=0 && commaFlag) {
-        this.title = this.title + ', '
-        this.message = this.message + ', '
-      }
-      switch (element.paymentMethodId) {
-        case 2:
-        this.title = this.title + "Cash";
-        this.message = this.message + "cash"
-        break;
-
-        case 3:
-        this.title = this.title + "Check";
-        this.message = this.message + "check"
-        break;
-
-        case 11:
-        this.title = this.title + "Voucher";
-        this.message = this.message + "voucher"
-        break;
-
-        case  9:
-        this.title = this.title + "Credit";
-        this.message = this.message + "credit"
-        break;
-
-        default: 
-        this.message = "Please give the customer back "
-      }
+    payments.forEach(element => {
+    
+        if(payments.length !=0 && (0 != payments.length-1 ) && (count == payments.length-1)){
+          this.title = this.title + " and "
+          this.message = this.message + " and ";
+  
+          commaFlag = false;
+        }
+        if(count!=0 && commaFlag) {
+          this.title = this.title + ', '
+        }
+        switch (element.paymentMethodId) {
+          case 2:
+          this.title = this.title + "Cash";
+          this.message = this.message + "cash"
+          break;
+  
+          case 3:
+          this.title = this.title + "Check";
+          this.message = this.message + "check"
+          break;
+  
+          case 11:
+          this.title = this.title + "Voucher";
+          this.message = this.message + "voucher"
+          break;
+  
+          case  9:
+          this.title = this.title + "Credit";
+          this.message = this.message + "credit"
+          break;
+  
+          default: 
+          this.message = "Please give the customer back "
+        }
+        
+        count++;
       
-      count++;
+  
 
-      if(element.paymentMethodId == 8) {
-        count--;
-      }
+    
+
     });
 
 
