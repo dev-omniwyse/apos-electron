@@ -134,14 +134,14 @@ export class Utils {
         let indexOfPayment = -1;
         let payments = shoppingcart._payments;
         for (let index = 0; index < payments.length; index++) {
-          if (paymentMethodId == payments[index].paymentMethodId) {
-            indexOfPayment = index;
-            console.log(indexOfPayment)
-            break;
-          }
+            if (paymentMethodId == payments[index].paymentMethodId) {
+                indexOfPayment = index;
+                console.log(indexOfPayment)
+                break;
+            }
         }
         return indexOfPayment;
-      }
+    }
 
     getActiveWalletLineItem(cart) {
 
@@ -472,9 +472,9 @@ export class Utils {
 
                         let exp = new Date(product.exp_date_str);
                         exp.setTime(exp.getTime() + addTime);
-                        // let expTime  = new Date();
-                        // expTime.setTime(addTime);
-                        cardBalance = "Exp: " + product.exp_date_str + " " + exp.getHours() + ":" + exp.getMinutes();
+                        // cardBalance = "Exp: " + APOS.util.CardService.getProductExpirationDate(exp_date_epoch_days, addTime) + 
+                        // " " + APOS.util.CardService.getProductExpirationTime(addTime);
+                        cardBalance = "Exp: " + this.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + this.getProductExpirationTime(addTime);
 
                     } else {
 
@@ -550,6 +550,27 @@ export class Utils {
         return prodcts
     }
 
+    getProductExpirationTime(addTime) {
+        var d = new Date();
+
+        if (addTime === 0) {
+            d.setHours(23, 59, 59, 0)
+        } else {
+            // set your hour to midnight
+            d.setHours(0, 0, 0, 0);
+            d = new Date(d.getTime() + (addTime * 60000));
+        }
+
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
+
+        var amORpm = hours > 12 ? "PM" : "AM";
+        if (hours > 12) hours -= 12;
+        
+        var expirationTime = hours + ":" + (minutes == 0 ? "00" : minutes )+ " "+ amORpm;
+
+        return expirationTime;
+    }
     getProductDescription(product, ticketMap) {
         let description = undefined;
 
@@ -593,22 +614,28 @@ export class Utils {
     }
 
     getProductExpirationDate(exp_date_epoch_days, addTime) {
-        // 	console.log("exp_date_epoch_days: " + exp_date_epoch_days);
+        // console.log("exp_date_epoch_days: " + exp_date_epoch_days);
 
-        let expDate = new Date(1970, 0, 1, 0, 0, 0);
+        var expDate = new Date(1970, 0, 1, 0, 0, 0);
 
-        //     let expDateDays = exp_date_epoch_days;
+        var expDateDays = exp_date_epoch_days;
 
-        // (addTime * 60000)
-        //     let startDate = Date.parse("1970-01-01");
-        //     let endDate = Date.parse(Date.now.toString());
-        //     let timeDiff = endDate - startDate;
-        //     // let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    	/* if(addTime === 0) {
+    		expDateDays = expDateDays - 1;
+    	} */
 
-        //     let expirationDate = (new Date(expDate + expDateDays));
-        //     console.log("expirationDate " +expirationDate);
-        let expirationDate = new Date(expDate.getTime() + exp_date_epoch_days * addTime * 60000);
-        return expirationDate;
+        expDate.setDate(expDate.getDate() + expDateDays);
+
+        // Ext.Date.patterns = {
+        //     ShortDate: "m/d/Y"
+        // };
+
+        let y = expDate.getFullYear().toString();
+        let m = (expDate.getMonth() + 1).toString();
+        let d = expDate.getDate().toString();
+        if (m.length == 1) m = '0' + m;
+        if (d.length == 1) d = '0' + d;
+        return  d +"/"+ m+"/"+ y;
     }
     isProductExpiredDesfire(exp_date_epoch_days, addTime) {
         let isExpired = false;
