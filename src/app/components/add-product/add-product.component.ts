@@ -1675,6 +1675,7 @@ export class AddProductComponent implements OnInit {
           payment.$amount = (+this.checkoutTotal);
           payment.$paymentMethodId = 2;
           payment.$comment = null;
+          payment.$cashback = this.cashBack;
           this.shoppingcart._payments.push(payment);
           this.cashAppliedTotal = payment.$amount;
           this.isCashApplied = true;
