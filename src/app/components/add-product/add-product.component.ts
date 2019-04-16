@@ -19,6 +19,7 @@ import { ShoppingCart } from 'src/app/models/ShoppingCart';
 import { CarddataComponent } from '../carddata/carddata.component';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { sessionService } from 'src/app/session';
 declare var pcsc: any;
 declare var $: any;
 var pcs = pcsc();
@@ -204,7 +205,7 @@ export class AddProductComponent implements OnInit {
   fadeStatus: boolean;
   constructor(private elementRef: ElementRef,
     private formBuilder: FormBuilder,
-    private cdtaService?: CdtaService, private globals?: Globals, private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
+    private cdtaService?: CdtaService, private globals?: Globals, private session_Service?: sessionService,private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
 
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem("isMagnetic") == "true" ? true : false;
@@ -814,6 +815,10 @@ export class AddProductComponent implements OnInit {
   }
 
   productCheckout() {
+    var userSession =  this.session_Service.getAuthenticated();
+    // if(userSession){
+
+    // }
     if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $("#shoppingCartEmptyModal").modal({
         backdrop: 'static',

@@ -34,6 +34,7 @@ import { Globals } from './global';
 import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
 import { NoCommaPipe } from './pipe/no-comma.pipe';
 import { DatePipe } from '@angular/common';
+import { sessionService } from './session';
 
 export class HammerConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -63,7 +64,8 @@ export class HammerConfig extends HammerGestureConfig {
     AddMagneticProductComponent,
     EnvironmentComponent,
     NumericOnlyDirective,
-    NoCommaPipe 
+    NoCommaPipe,
+    sessionService
     
   ],
   imports: [
