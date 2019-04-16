@@ -566,7 +566,8 @@ export class Utils {
 
         var amORpm = hours > 12 ? "PM" : "AM";
         if (hours > 12) hours -= 12;
-        var expirationTime = hours + ":" + minutes + " "+ amORpm;
+        
+        var expirationTime = hours + ":" + (minutes == 0 ? "00" : minutes )+ " "+ amORpm;
 
         return expirationTime;
     }
