@@ -41,6 +41,7 @@ export class SetupComponent implements OnInit {
         this.isFromSetup = true;
         if(this.isProduction) {
             localStorage.clear()
+            localStorage.setItem('environment','prod');
         } else {
             var environment = localStorage.getItem('environment');
             localStorage.clear();
