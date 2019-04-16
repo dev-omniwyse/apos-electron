@@ -1,0 +1,17 @@
+directories:
+  output: release
+  buildResources: dist
+appId: com.apos.electronapp
+productName: APOS
+win:
+  target: nsis
+  asar: false
+  icon: 'https://s3.amazonaws.com/qe-gfcp-tenant/cdta/resources/img/header_logo.png'
+files:
+  - filter:
+      - '**/*'
+      - dist/**/*
+nsis:
+  runAfterFinish: true
+  perMachine: true
+electronVersion: 3.1.3
