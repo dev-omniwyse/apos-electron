@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
     public statusOfShiftReportBoolean: Boolean = false
     public lockedByUserBoolean: Boolean = false
     public ownedByUserBoolean: Boolean = false
+    lockDeviceBoolean = '';
     shiftReport: any = [
         {
             userEmail: "",
@@ -72,6 +73,10 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem("userEmail", this.userdata.username)
                 let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
                 var shiftIndex: any = 0;
+                if(this.lockDeviceBoolean == 'true') {
+                    this.lockedByUserBoolean = false;
+                }
+                localStorage.setItem('lockDeviceBoolean','false');
                 shiftStore.forEach(element => {
                     console.log("element", element);
                     // if (element.shiftState == "3" && element.userID != "" && element.shiftType == "0") {
@@ -154,6 +159,13 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
+
+        this.lockDeviceBoolean = localStorage.getItem('lockDeviceBoolean');
+        console.log(localStorage.getItem('lockDeviceBoolean'));
+        if(this.lockDeviceBoolean == 'true') {
+            this.lockedByUserBoolean = true;
+            this.lockedByUser = localStorage.getItem('userEmail')
+        }
 
         // if(localStorage.getItem("userEmail") != undefined){
         //    // this.hideAndShowLogout = false

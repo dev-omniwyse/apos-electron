@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
   hideAndShowLogout: Boolean
   today = new Date();
   versionDate = new Date();
+  lockDeviceBoolean: boolean;
   // @Output()  hideHeader;
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
@@ -115,6 +116,12 @@ export class NavbarComponent implements OnInit {
   //     this.jstoday = formatDate(this.today, 'dd-MM-yyyy hh:mm:ss a', 'en-US', '+0530');
   //   }
   // }
+  lockDevice() {
+    this.lockDeviceBoolean = true;
+    this.terminalNumber = undefined;
+    localStorage.setItem('lockDeviceBoolean', this.lockDeviceBoolean.toString());
+    this.router.navigate(['login']);
+  }
 }
 
 
