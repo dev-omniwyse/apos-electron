@@ -59,7 +59,7 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     // The following is optional and will open the DevTools:
-     win.webContents.openDevTools()
+    //  win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -588,7 +588,7 @@ ipcMain.on('cancelPinpadTransaction', (event, transactionAmount) => {
 
 ipcMain.on('getPinpadTransactionStatusEncode', (event, transactionAmount) => {
     var result = posAppletInstance.getPinpadTransactionStatusSync();
-    event.sender.send('gdevtooletPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
+    event.sender.send('getPinpadTransactionStatusEncodeResult', '' + result.getSuccessSync());
 });
 
 ipcMain.on('getPinpadTransactionDataEncode', (event, transactionAmount) => {

@@ -660,6 +660,10 @@ export class CarddataComponent implements OnInit, OnChanges {
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
   }
 
+  openCashDrawer() {
+    this.electronService.ipcRenderer.send("openCashDrawer")
+  }
+
   initiateCancelEncoding(index) {
     let cardPID = this.getKeyForCancelEncode(index);
     this.cdtaService.generateRefundReceipt();
@@ -670,6 +674,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         this.doPinpadVoidTransaction(this.getCreditCardPaymentAmount());
       }
       else {
+        this.openCashDrawer();
         this.navigateToReadCard();
       }
       return;
