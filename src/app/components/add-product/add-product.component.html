@@ -329,10 +329,11 @@
                 <button data-toggle="modal" (click)="paymentByCash()">Cash</button>
                 <button data-toggle="modal" (click)="cardApplied()">Credit or Debit Card</button>
                 <button data-toggle="modal" (click)="paymentByCheck()">Check</button>
-                <button data-toggle="modal" data-target="#fareCardModal">Existing Farecard</button>
                 <button data-toggle="modal" (click)="paymentByVoucher()">Voucher</button>
-                <button data-toggle="modal" data-target="#payasyougoModal">Pay As You Go</button>
                 <button data-toggle="modal" (click)="compApplied()">Comp</button>
+                <button data-toggle="modal" class="disabled-btn" data-target="#fareCardModal">Existing Farecard</button>
+                <button data-toggle="modal" class="disabled-btn" data-target="#payasyougoModal">Pay As You Go</button>
+
             </div>
             <!-- Modal -->
             <div class="modal fade" id="invalidAmountModal" role="dialog">
