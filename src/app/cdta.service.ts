@@ -803,7 +803,7 @@ export class CdtaService {
     var paymentTypeText = '';
     var receiptWidth = 44;
     var receipt = "";
-    var signatureRequired = false;
+    var signatureRequired:any = false;
     var customerCopyReceipt = "";
     var changeDue = 0;
     var padSize = 0;
@@ -1095,11 +1095,11 @@ export class CdtaService {
       receipt += "\n" + paymentTenderedItem + paymentAmount + "\n";
 
       if (9 == paymentId) {
-         var cardRecord :any = ""
+        var cardRecord: any = ""
         var cardIssuerName = "";
-        var cardDetails:any = localStorage.getItem("pinPadTransactionData");
-          cardRecord = JSON.parse(JSON.stringify(eval("(" + cardDetails + ")")));
-          console.log("cardRecord", cardRecord)
+        var cardDetails: any = localStorage.getItem("pinPadTransactionData");
+        cardRecord = JSON.parse(JSON.stringify(eval("(" + cardDetails + ")")));
+        console.log("cardRecord", cardRecord)
         /*
          * 1: Visa
             2: Mastercard 
@@ -1324,6 +1324,31 @@ export class CdtaService {
 
     })
 
+    paymentsStore.forEach(paymentRecord => {
+      paymentId = paymentRecord.paymentMethodId;
+      if (9 == paymentId) {
+      //  var creditPayment = paymentsStore.getAt(paymentId);
+
+        signatureRequired = true;
+
+        receipt += "\n\n\n";
+
+        var receiptWidth = 44;
+        var signatureLine = "SIGNATURE: ";
+        while (signatureLine.length <= receiptWidth) {
+          signatureLine += "_";
+        }
+
+        receipt += signatureLine + "\n\n\n";
+
+        customerCopyReceipt = receipt;
+
+        receipt += "               MERCHANT COPY\n\n\n";
+        customerCopyReceipt += "               CUSTOMER COPY\n\n\n";
+
+      }
+    })
+
     receipt += "\n\n";
     console.log("receipt", receipt)
     localStorage.setItem("lastTransactionReceipt", receipt)
@@ -1331,6 +1356,9 @@ export class CdtaService {
     this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
     console.log(receipt + 'generateReceipt receipt ');
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
+    if (signatureRequired == true) {
+      this.electronService.ipcRenderer.send('printReceipt',customerCopyReceipt, timestamp);
+  }
   }
 
   generateRefundReceipt() {
