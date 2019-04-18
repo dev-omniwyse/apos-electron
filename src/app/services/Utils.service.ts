@@ -635,7 +635,7 @@ export class Utils {
         let d = expDate.getDate().toString();
         if (m.length == 1) m = '0' + m;
         if (d.length == 1) d = '0' + d;
-        return  d +"/"+ m+"/"+ y;
+        return  m +"/"+ d+"/"+ y;
     }
     isProductExpiredDesfire(exp_date_epoch_days, addTime) {
         let isExpired = false;
