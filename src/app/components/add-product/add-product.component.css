@@ -820,3 +820,10 @@ ul {
 .pay-as-tab .carousel-indicators {
     bottom: 145px;
 }
+
+.disabled-btn {
+    background-color: rgba(212, 212, 207, 0.8)!important;
+    border: 1px solid rgba(212, 212, 207, 0.8)!important;
+    cursor: not-allowed !important;
+    color: #989898!important;
+}
