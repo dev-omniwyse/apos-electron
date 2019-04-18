@@ -7,6 +7,7 @@ import { MediaType } from './services/MediaType';
 // import { product_log } from '../assets/data/'
 import { DatePipe } from '@angular/common';
 import { Utils } from './services/Utils.service';
+declare var $: any;
 const httpOptions = {
   headers: new HttpHeaders(
     {
@@ -802,7 +803,7 @@ export class CdtaService {
     var paymentTypeText = '';
     var receiptWidth = 44;
     var receipt = "";
-    var signatureRequired = false;
+    var signatureRequired:any = false;
     var customerCopyReceipt = "";
     var changeDue = 0;
     var padSize = 0;
@@ -1073,7 +1074,7 @@ export class CdtaService {
           let indexOfCashPayment = Utils.getInstance.checkIsPaymentMethodExists(2, shoppingCart);
           if (-1 != indexOfCashPayment) {
             changeDue = shoppingCart._payments[indexOfCashPayment].cashback;
-            if(undefined == changeDue){
+            if (undefined == changeDue) {
               changeDue = 0;
             }
           }
@@ -1092,6 +1093,63 @@ export class CdtaService {
       paymentAmount = paymentAmount.substring(paymentAmount.length - 10);
 
       receipt += "\n" + paymentTenderedItem + paymentAmount + "\n";
+
+      if (9 == paymentId) {
+        var cardRecord: any = ""
+        var cardIssuerName = "";
+        var cardDetails: any = localStorage.getItem("pinPadTransactionData");
+        cardRecord = JSON.parse(JSON.stringify(eval("(" + cardDetails + ")")));
+        console.log("cardRecord", cardRecord)
+        /*
+         * 1: Visa
+            2: Mastercard 
+            3: Discover
+            4: Amex
+            6: Diners
+            8: JCB
+         */
+
+        // TODO: refactor
+        switch (cardRecord.issuer) {
+          case 1:
+            cardIssuerName = "Visa"
+            break;
+          case 2:
+            cardIssuerName = "Mastercard"
+            break;
+          case 3:
+            cardIssuerName = "Discover"
+            break;
+          case 4:
+            cardIssuerName = "Amex"
+            break;
+          case 6:
+            cardIssuerName = "Diners"
+            break;
+          case 8:
+            cardIssuerName = "JCB"
+            break;
+          default:
+            cardIssuerName = "UNKNOWN"
+            break;
+        }
+
+
+        receipt += cardIssuerName + " XXXXXXXXXXXX" + cardRecord.last4 + "\n";
+
+        receipt += "AUTH: " + cardRecord.auth_code + "\n\n";
+
+        if (null != cardRecord.appLabel)
+          receipt += "App Label: " + cardRecord.appLabel + "\n\n";
+        if (null != cardRecord.tvr)
+          receipt += "TVR: " + cardRecord.tvr + "\n\n";
+        if (null != cardRecord.appLabel)
+          receipt += "AID: " + cardRecord.aid + "\n\n";
+        if (null != cardRecord.appLabel)
+          receipt += "TSI: " + cardRecord.tsi + "\n\n";
+
+
+      }
 
     });
 
@@ -1163,11 +1221,11 @@ export class CdtaService {
               var addTime = 0
               switch (productType) {
                 case 1:
-                if (null != dataItem.add_time) {
-                  addTime = dataItem.add_time;
-                }
+                  if (null != dataItem.add_time) {
+                    addTime = dataItem.add_time;
+                  }
                   if (exp_date_epoch_days > 1) {
-                    cardBalance = "Exp: " + Utils.getInstance.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + Utils.getInstance.getProductExpirationTime(addTime) ;
+                    cardBalance = "Exp: " + Utils.getInstance.getProductExpirationDate(exp_date_epoch_days, addTime) + " " + Utils.getInstance.getProductExpirationTime(addTime);
                   } else {
                     cardBalance = (days + 1) + " Days";
                   }
@@ -1266,6 +1324,31 @@ export class CdtaService {
 
     })
 
+    paymentsStore.forEach(paymentRecord => {
+      paymentId = paymentRecord.paymentMethodId;
+      if (9 == paymentId) {
+      //  var creditPayment = paymentsStore.getAt(paymentId);
+
+        signatureRequired = true;
+
+        receipt += "\n\n\n";
+
+        var receiptWidth = 44;
+        var signatureLine = "SIGNATURE: ";
+        while (signatureLine.length <= receiptWidth) {
+          signatureLine += "_";
+        }
+
+        receipt += signatureLine + "\n\n\n";
+
+        customerCopyReceipt = receipt;
+
+        receipt += "               MERCHANT COPY\n\n\n";
+        customerCopyReceipt += "               CUSTOMER COPY\n\n\n";
+
+      }
+    })
+
     receipt += "\n\n";
     console.log("receipt", receipt)
     localStorage.setItem("lastTransactionReceipt", receipt)
@@ -1273,6 +1356,9 @@ export class CdtaService {
     this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
     console.log(receipt + 'generateReceipt receipt ');
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
+    if (signatureRequired == true) {
+      this.electronService.ipcRenderer.send('printReceipt',customerCopyReceipt, timestamp);
+  }
   }
 
   generateRefundReceipt() {
@@ -1346,7 +1432,7 @@ export class CdtaService {
       padSize = 0;
       secondPadSize = 0;
       middlePadSize = Math.floor(receiptWidth / 2) + 3;
-      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
+      if (walletLineItem._description == "Merch*" || walletLineItem._description == "1New Magnetics") {
 
       } else {
         productDescription = walletLineItem._description;
@@ -1376,11 +1462,11 @@ export class CdtaService {
       padSize = middlePadSize - productDescription.length;
 
       var spacer = '';
-      if (walletLineItem._description == "Merch*"  || walletLineItem._description == "1New Magnetics") {
-        var quantityofCards:any = "";
-      }else{
+      if (walletLineItem._description == "Merch*" || walletLineItem._description == "1New Magnetics") {
+        var quantityofCards: any = "";
+      } else {
         quantityofCards = 1;
-       
+
       }
       while (spacer.length <= (padSize - 1)) {
         spacer += " ";
@@ -1706,8 +1792,8 @@ export class CdtaService {
 
   getCardSummary(cardCount) {
     var cardProductsStore
-    var cards  = ''
-    var  receipt = '';
+    var cards = ''
+    var receipt = '';
     if (cardCount == 1) {
       cardProductsStore = JSON.parse(localStorage.getItem('readCardData'));
       cardProductsStore = new Array(JSON.parse(cardProductsStore))
@@ -1716,7 +1802,7 @@ export class CdtaService {
       cards += "\n\n              Card(s) Balance    \n\n";
       receipt += cards
     }
-  
+
     var addTime = 0;
     var dashes = "";
     var receiptWidth = 44

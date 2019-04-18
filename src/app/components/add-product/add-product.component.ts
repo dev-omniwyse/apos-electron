@@ -1500,6 +1500,7 @@ export class AddProductComponent implements OnInit {
             $("#creditCardSuccessModal").modal("show");
 
           }
+          this.openCashDrawer()
           this.getRefundTitle();
           $("#creditCardSuccessModal").modal("hide");
           $("#amountApplyModal").modal({
