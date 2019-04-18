@@ -1606,7 +1606,7 @@ export class AddProductComponent implements OnInit {
 
   openCashDrawer() {
     this.electronService.ipcRenderer.send("openCashDrawer")
-  }
+  } 
 
   cancelPinPadTransaction() {
     this.handleCancelPinPadTransaction();
