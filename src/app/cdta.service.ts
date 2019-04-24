@@ -73,6 +73,19 @@ export class CdtaService {
         });
       }
     });
+
+    this.electronService.ipcRenderer.on('printCustomerRefundReceiptResult', (event, data) => {
+      if (data != undefined && data != "") {
+        //alert("print Summary Payments Report Result Done")
+        console.log("printCustomerRefundReceiptResult", data)
+        this._ngZone.run(() => {
+          this.electronService.ipcRenderer.removeAllListeners("printCustomerRefundReceiptResult")
+          //  this.electronService.ipcRenderer.removeAllListeners("paymentsDataResult")
+
+        });
+      }
+    });
+    
     this.electronService.ipcRenderer.on('printCardSummaryResult', (event, data) => {
       if (data != undefined && data != "") {
         console.log("print card summary done", data)
@@ -803,7 +816,7 @@ export class CdtaService {
     var paymentTypeText = '';
     var receiptWidth = 44;
     var receipt = "";
-    var signatureRequired:any = false;
+    var signatureRequired: any = false;
     var customerCopyReceipt = "";
     var changeDue = 0;
     var padSize = 0;
@@ -1327,7 +1340,7 @@ export class CdtaService {
     paymentsStore.forEach(paymentRecord => {
       paymentId = paymentRecord.paymentMethodId;
       if (9 == paymentId) {
-      //  var creditPayment = paymentsStore.getAt(paymentId);
+        //  var creditPayment = paymentsStore.getAt(paymentId);
 
         signatureRequired = true;
 
@@ -1357,8 +1370,8 @@ export class CdtaService {
     console.log(receipt + 'generateReceipt receipt ');
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
     if (signatureRequired == true) {
-      this.electronService.ipcRenderer.send('printReceipt',customerCopyReceipt, timestamp);
-  }
+      this.electronService.ipcRenderer.send('printReceipt', customerCopyReceipt, timestamp);
+    }
   }
 
   generateRefundReceipt() {
@@ -1371,6 +1384,8 @@ export class CdtaService {
     //var refundsStore = localStorage.getItem("refundsstore");
 
     var refundTransactionRecord = null;
+    var customerCopy = ""
+    var isCreditPayment: any = false;
     var transactionID = '';
     var totalDue = 0;
     var cardStore = JSON.parse(localStorage.getItem("cardsData"));
@@ -1755,10 +1770,14 @@ export class CdtaService {
 
     var cardBalance = this.getCardSummary(0);
 
-
+    for (var i = 0; i < paymentReport.length; i++) {
+      if (paymentReport[i].paymentMethodId == 9) {
+        isCreditPayment = true
+      }
+    };
 
     try {
-
+     // customerCopy += "               CUSTOMER COPY\n\n\n";
       var receiptContents =
         refundReceipt +
         nonEncodeableProducts +
@@ -1767,7 +1786,7 @@ export class CdtaService {
         paymentsReport +
         "\n" +
         starBar +
-        cardBalance;
+        cardBalance ;
 
       // if (0 != lastReceiptStore.getCount()) {
       //     var receiptRecord = lastReceiptStore.getAt(0);
@@ -1780,6 +1799,19 @@ export class CdtaService {
       // }
       // console.log("printRefundReceipt..." + receiptContents);
       this.electronService.ipcRenderer.send("printRefundReceipt", receiptContents, new Date().getTime());
+
+      if(isCreditPayment == true){
+       
+        var customerCopyReceipt =
+        refundReceipt +
+        nonEncodeableProducts +
+        nonFareProducts +
+        dashes +
+        "\n" +
+        starBar 
+       
+        this.electronService.ipcRenderer.send("printCustomerRefundReceipt", customerCopyReceipt, new Date().getTime());
+      }
 
     } catch (e) {
       console.log("ERROR! Exception printing receipt.");
