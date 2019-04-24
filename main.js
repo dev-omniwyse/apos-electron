@@ -60,7 +60,7 @@ function createWindow() {
 
     // The following is optional and will open the DevTools:
 
-    //  win.webContents.openDevTools()
+     // win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -552,6 +552,13 @@ ipcMain.on('printRefundReceipt', (event, receiptContents, date) => {
     date = java.newLong(Number(date));
     var result = posAppletInstance.printRefundReceiptSync(receiptContents, date);
     event.sender.send('printRefundReceiptResult', '' + result);
+});
+
+ipcMain.on('printCustomerRefundReceipt', (event, receiptContents, date) => {
+    //var resultSetEncoder = posAppletInstance.setEncoderSync(cardname);
+    date = java.newLong(Number(date));
+    var result = posAppletInstance.printRefundReceiptSync(receiptContents, date);
+    event.sender.send('printCustomerRefundReceiptResult', '' + result);
 });
 
 ipcMain.on('printCardSummary', (event, receipt, PID, username, date) => {
