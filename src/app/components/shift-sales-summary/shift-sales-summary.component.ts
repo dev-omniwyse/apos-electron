@@ -57,7 +57,7 @@ export class ShiftSalesSummaryComponent implements OnInit {
               this.backendPaymentReport.push(paymentReport[report]);
             }
             console.log(" this.backendPaymentReport", this.backendPaymentReport)
-            localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+           // localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
 
             this.salesPaymentData = cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
           } else {
