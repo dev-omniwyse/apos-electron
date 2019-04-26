@@ -152,6 +152,14 @@ export class ReadcardComponent implements OnInit {
                 });
 
             }
+            if(data == "[]"){
+                var salesReport: any = {
+                    "userID" : userID,
+                    "shiftType" : shiftType
+                }  
+                this.backendSalesReport.push(salesReport)
+                localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
+            } 
         });
 
         this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
@@ -173,6 +181,15 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
 
                 });
+            }
+
+            if(data == "[]"){
+                var paymentReport: any = {
+                    "userID" : userID,
+                    "shiftType" : shiftType
+                }  
+                this.backendPaymentReport.push(paymentReport);
+                localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
             }
         });
 

@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { catchError, tap, map } from 'rxjs/operators';
 import { ElectronService } from 'ngx-electron';
 import { MediaType } from './services/MediaType';
-// import { product_log } from '../assets/data/'
 import { DatePipe } from '@angular/common';
 import { Utils } from './services/Utils.service';
 declare var $: any;
@@ -33,7 +32,6 @@ export class CdtaService {
     this.electronService.ipcRenderer.on('printSummaryReportResult', (event, data) => {
 
       if (data != undefined && data != "") {
-        //alert("print Summary Report Done")
         console.log("printSummaryReport Done", data)
         this._ngZone.run(() => {
         });
@@ -42,7 +40,6 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printReceiptHeaderResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Receipt Header Result Done")
         console.log("print Receipt Header Result Done", data)
         this._ngZone.run(() => {
 
@@ -52,7 +49,6 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printSummaryPaymentsReportResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Summary Payments Report Result Done")
         console.log("printSummary Payments Report Result Done", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("salesDataResult")
@@ -64,28 +60,23 @@ export class CdtaService {
 
     this.electronService.ipcRenderer.on('printRefundReceiptResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Summary Payments Report Result Done")
         console.log("printRefundReceiptResult", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("printRefundReceiptResult")
-          //  this.electronService.ipcRenderer.removeAllListeners("paymentsDataResult")
 
         });
       }
     });
-
     this.electronService.ipcRenderer.on('printCustomerRefundReceiptResult', (event, data) => {
       if (data != undefined && data != "") {
-        //alert("print Summary Payments Report Result Done")
         console.log("printCustomerRefundReceiptResult", data)
         this._ngZone.run(() => {
           this.electronService.ipcRenderer.removeAllListeners("printCustomerRefundReceiptResult")
-          //  this.electronService.ipcRenderer.removeAllListeners("paymentsDataResult")
 
         });
       }
     });
-    
+
     this.electronService.ipcRenderer.on('printCardSummaryResult', (event, data) => {
       if (data != undefined && data != "") {
         console.log("print card summary done", data)
@@ -211,17 +202,20 @@ export class CdtaService {
       paymentAmount: any = 0,
       paymentMethodCount: any = 0;
     var cashTotal: any = 0;
-    // paymentReportCount = Object.keys(paymentReport).length;
 
     for (var i = 0; i < paymentReport.length; i++) {
 
       paymentMethod = paymentReport[i].paymentMethod;
       paymentAmount = Number(paymentReport[i].paymentAmount);
       paymentMethodCount = paymentReport[i].paymentMethodCount;
+      if (paymentMethod == undefined) {
+        totalPaymentCost += 0
+        totalPaymentCount += 0
+      } else {
+        totalPaymentCost += paymentAmount;
+        totalPaymentCount += paymentMethodCount;
+      }
 
-      totalPaymentCost += paymentAmount;
-      totalPaymentCount += paymentMethodCount;
-      console.log("Payment Method: " + paymentMethod);
       switch (paymentMethod) {
         case 'CHECK':
           checkTotal = Number(paymentReport[i].paymentAmount);
@@ -258,7 +252,6 @@ export class CdtaService {
           break;
       }
     }
-
 
     // build your receipt based on the totals
     var paymentLabel;
@@ -388,8 +381,7 @@ export class CdtaService {
   }
 
   getPaymentTypeDisplayName(paymentType) {
-    // var record = null;
-    // var recordNotFound = -1;
+
     var formsofpaymentstore = JSON.parse(localStorage.getItem("printPaymentData"))
     var displayName = null;
     formsofpaymentstore.forEach(element => {
@@ -404,7 +396,6 @@ export class CdtaService {
   printAllOrSpecificShiftData(specificUserDetails) {
 
     try {
-      // printReceiptHeader(true, new Date().getTime());
       var date = new Date().getTime()
       this.electronService.ipcRenderer.send("printReceiptHeader", true, date);
       console.log("checking header")
@@ -450,61 +441,53 @@ export class CdtaService {
 
       for (var i = 0; i < productReportJSON.length; i++) {
 
-        //var productObj = productReport[i];
         productDescription = productReportJSON[i].description;
-        productValue = productReportJSON[i].value;
-        productQuantity = productReportJSON[i].quantity;
-        totalQuantity += parseFloat(productQuantity);
-        totalAmountSold += parseFloat(productValue);
+        if (productDescription != undefined) {
+          productValue = productReportJSON[i].value;
+          productQuantity = productReportJSON[i].quantity;
+          totalQuantity += parseFloat(productQuantity);
+          totalAmountSold += parseFloat(productValue);
+          isMerchandise = productReportJSON[i].isMerchandise;
 
-        //isMerchandise == 1 Means it is a Merchandise add Amount  
-        isMerchandise = productReportJSON[i].isMerchandise;
+          if (isMerchandise == 1) {
+            totalNonFareProductsSoldInShift += parseFloat(productValue);
+          } else {
+            totalFareProductsSoldInShift += parseFloat(productValue);
+          }
+          if (i == 0) {
+            productDescription = "\n" + productDescription
+          }
+          if (productDescription.length >= maxDescriptionLength) {
+            productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
+          }
 
-        if (isMerchandise == 1) {
-          totalNonFareProductsSoldInShift += parseFloat(productValue);
-        } else {
-          totalFareProductsSoldInShift += parseFloat(productValue);
+          productsReport += "\n\n";
+          productsReport = productDescription;
+
+          currentProductSum = productQuantity;
+
+          padSize = middlePadSize - productDescription.length - (currentProductSum.toString()).length;
+
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+
+          productsReport += spacer + currentProductSum;
+
+          var costText = '$' + parseFloat(productValue).toFixed(2);
+
+          secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (currentProductSum.toString()).length);
+
+          spacer = '';
+
+          while (spacer.length <= secondPadSize) {
+            spacer += " ";
+          }
+
+          productsReport += spacer + costText + "\n\n";
+
+          totalProductsReport += productsReport;
         }
-        if (i == 0) {
-          productDescription = "\n" + productDescription
-        }
-        if (productDescription.length >= maxDescriptionLength) {
-          productDescription = productDescription.substring(0, maxDescriptionLength) + "...";
-        }
-
-
-
-        productsReport += "\n\n";
-        productsReport = productDescription;
-
-        currentProductSum = productQuantity;
-
-        padSize = middlePadSize - productDescription.length - (currentProductSum.toString()).length;
-
-
-        while (spacer.length <= (padSize - 1)) {
-          spacer += " ";
-        }
-
-        productsReport += spacer + currentProductSum;
-
-
-
-
-        var costText = '$' + parseFloat(productValue).toFixed(2);
-
-        secondPadSize = receiptWidth - (padSize + productDescription.length + costText.length + (currentProductSum.toString()).length);
-
-        spacer = '';
-
-        while (spacer.length <= secondPadSize) {
-          spacer += " ";
-        }
-
-        productsReport += spacer + costText + "\n\n";
-
-        totalProductsReport += productsReport;
-
       }
 
       totalAmountBilledInShift = totalFareProductsSoldInShift + totalNonFareProductsSoldInShift;
@@ -539,19 +522,7 @@ export class CdtaService {
       console.log("drawerReport" + drawerReport);
       console.log("totalProductsReport" + totalProductsReport);
 
-
       var printTime = new Date().getTime();
-
-      // var receiptContents = {
-      //     // "paymentsReport": paymentsReport,
-      //     "drawerReport": drawerReport,
-      //     "totalProductsReport": totalProductsReport,
-      //     "userID": userID,
-      //     "isAllUsers": isAllUsers,
-      //     "transactionTime": printTime
-      // };
-
-      //    return receiptContents;
       var user1_drawerReport = drawerReport,
         user1_productsReport = totalProductsReport,
         user1_userID = userID,
@@ -566,7 +537,7 @@ export class CdtaService {
     });
 
     try {
-      // posApplet.printSummaryPaymentsReport(paymentReport);
+
       if (specificUserDetails != null) {
         var pushPayments = []
         var specificUserPayment = JSON.parse(localStorage.getItem("printPaymentData"))
@@ -602,9 +573,7 @@ export class CdtaService {
     var receiptWidth = 44;
     var openingDrawer = 0
     var closingDrawer = 0
-    // shift IDs should be unique, so after filtering you better only have one record in there
 
-    //shiftRecord = shiftStore.findRecord('userID', userID)
     shiftStore.forEach(element => {
       if (element.userID == userID) {
         openingDrawer = element.openingDrawer
@@ -801,7 +770,6 @@ export class CdtaService {
 
   generateReceipt(timestamp) {
 
-    // TODO: stop using two different ways of getting transaction IDs.
     var paymentsStore
     var transRecord
     var cart
@@ -855,16 +823,7 @@ export class CdtaService {
     } else {
       console.log("Receipt printing, did not detect any wallets.");
     }
-    // if(cart.ProductLineItems != undefined){
-    //   if (cart.ProductLineItems.length > 0) {
-    //     console.log("Receipt printing, detected products.");
-    //     anythingToPrint = true;
-    //   } else {
-    //     console.log("Receipt printing, did not detect any products.");
-    //   }
-    // }
-
-
+  
     if (anythingToPrint) {
       console.log("Detected items to print.");
     } else {
@@ -872,14 +831,7 @@ export class CdtaService {
       return;
     }
 
-    // if (cart.ProductLineItems > 0) {
-    //   console.log("Receipt printing, detected products.");
-    // }
-
-    //Add a spacer due to multiple cards on order
     receipt += "\n";
-
-    // if(transactionObj.isMerchandise != "true" || transactionObj.walletItemId != "99")
 
     var walletContents
     cart.forEach(element => {
@@ -888,11 +840,10 @@ export class CdtaService {
         walletTypeId = element.walletTypeId
         var catalogJson = JSON.parse(catalog).Offering
         catalogJson.forEach(catalogElement => {
-          // if (catalogElement.Ticket != undefined) {
           if (catalogElement.ProductIdentifier == element.productIdentifier) {
             return element.description = catalogElement.Description
           }
-          // }
+
         });
         var lineItem = element.description + "";
         var lineItemQty = " - Qty: " + element.quantity + " ";
@@ -1181,7 +1132,6 @@ export class CdtaService {
 
     cart.forEach(item => {
       walletTypeId = item.walletTypeId;
-      // isMerchandise = item.IsMerchandise
       if (walletTypeId == MediaType.SMART_CARD_ID) {
         var cardBalance = "",
           textProductType = "",
@@ -1189,7 +1139,6 @@ export class CdtaService {
         if (item.IsMerchandise != true) {
           receipt += "\n\n             Current Card Balance\n\n";
           var cards = JSON.parse(localStorage.getItem("cardsData"));
-          // for (let cardStore of cards) {
           let cardStore = this.findByCardPIDFromCardsData(cards, item.cardPID);
           var receiptWidth = 44;
           var dashes = "";
@@ -1284,23 +1233,15 @@ export class CdtaService {
                   break;
               }
 
-              // var ticketKey = productType + "_" + designator;
-
-              //  var carddata = new Array(cardStore);
-
-              //  cardStore.products.forEach(cardElement => {
               JSON.parse(catalog).Offering.forEach(catalogElement => {
                 if (catalogElement.Ticket != undefined) {
                   if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-                    //  var catalogdata = {
-                    //    "ticketid": 
-                    //  }
+                   
                     return productDescription = catalogElement.Ticket.Description
 
                   }
                 }
               });
-              // });
 
 
               // don't print anything if your stored value is $0
@@ -1340,8 +1281,6 @@ export class CdtaService {
     paymentsStore.forEach(paymentRecord => {
       paymentId = paymentRecord.paymentMethodId;
       if (9 == paymentId) {
-        //  var creditPayment = paymentsStore.getAt(paymentId);
-
         signatureRequired = true;
 
         receipt += "\n\n\n";
@@ -1365,7 +1304,6 @@ export class CdtaService {
     receipt += "\n\n";
     console.log("receipt", receipt)
     localStorage.setItem("lastTransactionReceipt", receipt)
-    // APOS.util.PrintService.printReceipt(receipt, timestamp);
     this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
     console.log(receipt + 'generateReceipt receipt ');
     console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
@@ -1380,16 +1318,12 @@ export class CdtaService {
 
     var paymentTypeText = '';
     var refundReceipt = "";
-    //var lastReceiptStore = localStorage.getItem("receiptStore");
-    //var refundsStore = localStorage.getItem("refundsstore");
-
     var refundTransactionRecord = null;
     var customerCopy = ""
     var isCreditPayment: any = false;
     var transactionID = '';
     var totalDue = 0;
     var cardStore = JSON.parse(localStorage.getItem("cardsData"));
-    // var cardStoreUltralightC = localStorage.getItem("cardstoreUltralightClocal");
     var PID = null;
     var padSize = 0;
     var secondPadSize = 0;
@@ -1399,19 +1333,12 @@ export class CdtaService {
     var costText = '';
     var nonEncodeableProducts = '';
     var nonFareProducts = '';
-    // var terminalConfig = JSON.parse(localStorage.getItem("terminalConfigJson"));
     var dashes = "";
     var starBar = "";
 
     refundTransactionRecord = JSON.parse(localStorage.getItem("shoppingCart"));
     transactionID = refundTransactionRecord._transactionID;
 
-    // var refundStoreRecord = refundsStore.getAt(0);
-    // console.log(refundStoreRecord + "refundStoreRecord...............")
-    // if (null != refundStoreRecord) {
-
-    //     transactionID = refundStoreRecord.data.transID;
-    // }
 
     while (dashes.length <= receiptWidth) {
       dashes += "-";
@@ -1426,10 +1353,7 @@ export class CdtaService {
     if (null != cardStore.length) {
       PID = cardStore.printed_id;
     }
-    // else if (null != cardStoreUltralightC.getAt(0)) {
-    //     PID = cardStoreUltralightC.getAt(0).get('printed_id');
-    // }
-
+   
     refundReceipt += "\n" + this.centerText("REFUNDED  TRANSACTION") + "\n\n";
 
 
@@ -1462,7 +1386,7 @@ export class CdtaService {
       }
 
       var cards = JSON.parse(localStorage.getItem("cardsData"));
-      // for (let cardStore of cards) {
+
       let cardStore = this.findByCardPIDFromCardsData(cards, walletLineItem._cardPID);
 
       refundReceipt += "\n";
@@ -1547,15 +1471,8 @@ export class CdtaService {
 
         refundReceipt += "\n";
       });
-      // Ext.each(walletLineItem.WalletContents, function (contentItem, contentIdx) {
-
-      // });
-      //}
+   
     });
-
-    // Ext.each(cart.data.WalletLineItems, function (walletLineItem, idx) {
-
-    // });
 
     var productLineItem = null;
 
@@ -1643,58 +1560,48 @@ export class CdtaService {
       paymentAmount: any = 0,
       paymentMethodCount: any = 0;
     var cashTotal: any = 0;
-    // paymentReportCount = Object.keys(paymentReport).length;
+ 
     var getReport = this.getCart();
     var paymentReport = getReport._payments
 
     for (var i = 0; i < paymentReport.length; i++) {
+      if (paymentReport[i].paymentMethod != undefined) {
+        paymentMethod = Number(paymentReport[i].paymentMethodId);
+        paymentAmount = Number(paymentReport[i].amount);
+        totalPaymentCost += paymentAmount;
+        console.log("Payment Method: " + paymentMethod);
+        switch (paymentMethod) {
+          case 3:
+            checkTotal = Number(paymentReport[i].amount);
+            break;
 
-      paymentMethod = Number(paymentReport[i].paymentMethodId);
-      paymentAmount = Number(paymentReport[i].amount);
-      //  paymentMethodCount = paymentReport[i].paymentMethodCount;
+          case 2:
+            cashTotal = Number(paymentReport[i].amount);
+            break;
 
-      totalPaymentCost += paymentAmount;
-      //totalPaymentCount += paymentMethodCount;
-      console.log("Payment Method: " + paymentMethod);
-      switch (paymentMethod) {
-        case 3:
-          checkTotal = Number(paymentReport[i].amount);
-          // checkCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 11:
+            voucherTotal = Number(paymentReport[i].amount);
+            break;
+          case 8:
+            compTotal = Number(paymentReport[i].amount);
+            break;
 
-        case 2:
-          cashTotal = Number(paymentReport[i].amount);
-          // cashCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 12:
+            storedValueTotal = Number(paymentReport[i].amount);
+            break;
 
-        case 11:
-          voucherTotal = Number(paymentReport[i].amount);
-          // voucherCount = paymentReport[i].paymentMethodCount;
-          break;
-        case 8:
-          compTotal = Number(paymentReport[i].amount);
-          // compCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 10:
+            farecardTotal = Number(paymentReport[i].amount);
+            break;
 
-        case 12:
-          storedValueTotal = Number(paymentReport[i].amount);
-          // storedValueCount = paymentReport[i].paymentMethodCount;
-          break;
-
-        case 10:
-          farecardTotal = Number(paymentReport[i].amount);
-          // farecardCount = paymentReport[i].paymentMethodCount;
-          break;
-
-        case 9:
-          creditTotal = Number(paymentReport[i].amount);
-          // creditCount = paymentReport[i].paymentMethodCount;
-          break;
+          case 9:
+            creditTotal = Number(paymentReport[i].amount);
+            break;
+        }
       }
     }
 
 
-    //cashTotal = refundTransactionRecord.data.totalCashApplied;
     if (0 < cashTotal) {
       paymentLabel = "Cash      ";
       costText = "          $" + cashTotal.toFixed(2);
@@ -1703,7 +1610,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    //checkTotal = refundTransactionRecord.data.totalCheckApplied;
     if (0 < checkTotal) {
       paymentLabel = "Check     ";
       costText = "          $" + checkTotal.toFixed(2);
@@ -1712,7 +1618,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    // creditTotal = refundTransactionRecord.data.totalCreditApplied;
     if (0 < creditTotal) {
       paymentLabel = "Credit    ";
       costText = "          $" + creditTotal.toFixed(2);
@@ -1721,7 +1626,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    // farecardTotal = refundTransactionRecord.data.totalFarecardsApplied;
     if (0 < farecardTotal) {
       paymentLabel = "Fare Card ";
       costText = "          $" + farecardTotal.toFixed(2);
@@ -1730,7 +1634,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    // voucherTotal = refundTransactionRecord.data.totalVouchersApplied;
     if (0 < voucherTotal) {
       paymentLabel = "Voucher   ";
       costText = "          $" + voucherTotal.toFixed(2);
@@ -1739,7 +1642,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    //storedValueTotal = refundTransactionRecord.data.totalStoredValueApplied;
     if (0 < storedValueTotal) {
       paymentLabel = 'Pay As You Go';
       costText = "          $" + storedValueTotal.toFixed(2);
@@ -1748,7 +1650,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    // compTotal = refundTransactionRecord.data.totalCompApplied;
     if (0 < compTotal) {
       paymentLabel = "Comp      ";
       costText = "          $" + compTotal.toFixed(2);
@@ -1757,7 +1658,6 @@ export class CdtaService {
       paymentsReport += "\n" + paymentLabel + costText;
     }
 
-    //totalPaymentCost = refundTransactionRecord.data.totalPaymentsApplied;
     if (0 < totalPaymentCost) {
       paymentLabel = "TOTAL REFUND:  ";
       costText = "          $" + totalPaymentCost.toFixed(2);
@@ -1777,7 +1677,7 @@ export class CdtaService {
     };
 
     try {
-     // customerCopy += "               CUSTOMER COPY\n\n\n";
+      // customerCopy += "               CUSTOMER COPY\n\n\n";
       var receiptContents =
         refundReceipt +
         nonEncodeableProducts +
@@ -1786,30 +1686,20 @@ export class CdtaService {
         paymentsReport +
         "\n" +
         starBar +
-        cardBalance ;
+        cardBalance;
 
-      // if (0 != lastReceiptStore.getCount()) {
-      //     var receiptRecord = lastReceiptStore.getAt(0);
-      //     if (null != receiptRecord) {
-      //         receiptRecord.set('last_receipt', refundReceipt);
-      //     }
-      // }
-      // else {
-      //     lastReceiptStore.add({ last_receipt: receiptContents });
-      // }
-      // console.log("printRefundReceipt..." + receiptContents);
       this.electronService.ipcRenderer.send("printRefundReceipt", receiptContents, new Date().getTime());
 
-      if(isCreditPayment == true){
-       
+      if (isCreditPayment == true) {
+
         var customerCopyReceipt =
-        refundReceipt +
-        nonEncodeableProducts +
-        nonFareProducts +
-        dashes +
-        "\n" +
-        starBar 
-       
+          refundReceipt +
+          nonEncodeableProducts +
+          nonFareProducts +
+          dashes +
+          "\n" +
+          starBar
+
         this.electronService.ipcRenderer.send("printCustomerRefundReceipt", customerCopyReceipt, new Date().getTime());
       }
 
@@ -1848,7 +1738,6 @@ export class CdtaService {
     cardProductsStore.forEach(productRecord => {
 
       if (cardCount != 1) {
-        //receipt += cards
         var spacer = '';
         var PID = productRecord.printed_id
         receipt += cardText;
@@ -1868,13 +1757,9 @@ export class CdtaService {
         var designator = dataItem.designator;
         var days = dataItem.days;
         var rechargesPending = dataItem.recharges_pending;
-        // var remainingValue = dataItem.remaining_value;
         var remainingRides = dataItem.remaining_rides;
-        //var start_date = dataItem.start_date_str;
         var exp_date = dataItem.exp_date_str;
-        // var start_date_epoch_days = dataItem.start_date_epoch_days;
         var exp_date_epoch_days = dataItem.exp_date_epoch_days;
-        //var bad_listed = dataItem.is_prod_bad_listed;
 
         if (null != dataItem.add_time) {
           addTime = dataItem.add_time;
@@ -1933,10 +1818,6 @@ export class CdtaService {
         }
 
         var ticketKey = productType + "_" + designator;
-
-        // if (APOS.util.Config.ticketMap.containsKey(ticketKey)) {
-        //     productDescription = APOS.util.Config.ticketMap.get(ticketKey);
-        // }
 
         var receiptWidth = 44;
 
@@ -2110,65 +1991,17 @@ export class CdtaService {
   }
 
 
-  getProductExpirationDate(exp_date_epoch_days, addTime) {
-
-    console.log("exp_date_epoch_days: " + exp_date_epoch_days);
-
-    var expDate = new Date(1970, 0, 1, 0, 0, 0);
-
-    var expDateDays = exp_date_epoch_days;
-
-    /* if(addTime === 0) {
-        expDateDays = expDateDays - 1;
-    } */
-
-    expDate.setDate(expDate.getDate() + expDateDays);
-
-
-    // var ShortDate =  "m/d/Y"
-    var expirationDate = this.datePipe.transform(expDate, "m/d/Y")
-
-    //(Ext.Date.format(expDate, ShortDate));
-    console.log("expirationDate " + expirationDate);
-    return expirationDate;
-  }
-
-  getProductExpirationTime(addTime) {
-    var d = new Date();
-    if (addTime === 0) {
-      d.setHours(23, 59, 59, 0)
-    } else {
-      // set your hour to midnight
-      d.setHours(0, 0, 0, 0);
-      d = new Date(d.getTime() + (addTime * 60000));
-    }
-    // Ext.Date.patterns = {
-    //     ShortDate: "h:i A"
-    // };
-    var expirationTime = this.datePipe.transform(d, "h:i A")
-    if ('0' === expirationTime.charAt(0)) {
-      expirationTime = expirationTime.substring(1);
-    }
-    return expirationTime;
-  }
-
   printCardSummary() {
     var PID = null;
     var cardStore = JSON.parse(localStorage.getItem('readCardData'));
     cardStore = new Array(JSON.parse(cardStore))
     var loginStore = JSON.parse(localStorage.getItem("shiftReport"));
     var username = '';
-    // if (null != cardStore.getAt(0)) {
-    //     PID = cardStore.getAt(0).get('printed_id');
-    // }
+
     cardStore.forEach(element => {
       PID = element.printed_id
     });
 
-    // get current user
-    // if (0 < loginStore.getCount()) {
-    //     username = loginStore.getAt(0).get('userID');
-    // }
     username = localStorage.getItem("userID")
 
     var receipt = this.getCardSummary(1);
