@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ReadcardComponent } from './components/readcard/readcard.component';
 import { LoginComponent } from './components/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { LogoutComponent } from './components/logout/logout.component';
 import { CarddataComponent } from './components/carddata/carddata.component';
-import { CameraComponent } from './components/camera/camera.component';
 import { SetupComponent } from './components/setup/setup.component';
 import { ActivationComponent } from './components/activation/activation.component';
 import { VerifyComponent } from './components/verify/verify.component';
@@ -14,8 +11,7 @@ import { CompComponent } from './components/comp/comp.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { DeviceconfComponent } from './components/deviceconf/deviceconf.component';
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
-import { ShiftsComponent } from './components/shifts/shifts.component'
-import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
+import { ShiftsComponent } from './components/shifts/shifts.component';
 import { EnvironmentComponent } from './components/environment/environment.component';
 const routes: Routes = [
   {
@@ -51,11 +47,6 @@ const routes: Routes = [
     component: ReadcardComponent
   },
   {
-    path: 'camera',
-    component: CameraComponent
-  },
-
-  {
     path: 'carddata',
     component: CarddataComponent
   },
@@ -64,35 +55,29 @@ const routes: Routes = [
     component: AddProductComponent
   },
   {
-    path: "comp",
+    path: 'comp',
     component: CompComponent
   },
   {
-    path: "admin",
+    path: 'admin',
     component: AdminComponent
   },
   {
-    path: "deviceconfig",
+    path: 'deviceconfig',
     component: DeviceconfComponent
   },
   {
-    path: "shift_sales",
+    path: 'shift_sales',
     component: ShiftSalesSummaryComponent
   },
   {
-    path: "shifts",
+    path: 'shifts',
     component: ShiftsComponent
   },
-  {
-    path: 'addmagneticproduct',
-    component: AddMagneticProductComponent
-  }
-
-
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{onSameUrlNavigation:'reload'})],
+  imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
