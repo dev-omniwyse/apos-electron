@@ -70,6 +70,11 @@ export class VerifyComponent implements OnInit {
 
     // }
   }
+  /**
+   * Intializing the component
+   * getting organization name from local storage
+   * @memberof VerifyComponent
+   */
   ngOnInit() {
     this.organization = localStorage.getItem('organization');
   }

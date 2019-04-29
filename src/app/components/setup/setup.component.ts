@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { CdtaService } from 'src/app/cdta.service';
-import {environment} from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 @Component({
     selector: 'app-setup',
     templateUrl: './setup.component.html',
@@ -18,6 +18,12 @@ export class SetupComponent implements OnInit {
         this.isProduction = environment.production;
     }
 
+    /**
+     * Intializing the component
+     * we will hide the header and will make a switchlogincall
+     * here we are setting the environment name in localStorage
+     * @memberof SetupComponent
+     */
     ngOnInit() {
         this.cdtaservice.announceHeaderShowHide('showHeader');
         this.isFromSetup = true;

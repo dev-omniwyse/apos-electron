@@ -15,10 +15,10 @@ export class EnvironmentComponent implements OnInit {
   isFromSetup = false;
   selectedEnvironment = {};
   environments = [{ 'name': 'DEMO', 'value': 'demo' }, { 'name': 'DEV', 'value': 'dev' },
-   { 'name': 'INTG', 'value': 'intg' }, { 'name': 'LOCAL', 'value': 'local' },
-    { 'name': 'PREP', 'value': 'prep' }, { 'name': 'QA', 'value': 'qa' },
-    { 'name': 'QE', 'value': 'qe' }, { 'name': 'STAGING', 'value': 'staging' },
-    { 'name': 'UAT', 'value': 'uat' }];
+  { 'name': 'INTG', 'value': 'intg' }, { 'name': 'LOCAL', 'value': 'local' },
+  { 'name': 'PREP', 'value': 'prep' }, { 'name': 'QA', 'value': 'qa' },
+  { 'name': 'QE', 'value': 'qe' }, { 'name': 'STAGING', 'value': 'staging' },
+  { 'name': 'UAT', 'value': 'uat' }];
 
   constructor(private cdtaservice: CdtaService, private electronService: ElectronService, private router: Router, private _ngZone: NgZone) {
     this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
@@ -40,6 +40,11 @@ export class EnvironmentComponent implements OnInit {
     }
   }
 
+  /**
+   * Intializing the component
+   * we will hide the header and will make a switchlogincall
+   * @memberof EnvironmentComponent
+   */
   ngOnInit() {
     this.cdtaservice.announceHeaderShowHide('hideHeader');
     this.isFromSetup = true;
