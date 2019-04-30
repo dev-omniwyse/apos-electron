@@ -4,37 +4,12 @@
         <div class="col-md-6" *ngFor="let environment of environments; let i = index">
             <button (click)="selectEnvironment(environment)">{{environment.name}}</button>
         </div>
-        <!-- <div class="col-md-6">
-            <button>DEV</button>
-        </div>
-        <div class="col-md-6">
-            <button>INTG</button>
-        </div>
-        <div class="col-md-6">
-            <button>LOCAL</button>
-        </div>
-        <div class="col-md-6">
-            <button>PREP</button>
-        </div>
-        <div class="col-md-6">
-            <button>QA</button>
-        </div>
-        <div class="col-md-6">
-            <button>QE</button>
-        </div>
-        <div class="col-md-6">
-            <button>STAGING</button>
-        </div>
-        <div class="col-md-6">
-            <button>UAT</button>
-        </div> -->
     </div>
 </div>
 <div class="modal fade" id="environmentSetupModal" role="dialog">
     <div class="modal-dialog modal-custom-pop  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                 <h4 class="modal-title">Are You Sure?</h4>
             </div>
             <div class="modal-body">
