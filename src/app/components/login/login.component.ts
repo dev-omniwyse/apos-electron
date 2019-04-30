@@ -5,7 +5,7 @@ import { CdtaService } from '../../cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Utils } from 'src/app/services/Utils.service';
 
-declare var $: any
+declare var $: any;
 
 @Component({
     selector: 'app-login',
@@ -15,38 +15,37 @@ declare var $: any
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     public loading: Boolean = false;
-    //loading = false;
     submitted = false;
     returnUrl: string;
     username: string;
     password: string;
-    userdata: any
-    errorMsg: string = ""
-    carddata: any
-    shiftType: any
-    shiftState: any
-    public statusOfShiftReport: string
-    public hideAndShowLogout: Boolean = false
-    public lockedByUser: string = ''
-    public ownedByUser: string = ''
-    public statusOfShiftReportBoolean: Boolean = false
-    public lockedByUserBoolean: Boolean = false
-    public ownedByUserBoolean: Boolean = false
+    userdata: any;
+    errorMsg: any = '';
+    carddata: any;
+    shiftType: any;
+    shiftState: any;
+    public statusOfShiftReport: string;
+    public hideAndShowLogout: Boolean = false;
+    public lockedByUser: any = '';
+    public ownedByUser: any = '';
+    public statusOfShiftReportBoolean: Boolean = false;
+    public lockedByUserBoolean: Boolean = false;
+    public ownedByUserBoolean: Boolean = false;
     shiftReport: any = [
         {
-            userEmail: "",
-            userID: "",
-            shiftID: "0",
-            shiftType: "0",
-            shiftState: "3",
+            userEmail: '',
+            userID: '',
+            shiftID: '0',
+            shiftType: '0',
+            shiftState: '3',
             openingDrawer: 0.00,
             closingDrawer: 0.00,
             initialOpeningTime: 0,
             timeOpened: 0,
             timeClosed: 0,
-            userThatClosedShift: ""
+            userThatClosedShift: ''
         }
-    ]
+    ];
 
 
 
@@ -59,85 +58,63 @@ export class LoginComponent implements OnInit {
     ) {
 
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
-            if (data != undefined && data != "") {
+            if (data != undefined && data != '') {
                 // this.loading = false
-                let localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
-                if(null == localDeviceInfo || undefined == localDeviceInfo){
-                    let deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
+                const localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+                if (null == localDeviceInfo || undefined == localDeviceInfo) {
+                    const deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
                     localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
-                }                
-                this.userdata = JSON.parse(data)
-                localStorage.removeItem("readCardData");
-                localStorage.setItem("userID", this.userdata.personId)
-                localStorage.setItem("userEmail", this.userdata.username)
-                let shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
-                var shiftIndex: any = 0;
+                }
+                this.userdata = JSON.parse(data);
+                localStorage.removeItem('readCardData');
+                localStorage.setItem('userID', this.userdata.personId);
+                localStorage.setItem('userEmail', this.userdata.username);
+                const shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
+                let shiftIndex: any = 0;
                 shiftStore.forEach(element => {
-                    console.log("element", element);
-                    // if (element.shiftState == "3" && element.userID != "" && element.shiftType == "0") {
 
-                    //     localStorage.removeItem("shiftReport")
-
-                    //     let newShiftReport = [ {
-                    //         userEmail: this.userdata.username,
-                    //         userID: this.userdata.personId,
-                    //         shiftID: "0",
-                    //         shiftType: "0",
-                    //         shiftState: "3",
-                    //         openingDrawer: "0.00",
-                    //         closingDrawer: "0.00",
-                    //         initialOpeningTime: 0,
-                    //         timeOpened: 0,
-                    //         timeClosed: 0,
-                    //         userThatClosedShift: ""
-                    //     }]
-
-                    //     localStorage.setItem("shiftReport", JSON.stringify(newShiftReport))
-
-                    // } else
-                    if (element.shiftState == "3" && element.userID == "") {
-                        element.userID = this.userdata.personId
+                    if (element.shiftState == '3' && element.userID == '') {
+                        element.userID = this.userdata.personId;
                         element.userEmail = this.userdata.username;
-                        element.shiftType = "0"
+                        element.shiftType = '0';
                         // localStorage.setItem("mainShiftUser",)
-                    } else if (element.userID != this.userdata.personId && element.userID != "") {
+                    } else if (element.userID != this.userdata.personId && element.userID != '') {
                         shiftIndex++;
 
-                    }
-                    else if (element.shiftState == "4" && element.userID == this.userdata.personId && element.shiftType == "0") {
+                    } else if (element.shiftState == '4' && element.userID == this.userdata.personId && element.shiftType == '0') {
 
                     }
 
 
                 });
-                if (shiftIndex == shiftStore.length) {
-                    let newShiftReport = {
+                if (shiftIndex === shiftStore.length) {
+                    const newShiftReport = {
                         userEmail: this.userdata.username,
                         userID: this.userdata.personId,
-                        shiftID: "0",
-                        shiftType: "1",
-                        shiftState: "3",
+                        shiftID: '0',
+                        shiftType: '1',
+                        shiftState: '3',
                         openingDrawer: 0.00,
                         closingDrawer: 0.00,
                         initialOpeningTime: 0,
                         timeOpened: 0,
                         timeClosed: 0,
-                        userThatClosedShift: ""
-                    }
-                    shiftStore.push(newShiftReport)
+                        userThatClosedShift: ''
+                    };
+                    shiftStore.push(newShiftReport);
                 }
 
-                localStorage.setItem("shiftReport", JSON.stringify(shiftStore))
+                localStorage.setItem('shiftReport', JSON.stringify(shiftStore));
 
                 this._ngZone.run(() => {
                     // this.carddata = new Array(JSON.parse(data));
                     // console.log('this.carddata', this.carddata);
-                    this.router.navigate(['/readcard'])
+                    this.router.navigate(['/readcard']);
                 });
             } else {
-                this.loading = false
-                $("#errorLogin").modal("show")
-                //this.errorMsg = " Please Enter valid Details"
+                this.loading = false;
+                $('#errorLogin').modal('show');
+                // this.errorMsg = " Please Enter valid Details"
 
             }
         });
@@ -154,62 +131,56 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
+        localStorage.removeItem('expectedCash');
+        localStorage.removeItem('mainShiftClosed');
+        localStorage.removeItem('mainShiftClose');
 
-        // if(localStorage.getItem("userEmail") != undefined){
-        //    // this.hideAndShowLogout = false
-        //    // localStorage.setItem("hideAndShowLogout", this.hideAndShowLogout.toString())
-        //    } 
-        localStorage.removeItem("expectedCash")
-        localStorage.removeItem("mainShiftClosed")
-        localStorage.removeItem("mainShiftClose")
-
-        if (localStorage.getItem("shiftReport") == null) {
-            localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
-            this.statusOfShiftReportBoolean = true
-            this.statusOfShiftReport = "Main Shift is Closed"
-        } else if (localStorage.getItem("shiftReport") != null) {
-            let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-            let userId = localStorage.getItem("userID")
+        if (localStorage.getItem('shiftReport') == null) {
+            localStorage.setItem('shiftReport', JSON.stringify(this.shiftReport));
+            this.statusOfShiftReportBoolean = true;
+            this.statusOfShiftReport = 'Main Shift is Closed';
+        } else if (localStorage.getItem('shiftReport') != null) {
+            const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
+            const userId = localStorage.getItem('userID');
             shiftReports.forEach(element => {
-                if (element.shiftState == "3" && element.userID != "" && element.shiftType == "0") {
-                    localStorage.removeItem("shiftReport")
-                    localStorage.setItem("shiftReport", JSON.stringify(this.shiftReport))
-                    this.statusOfShiftReportBoolean = true
-                    this.statusOfShiftReport = "Main Shift is Closed"
-                    if (localStorage.getItem("closingPausedMainShift") == "true") {
-                        localStorage.removeItem("closingPausedMainShift")
+                if (element.shiftState == '3' && element.userID != '' && element.shiftType == '0') {
+                    localStorage.removeItem('shiftReport');
+                    localStorage.setItem('shiftReport', JSON.stringify(this.shiftReport));
+                    this.statusOfShiftReportBoolean = true;
+                    this.statusOfShiftReport = 'Main Shift is Closed';
+                    if (localStorage.getItem('closingPausedMainShift') == 'true') {
+                        localStorage.removeItem('closingPausedMainShift');
                     }
-                    localStorage.removeItem("mainUserExpectedCash")
+                    localStorage.removeItem('mainUserExpectedCash');
                 } else
-                    if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
-                        this.statusOfShiftReportBoolean = true
-                        this.statusOfShiftReport = "Main Shift is Closed"
+                    if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
+                        this.statusOfShiftReportBoolean = true;
+                        this.statusOfShiftReport = 'Main Shift is Closed';
                     } else
-                        if (element.shiftState == "3" && element.shiftType == "0") {
-                            this.statusOfShiftReportBoolean = true
-                            this.statusOfShiftReport = "Main Shift is Closed"
-                        }
-                        else if (element.shiftState == "4" && element.shiftType == "0") {
-                            this.statusOfShiftReportBoolean = true
+                        if (element.shiftState == '3' && element.shiftType == '0') {
+                            this.statusOfShiftReportBoolean = true;
+                            this.statusOfShiftReport = 'Main Shift is Closed';
+                        } else if (element.shiftState == '4' && element.shiftType == '0') {
+                            this.statusOfShiftReportBoolean = true;
 
-                            this.statusOfShiftReport = "Main Shift is Paused"
-                            if (localStorage.getItem("mainShiftUserLock") != undefined) {
-                                this.ownedByUserBoolean = true
-                                this.ownedByUser = localStorage.getItem("mainShiftUserLock")
+                            this.statusOfShiftReport = 'Main Shift is Paused';
+                            if (localStorage.getItem('mainShiftUserLock') != undefined) {
+                                this.ownedByUserBoolean = true;
+                                this.ownedByUser = localStorage.getItem('mainShiftUserLock');
                             }
 
 
-                        } else if (element.shiftState == "0" && element.shiftType == "0" && element.userEmail != "") {
+                        } else if (element.shiftState == '0' && element.shiftType == '0' && element.userEmail != '') {
                             // this.statusOfShiftReport = "Main Shift is Paused"
-                            this.lockedByUserBoolean = true
-                            this.lockedByUser = localStorage.getItem("userEmail")
+                            this.lockedByUserBoolean = true;
+                            this.lockedByUser = localStorage.getItem('userEmail');
 
-                        } else if (element.shiftState == "0" && element.shiftType == "1" && element.userEmail != "") {
-                            this.ownedByUserBoolean = false
-                            localStorage.removeItem("closingPausedMainShift")
+                        } else if (element.shiftState == '0' && element.shiftType == '1' && element.userEmail != '') {
+                            this.ownedByUserBoolean = false;
+                            localStorage.removeItem('closingPausedMainShift');
 
                         }
-            })
+            });
         }
 
 
@@ -229,7 +200,7 @@ export class LoginComponent implements OnInit {
         if (this.loginForm.invalid) {
             return;
         }
-        console.log("cdtaService")
+        console.log('cdtaService');
         // this.loading = true;
         this.cdtaservice.login(this.f.username.value, this.f.password.value)
             .subscribe((data: any) => {
@@ -247,8 +218,9 @@ export class LoginComponent implements OnInit {
             .subscribe((data: any) => {
                 this.router.navigate(['/readcard']);
 
-                console.log('json data', data)
-                var base64 = btoa(data.aws.credentials.accessKey + "|" + data.aws.credentials.secretKey + '|' + data.aws.credentials.sessionId)
+                console.log('json data', data);
+                // tslint:disable-next-line:max-line-length
+                const base64 = btoa(data.aws.credentials.accessKey + '|' + data.aws.credentials.secretKey + '|' + data.aws.credentials.sessionId);
                 console.log('base64', base64);
 
             },
@@ -271,17 +243,17 @@ export class LoginComponent implements OnInit {
         //         this.errorMsg = true
         //     }
         // }
-        var user = {
+        const user = {
             username: this.username,
             password: this.password
-        }
+        };
         if (user.username == undefined || user.password == undefined) {
-            return $("#emptyLogin").modal("show")
+            return $('#emptyLogin').modal('show');
             // return this.errorMsg = " Username Or Password Shouldn't be Empty"
         } else {
-            console.log("main.js" + user)
-            //this.loading = true;
-            this.electronService.ipcRenderer.send('logincall', user)
+            console.log('main.js' + user);
+            // this.loading = true;
+            this.electronService.ipcRenderer.send('logincall', user);
         }
 
 
