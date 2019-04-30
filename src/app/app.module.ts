@@ -42,7 +42,6 @@ export class HammerConfig extends HammerGestureConfig {
     ReadcardComponent,
     LoginComponent,
     CarddataComponent,
-    ImageCropperComponent,
     SetupComponent,
     ActivationComponent,
     VerifyComponent,
