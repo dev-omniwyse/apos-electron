@@ -9,12 +9,10 @@ import { TransactionService } from 'src/app/services/Transaction.service';
 import { debug } from 'util';
 import { timestamp } from 'rxjs/operators';
 import { Utils } from 'src/app/services/Utils.service';
-// import { product_log } from '../../../assets/data/product_catalog'
 declare var pcsc: any;
 declare var $: any;
-var pcs = pcsc();
-var cardName: any = 0;
-var isExistingCard = false;
+const pcs = pcsc();
+let cardName: any = 0;
 pcs.on('reader', function (reader) {
   console.log('reader', reader);
   console.log('New reader detected', reader.name);
@@ -29,7 +27,7 @@ pcs.on('reader', function (reader) {
     const changes = this.state ^ status.state;
     if (changes) {
       if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-        console.log("card removed");/* card removed */
+        console.log('card removed'); /* card removed */
         reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
           if (err) {
             console.log(err);
@@ -38,17 +36,17 @@ pcs.on('reader', function (reader) {
           }
         });
       } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-        cardName = reader.name
-        console.log("sample", cardName)
-        console.log("card inserted");/* card inserted */
+        cardName = reader.name;
+        console.log('sample', cardName);
+        console.log('card inserted'); /* card inserted */
         reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
           if (err) {
             console.log(err);
           } else {
             console.log('Protocol(', reader.name, '):', protocol);
-            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
-              if (err) {
-                console.log(err);
+            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (errTransmit, data) {
+              if (errTransmit) {
+                console.log(errTransmit);
               } else {
                 console.log('Data received', data);
                 console.log('Data base64', data.toString('base64'));
@@ -77,47 +75,30 @@ pcs.on('error', function (err) {
 })
 export class CarddataComponent implements OnInit, OnChanges {
 
-  @Input() public Carddata;
-  // merchantise = [];
-  // merchantList: any = [];
-  // areExistingProducts: any = [];
-  // encodeParseData: any = [];
   encodeJsonData: any = [];
-  // readCarddata: any = {};
   cardJson: any = [];
-  // productCardList: any = [];
-  // encodedProductCardData: any = [];
   currentCard: any = [];
   currentCardProductList: any = [];
   cardIndex: any = 0;
   isNew: any = false;
   catalogJson: any = [];
   terminalConfigJson: any = [];
-  isFromCardComponent = false;
-  isCorrectCardPlaced = false;
   disableEncode = false;
-  isFromEncode = false;
   encodedCardsData: any = {};
   shoppingCart: any = [];
   isEncodeOnProcess: Boolean = true;
   encodedJsonCardIndex = 0;
   numOfAttempts = 0;
   message: string;
-  lastItem: any;
   title: string;
   commaFlag: boolean;
-  constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
+  constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router,
+    private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
       this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-      // this.transactionAmount = JSON.parse(localStorage.getItem('transactionAmount'));
-      // this.merchantList = localStorage.getItem('encodeData');
-      // this.productCardList = localStorage.getItem('productCardData');
-      // this.encodeParseData = JSON.parse(this.merchantList);
-      // this.areExistingProducts = JSON.parse(localStorage.getItem('areExistingProducts'))
-      // this.encodedProductCardData = JSON.parse(this.productCardList);
-      this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
-      let item = JSON.parse(localStorage.getItem("catalogJSON"));
+      this.cardJson = JSON.parse(localStorage.getItem('cardsData'));
+      const item = JSON.parse(localStorage.getItem('catalogJSON'));
       this.catalogJson = JSON.parse(item).Offering;
       this.shoppingCart = JSON.parse(localStorage.getItem('shoppingCart'));
       this.currentCard = this.cardJson[this.cardIndex];
@@ -127,64 +108,69 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * resultHandler for UpdateCardData, we dispatch readSmartcard.
+   *
+   * @memberof CarddataComponent
+   */
   handleUpdateCardDataResult() {
-    var updateCardDataListener: any = this.electronService.ipcRenderer.once('updateCardDataResult', (event, data) => {
-      if (data != undefined && data != "" && this.isFromCardComponent) {
+    const updateCardDataListener: any = this.electronService.ipcRenderer.once('updateCardDataResult', (event, data) => {
+      if (data != undefined && data != '') {
         this.handleReadcardResult();
-        this.electronService.ipcRenderer.send('readSmartcard', cardName)
+        this.electronService.ipcRenderer.send('readSmartcard', cardName);
       }
     });
   }
 
+  /**
+   * ResultHandler for readSmartcard, The result is stored in the local storage
+   *
+   * @memberof CarddataComponent
+   */
   handleReadcardResult() {
-    var readcardListener: any = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
-      console.log("data", data)
-      if (data != undefined && data != "" && this.isFromCardComponent) {
-        this.isFromCardComponent = false;
+    const readcardListener: any = this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
+      console.log('data', data);
+      if (data != undefined && data != '') {
         this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          localStorage.setItem("printCardData", data)
-          // this.electronService.ipcRenderer.send('generateSequenceNumber');
+          localStorage.setItem('readCardData', JSON.stringify(data));
+          localStorage.setItem('printCardData', data);
         });
       }
-      // this.electronService.ipcRenderer.removeAllListeners("readCardResult");
     });
   }
 
+  /**
+   * ResultHandler for grtCardPID, Here we start encoding or remove card from encoding
+   * if result matches with currentcard pid.
+   *
+   * @memberof CarddataComponent
+   */
   handleGetCardPIDResult() {
-    var cardPIDListener: any = this.electronService.ipcRenderer.once('getCardPIDResult', (event, data) => {
-      console.log("data", data)
-      if (data != undefined && data != "" && this.isFromEncode) {
-        this.isFromEncode = false;
+    const cardPIDListener: any = this.electronService.ipcRenderer.once('getCardPIDResult', (event, data) => {
+      console.log('data', data);
+      if (data != undefined && data != '') {
         this._ngZone.run(() => {
           if (data == this.currentCard.printed_id) {
             (this.isEncodeOnProcess) ? this.encodeCard() : this.removeCard();
-          }
-          else {
-            $("#cardModal").modal('show');
+          } else {
+            $('#cardModal').modal('show');
             this.disableEncode = false;
             return;
           }
-
-
         });
-      }
-      else {
-        $("#cardModal").modal('show');
+      } else {
+        $('#cardModal').modal('show');
         return;
       }
-      // this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
     });
   }
 
   handlePrintReceiptResult() {
     this.electronService.ipcRenderer.once('printReceiptResult', (event, data) => {
-      if (data != undefined && data != "") {
-        // localStorage.setItem("deviceConfigData", data);
-        alert("print success ");
+      if (data != undefined && data != '') {
+        alert('print success ');
         this._ngZone.run(() => {
-          // this.router.navigate(['/addproduct'])
-          this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
+          this.electronService.ipcRenderer.removeAllListeners('printReceiptResult');
         });
       }
     });
@@ -192,96 +178,83 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   handleSaveTransactionResult() {
     this.disableEncode = false;
-    var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
-      console.log("data", data)
-      if (data != undefined && data != "") {
+    const transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
+      console.log('data', data);
+      if (data != undefined && data != '') {
         this._ngZone.run(() => {
-          // $("#encodeSuccessModal").modal({
-          //   backdrop: 'static',
-          //   keyboard: false
-          // });
           this.navigateToDashboard();
-          var timestamp = new Date().getTime();
-          // this.cdtaService.generateReceipt(timestamp)
         });
       } else {
-        $("#encodeErrorModal").modal({
+        $('#encodeErrorModal').modal({
           backdrop: 'static',
           keyboard: false
         });
       }
-      // this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
     });
   }
 
   handleEncodeCardResult() {
-    var encodingListener: any = this.electronService.ipcRenderer.once('encodeCardResult', (event, data) => {
-      let result = new Array(JSON.parse(data));
-      let resultObj = result[0];
+    const encodingListener: any = this.electronService.ipcRenderer.once('encodeCardResult', (event, data) => {
+      const result = new Array(JSON.parse(data));
+      const resultObj = result[0];
       if (resultObj != undefined && resultObj != null) {
 
         if (0 == this.shoppingCart._walletLineItem[this.cardIndex]._walletContents.length) {
-          //dont try to update wallletContents..
+          // dont try to update wallletContents..
         } else {
           this._ngZone.run(() => {
-                
-              for(let item of this.shoppingCart._walletLineItem[this.cardIndex]._walletContents){
-                      
-                   for(let productItem of resultObj) {
 
-                       if(productItem.ticket_id == item._offering.Ticket.TicketId) {
-                           
-                           item._status = productItem.status;
-                           item._slot = productItem.slotNumber;
-                           
-                           let balance = 0;
-                           if(item._offering.Ticket.Group == TICKET_GROUP.VALUE) {
-                               balance = productItem.balance / 100;
-                           } else {
-                               balance = productItem.balance;
-                           }
+            for (const item of this.shoppingCart._walletLineItem[this.cardIndex]._walletContents) {
 
-                           let startDateEpochDays = 0;
-                           if(productItem.start_date_epoch_days) {
-                               startDateEpochDays = productItem.start_date_epoch_days;
-                           }
-                           
-                           let expDateEpochDays = 0;
-                           if(productItem.exp_date_epoch_days) {
-                               expDateEpochDays = productItem.exp_date_epoch_days;
-                           }
-                           
-                           let rechargesPending = 0;
-                           if(productItem.recharges_pending) {
-                               rechargesPending = productItem.recharges_pending;
-                           }
-                           
-                           item._balance = balance;
-                           item._startDate = startDateEpochDays;
-                           item._expirationDate = expDateEpochDays;
-                           item._rechargesPending = rechargesPending;
-                       
-                       }
-                   }
+              for (const productItem of resultObj) {
+
+                if (productItem.ticket_id == item._offering.Ticket.TicketId) {
+
+                  item._status = productItem.status;
+                  item._slot = productItem.slotNumber;
+
+                  let balance = 0;
+                  if (item._offering.Ticket.Group == TICKET_GROUP.VALUE) {
+                    balance = productItem.balance / 100;
+                  } else {
+                    balance = productItem.balance;
+                  }
+
+                  let startDateEpochDays = 0;
+                  if (productItem.start_date_epoch_days) {
+                    startDateEpochDays = productItem.start_date_epoch_days;
+                  }
+
+                  let expDateEpochDays = 0;
+                  if (productItem.exp_date_epoch_days) {
+                    expDateEpochDays = productItem.exp_date_epoch_days;
+                  }
+
+                  let rechargesPending = 0;
+                  if (productItem.recharges_pending) {
+                    rechargesPending = productItem.recharges_pending;
+                  }
+
+                  item._balance = balance;
+                  item._startDate = startDateEpochDays;
+                  item._expirationDate = expDateEpochDays;
+                  item._rechargesPending = rechargesPending;
+
+                }
               }
-          // }
-          
-          // this.shoppingCart._walletLineItem[this.cardIndex].cardExpiration = expirationDateEpochDays;
+            }
             this.encodedCardsData[this.currentCard.printed_id] = JSON.stringify(this.encodeJsonData);
-
-
           });
         }
         this.shoppingCart._walletLineItem[this.cardIndex]._encoded = true;
-        $("#encodeSuccessModal").modal({
+        $('#encodeSuccessModal').modal({
           backdrop: 'static',
           keyboard: false
         });
-        $("#encodeSuccessModal").modal('show');
-        this.disableEncode = false
-      }
-      else {
-        $("#encodeErrorModal").modal({
+        $('#encodeSuccessModal').modal('show');
+        this.disableEncode = false;
+      } else {
+        $('#encodeErrorModal').modal({
           backdrop: 'static',
           keyboard: false
         });
@@ -291,20 +264,19 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   proceedForSaveTransaction() {
-    $("#encodeSuccessModal").modal('hide');
+    $('#encodeSuccessModal').modal('hide');
     if (this.isSmartCardFound()) {
       this.disableEncode = false;
       this.populatCurrentCard();
       this.getSmartCardWalletContents();
-    }
-    else {
-      this.initiateSaveTransaction()
+    } else {
+      this.initiateSaveTransaction();
     }
   }
 
   handleDeleteProductsFromCardResult() {
-    var deleteProductListener: any = this.electronService.ipcRenderer.once('deleteProductsFromCardResult', (event, data) => {
-      if (data != undefined && data != "") {
+    const deleteProductListener: any = this.electronService.ipcRenderer.once('deleteProductsFromCardResult', (event, data) => {
+      if (data != undefined && data != '') {
         this._ngZone.run(() => {
           this.encodedJsonCardIndex++;
           this.initiateCancelEncoding(this.encodedJsonCardIndex);
@@ -314,12 +286,12 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   handleDoPinpadVoidTransactionResult() {
-    var doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.once('doPinpadVoidTransactionResult', (event, data) => {
-      if (data != undefined && data != "") {
+    const doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.once('doPinpadVoidTransactionResult', (event, data) => {
+      if (data != undefined && data != '') {
         this._ngZone.run(() => {
           this.encodedJsonCardIndex++;
           this.handleGetPinpadTransactionStatusEncodeResult();
-          this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+          this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode');
         });
       }
     });
@@ -327,18 +299,19 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   handleGetPinpadTransactionStatusEncodeResult() {
     this.electronService.ipcRenderer.once('getPinpadTransactionStatusEncodeResult', (event, data) => {
-      console.log("transaction Status CreditCArd", data);
-      if (data != undefined && data != "") {
+      console.log('transaction Status CreditCArd', data);
+      if (data != undefined && data != '') {
+        let timer: any;
         if (data == false && this.numOfAttempts < 600) {
-          var timer = setTimeout(() => {
+          timer = setTimeout(() => {
             this.numOfAttempts++;
             this.handleGetPinpadTransactionStatusEncodeResult();
-            this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode')
+            this.electronService.ipcRenderer.send('getPinpadTransactionStatusEncode');
           }, 1000);
         } else {
           clearTimeout(timer);
           this.handleGetPinpadTransactionDataEncodeResult();
-          this.electronService.ipcRenderer.send('getPinpadTransactionDataEncode')
+          this.electronService.ipcRenderer.send('getPinpadTransactionDataEncode');
         }
       }
     });
@@ -346,9 +319,9 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   handleGetPinpadTransactionDataEncodeResult() {
     this.electronService.ipcRenderer.once('getPinpadTransactionDataEncodeResult', (event, data) => {
-      console.log("creditcardTransaction ", data);
-      if (data != undefined && data != "") {
-        localStorage.setItem("pinPadTransactionData", data);
+      console.log('creditcardTransaction ', data);
+      if (data != undefined && data != '') {
+        localStorage.setItem('pinPadTransactionData', data);
         this.navigateToReadCard();
       }
     });
@@ -360,22 +333,20 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   initiateSaveTransaction() {
     this.disableEncode = true;
-    var expirationDate: String = (new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + (new Date().getFullYear() + 10);
-    this.isFromCardComponent = true;
+    const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
     if (this.isNew) {
       this.handleUpdateCardDataResult();
-      this.electronService.ipcRenderer.send("updateCardData", cardName, expirationDate);
-    }
-    else {
+      this.electronService.ipcRenderer.send('updateCardData', cardName, expirationDate);
+    } else {
       this.handleReadcardResult();
-      this.electronService.ipcRenderer.send('readSmartcard', cardName)
+      this.electronService.ipcRenderer.send('readSmartcard', cardName);
     }
-    let userID = localStorage.getItem('userID');
+    const userID = localStorage.getItem('userID');
 
-    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
-    let deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
-    let deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
+    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
+    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
+    const deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+    const deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
     localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
@@ -383,31 +354,31 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   getUserByUserID(userID) {
     let userData = null;
-    let userJSON = JSON.parse(localStorage.getItem('shiftReport'));
-    for (let user of userJSON) {
+    const userJSON = JSON.parse(localStorage.getItem('shiftReport'));
+    for (const user of userJSON) {
       if (user.userID == userID) {
         userData = user;
-        break
+        break;
       }
     }
     return userData;
   }
 
   getPaymentsObject() {
-    var paymentObj: any
-    let transactionAmount = localStorage.getItem('transactionAmount');
-    if (localStorage.getItem("paymentMethodId") == "8") {
+    let paymentObj: any;
+    const transactionAmount = localStorage.getItem('transactionAmount');
+    if (localStorage.getItem('paymentMethodId') == '8') {
       paymentObj = {
-        "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
-        "amount": transactionAmount,
-        "comment": localStorage.getItem("compReason")
-      }
+        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
+        'amount': transactionAmount,
+        'comment': localStorage.getItem('compReason')
+      };
     } else {
       paymentObj = {
-        "paymentMethodId": Number(localStorage.getItem("paymentMethodId")),
-        "amount": transactionAmount,
-        "comment": null
-      }
+        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
+        'amount': transactionAmount,
+        'comment': null
+      };
     }
     return paymentObj;
   }
@@ -422,7 +393,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   setCardIndexForCancelEncode(cardPID) {
     for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
-      let element = this.shoppingCart._walletLineItem[index];
+      const element = this.shoppingCart._walletLineItem[index];
       if (element._cardPID == cardPID) {
         this.cardIndex = index;
       }
@@ -430,11 +401,10 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   }
 
-
   isSmartCardFound() {
     let index = 0;
     let nextItemFound: Boolean = false;
-    for (let iterator of this.shoppingCart._walletLineItem) {
+    for (const iterator of this.shoppingCart._walletLineItem) {
       if (iterator._walletTypeId == MediaType.SMART_CARD_ID) {
         if (index > this.cardIndex) {
           nextItemFound = true;
@@ -454,31 +424,18 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   navigateToDashboard() {
-    var timestamp = new Date().getTime();
-    this.cdtaService.generateReceipt(timestamp);
+    const timestamp_generateReciept = new Date().getTime();
+    this.cdtaService.generateReceipt(timestamp_generateReciept);
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
-    localStorage.removeItem("cardsData");
-    localStorage.removeItem("catalogJSON");
-    localStorage.removeItem("readCardData");
-    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-
-    this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
-    this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("updateCardDataResult");
-    //this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-    this.router.navigate(['/readcard'])
+    localStorage.removeItem('cardsData');
+    localStorage.removeItem('catalogJSON');
+    localStorage.removeItem('readCardData');
+    this.router.navigate(['/readcard']);
   }
 
   printDiv() {
-    // var printContents = document.getElementById(divName).innerHTML;
-    // var originalContents = document.body.innerHTML;
-    // document.body.innerHTML = printContents;
-    // this.electronService.ipcRenderer.send("printPDF", printContents);
     window.print();
-    // document.body.innerHTML = originalContents;
   }
 
   ngOnInit() {
@@ -492,34 +449,19 @@ export class CarddataComponent implements OnInit, OnChanges {
   navigateToReadCard() {
     localStorage.removeItem('encodeData');
     localStorage.removeItem('productCardData');
-    localStorage.removeItem("cardsData");
-    localStorage.removeItem("catalogJSON");
-    localStorage.removeItem("readCardData");
-    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-    this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
-    this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-    this.electronService.ipcRenderer.removeAllListeners("deleteProductsFromCardResult");
-    this.router.navigate(['/readcard'])
+    localStorage.removeItem('cardsData');
+    localStorage.removeItem('catalogJSON');
+    localStorage.removeItem('readCardData');
+    this.router.navigate(['/readcard']);
   }
 
   checkIsCardNew() {
-    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) && (this.currentCard.products[0].remaining_value == 0))) ? true : false;
+    this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) &&
+      (this.currentCard.products[0].remaining_value == 0))) ? true : false;
   }
 
   populatCurrentCardEncodedData() {
-    // var dataIndex: any = 0;
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
-    // this.currentCardProductList = this.currentCard._walletContents;
-    // this.encodedProductCardData.forEach(element => {
-    // if (element == this.cardJson[this.cardIndex].printed_id) {
-    // this.currentCardProductList.push(this.encodeParseData[dataIndex]);
-    // this.currentExistingProducts.push(this.areExistingProducts[dataIndex]);
-    // }
-    // dataIndex++
-    // });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -527,42 +469,29 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnDestroy() {
-    this.electronService.ipcRenderer.removeAllListeners("readCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("getCardPIDResult");
-    this.electronService.ipcRenderer.removeAllListeners("generateSequenceNumberSyncResult");
-    this.electronService.ipcRenderer.removeAllListeners("saveTransactionResult");
-    this.electronService.ipcRenderer.removeAllListeners("encodeCardResult");
-    this.electronService.ipcRenderer.removeAllListeners("printReceiptResult");
-  }
-
-
   checkCorrectCard() {
-    this.populatCurrentCard()
+    this.populatCurrentCard();
     console.log(cardName);
     this.disableEncode = true;
-    this.isFromEncode = true;
     this.handleGetCardPIDResult();
     this.electronService.ipcRenderer.send('getCardPID', cardName);
   }
 
   encodeCard() {
     try {
-      console.log("product list data", this.currentCardProductList);
+      console.log('product list data', this.currentCardProductList);
       this.encodeJsonData = [];
-      var JsonObj;
-      var currentIndex = 0;
+      let JsonObj;
+      let currentIndex = 0;
       this.currentCardProductList.forEach(element => {
         if (element._offering.Ticket.Group == 1) {
           for (let index = 0; index < element._quantity; index++) {
-            var internalJsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
+            const internalJsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
             this.encodeJsonData.push(internalJsonObj);
           }
-        }
-        else if (element._offering.Ticket.Group == 2) {
+        } else if (element._offering.Ticket.Group == 2) {
           JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
-        }
-        else if (element._offering.Ticket.Group == 3) {
+        } else if (element._offering.Ticket.Group == 3) {
           JsonObj = this.constructJsonForEncoding(element._offering.Ticket.Group, element);
 
         }
@@ -574,61 +503,61 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.handleEncodeCardResult();
       this.checkIsCardNew();
       if (this.isNew) {
-        this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id, this.shoppingCart._walletLineItem[this.cardIndex]._fareCodeId, 0, 0, this.encodeJsonData);
+        this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id,
+          this.shoppingCart._walletLineItem[this.cardIndex]._fareCodeId, 0, 0, this.encodeJsonData);
       } else {
         this.electronService.ipcRenderer.send('encodeExistingCard', this.currentCard.printed_id, this.encodeJsonData);
       }
-    }
-    catch{
-      $("#encodeErrorModal").modal('show');
+    } catch {
+      $('#encodeErrorModal').modal('show');
     }
   }
 
   constructJsonForEncoding(product_type, element) {
-    var JsonObjectForProductType: any;
+    let JsonObjectForProductType: any;
     switch (product_type) {
       case 1:
         JsonObjectForProductType = {
-          "product_type": element._offering.Ticket.Group,
-          "designator": element._offering.Ticket.Designator,
-          "ticket_id": element._offering.Ticket.TicketId,
-          "designator_details": 0,
-          "start_date_epoch_days": element._offering.Ticket.DateStartEpochDays,
-          "exp_date_epoch_days": element._offering.Ticket.DateExpiresEpochDays,
-          "is_linked_to_user_profile": false,
-          "type_expiration": element._offering.Ticket.ExpirationTypeId,
-          "add_time": 240,
-          "recharges_pending": 0,//(this.currentExistingProducts[currentIndex]) ? rechargesPending : 0,
-          "days": (element._offering.Ticket.Value),
-          "isAccountBased": element._isAccountBased,
-          "isCardBased": element._isCardBased
-        }
+          'product_type': element._offering.Ticket.Group,
+          'designator': element._offering.Ticket.Designator,
+          'ticket_id': element._offering.Ticket.TicketId,
+          'designator_details': 0,
+          'start_date_epoch_days': element._offering.Ticket.DateStartEpochDays,
+          'exp_date_epoch_days': element._offering.Ticket.DateExpiresEpochDays,
+          'is_linked_to_user_profile': false,
+          'type_expiration': element._offering.Ticket.ExpirationTypeId,
+          'add_time': 240,
+          'recharges_pending': 0,
+          'days': (element._offering.Ticket.Value),
+          'isAccountBased': element._isAccountBased,
+          'isCardBased': element._isCardBased
+        };
         break;
       case 2:
         JsonObjectForProductType = {
-          "product_type": element._offering.Ticket.Group,
-          "designator": element._offering.Ticket.Designator,
-          "ticket_id": element._offering.Ticket.TicketId,
-          "designator_details": 0,
-          "remaining_rides": (element._quantity * element._offering.Ticket.Value),
-          "recharge_rides": 0,//(this.currentExistingProducts[currentIndex]) ? rechargeRides : 0,
-          "threshold": 0,
-          "is_linked_to_user_profile": false,
-          "isAccountBased": element._isAccountBased,
-          "isCardBased": element._isCardBased
-        }
+          'product_type': element._offering.Ticket.Group,
+          'designator': element._offering.Ticket.Designator,
+          'ticket_id': element._offering.Ticket.TicketId,
+          'designator_details': 0,
+          'remaining_rides': (element._quantity * element._offering.Ticket.Value),
+          'recharge_rides': 0,
+          'threshold': 0,
+          'is_linked_to_user_profile': false,
+          'isAccountBased': element._isAccountBased,
+          'isCardBased': element._isCardBased
+        };
         break;
       case 3:
         JsonObjectForProductType = {
-          "product_type": element._offering.Ticket.Group,
-          "designator": element._offering.Ticket.Designator,
-          "ticket_id": element._offering.Ticket.TicketId,
-          "designator_details": 0,
-          "is_linked_to_user_profile": false,
-          "remaining_value": (element._quantity * element._unitPrice * 100), //(this.currentExistingProducts[currentIndex]) ? remainingValue : (element.Ticket.Price * 100),
-          "isAccountBased": element._isAccountBased,
-          "isCardBased": element._isCardBased
-        }
+          'product_type': element._offering.Ticket.Group,
+          'designator': element._offering.Ticket.Designator,
+          'ticket_id': element._offering.Ticket.TicketId,
+          'designator_details': 0,
+          'is_linked_to_user_profile': false,
+          'remaining_value': (element._quantity * element._unitPrice * 100),
+          'isAccountBased': element._isAccountBased,
+          'isCardBased': element._isCardBased
+        };
         break;
 
       default:
@@ -639,41 +568,42 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   removeCard() {
     this.handleDeleteProductsFromCardResult();
-    this.electronService.ipcRenderer.send('deleteProductsFromCard', this.currentCard.printed_id, this.encodedCardsData[this.currentCard.printed_id]);
+    this.electronService.ipcRenderer.send('deleteProductsFromCard', this.currentCard.printed_id,
+      this.encodedCardsData[this.currentCard.printed_id]);
   }
 
   getKeyForCancelEncode(index) {
     let currentIndex = 0;
     let cardPID = undefined;
-    for (var key in this.encodedCardsData) {
+    for (const key in this.encodedCardsData) {
       if (currentIndex == index) {
         cardPID = key;
       }
       currentIndex++;
     }
+
     return cardPID;
   }
 
   prePaidTransactionObject() {
-    let userID = localStorage.getItem('userID');
-    let transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj))
+    const userID = localStorage.getItem('userID');
+    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
+    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
   }
 
   openCashDrawer() {
-    this.electronService.ipcRenderer.send("openCashDrawer")
+    this.electronService.ipcRenderer.send('openCashDrawer');
   }
 
   initiateCancelEncoding(index) {
-    let cardPID = this.getKeyForCancelEncode(index);
+    const cardPID = this.getKeyForCancelEncode(index);
     this.cdtaService.generateRefundReceipt();
     if (cardPID == undefined) {
       this.prePaidTransactionObject();
       if (this.checkIfCreditCardPaymentExists()) {
         this.numOfAttempts = 0;
         this.doPinpadVoidTransaction(this.getCreditCardPaymentAmount());
-      }
-      else {
+      } else {
         this.openCashDrawer();
         this.navigateToReadCard();
       }
@@ -686,8 +616,8 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   checkIfCreditCardPaymentExists() {
-    var creditCardPaymentExists: Boolean = false;
-    var transObj = JSON.parse(localStorage.getItem("transactionObj"))
+    let creditCardPaymentExists: Boolean = false;
+    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         creditCardPaymentExists = true;
@@ -697,8 +627,8 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   getCreditCardPaymentAmount() {
-    var amount = 0;
-    var transObj = JSON.parse(localStorage.getItem("transactionObj"))
+    let amount = 0;
+    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         amount = element.amount;
@@ -709,545 +639,64 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   doPinpadVoidTransaction(amount) {
     this.handleDoPinpadVoidTransactionResult();
-    this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount)
+    this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount);
   }
 
   confirmCancelEncoding() {
-    $("#confirmCancelEncodeModal").modal('show');
+    $('#confirmCancelEncodeModal').modal('show');
     this.getRefundTitle();
-  }
-
-
-
-  // sdeleteProductsFromCard(this.)
-
-  generateReceipt(timestamp) {
-
-    // TODO: stop using two different ways of getting transaction IDs.
-    var paymentsStore
-    var transRecord
-    var cart
-    var transObj = JSON.parse(localStorage.getItem("transObj"))
-    var catalog = JSON.parse(localStorage.getItem("catalogJSON"));
-    var storedTransactionID = '';
-    var taxAmountValue
-    paymentsStore = transObj.payments;
-    cart = transObj.items
-    storedTransactionID = transObj.transactionID;
-    taxAmountValue = transObj.taxAmount
-    var paymentTypeText = '';
-    var receiptWidth = 44;
-    var receipt = "";
-    var signatureRequired = false;
-    var customerCopyReceipt = "";
-    var changeDue = 0;
-    var padSize = 0;
-    var transText = "Trans ID:";
-
-    receipt += transText;
-    padSize = receiptWidth - (transText.length + storedTransactionID.length);
-
-    var spacer = '';
-
-    while (spacer.length <= (padSize - 1)) {
-      spacer += " ";
-    }
-
-    receipt += spacer + storedTransactionID + "\n";
-
-    var transTypeLabel = "Trans Type:";
-    var transType = "Sale";
-
-    padSize = receiptWidth - (transTypeLabel.length + transType.length);
-
-    spacer = '';
-
-    while (spacer.length <= (padSize - 1)) {
-      spacer += " ";
-    }
-
-    receipt += transTypeLabel + spacer + transType + "\n";
-
-    var anythingToPrint = false;
-
-    if (cart.length > 0) {
-      console.log("Receipt printing, detected wallets.");
-      anythingToPrint = true;
-    } else {
-      console.log("Receipt printing, did not detect any wallets.");
-    }
-    // if(cart.ProductLineItems != undefined){
-    // if (cart.ProductLineItems.length > 0) {
-    // console.log("Receipt printing, detected products.");
-    // anythingToPrint = true;
-    // } else {
-    // console.log("Receipt printing, did not detect any products.");
-    // }
-    // }
-
-
-    if (anythingToPrint) {
-      console.log("Detected items to print.");
-    } else {
-      console.warn("Receipt printing, failed to detect anything to print.");
-      return;
-    }
-
-    // if (cart.ProductLineItems > 0) {
-    // console.log("Receipt printing, detected products.");
-    // }
-
-    //Add a spacer due to multiple cards on order
-    receipt += "\n";
-
-    var walletContents
-    cart.forEach(element => {
-      walletContents = element.walletContentItems
-      console.log("walletContents", walletContents);
-      // var PID = element.cardPID;
-      // var cardText = "Card ID:";
-
-      // receipt += cardText;
-      // padSize = receiptWidth - (cardText.length + PID.length);
-      // spacer = '';
-
-      // while (spacer.length <= (padSize - 1)) {
-      // spacer += " ";
-      // }
-
-      // receipt += spacer + PID + "\n";
-
-      // var dashes = "";
-      // while (dashes.length <= receiptWidth) {
-      // dashes += "-";
-      // }
-
-      // receipt += dashes + "\n";
-
-      // var lineItem = element.description + "";
-      // var lineItemQty = " - Qty: 1 ";
-
-      // if (lineItem.length > (35 - lineItemQty.length)) {
-      // lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-      // }
-
-      // lineItem = lineItem + lineItemQty + " ";
-      // lineItem = lineItem.substring(0, 35);
-
-      // var subtotalStr = " $" + (element.unitPrice).toFixed(2);
-
-      // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-      // receipt += lineItem + subtotalStr + "\n\n";
-
-
-      walletContents.forEach(item => {
-
-        JSON.parse(catalog).Offering.forEach(catalogElement => {
-          if (catalogElement.Ticket != undefined) {
-            if (catalogElement.ProductIdentifier == item.productIdentifier) {
-              // var catalogdata = {
-              // "ticketid": 
-              // }
-              return item.description = catalogElement.Ticket.Description
-
-            }
-          }
-        });
-        var lineItem = item.description + "";
-        var lineItemQty = " - Qty: " + item.quantity + " ";
-
-        if (lineItem.length > (35 - lineItemQty.length)) {
-          lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-        }
-
-        lineItem = lineItem + lineItemQty + " ";
-        lineItem = lineItem.substring(0, 35);
-
-        var subtotalStr = " $" + (item.unitPrice * item.quantity).toFixed(2);
-
-        subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-        receipt += lineItem + subtotalStr + "\n\n";
-
-      })
-
-    });
-
-    // cart.ProductLineItems.forEach(item => {
-    // var lineItem = item.description + "";
-    // var taxAmount = "Tax";
-    // var lineItemQty = " - Qty: " + item.quantity + " ";
-
-    // if (lineItem.length > (35 - lineItemQty.length)) {
-    // lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-    // }
-
-    // lineItem = lineItem + lineItemQty + " ";
-    // lineItem = lineItem.substring(0, 35);
-
-    // var taxtotalStr = " $" + (item.tax * item.quantity).toFixed(2);
-    // taxtotalStr = taxtotalStr.substring(taxtotalStr.length - 10);
-    // var taxPercentage = ((item.tax * 100) / item.unitPrice).toFixed(2);
-
-    // taxAmount = taxAmount + "(" + taxPercentage + "%)" + " ";
-    // taxAmount = taxAmount.substring(0, 35);
-
-    // var subtotalStr = " $" + (item.unitPrice * item.quantity).toFixed(2);
-
-    // subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-    // receipt += lineItem + subtotalStr + "\n";
-    // receipt += taxAmount + taxtotalStr + "\n\n";
-
-    // });
-
-    var totalDue = localStorage.getItem("transactionAmount")
-    var taxtotalDue = taxAmountValue
-    var faretotalDue = localStorage.getItem("transactionAmount")
-
-    var faretotalStr = "";
-    var taxtotalStr = "";
-
-    var totalStr = "";
-
-    if ("0" == totalDue) {
-      totalStr = '$0.00';
-    } else {
-      totalStr = "$" + Number(totalDue).toFixed(2);
-    }
-
-    if ("0" == faretotalDue) {
-      faretotalStr = '$0.00';
-    } else {
-      faretotalStr = "$" + Number(faretotalDue).toFixed(2);
-    }
-
-    if (0 == taxtotalDue) {
-      taxtotalStr = '$0.00';
-    } else {
-      taxtotalStr = "$" + taxtotalDue.toFixed(2);
-    }
-
-    totalStr = " " + totalStr;
-    faretotalStr = " " + faretotalStr;
-    taxtotalStr = " " + taxtotalStr;
-    totalStr = totalStr.substring(totalStr.length - 20);
-
-    receipt += "\nFare TOTAL: " + faretotalStr + "\n\n";
-    receipt += "\nTax TOTAL: " + taxtotalStr + "\n\n";
-
-    receipt += "\nTOTAL: " + totalStr + "\n\n";
-
-    var paymentAmount = "";
-    var paymentId = 0;
-
-    // possible add for payment type and change due
-    paymentsStore.forEach(paymentRecord => {
-      paymentId = paymentRecord.paymentMethodId;
-      paymentTypeText = ""
-
-      switch (paymentId) {
-        case 1:
-          paymentTypeText = "INVOICED"
-          break;
-        case 2:
-          paymentTypeText = "CASH"
-          break;
-        case 3:
-          paymentTypeText = "CHECK"
-          break;
-        case 4:
-          paymentTypeText = "AMEX"
-          break;
-        case 5:
-          paymentTypeText = "VISA"
-          break;
-        case 6:
-          paymentTypeText = "MASTERCARD"
-          break;
-        case 7:
-          paymentTypeText = "DISCOVER"
-          break;
-        case 8:
-          paymentTypeText = "COMP"
-          break;
-        case 9:
-          paymentTypeText = "CREDIT"
-          break;
-        case 10:
-          paymentTypeText = "FARE_CARD"
-          break;
-        case 11:
-          paymentTypeText = "VOUCHER"
-          break;
-        case 12:
-          paymentTypeText = "STORED_VALUE"
-          break;
-        default:
-          paymentTypeText = "UNKNOWN"
-          break;
-      }
-
-      // if the payment method is cash, you want to give the full amount tendered.
-      // that is the amount we stored + the change due
-      if (null != paymentId) {
-        if (2 == paymentId) {
-          paymentAmount = " $" + (changeDue + (paymentRecord.amount)).toFixed(2);
-        } else {
-          if (paymentRecord.amount != null) {
-            paymentAmount = " $" + (paymentRecord.amount).toFixed(2);
-          }
-        }
-      }
-
-      var paymentTenderedItem = "Payment tendered: " + paymentTypeText + " ";
-
-      paymentTenderedItem = paymentTenderedItem.substring(0, 35);
-
-      paymentAmount = paymentAmount.substring(paymentAmount.length - 10);
-
-      receipt += "\n" + paymentTenderedItem + paymentAmount + "\n";
-
-    });
-
-    // if cash was one of your payment types, figure out if there's any change due
-    if (paymentId == 2) {
-      var changeDueLabel = "CHANGE DUE: ";
-      var changeDueStr = "";
-
-      changeDueStr = "$" + changeDue.toFixed(2);
-      changeDueStr = " " + changeDueStr;
-
-      changeDueStr = changeDueStr.substring(changeDueStr.length - 20);
-
-      receipt += "\n" + changeDueLabel + changeDueStr;
-    }
-
-    var cardBalance = "",
-      textProductType = "",
-      remainingRides: any = 0;
-
-    receipt += "\n\n Current Card Balance\n\n";
-    var cardStore = JSON.parse(localStorage.getItem("printCardData"));
-
-
-
-    var receiptWidth = 44;
-    var dashes = "";
-    while (dashes.length <= receiptWidth) {
-      dashes += "-";
-    }
-
-    receipt += dashes + "\n";
-    var PID = cardStore.printed_id;
-    var cardText = "Card ID:";
-    receipt += cardText;
-    padSize = receiptWidth - (cardText.length + PID.length);
-    spacer = '';
-
-    while (spacer.length <= (padSize - 1)) {
-      spacer += " ";
-    }
-
-    receipt += spacer + PID + "\n";
-
-    if (cardStore.products) {
-
-      for (var i = 0; i < cardStore.products.length; i++) {
-
-        var dataItem = cardStore.products[i];
-
-        var productType = dataItem.product_type;
-        var designator = dataItem.designator;
-        var days = dataItem.days;
-        var rechargesPending = dataItem.recharges_pending;
-        var remainingValue = dataItem.remaining_value;
-        var remainingRides = dataItem.remaining_rides;
-        var start_date = dataItem.start_date_str;
-        var exp_date = dataItem.exp_date_str;
-        var start_date_epoch_days = dataItem.start_date_epoch_days;
-        var exp_date_epoch_days = dataItem.exp_date_epoch_days;
-        var bad_listed = dataItem.is_prod_bad_listed;
-        var textProductType = '';
-        var cardBalance = '';
-        var productDescription = '';
-        var productStatus = '';
-
-        switch (productType) {
-          case 1:
-
-            if (exp_date_epoch_days > 1) {
-              cardBalance = "Exp: " + exp_date;
-            } else {
-              cardBalance = (days + 1) + " Days";
-            }
-
-            productDescription = (days + 1) + " Day Pass";
-
-            if (rechargesPending > 0) {
-              productStatus += " (" + rechargesPending + " Pending)"
-            }
-
-            break;
-          case 2:
-            if (1 == remainingRides) {
-              cardBalance = remainingRides + " Ride";
-            } else {
-              cardBalance = remainingRides + " Rides";
-            }
-            productDescription = 'Stored Ride Pass';
-            break;
-          case 3:
-
-            var remaining_value = 0;
-
-            if (dataItem.remaining_value && dataItem.remaining_value > 0) {
-              remaining_value = dataItem.remaining_value / 100;
-            }
-
-            productDescription = 'Pay As You Go';
-            cardBalance = "$" + remaining_value.toFixed(2);
-
-            break;
-          case 7:
-
-            productDescription = "Employee Pass";
-
-            if (exp_date_epoch_days > 1) {
-              cardBalance = "Exp: " + exp_date;
-            }
-
-            break;
-          default:
-            productDescription = "Unknown Product";
-            break;
-        }
-
-        // var ticketKey = productType + "_" + designator;
-
-        // var carddata = new Array(cardStore);
-
-        // cardStore.products.forEach(cardElement => {
-        JSON.parse(catalog).Offering.forEach(catalogElement => {
-          if (catalogElement.Ticket != undefined) {
-            if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-              // var catalogdata = {
-              // "ticketid": 
-              // }
-              return productDescription = catalogElement.Ticket.Description
-
-            }
-          }
-        });
-        // });
-
-
-        // don't print anything if your stored value is $0
-        if ((3 != productType) || (0 < remaining_value)) {
-
-          var receiptWidth = 44;
-          var padSize = 0;
-          var maxDescriptionLength = receiptWidth - 16;
-
-          if (productDescription.length >= maxDescriptionLength) {
-            productDescription = productDescription.substring(0, maxDescriptionLength).trim() + "... ";
-          }
-
-          receipt += productDescription;
-
-          padSize = receiptWidth - (productDescription.length + cardBalance.length);
-
-          var spacer = '';
-
-          while (spacer.length <= (padSize - 1)) {
-            spacer += " ";
-          }
-
-          receipt += spacer + cardBalance + "\n";
-        }
-      }
-      receipt += "\n";
-    }
-    else {
-      console.log("Receipt printing: No smart cards stored.");
-    }
-    receipt += "\n\n";
-    console.log("receipt", receipt)
-    // APOS.util.PrintService.printReceipt(receipt, timestamp);
-    this.handlePrintReceiptResult();
-    this.electronService.ipcRenderer.send('printReceipt', receipt, timestamp)
-    console.log(receipt + 'generateReceipt receipt ');
-    console.log(customerCopyReceipt + 'generateReceipt customerCopyReceipt ');
   }
 
   getRefundTitle() {
     let count = 0;
     let commaFlag = false;
-    this.message = "Please give the customer back  ";
-    this.title = "Return ";
+    this.message = 'Please give the customer back  ';
+    this.title = 'Return ';
     let payments = [];
     payments = this.shoppingCart._payments;
-    let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingCart);
-    if(-1 != indexOfPayment){
-      payments.splice(indexOfPayment,1)
+    const indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(8, this.shoppingCart);
+    if (-1 != indexOfPayment) {
+      payments.splice(indexOfPayment, 1);
     }
-    if(payments.length >2) {
+    if (payments.length > 2) {
       commaFlag = true;
     }
     payments.forEach(element => {
-    
-        if(payments.length !=0 && (0 != payments.length-1 ) && (count == payments.length-1)){
-          this.title = this.title + " and "
-          this.message = this.message + " and ";
-  
-          commaFlag = false;
-        }
-        if(count!=0 && commaFlag) {
-          this.title = this.title + ', '
-        }
-        switch (element.paymentMethodId) {
-          case 2:
-          this.title = this.title + "Cash";
-          this.message = this.message + "cash"
-          break;
-  
-          case 3:
-          this.title = this.title + "Check";
-          this.message = this.message + "check"
-          break;
-  
-          case 11:
-          this.title = this.title + "Voucher";
-          this.message = this.message + "voucher"
-          break;
-  
-          case  9:
-          this.title = this.title + "Credit";
-          this.message = this.message + "credit"
-          break;
-  
-          default: 
-          this.message = "Please give the customer back "
-        }
-        
-        count++;
-      
-  
 
-    
+      if (payments.length != 0 && (0 != payments.length - 1) && (count == payments.length - 1)) {
+        this.title = this.title + ' and ';
+        this.message = this.message + ' and ';
 
+        commaFlag = false;
+      }
+      if (count != 0 && commaFlag) {
+        this.title = this.title + ', ';
+      }
+      switch (element.paymentMethodId) {
+        case 2:
+          this.title = this.title + 'Cash';
+          this.message = this.message + 'cash';
+          break;
+
+        case 3:
+          this.title = this.title + 'Check';
+          this.message = this.message + 'check';
+          break;
+
+        case 11:
+          this.title = this.title + 'Voucher';
+          this.message = this.message + 'voucher';
+          break;
+
+        case 9:
+          this.title = this.title + 'Credit';
+          this.message = this.message + 'credit';
+          break;
+
+        default:
+          this.message = 'Please give the customer back ';
+      }
+      count++;
     });
-
-
- 
-
-
-
-
   }
-
-  // getRefundMessage() {
-
-  // }
 }
