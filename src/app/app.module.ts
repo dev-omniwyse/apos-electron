@@ -24,9 +24,9 @@ import { CompComponent } from './components/comp/comp.component';
 import { AdminComponent } from './components/admin/admin.component';
 import {DeviceconfComponent} from './components/deviceconf/deviceconf.component';
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
-import { ShiftsComponent } from './components/shifts/shifts.component'
+import { ShiftsComponent } from './components/shifts/shifts.component';
 import { AddMagneticProductComponent } from './components/add-magnetic-product/add-magnetic-product.component';
-import { NgxLoadingModule } from 'ngx-loading'
+import { NgxLoadingModule } from 'ngx-loading';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { EnvironmentComponent } from './components/environment/environment.component';
 import { SlickModule } from 'ngx-slick';
@@ -63,8 +63,7 @@ export class HammerConfig extends HammerGestureConfig {
     AddMagneticProductComponent,
     EnvironmentComponent,
     NumericOnlyDirective,
-    NoCommaPipe 
-    
+    NoCommaPipe
   ],
   imports: [
     BrowserModule,
