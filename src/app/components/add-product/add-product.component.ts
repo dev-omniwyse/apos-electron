@@ -582,7 +582,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     }
 
     return flag;
-  }
+  } 
 
   /**
    * check the product count for existing card and return the count

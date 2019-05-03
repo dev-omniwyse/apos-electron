@@ -9,10 +9,10 @@ var childProcess = require('child_process');
 var javaInstancePath = "com.genfare.applet.encoder.EncoderApplet";
 var logger = require('electron-log');
 
-let reqPath = path.join(app.getAppPath(), '../../')
-fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.properties');
-fs.copyFile(app.getAppPath() + '/epx.properties', reqPath + '/epx.properties');
-fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
+// let reqPath = path.join(app.getAppPath(), '../../')
+// fs.copyFile(app.getAppPath() + '/logging.properties', reqPath + '/logging.properties');
+// fs.copyFile(app.getAppPath() + '/epx.properties', reqPath + '/epx.properties');
+// fs.copySync(app.getAppPath() + '/app.properties', reqPath + 'app.properties');
 
 // var getLocalJavaPath = process.env.JAVA_HOME+"\\jre\\bin\\server";
 // logger.info("Java Class Path "+ app.getAppPath()+'\\node_modules\\java\\build\\jvm_dll_path.json');
@@ -60,7 +60,7 @@ function createWindow() {
 
     // The following is optional and will open the DevTools:
 
-     // win.webContents.openDevTools()
+     win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
