@@ -35,7 +35,7 @@ pcs.on('reader', function (reader) {
             console.log('Disconnected');
           }
         });
-      // tslint:disable-next-line:no-bitwise
+        // tslint:disable-next-line:no-bitwise
       } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
         cardName = reader.name;
         console.log('sample', cardName);
@@ -46,17 +46,17 @@ pcs.on('reader', function (reader) {
           } else {
             console.log('Protocol(', reader.name, '):', protocol);
             reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol,
-            // tslint:disable-next-line:no-shadowed-variable
-            function (err: any, data: { toString: (arg0: string) => void; }) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log('Data received', data);
-                console.log('Data base64', data.toString('base64'));
-                // reader.close();
-                // pcs.close();
-              }
-            });
+              // tslint:disable-next-line:no-shadowed-variable
+              function (err: any, data: { toString: (arg0: string) => void; }) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log('Data received', data);
+                  console.log('Data base64', data.toString('base64'));
+                  // reader.close();
+                  // pcs.close();
+                }
+              });
           }
         });
       }
@@ -140,18 +140,8 @@ export class AdminComponent implements OnInit {
         });
       }
     });
-    this.electronService.ipcRenderer.on('adminCloseShiftResult', (event, data) => {
-      if (data != undefined && data != '') {
-        this._ngZone.run(() => {
-        });
-      }
-    });
-    this.electronService.ipcRenderer.on('adminOpenShiftResult', (event, data) => {
-      if (data != undefined && data != '') {
-        this._ngZone.run(() => {
-        });
-      }
-    });
+
+
     this.electronService.ipcRenderer.on('adminSyncResult', (event, data) => {
       if (data != undefined && data != '') {
         if (data == true) {
@@ -162,7 +152,7 @@ export class AdminComponent implements OnInit {
       }
     });
 
-
+    // This Method for Handling SYNC Data
     this.SyncMethod = this.electronService.ipcRenderer.on('isSyncCompletedResult', (event, data) => {
       console.log('data synch', data);
       console.log('number of attempts', this.numOfAttempts);
@@ -201,6 +191,7 @@ export class AdminComponent implements OnInit {
         }
       });
     });
+    // Device Configuration Data From Backend
     this.electronService.ipcRenderer.on('adminDeviceConfigResult', (event, data) => {
       if (data != undefined && data != '') {
         this.configData = JSON.parse(data);
@@ -215,25 +206,20 @@ export class AdminComponent implements OnInit {
       }
     });
 
-    this.electronService.ipcRenderer.on('adminShiftSaleSummaryResult', (event, data) => {
-      if (data != undefined && data != '') {
-
-        this._ngZone.run(() => {
-
-        });
-      }
-    });
-
 
   }
 
-
-  getPresentShiftReport() {
+/**
+ * This Method To Print All Shifts Sales and their Payments
+ *
+ * @memberof AdminComponent
+ */
+getPresentShiftReport() {
     this.cdtaService.printAllOrSpecificShiftData(null);
   }
 
   /**
-   *
+   * This Method to get terminal configuration data from backend
    *
    * @memberof AdminComponent
    */
@@ -286,6 +272,12 @@ export class AdminComponent implements OnInit {
     this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(offeringSList) + '}');
   }
 
+  /**
+   * This Method to Get Current logged in User Sales and Payments By Default
+   *
+   * @param {*} event
+   * @memberof AdminComponent
+   */
   getSalesReports(event) {
     const reliefShif = JSON.parse(localStorage.getItem('shiftReport'));
     reliefShif.forEach(element => {
@@ -293,27 +285,28 @@ export class AdminComponent implements OnInit {
       if (element.userID == localStorage.getItem('userID')) {
         this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed);
         this.electronService.ipcRenderer.send('adminSalesPaymentMethod',
-        Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
+          Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
       } else {
 
       }
     });
-    // console.log('read call', cardName)
-  }
-  adminCloseShift(event) {
-    this.electronService.ipcRenderer.send('adminCloseShift');
+
   }
 
-  adminOpenShift(event) {
-    this.electronService.ipcRenderer.send('adminOpenShift');
-  }
-
+  /**
+   * This Method to get device configurtaion details.
+   *
+   * @memberof AdminComponent
+   */
   adminDeviceConfig() {
     this.electronService.ipcRenderer.send('adminDeviceConfig');
   }
-  adminShiftSaleSummary(event) {
-    this.electronService.ipcRenderer.send('adminShiftSaleSummary');
-  }
+
+  /**
+   * This method To pause the main shift  by main shift user
+   * state will change to 4
+   * @memberof AdminComponent
+   */
   mainShiftPause() {
     const shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
     const shiftreportUser = localStorage.getItem('userID');
@@ -337,6 +330,11 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  /**
+   *This Method is to know whether the cash drawer is open or not.
+   *
+   * @memberof AdminComponent
+   */
   handleOpenCashDrawerResult() {
     this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
       if (data != undefined && data != '') {
@@ -349,23 +347,43 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  /**
+   * Method to open the cash drawer when click on nosale tab.
+   *
+   * @memberof AdminComponent
+   */
   openCashDrawerForNoSale() {
     this.handleOpenCashDrawerResult();
     this.openCashDrawer();
 
   }
 
+  /**
+   *Method to open the Cash drawer
+   *
+   * @memberof AdminComponent
+   */
   openCashDrawer() {
     this.electronService.ipcRenderer.send('openCashDrawer');
   }
 
-  closePausedMainShift() {
+/**
+ * This Method is to close the Paused Main Shift
+ *
+ * @memberof AdminComponent
+ */
+closePausedMainShift() {
     this.closingPausedMainShift = true;
     localStorage.setItem('closingPausedMainShift', this.closingPausedMainShift.toString());
     this.handleOpenCashDrawerResult();
     this.openCashDrawer();
   }
 
+  /**
+   * This method is to re-open the Main Shift.
+   *
+   * @memberof AdminComponent
+   */
   reOpenShift() {
 
     const shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
@@ -376,7 +394,6 @@ export class AdminComponent implements OnInit {
       if (element.userID == shiftreportUser && element.shiftState == '4') {
         element.shiftState = '0';
         this.mainShiftReOpen = false;
-        // this.mainshiftcloser = false
         this.shiftState = '0';
         this.shiftType = '0';
         element.timeOpened = new Date().getTime();
@@ -389,9 +406,13 @@ export class AdminComponent implements OnInit {
     localStorage.setItem('hideModalPopup', 'true');
   }
 
+  /**
+   *This Method is to Hide/Show the popup based on open/close of shifts
+   *
+   * @memberof AdminComponent
+   */
   hideModalPop() {
     const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
-
     shiftReports.forEach(element => {
       if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
         localStorage.setItem('hideModalPopup', 'true');
@@ -408,6 +429,9 @@ export class AdminComponent implements OnInit {
 
   }
 
+  /**
+   * This Method Is used to print the last transaction of smartcard
+   */
   lastTransactionReceipt() {
     // tslint:disable-next-line:prefer-const
     let timestamp = new Date().getTime();
@@ -417,6 +441,9 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  /**
+   * Method to SYNC the Data.
+   */
   syncData() {
     this.loading = true;
     // this.maxLoopingCount = 600;
@@ -432,17 +459,13 @@ export class AdminComponent implements OnInit {
     this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
     this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
     shiftReports.forEach(element => {
-      // if (element.shiftState == "3" && element.userID == userId && localStorage.getItem("closingPausedMainShift") == "false") {
-      //   this.closingPausedMainShift = true
-      //   this.statusOfShiftReport = "Main Shift is Closed and Relief Shift is Closed"
 
-      // } else
       if (element.shiftState == '3' && element.userID == userId && localStorage.getItem('closingPausedMainShift') == 'true') {
         this.closingPausedMainShift = true;
         this.statusOfShiftReport = 'Main Shift is Closed and Relief Shift is Closed';
       } else
         if (element.shiftState == '3' && element.userID == userId && element.shiftType == '0' &&
-        localStorage.getItem('mainShiftClose')) {
+          localStorage.getItem('mainShiftClose')) {
           this.shiftType = '0';
           this.shiftState = '3';
           this.mainshiftCloser = true;
@@ -475,13 +498,6 @@ export class AdminComponent implements OnInit {
           } else if (element.shiftState == '3' && element.userID == userId && element.shiftType == '1') {
             this.shiftType = '1';
             this.shiftState = '3';
-            // if (localStorage.getItem("mainShiftClose") == "true" && localStorage.getItem("mainShiftClose") != undefined) {
-            //   this.mainshiftCloser = true
-            // } else {
-            //   this.shiftType = "1"
-            //   this.shiftState = "3"
-            //  this.statusOfShiftReport = "Main Shift is Paused "
-            // }
             this.statusOfShiftReport = 'Main Shift is Paused ';
           } else if (element.shiftState == '0' && element.userID == userId && element.shiftType == '1') {
             this.shiftType = '1';
@@ -497,12 +513,9 @@ export class AdminComponent implements OnInit {
 
     shiftReports.forEach(element => {
       if (element.userID == localStorage.getItem('userID')) {
-        // if (element.openingDrawer != undefined && element.openingDrawer != "") {
         this.openingDrawerBal = (Number(this.openingDrawerBal) + element.openingDrawer).toFixed(2);
         this.expectedCash = this.openingDrawerBal;
         localStorage.setItem('expectedCash', this.expectedCash);
-
-        // }
         if (element.closingDrawer != undefined && element.closingDrawer != '') {
           this.actualCash = (this.actualCash + element.closingDrawer).toFixed(2);
         }
@@ -510,9 +523,8 @@ export class AdminComponent implements OnInit {
         this.overShort = Math.abs(this.overShort);
         if (element.initialOpeningTime != 0) {
           this.electronService.ipcRenderer.send('adminSales', Number(element.shiftType), element.initialOpeningTime, element.timeClosed);
-          console.log('element.initialOpeningTime, element.timeClosed', element.initialOpeningTime, element.timeClosed);
           this.electronService.ipcRenderer.send('adminSalesPaymentMethod', Number(element.userID), Number(element.shiftType),
-          element.initialOpeningTime, element.timeClosed, null, null, null);
+            element.initialOpeningTime, element.timeClosed, null, null, null);
         }
 
       }

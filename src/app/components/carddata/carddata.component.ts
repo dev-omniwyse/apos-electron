@@ -96,6 +96,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
+
       this.terminalConfigJson = JSON.parse(localStorage.getItem("terminalConfigJson"));
       this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
       const item = JSON.parse(localStorage.getItem("catalogJSON"));
@@ -396,7 +397,6 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.electronService.ipcRenderer.send('readSmartcard', cardName);
     }
     const userID = localStorage.getItem("userID");
-
     const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, Utils.getInstance.getUserByUserID(userID));
     localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
     const deviceData = JSON.parse(localStorage.getItem("deviceInfo"));
@@ -406,7 +406,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
 
-
   /**
    *
    *This function returns the paymentsObject based on paymentMethodID
@@ -415,6 +414,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   getPaymentsObject() {
     let paymentObj: any;
+
     const transactionAmount = localStorage.getItem("transactionAmount");
     if (localStorage.getItem("paymentMethodId") == '8') {
       paymentObj = {
@@ -499,7 +499,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex]._walletContents;
   }
 
-
   /**
    *
    *This function calls generateReceipt, removeLocalStorage and naviagtes to ReadCard
@@ -522,8 +521,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.removeLocalStorage();
     this.router.navigate(['/readcard']);
   }
-
-
 
   /**
    *
@@ -577,7 +574,6 @@ export class CarddataComponent implements OnInit, OnChanges {
     if (changes) {
     }
   }
-
 
   /**
    *
@@ -831,6 +827,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     $('#confirmCancelEncodeModal').modal('show');
     this.getRefundTitle();
   }
+
 
   /**
    *

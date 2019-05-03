@@ -474,13 +474,7 @@ ipcMain.on('adminCloseShift', (event, catalog) => {
     event.sender.send('adminCloseShiftResult', result);
 })
 
-ipcMain.on('adminOpenShift', (event, catalog) => {
-    logger.info("comp  Data", posAppletInstance)
-    var result = posAppletInstance.getProductCatalogJSONSync();
-    logger.info("compResult", '' + result)
 
-    event.sender.send('adminOpenShiftResult', result);
-})
 
 ipcMain.on('adminSync', (event, catalog) => {
     logger.info("comp  Data", posAppletInstance)
@@ -511,15 +505,8 @@ ipcMain.on('adminTerminalConfig', (event, catalog) => {
     logger.info("adminTerminalConfig", '' + result)
 
     event.sender.send('adminTerminalConfigResult', result);
-})
+});
 
-ipcMain.on('adminShiftSaleSummary', (event, catalog) => {
-    logger.info("comp  Data", posAppletInstance)
-    var result = posAppletInstance.getProductCatalogJSONSync();
-    logger.info("compResult", '' + result)
-
-    event.sender.send('adminShiftSaleSummaryResult', result);
-})
 
 ipcMain.on('saveOffering', (event, offerings) => {
     var result = posAppletInstance.saveOfferingSync(offerings);
