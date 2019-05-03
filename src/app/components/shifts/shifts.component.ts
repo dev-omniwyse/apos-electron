@@ -203,7 +203,7 @@ export class ShiftsComponent implements OnInit {
      *
      * @memberof ShiftsComponent
      */
-    handleOpenCashDrawerResult() {
+    handleOpenCashDrawerResult() { 
         this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
             if (data != undefined && data != '') {
                 if (data) {
