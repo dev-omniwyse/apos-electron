@@ -10,62 +10,76 @@ import { Globals } from 'src/app/global';
 import { Utils } from 'src/app/services/Utils.service';
 declare var $: any;
 declare var pcsc: any;
-var pcs = pcsc();
-var cardName: any = "";
-var isExistingCard = false;
+// tslint:disable-next-line:prefer-const
+declare var pcsc: any;
+// tslint:disable-next-line:prefer-const
+let pcs = pcsc();
+let cardName: any = '';
+let isExistingCard = false;
 pcs.on('reader', function (reader) {
-    console.log('reader', reader);
-    console.log('New reader detected', reader.name);
 
-    reader.on('error', function (err) {
-        console.log('Error(', this.name, '):', err.message);
-    });
+  console.log('reader', reader);
+  console.log('New reader detected', reader.name);
 
-    reader.on('status', function (status) {
-        console.log('Status(', this.name, '):', status);
-        /* check what has changed */
-        const changes = this.state ^ status.state;
-        if (changes) {
-            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-                console.log("card removed");/* card removed */
-                reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Disconnected');
-                    }
-                });
-            } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-                cardName = reader.name
-                console.log("sample", cardName)
-                console.log("card inserted");/* card inserted */
-                reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Protocol(', reader.name, '):', protocol);
-                        reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('Data received', data);
-                                console.log('Data base64', data.toString('base64'));
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    });
+  reader.on('error', function (err) {
+    console.log('Error(', this.name, '):', err.message);
+  });
 
-    reader.on('end', function () {
-        console.log('Reader', this.name, 'removed');
-    });
+  reader.on('status', function (status) {
+    console.log('Status(', this.name, '):', status);
+    /* check what has changed */
+    // tslint:disable-next-line:no-bitwise
+    const changes = this.state ^ status.state;
+    if (changes) {
+      // tslint:disable-next-line:no-bitwise
+      if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+        console.log('card removed'); /* card removed */
+        reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Disconnected');
+          }
+        });
+      // tslint:disable-next-line:no-bitwise
+      } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+        cardName = reader.name;
+        console.log('sample', cardName);
+        console.log('card inserted'); /* card inserted */
+        reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Protocol(', reader.name, '):', protocol);
+            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol,
+            // tslint:disable-next-line:no-shadowed-variable
+            function (err: any, data: { toString: (arg0: string) => void; }) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('Data received', data);
+                console.log('Data base64', data.toString('base64'));
+                // reader.close();
+                // pcs.close();
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+
+    
+
+  reader.on('end', function () {
+    console.log('Reader', this.name, 'removed');
+  });
 });
 
 pcs.on('error', function (err) {
-    console.log('PCSC error', err.message);
+  console.log('PCSC error', err.message);
 });
+
 
 @Component({
     selector: 'app-readcard',
@@ -76,10 +90,12 @@ export class ReadcardComponent implements OnInit {
 
     // Global Declarations will go here
     terminalConfigJson: any = [];
+
     statusOfShiftReport: string = ''
     disableCards: Boolean = false;
-    public errorMessage: String = "Cannot find encoder:";
+    public errorMessage: String = 'Cannot find encoder:';
     public logger;
+
     public carddata: any = [];
     public carddataProducts = [];
     public catalogData = [];
@@ -101,78 +117,88 @@ export class ReadcardComponent implements OnInit {
     nextBonusRidesText: string;
     cardContents = [];
     maxSyncLimitReached = false;
-    maxSyncLimitReachedText = "";
+    maxSyncLimitReachedText = '';
     ticketMap = new Map();
-    constructor(private cdtaservice: CdtaService, private globals: Globals, private route: ActivatedRoute,
-        private router: Router, private _ngZone: NgZone, private electronService: ElectronService,
-        private ref: ChangeDetectorRef, private http: HttpClient) {
+
+    constructor(private cdtaservice: CdtaService, private globals: Globals,
+        private route: ActivatedRoute, private router: Router, private _ngZone: NgZone,
+        private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
+
         route.params.subscribe(val => {
         });
         if (this.electronService.isElectronApp) {
-            this.logger = this.electronService.remote.require("electron-log");
+            this.logger = this.electronService.remote.require('electron-log');
         }
-        localStorage.removeItem("readCardData");
-        localStorage.removeItem("shoppingCart");
-        localStorage.removeItem("cardsData");
-
-        let deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
+        localStorage.removeItem('readCardData');
+        localStorage.removeItem('shoppingCart');
+        localStorage.removeItem('cardsData');
+        const deviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
 
         this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(JSON.parse(localStorage.getItem('terminalConfigJson')), deviceInfo);
-        this.maxSyncLimitReachedText = "This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.";
+        this.maxSyncLimitReachedText =
+        'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
 
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
-            console.log("print sales data", data)
+            console.log('print sales data', data);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
                     this.salesData = JSON.parse(data);
-                    var salesReport: any = this.salesData
-                    for (var report = 0; report < salesReport.length; report++) {
-                        salesReport[report].userID = userID
-                        salesReport[report].shiftType = shiftType
+                    // tslint:disable-next-line:no-shadowed-variable
+                    const salesReport: any = this.salesData;
+                    for (let report = 0; report < salesReport.length; report++) {
+                        salesReport[report].userID = userID;
+                        salesReport[report].shiftType = shiftType;
                         this.backendSalesReport.push(salesReport[report]);
                     }
-                    localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
+                    localStorage.setItem('backendSalesReport', JSON.stringify(this.backendSalesReport));
                 });
 
             }
-            if (data == "[]") {
-                var salesReport: any = {
-                    "userID": userID,
-                    "shiftType": shiftType
-                }
-                this.backendSalesReport.push(salesReport)
-                localStorage.setItem("backendSalesReport", JSON.stringify(this.backendSalesReport))
+            if (data == '[]') {
+                // tslint:disable-next-line:prefer-const
+                let salesReport: any = {
+                    'userID' : userID,
+                    'shiftType' : shiftType
+                };
+                this.backendSalesReport.push(salesReport);
+                localStorage.setItem('backendSalesReport', JSON.stringify(this.backendSalesReport));
+
             }
         });
 
         this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
-            console.log("print payments  data", data, userID)
+            console.log('print payments  data', data, userID);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
                     this.salesPaymentData = JSON.parse(data);
-                    var paymentReport: any = this.salesPaymentData;
-                    for (var report = 0; report < paymentReport.length; report++) {
-                        paymentReport[report].userID = userID
-                        paymentReport[report].shiftType = shiftType
+
+                    // tslint:disable-next-line:no-shadowed-variable
+                    const paymentReport: any = this.salesPaymentData;
+                    for (let report = 0; report < paymentReport.length; report++) {
+                        paymentReport[report].userID = userID;
+                        paymentReport[report].shiftType = shiftType;
                         this.backendPaymentReport.push(paymentReport[report]);
                     }
-                    console.log(" this.backendPaymentReport", this.backendPaymentReport)
-                    localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+                    console.log(' this.backendPaymentReport', this.backendPaymentReport);
+                    localStorage.setItem('printPaymentData', JSON.stringify(this.backendPaymentReport));
 
-                    var displayingPayments = this.cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
+                    // tslint:disable-next-line:prefer-const
+                    let displayingPayments = this.cdtaservice.iterateAndFindUniquePaymentTypeString(this.backendPaymentReport);
                     this.paymentReport = this.cdtaservice.generatePrintReceiptForPayments(displayingPayments, false);
-                    localStorage.setItem("paymentReceipt", JSON.stringify(this.paymentReport))
+                    localStorage.setItem('paymentReceipt', JSON.stringify(this.paymentReport));
 
                 });
             }
 
-            if (data == "[]") {
-                var paymentReport: any = {
-                    "userID": userID,
-                    "shiftType": shiftType
-                }
+            if (data == '[]') {
+
+                const paymentReport: any = {
+                    'userID' : userID,
+                    'shiftType' : shiftType
+                };
+
                 this.backendPaymentReport.push(paymentReport);
-                localStorage.setItem("printPaymentData", JSON.stringify(this.backendPaymentReport))
+                localStorage.setItem('printPaymentData', JSON.stringify(this.backendPaymentReport));
             }
         });
 
@@ -194,11 +220,11 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     showCardContents() {
+
         this.readCardData = [];
         this._ngZone.run(() => {
-            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            const item = JSON.parse(localStorage.getItem('catalogJSON'));
             this.catalogData = JSON.parse(item).Offering;
-            var isMagnetic: Boolean = (localStorage.getItem("isMagnetic") == "true") ? true : false;
             this.getBonusRidesCount();
             this.getNextBonusRides();
             this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
@@ -215,7 +241,7 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     showErrorMessages() {
-        $("#errorModal").modal('show');
+        $('#errorModal').modal('show');
     }
 
     /**
@@ -246,17 +272,18 @@ export class ReadcardComponent implements OnInit {
         localStorage.removeItem('shoppingCart');
         isExistingCard = true;
         this.isFromReadCard = true;
-        localStorage.setItem("isNonFareProduct", "false");
-        localStorage.setItem("isMagnetic", "false");
+        localStorage.setItem('isNonFareProduct', 'false');
+        localStorage.setItem('isMagnetic', 'false');
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
-        this.electronService.ipcRenderer.once('readcardResult', (event, data) => {
-            console.log("data", data)
-            if (this.isFromReadCard && data != undefined && data != "") {
+        this.electronService.ipcRenderer.once('readcardResult', (_event, data) => {
+            console.log('data', data);
+            if (this.isFromReadCard && data != undefined && data != '') {
                 this.show = true;
                 this.isShowCardOptions = false;
-                this.isFromReadCard = false
+                this.isFromReadCard = false;
                 this._ngZone.run(() => {
+
                     localStorage.setItem("readCardData", JSON.stringify(data));
                     localStorage.setItem("printCardData", data)
                     this.carddata = new Array(JSON.parse(data));
@@ -268,21 +295,22 @@ export class ReadcardComponent implements OnInit {
                     localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                     console.log('this.carddata', this.carddata);
                     this.showCardContents();
-                    let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+                    // tslint:disable-next-line:prefer-const
+                    let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
                     this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }
         });
-        this.electronService.ipcRenderer.once('autoLoadResult', (event, data) => {
+        this.electronService.ipcRenderer.once('autoLoadResult', (_event, data) => {
             console.log(data);
-            if (data != undefined && data != "") {
-                this.electronService.ipcRenderer.send('readSmartcard', cardName)
+            if (data != undefined && data != '') {
+                this.electronService.ipcRenderer.send('readSmartcard', cardName);
             }
         });
+
         this.electronService.ipcRenderer.send('processAutoLoad', cardName)
         console.log('read call', cardName)
-
     }
 
 
@@ -307,13 +335,16 @@ export class ReadcardComponent implements OnInit {
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
 
-        localStorage.setItem("isMagnetic", "false");
-        localStorage.setItem("isNonFareProduct", "false");
+        localStorage.setItem('isMagnetic', 'false');
+        localStorage.setItem('isNonFareProduct', 'false');
 
-        this.electronService.ipcRenderer.once('newfarecardResult', (event, data) => {
-            if (data != undefined && data != "") {
+
+        this.electronService.ipcRenderer.once('newfarecardResult', (_event, data) => {
+            if (data != undefined && data != '') {
+
+       
                 this._ngZone.run(() => {
-                    localStorage.setItem("readCardData", JSON.stringify(data));
+                    localStorage.setItem('readCardData', JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
                     console.log('this.carddata', this.carddata);
                     this.terminalConfigJson.Farecodes.forEach(element => {
@@ -323,15 +354,17 @@ export class ReadcardComponent implements OnInit {
                     });
                     if (Utils.getInstance.isNew(this.carddata[0])) {
                         localStorage.setItem('userProfile', JSON.stringify(this.cardType));
-                        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
-                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                        const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+
+                        this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
+                            this.carddata[0], item.Offering, true);
                         ShoppingCartService.getInstance.shoppingCart = null;
                         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                         this.router.navigate(['/addproduct']);
-                    }
-                    else {
+                    } else {
+
                         this.carddata.length = [];
-                        $("#newCardValidateModal").modal('show');
+                        $('#newCardValidateModal').modal('show');
                     }
                 });
             }
@@ -351,8 +384,8 @@ export class ReadcardComponent implements OnInit {
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         this.shoppingcart = FareCardService.getInstance.addNonFareWallet(this.shoppingcart);
         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-        localStorage.setItem("isMagnetic", "false");
-        localStorage.setItem("isNonFareProduct", "true");
+        localStorage.setItem('isMagnetic', 'false');
+        localStorage.setItem('isNonFareProduct', 'true');
         this.router.navigate(['/addproduct']);
     }
 
@@ -365,15 +398,16 @@ export class ReadcardComponent implements OnInit {
     magneticCard(event) {
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
-        localStorage.setItem("isMagnetic", "true");
-        localStorage.setItem("isNonFareProduct", "false");
+        localStorage.setItem('isMagnetic', 'true');
+        localStorage.setItem('isNonFareProduct', 'false');
         this.getProductCatalogJSON();
-        let item = JSON.parse(JSON.parse(localStorage.getItem("catalogJSON")));
+        const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
         this.shoppingcart = FareCardService.getInstance.addMagneticsCard(this.shoppingcart, item.Offering);
         ShoppingCartService.getInstance.shoppingCart = null;
         localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
         this.router.navigate(['/addproduct']);
-        console.log('read call', cardName)
+
+
     }
 
     /**
@@ -383,9 +417,10 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     writeCard(event) {
-        this.electronService.ipcRenderer.send('writeSmartcard', cardName)
-        console.log('write call', cardName)
+        this.electronService.ipcRenderer.send('writeSmartcard', cardName);
+        console.log('write call', cardName);
     }
+
 
     /**
      *
@@ -396,11 +431,11 @@ export class ReadcardComponent implements OnInit {
         this.logger.info('this is a message from angular');
         this.electronService.ipcRenderer.once('getProductCatalogResult', (event, data) => {
             localStorage.setItem('catalogJSON', JSON.stringify(data));
-            let item = JSON.parse(localStorage.getItem("catalogJSON"));
+            const item = JSON.parse(localStorage.getItem('catalogJSON'));
             this.catalogData = JSON.parse(item).Offering;
             this.setOffering();
         });
-        this.electronService.ipcRenderer.send('productCatalogJson', cardName)
+        this.electronService.ipcRenderer.send('productCatalogJson', cardName);
     }
 
     /**
@@ -410,13 +445,15 @@ export class ReadcardComponent implements OnInit {
      */
     adminDeviceConfig() {
         this.electronService.ipcRenderer.once('adminDeviceConfigResult', (event, data) => {
-            if (data != undefined && data != "") {
-                localStorage.setItem("deviceConfigData", data);
+            if (data != undefined && data != '') {
+                localStorage.setItem('deviceConfigData', data);
                 this._ngZone.run(() => {
                 });
             }
         });
-        this.electronService.ipcRenderer.send('adminDeviceConfig')
+        this.electronService.ipcRenderer.send('adminDeviceConfig');
+
+
     }
 
 
@@ -426,8 +463,10 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     getAllUsersSalesAndPayments() {
-        var shiftStore = JSON.parse(localStorage.getItem("shiftReport"))
+        // tslint:disable-next-line:prefer-const
+        let shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
         shiftStore.forEach(record => {
+
             this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
             this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
         });
@@ -444,27 +483,32 @@ export class ReadcardComponent implements OnInit {
         localStorage.removeItem('ticketMap');
 
         this.catalogData.forEach(element => {
-            var jsonObj: any = {
-                "OfferingId": element.OfferingId,
-                "ProductIdentifier": element.ProductIdentifier,
-                "Description": element.Description,
-                "UnitPrice": element.UnitPrice,
-                "IsTaxable": element.IsTaxable,
-                "IsMerchandise": element.IsMerchandise,
-                "IsAccountBased": element.IsAccountBased,
-                "IsCardBased": element.IsCardBased
-            }
+            // if ((element.Ticket != undefined && element.Ticket != "") || element.IsMerchandise) {
+            // tslint:disable-next-line:prefer-const
+            let jsonObj: any = {
+                'OfferingId': element.OfferingId,
+                'ProductIdentifier': element.ProductIdentifier,
+                'Description': element.Description,
+                'UnitPrice': element.UnitPrice,
+                'IsTaxable': element.IsTaxable,
+                'IsMerchandise': element.IsMerchandise,
+                'IsAccountBased': element.IsAccountBased,
+                'IsCardBased': element.IsCardBased
+            };
+
             this.ticketMap = Utils.getInstance.pushTicketToMap(element, this.ticketMap);
             this.offeringSList.push(jsonObj);
         });
-        localStorage.setItem("ticketMap", JSON.stringify(Array.from(this.ticketMap.entries())));
+        localStorage.setItem('ticketMap', JSON.stringify(Array.from(this.ticketMap.entries())));
+
         this.electronService.ipcRenderer.once('saveOfferingResult', (event, data) => {
-            if (data != undefined && data != "") {
+            if (data != undefined && data != '') {
                 console.log('Offerings Success');
             }
         });
         this.electronService.ipcRenderer.send('saveOffering', '{"data": ' + JSON.stringify(this.offeringSList) + '}');
     }
+
 
     /**
      *
@@ -484,21 +528,19 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     hideModalPop() {
-        let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-        let userId = localStorage.getItem("userID")
-
+        const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
         shiftReports.forEach(element => {
-            if ((element.shiftType == "0" && element.shiftState == "0") || (element.shiftType == "1" && element.shiftState == "0")) {
-                localStorage.setItem("hideModalPopup", "true")
+            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
+                localStorage.setItem('hideModalPopup', 'true');
             } else {
-                if (localStorage.getItem("shiftReopenedByMainUser") == "true") {
+                if (localStorage.getItem('shiftReopenedByMainUser') == 'true') {
 
-                    localStorage.setItem("hideModalPopup", "true")
+                    localStorage.setItem('hideModalPopup', 'true');
                 } else {
-                    localStorage.setItem("hideModalPopup", "false")
+                    localStorage.setItem('hideModalPopup', 'false');
                 }
             }
-        })
+        });
 
     }
 
@@ -509,49 +551,52 @@ export class ReadcardComponent implements OnInit {
      */
     ngOnInit() {
         this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
-            if (data != undefined && data != "") {
-                localStorage.setItem('terminalConfigJson', data)
+            if (data != undefined && data != '') {
+                localStorage.setItem('terminalConfigJson', data);
                 this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
                 this._ngZone.run(() => {
                     this.terminalConfigJson = JSON.parse(data);
                 });
             }
         });
-        this.electronService.ipcRenderer.send("terminalConfigcall");
+        this.electronService.ipcRenderer.send('terminalConfigcall');
         ShoppingCartService.getInstance.shoppingCart = null;
-        //load catalogJSON
         this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
-        if (localStorage.getItem("shiftReport") != undefined) {
-            let shiftReports = JSON.parse(localStorage.getItem("shiftReport"));
-            let userId = String(JSON.parse(localStorage.getItem("userID"))).trim();
+        if (localStorage.getItem('shiftReport') != undefined) {
+            const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
             shiftReports.forEach(element => {
-                if (element.shiftState == "3" && element.shiftType == "0" && localStorage.getItem("mainShiftClose")) {
-                    this.statusOfShiftReport = "Main Shift is Closed"
-                } else
-                    if (element.shiftState == "3" && element.shiftType == "0") {
-                        this.statusOfShiftReport = "Main Shift is Closed"
+                // let elementUserId = String(element.userID).trim();
+                // if (elementUserId == userId) {
+                    if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
+                        this.statusOfShiftReport = 'Main Shift is Closed';
+                    } else
+                        if (element.shiftState == '3' && element.shiftType == '0') {
+                            this.statusOfShiftReport = 'Main Shift is Closed';
 
-                    } else if (element.shiftState == "4" && element.shiftType == "0") {
-                        this.statusOfShiftReport = "Main Shift is Paused"
-                    } else if (element.shiftState == "0" && element.shiftType == "1") {
-                        this.statusOfShiftReport = ''
+                        } else if (element.shiftState == '4' && element.shiftType == '0') {
+                            this.statusOfShiftReport = 'Main Shift is Paused';
+                        } else if (element.shiftState == '0' && element.shiftType == '1') {
+                            this.statusOfShiftReport = '';
+                        }
+
+                    if (element.shiftState == '3' && element.shiftType == '0' && element.userID == localStorage.getItem('userID')) {
+                        this.statusOfShiftReport = 'Main Shift is Closed';
+                        this.disableCards = true;
+                    } else if (element.shiftState == '3' && element.shiftType == '1' &&
+                    element.userID == localStorage.getItem('userID')) {
+                        this.disableCards = true;
+                    } else if (element.shiftState == '4' && element.shiftType == '0' &&
+                    element.userID == localStorage.getItem('userID')) {
+                        this.disableCards = true;
+                    // tslint:disable-next-line:max-line-length
+                    } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
+                        this.disableCards = true;
+                    } else {
+                        this.disableCards = false;
                     }
-
-                if (element.shiftState == "3" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
-                    this.statusOfShiftReport = "Main Shift is Closed"
-                    this.disableCards = true
-                } else if (element.shiftState == "3" && element.shiftType == "1" && element.userID == localStorage.getItem("userID")) {
-                    this.disableCards = true
-                } else if (element.shiftState == "4" && element.shiftType == "0" && element.userID == localStorage.getItem("userID")) {
-                    this.disableCards = true
-                } else if (localStorage.getItem("disableUntilReOpenShift") == "true" && (element.shiftState == "4" || element.shiftState == "3")) {
-                    this.disableCards = true
-                } else {
-                    this.disableCards = false
-                }
                 // }
-            })
+            });
         }
     }
 
