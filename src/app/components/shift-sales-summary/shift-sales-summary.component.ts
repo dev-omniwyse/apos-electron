@@ -161,6 +161,11 @@ export class ShiftSalesSummaryComponent implements OnInit {
     }
   }
 
+  /**
+   * This Method To Print The Shift's Sales Summary for Particular and All Users.
+   *
+   * @memberof ShiftSalesSummaryComponent
+   */
   printSummaryReceipt() {
     // tslint:disable-next-line:prefer-const
     let specificUser = [];

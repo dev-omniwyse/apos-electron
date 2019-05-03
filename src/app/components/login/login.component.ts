@@ -47,9 +47,6 @@ export class LoginComponent implements OnInit {
         }
     ];
 
-
-
-
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -84,8 +81,6 @@ export class LoginComponent implements OnInit {
                     } else if (element.shiftState == '4' && element.userID == this.userdata.personId && element.shiftType == '0') {
 
                     }
-
-
                 });
                 if (shiftIndex === shiftStore.length) {
                     const newShiftReport = {
@@ -107,15 +102,11 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('shiftReport', JSON.stringify(shiftStore));
 
                 this._ngZone.run(() => {
-                    // this.carddata = new Array(JSON.parse(data));
-                    // console.log('this.carddata', this.carddata);
                     this.router.navigate(['/readcard']);
                 });
             } else {
                 this.loading = false;
                 $('#errorLogin').modal('show');
-                // this.errorMsg = " Please Enter valid Details"
-
             }
         });
     }
@@ -134,7 +125,8 @@ export class LoginComponent implements OnInit {
         localStorage.removeItem('expectedCash');
         localStorage.removeItem('mainShiftClosed');
         localStorage.removeItem('mainShiftClose');
-
+        // This whole functionality is show the message at login time whether the shift closed/paused
+        // and removing some local storage items when main shift is closed
         if (localStorage.getItem('shiftReport') == null) {
             localStorage.setItem('shiftReport', JSON.stringify(this.shiftReport));
             this.statusOfShiftReportBoolean = true;
@@ -183,52 +175,11 @@ export class LoginComponent implements OnInit {
             });
         }
 
-
-
-
-
-
     }
 
     // convenience getter for easy access to form fields
     get f() { return this.loginForm.controls; }
 
-    onSubmit() {
-        this.submitted = true;
-
-        // stop here if form is invalid
-        if (this.loginForm.invalid) {
-            return;
-        }
-        console.log('cdtaService');
-        // this.loading = true;
-        this.cdtaservice.login(this.f.username.value, this.f.password.value)
-            .subscribe((data: any) => {
-                this.router.navigate(['/readcard']);
-            },
-                error => {
-                    // this.alertService.error(error);
-                    // this.loading = false;
-                });
-    }
-
-
-    jsonValues() {
-        this.cdtaservice.jsonData()
-            .subscribe((data: any) => {
-                this.router.navigate(['/readcard']);
-
-                console.log('json data', data);
-                // tslint:disable-next-line:max-line-length
-                const base64 = btoa(data.aws.credentials.accessKey + '|' + data.aws.credentials.secretKey + '|' + data.aws.credentials.sessionId);
-                console.log('base64', base64);
-
-            },
-                error => {
-                    // this.alertService.error(error);
-                    // this.loading = false;
-                });
-    }
     enterKey(e) {
         if (e.keyCode == 13) {
             this.Login();
@@ -236,27 +187,15 @@ export class LoginComponent implements OnInit {
         }
     }
     Login() {
-        // for (var a = 0; a < this.usersData.users.length; a++) {
-        //     if (this.username == this.usersData.users[a].username && this.password == this.usersData.users[a].password) {
-        //         this.router.navigate(['/readcard']);
-        //     }else{
-        //         this.errorMsg = true
-        //     }
-        // }
         const user = {
             username: this.username,
             password: this.password
         };
         if (user.username == undefined || user.password == undefined) {
             return $('#emptyLogin').modal('show');
-            // return this.errorMsg = " Username Or Password Shouldn't be Empty"
         } else {
-            console.log('main.js' + user);
-            // this.loading = true;
             this.electronService.ipcRenderer.send('logincall', user);
         }
-
-
 
     }
 }
