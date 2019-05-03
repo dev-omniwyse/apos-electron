@@ -1,9 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
-import { ElectronService } from 'ngx-electron';
+import { Router } from '@angular/router';
 import { CdtaService } from 'src/app/cdta.service';
-import {environment} from '../../../environments/environment'
+import { environment } from '../../../environments/environment';
 @Component({
     selector: 'app-setup',
     templateUrl: './setup.component.html',
@@ -16,45 +14,37 @@ export class SetupComponent implements OnInit {
     showView = false;
     isFromSetup = false;
     isProduction: boolean;
-    constructor(private route: ActivatedRoute,private router: Router, private cdtaservice: CdtaService, private electronService:ElectronService,private _ngZone: NgZone,private ref: ChangeDetectorRef, private http: HttpClient) {
-        console.log(environment.production)
+    constructor(private router: Router, private cdtaservice: CdtaService) {
         this.isProduction = environment.production;
-
-        // this.electronService.ipcRenderer.on('switchLoginCallResult', (event, data) => {
-        //     if (data != undefined && data != "" && this.isFromSetup) {
-        //         this.isFromSetup = false;
-        //         localStorage.setItem('terminalConfigJson',data)
-        //         this._ngZone.run(() => {
-        //           if(JSON.parse(data).EquipmentId !=0){
-        //             this.cdtaservice.announceHeaderShowHide("hideHeader");
-        //             this.router.navigate(['/login'])
-        //           } else {
-        //               this.showView = true;
-        //           }
-        //         });
-        //     }
-        // });
     }
 
+    /**
+     * Intializing the component
+     * we will hide the header and will make a switchlogincall
+     * here we are setting the environment name in localStorage
+     * @memberof SetupComponent
+     */
     ngOnInit() {
-        this.cdtaservice.announceHeaderShowHide("showHeader");
+        this.cdtaservice.announceHeaderShowHide('showHeader');
         this.isFromSetup = true;
-        if(this.isProduction) {
-            localStorage.clear()
-            localStorage.setItem('environment','prod');
+        if (this.isProduction) {
+            localStorage.clear();
+            localStorage.setItem('environment', 'prod');
         } else {
-            var environment = localStorage.getItem('environment');
+            const environmentName = localStorage.getItem('environment');
             localStorage.clear();
 
-            localStorage.setItem('environment', environment);
+            localStorage.setItem('environment', environmentName);
         }
-     
     }
 
-    ngOnChanges() {
-        // this.electronService.ipcRenderer.send("switchlogincall");
-    }
-
+    /**
+     * checking the form is valid or not
+     *
+     * @param {*} form
+     * @returns {boolean}
+     * @memberof SetupComponent
+     */
     save(form: any): boolean {
         if (!form.valid) {
             return false;
@@ -63,9 +53,14 @@ export class SetupComponent implements OnInit {
         return true;
     }
 
+    /**
+     * when we click on Next button navigating to activation screen
+     *
+     * @param {*} form
+     * @memberof SetupComponent
+     */
     goToNext(form: any) {
         if (this.save(form)) {
-            // Navigate to the work page
             this.router.navigate(['/activation']);
         }
     }

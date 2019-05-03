@@ -637,6 +637,15 @@ export class Utils {
         if (d.length == 1) d = '0' + d;
         return  m +"/"+ d+"/"+ y;
     }
+
+    /**
+     *
+     * 
+     * @param {*} exp_date_epoch_days
+     * @param {*} addTime
+     * @returns
+     * @memberof Utils
+     */
     isProductExpiredDesfire(exp_date_epoch_days, addTime) {
         let isExpired = false;
         let currentEpochDays = this.getCurrentEpochDays();
@@ -660,6 +669,25 @@ export class Utils {
 
         return isExpired;
     }
+
+    /**
+   *
+   * This function resturns userdetails based on UserID
+   * @param {*} userID
+   * @returns
+   * @memberof CarddataComponent
+   */
+  getUserByUserID(userID) {
+    let userData = null;
+    const userJSON = JSON.parse(localStorage.getItem("shiftReport"));
+    for (const user of userJSON) {
+      if (user.userID == userID) {
+        userData = user;
+        break;
+      }
+    }
+    return userData;
+  }
 
     checkSyncLimitsHit(terminalRecordData, deviceInfo) {
 
