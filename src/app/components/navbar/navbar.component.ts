@@ -81,9 +81,9 @@ export class NavbarComponent implements OnInit {
   navigateToGenfare() {
     var urlToNavigate = "";
     if (environment.production)
-      urlToNavigate = "https://gfilink.ridetarc.org";
+      urlToNavigate = "https://link.cdta.org";
     else
-      urlToNavigate = "https://tarc-" + localStorage.getItem("environment") + ".gfcp.io";
+      urlToNavigate = "https://cdta-" + localStorage.getItem("environment") + ".gfcp.io";
     this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
     // var shell = require('electron').shell;
     // event.preventDefault();

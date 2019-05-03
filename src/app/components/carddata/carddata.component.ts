@@ -96,11 +96,11 @@ export class CarddataComponent implements OnInit, OnChanges {
     private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
       this.cardIndex = 0;
-      this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
-      this.cardJson = JSON.parse(localStorage.getItem('cardsData'));
-      const item = JSON.parse(localStorage.getItem('catalogJSON'));
+      this.terminalConfigJson = JSON.parse(localStorage.getItem("terminalConfigJson"));
+      this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
+      const item = JSON.parse(localStorage.getItem("catalogJSON"));
       this.catalogJson = JSON.parse(item).Offering;
-      this.shoppingCart = JSON.parse(localStorage.getItem('shoppingCart'));
+      this.shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
       this.currentCard = this.cardJson[this.cardIndex];
       if (this.isSmartCardFound()) {
         this.getSmartCardWalletContents();
@@ -132,8 +132,8 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log('data', data);
       if (data != undefined && data != '') {
         this._ngZone.run(() => {
-          localStorage.setItem('readCardData', JSON.stringify(data));
-          localStorage.setItem('printCardData', data);
+          localStorage.setItem("readCardData", JSON.stringify(data));
+          localStorage.setItem("printCardData", data);
         });
       }
     });
@@ -165,6 +165,11 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   *resultHandler for print reciept
+   *
+   * @memberof CarddataComponent
+   */
   handlePrintReceiptResult() {
     this.electronService.ipcRenderer.once('printReceiptResult', (event, data) => {
       if (data != undefined && data != '') {
@@ -176,6 +181,12 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *resultHandler for save Transaction if data present we call navigateToDashboard or else we will show encodeErrorModal
+   * @memberof CarddataComponent
+   */
   handleSaveTransactionResult() {
     this.disableEncode = false;
     const transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionResult', (event, data) => {
@@ -193,6 +204,13 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *result Handler for encodeCard. If data presents we update walletLineItem and call encodeSucessModal Popup 
+   and proceed for save transaction or else encode other cards in the Queue
+   * @memberof CarddataComponent
+   */
   handleEncodeCardResult() {
     const encodingListener: any = this.electronService.ipcRenderer.once('encodeCardResult', (event, data) => {
       const result = new Array(JSON.parse(data));
@@ -263,6 +281,12 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.disableEncode = false;
   }
 
+
+  /**
+   * This function will check to proceed for save transaction or to encode other card in the queue.
+   *
+   * @memberof CarddataComponent
+   */
   proceedForSaveTransaction() {
     $('#encodeSuccessModal').modal('hide');
     if (this.isSmartCardFound()) {
@@ -274,6 +298,12 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
   }
 
+
+  /**
+   *resultHandler for deleteProductsFromCard here we call initialCancelEncodin g function to initiate cancel Encoding
+   *
+   * @memberof CarddataComponent
+   */
   handleDeleteProductsFromCardResult() {
     const deleteProductListener: any = this.electronService.ipcRenderer.once('deleteProductsFromCardResult', (event, data) => {
       if (data != undefined && data != '') {
@@ -285,6 +315,13 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *resultHandler for doPinPadVoidTransaction here we call getPinpadTransactionStatusEncode
+   to check the status of pinpadVoidTransaction
+   * @memberof CarddataComponent
+   */
   handleDoPinpadVoidTransactionResult() {
     const doPinpadVoidTransactionListener: any = this.electronService.ipcRenderer.once('doPinpadVoidTransactionResult', (event, data) => {
       if (data != undefined && data != '') {
@@ -297,6 +334,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *resultHandler for pinpadTransactionStatusEncode(cancel credit card Transaction)
+   here we wait for  max 600 seconds to check wether transaction completed if so we clear the timer
+   and call getPinpadTransactionDataEncode.
+   * @memberof CarddataComponent
+   */
   handleGetPinpadTransactionStatusEncodeResult() {
     this.electronService.ipcRenderer.once('getPinpadTransactionStatusEncodeResult', (event, data) => {
       console.log('transaction Status CreditCArd', data);
@@ -317,20 +362,29 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *resultHandler for getPinpadTransactionDataEncode if so we set localstorage for result
+   and navigate to readcard.
+   * @memberof CarddataComponent
+   */
   handleGetPinpadTransactionDataEncodeResult() {
     this.electronService.ipcRenderer.once('getPinpadTransactionDataEncodeResult', (event, data) => {
       console.log('creditcardTransaction ', data);
       if (data != undefined && data != '') {
-        localStorage.setItem('pinPadTransactionData', data);
+        localStorage.setItem("pinPadTransactionData", data);
         this.navigateToReadCard();
       }
     });
   }
 
 
-
-
-
+  /**
+   *this function checks if card is new if so calls updateCardData or else calls readSmartcard
+   *and finally calls saveTransaction
+   * @memberof CarddataComponent
+   */
   initiateSaveTransaction() {
     this.disableEncode = true;
     const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
@@ -341,41 +395,36 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.handleReadcardResult();
       this.electronService.ipcRenderer.send('readSmartcard', cardName);
     }
-    const userID = localStorage.getItem('userID');
+    const userID = localStorage.getItem("userID");
 
-    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
-    const deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
+    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, Utils.getInstance.getUserByUserID(userID));
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
+    const deviceData = JSON.parse(localStorage.getItem("deviceInfo"));
     const deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
-    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
+    localStorage.setItem("deviceInfo", JSON.stringify(deviceInfo));
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
 
-  getUserByUserID(userID) {
-    let userData = null;
-    const userJSON = JSON.parse(localStorage.getItem('shiftReport'));
-    for (const user of userJSON) {
-      if (user.userID == userID) {
-        userData = user;
-        break;
-      }
-    }
-    return userData;
-  }
 
+  /**
+   *
+   *This function returns the paymentsObject based on paymentMethodID
+   * @returns
+   * @memberof CarddataComponent
+   */
   getPaymentsObject() {
     let paymentObj: any;
-    const transactionAmount = localStorage.getItem('transactionAmount');
-    if (localStorage.getItem('paymentMethodId') == '8') {
+    const transactionAmount = localStorage.getItem("transactionAmount");
+    if (localStorage.getItem("paymentMethodId") == '8') {
       paymentObj = {
-        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
+        'paymentMethodId': Number(localStorage.getItem("paymentMethodId")),
         'amount': transactionAmount,
-        'comment': localStorage.getItem('compReason')
+        'comment': localStorage.getItem("compReason")
       };
     } else {
       paymentObj = {
-        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
+        'paymentMethodId': Number(localStorage.getItem("paymentMethodId")),
         'amount': transactionAmount,
         'comment': null
       };
@@ -383,6 +432,12 @@ export class CarddataComponent implements OnInit, OnChanges {
     return paymentObj;
   }
 
+
+  /**
+   *
+   *This function populates the currentCardDetails in to currentCard
+   * @memberof CarddataComponent
+   */
   populatCurrentCard() {
     this.cardJson.forEach(element => {
       if (element.printed_id == this.shoppingCart._walletLineItem[this.cardIndex]._cardPID) {
@@ -391,6 +446,13 @@ export class CarddataComponent implements OnInit, OnChanges {
     });
   }
 
+
+  /**
+   *
+   *This function setCardIndex to cardIndex for card to be cancelled(cancel Encoding)
+   * @param {*} cardPID
+   * @memberof CarddataComponent
+   */
   setCardIndexForCancelEncode(cardPID) {
     for (let index = 0; index < this.shoppingCart._walletLineItem.length; index++) {
       const element = this.shoppingCart._walletLineItem[index];
@@ -401,6 +463,14 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   }
 
+
+  /**
+   *
+   *This functions checks if next smart card is available for encoding if so sets the cardIndex and 
+   returns true or false.
+   * @returns
+   * @memberof CarddataComponent
+   */
   isSmartCardFound() {
     let index = 0;
     let nextItemFound: Boolean = false;
@@ -419,56 +489,102 @@ export class CarddataComponent implements OnInit, OnChanges {
     return nextItemFound;
   }
 
+
+  /**
+   *
+   *This function populates shopping card items based on cardindex to currentCardProductList
+   * @memberof CarddataComponent
+   */
   getSmartCardWalletContents() {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex]._walletContents;
   }
 
+
+  /**
+   *
+   *This function calls generateReceipt, removeLocalStorage and naviagtes to ReadCard
+   * @memberof CarddataComponent
+   */
   navigateToDashboard() {
     const timestamp_generateReciept = new Date().getTime();
     this.cdtaService.generateReceipt(timestamp_generateReciept);
-    localStorage.removeItem('encodeData');
-    localStorage.removeItem('productCardData');
-    localStorage.removeItem('cardsData');
-    localStorage.removeItem('catalogJSON');
-    localStorage.removeItem('readCardData');
+    this.removeLocalStorage();
     this.router.navigate(['/readcard']);
   }
 
-  printDiv() {
-    window.print();
-  }
 
-  ngOnInit() {
-
-  }
-
-  removeEventListeners() {
-
-  }
-
+  /**
+   *
+   *This function calls removeLocalStorage and navigates to readcard.
+   * @memberof CarddataComponent
+   */
   navigateToReadCard() {
-    localStorage.removeItem('encodeData');
-    localStorage.removeItem('productCardData');
-    localStorage.removeItem('cardsData');
-    localStorage.removeItem('catalogJSON');
-    localStorage.removeItem('readCardData');
+    this.removeLocalStorage();
     this.router.navigate(['/readcard']);
   }
 
+
+
+  /**
+   *
+   *this function removes Localstorage for encodeData,productCardData,cardsData,
+   * catalogJSON, readCardData
+   * @memberof CarddataComponent
+   */
+  removeLocalStorage() {
+    localStorage.removeItem("encodeData");
+    localStorage.removeItem("productCardData");
+    localStorage.removeItem("cardsData");
+    localStorage.removeItem("catalogJSON");
+    localStorage.removeItem("readCardData");
+  }
+
+  /**
+   *
+   *This function checks if currentCard is new or existing
+   * @memberof CarddataComponent
+   */
   checkIsCardNew() {
     this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) &&
       (this.currentCard.products[0].remaining_value == 0))) ? true : false;
   }
 
+  /**
+   *
+   *This function poupulates currentCardProductList with shoppingCart items based on cradIndex.
+   * @memberof CarddataComponent
+   */
   populatCurrentCardEncodedData() {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
   }
 
+
+  /**
+   *
+   *
+   * @memberof CarddataComponent
+   */
+  ngOnInit(): void {
+
+  }
+  /**
+   *
+   *
+   * @param {SimpleChanges} changes
+   * @memberof CarddataComponent
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes) {
     }
   }
 
+
+  /**
+   *
+   *This function is called when we click on encode, here we call pouplateCurrentCArd and check the cardPid 
+   if it matches with currentcardDetails
+   * @memberof CarddataComponent
+   */
   checkCorrectCard() {
     this.populatCurrentCard();
     console.log(cardName);
@@ -477,6 +593,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.send('getCardPID', cardName);
   }
 
+
+  /**
+   *
+   *This function is called from handleGetCardPIDResult if pid matches with currentCard Pid
+   We construct json based on Ticket Group and call encodenewCard or encodeExistingCard
+   based on wether card is new or existing.
+   * @memberof CarddataComponent
+   */
   encodeCard() {
     try {
       console.log('product list data', this.currentCardProductList);
@@ -513,6 +637,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   *
+   *This funcion is called from encodeCrad() to construct Json based on Ticket Group for encodinhg.
+   * @param {*} product_type
+   * @param {*} element
+   * @returns
+   * @memberof CarddataComponent
+   */
   constructJsonForEncoding(product_type, element) {
     let JsonObjectForProductType: any;
     switch (product_type) {
@@ -566,12 +698,24 @@ export class CarddataComponent implements OnInit, OnChanges {
     return JsonObjectForProductType;
   }
 
+  /**
+   *
+   *This is called when we click on cancel we deleteProductsFromCard to delete products from encoded cards. 
+   * @memberof CarddataComponent
+   */
   removeCard() {
     this.handleDeleteProductsFromCardResult();
     this.electronService.ipcRenderer.send('deleteProductsFromCard', this.currentCard.printed_id,
       this.encodedCardsData[this.currentCard.printed_id]);
   }
 
+  /**
+   *
+   *This functions returns cardPid based on cardIndex
+   * @param {*} index
+   * @returns
+   * @memberof CarddataComponent
+   */
   getKeyForCancelEncode(index) {
     let currentIndex = 0;
     let cardPID = undefined;
@@ -585,16 +729,34 @@ export class CarddataComponent implements OnInit, OnChanges {
     return cardPID;
   }
 
+  /**
+   *
+   *This function prepares transactionObject abd sets to localStorage
+   * @memberof CarddataComponent
+   */
   prePaidTransactionObject() {
-    const userID = localStorage.getItem('userID');
-    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, this.getUserByUserID(userID));
-    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
+    const userID = localStorage.getItem("userID");
+    const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, Utils.getInstance.getUserByUserID(userID));
+    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
   }
 
+  /**
+   *
+   *This function calls openCashDrawer methid to open cash drawer
+   * @memberof CarddataComponent
+   */
   openCashDrawer() {
     this.electronService.ipcRenderer.send('openCashDrawer');
   }
 
+  /**
+   *
+   *This function initiates cancel encoding , calls generateRefundReceipt, doPinpadVoidTransaction if
+   credit card trnasaction exists, and calls other methods to start cancel encoding.
+   * @param {*} index
+   * @returns
+   * @memberof CarddataComponent
+   */
   initiateCancelEncoding(index) {
     const cardPID = this.getKeyForCancelEncode(index);
     this.cdtaService.generateRefundReceipt();
@@ -615,9 +777,15 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.getSmartCardWalletContents();
   }
 
+  /**
+   *
+   *This function checks if creditCard payments exists for the transaction and returns boolean accordingly
+   * @returns
+   * @memberof CarddataComponent
+   */
   checkIfCreditCardPaymentExists() {
     let creditCardPaymentExists: Boolean = false;
-    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
+    const transObj = JSON.parse(localStorage.getItem("transactionObj"));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         creditCardPaymentExists = true;
@@ -626,9 +794,15 @@ export class CarddataComponent implements OnInit, OnChanges {
     return creditCardPaymentExists;
   }
 
+  /**
+   *
+   *This function gets creditCard paymentAmount from transactionObject and by comparing peymentMethodId
+   * @returns
+   * @memberof CarddataComponent
+   */
   getCreditCardPaymentAmount() {
     let amount = 0;
-    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
+    const transObj = JSON.parse(localStorage.getItem("transactionObj"));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         amount = element.amount;
@@ -637,16 +811,32 @@ export class CarddataComponent implements OnInit, OnChanges {
     return amount;
   }
 
+  /**
+   *
+   *This functions calls doPinpadVoidTransaction to cancel credit card transaction.
+   * @param {*} amount
+   * @memberof CarddataComponent
+   */
   doPinpadVoidTransaction(amount) {
     this.handleDoPinpadVoidTransactionResult();
     this.electronService.ipcRenderer.send('doPinpadVoidTransaction', amount);
   }
 
+  /**
+   *
+   *This function cdisplays modal to confirm cancel encoding and calls getRefundTitle method
+   * @memberof CarddataComponent
+   */
   confirmCancelEncoding() {
     $('#confirmCancelEncodeModal').modal('show');
     this.getRefundTitle();
   }
 
+  /**
+   *
+   *This function returns refundTitle based on paymentMethod
+   * @memberof CarddataComponent
+   */
   getRefundTitle() {
     let count = 0;
     let commaFlag = false;
