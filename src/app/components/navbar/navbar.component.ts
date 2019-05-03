@@ -80,12 +80,11 @@ export class NavbarComponent implements OnInit {
    * @memberof NavbarComponent
    */
   navigateToGenfare() {
-    let urlToNavigate = '';
-    if (environment.production) {
-      urlToNavigate = 'https://gfilink.ridetarc.org';
-    } else {
-      urlToNavigate = 'https://tarc-' + localStorage.getItem('environment') + '.gfcp.io';
-    }
+    var urlToNavigate = "";
+    if (environment.production)
+      urlToNavigate = "https://link.cdta.org";
+    else
+      urlToNavigate = "https://cdta-" + localStorage.getItem("environment") + ".gfcp.io";
     this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
   }
 

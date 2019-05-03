@@ -535,7 +535,7 @@ export class AddProductComponent implements OnInit {
     return canAddPayAsYouGoBool
   }
 
-  isValidProduct(product) {
+   isValidProduct(product) {
     let flag = true;
 
     if (product.product_type != TICKET_GROUP.VALUE &&
@@ -548,7 +548,7 @@ export class AddProductComponent implements OnInit {
     }
 
     return flag;
-  }
+  } 
 
   getProductCountFromExistingCard(selectProduct: any) {
     var productMap = new Map();
