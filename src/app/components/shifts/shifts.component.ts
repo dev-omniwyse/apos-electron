@@ -96,7 +96,7 @@ export class ShiftsComponent implements OnInit {
         });
         localStorage.setItem('shiftReport', JSON.stringify(shiftStore));
         /**
-         * here we are looping the updated shoftreport for printing open and close cash drawer
+         * here we are looping the updated shiftreport for printing open and close cash drawer
          */
         shiftStore.forEach(element => {
             if (localStorage.getItem('closingPausedMainShift') == 'true') {
@@ -203,7 +203,7 @@ export class ShiftsComponent implements OnInit {
      *
      * @memberof ShiftsComponent
      */
-    handleOpenCashDrawerResult() {
+    handleOpenCashDrawerResult() { 
         this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
             if (data != undefined && data != '') {
                 if (data) {
