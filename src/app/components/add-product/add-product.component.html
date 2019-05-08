@@ -207,7 +207,7 @@
         <div class="float-right" *ngIf="isCompApplied">${{compDue | number : '1.2-2'}}</div>
     </div>
 </div>
-<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied">
+<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied || isExistingFareCardApplied">
     <div class="flex">
         <div class="float-left">Total Due</div>
         <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
@@ -228,6 +228,10 @@
     <div class="flex" *ngIf="isCardApplied">
         <div class="float-left">Credit Applied</div>
         <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
+    </div>
+    <div class="flex" *ngIf="isExistingFareCardApplied">
+        <div class="float-left">Fare Card Applied</div>
+        <div class="float-right">${{ExistingFareCardAppliedTotal | number : '1.2-2'}}</div>
     </div>
 
     <hr>
@@ -331,7 +335,7 @@
                 <button data-toggle="modal" (click)="paymentByCheck()">Check</button>
                 <button data-toggle="modal" (click)="paymentByVoucher()">Voucher</button>
                 <button data-toggle="modal" (click)="compApplied()">Comp</button>
-                <button data-toggle="modal" class="disabled-btn" >Existing Farecard</button>
+                <button data-toggle="modal"  (click)="applyExistingCard()" >Existing Farecard</button>
                 <!-- data-target="#fareCardModal" -->
                 <button data-toggle="modal" class="disabled-btn" >Pay As You Go</button>
                 <!-- data-target="#payasyougoModal" -->
@@ -536,7 +540,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">Fare Card Applied</h4>
+                            <h4 class="modal-title">{{title}} Applied</h4>
                         </div>
                         <p>Place the Fare Card in the drawer</p>
                         <div class="modal-body">
@@ -695,6 +699,42 @@
                             <button type="button" class="btn btn-cancel" data-dismiss="modal">No, Cancel</button>
                             <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
                             <button type="button" class="btn btn-default" data-dismiss="modal" (click)="compApplication()">Yes, Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="existingFareCardModal" role="dialog">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Are you sure you want to use an existing fare card? ?</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>By continuing you confirm that the customer has a fare card for the amount of ${{checkoutTotal | number : '1.2-2'}} that you are using in place of payment.</p>
+                           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal" (click) = "notToApplyExistingFareCard();">No</button>
+                            <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click) ="existingFareCardModalApply();">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="applyFareCardModal" role="dialog">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Fare Card Applied</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Place the fare card in the Drawer. Click "OK" when the cash drawer is closed.</p>
+                           
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
+                            <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
+                            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="fareCardApplied();">Yes</button>
                         </div>
                     </div>
                 </div>
