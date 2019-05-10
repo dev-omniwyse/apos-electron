@@ -156,7 +156,9 @@ export class AddProductComponent implements OnInit,  OnDestroy {
   customPayAsYouGo: any;
   totalRemaining: number = 0;
   cashBack: any = 0;
-  isCashApplied: Boolean = false;
+  isCashApplied: boolean = false;
+  isExistingFareCardApplied: boolean = false;
+  ExistingFareCardAppliedTotal: any = 0;
   cashAppliedTotal: any = 0;
   isVoucherApplied: Boolean = false;
   isCheckApplied: Boolean = false;
@@ -164,9 +166,10 @@ export class AddProductComponent implements OnInit,  OnDestroy {
   voucherAppliedTotal: any = 0;
   voucherRemainingTotal: any;
   voucherRemaining: any;
-  isCompApplied: Boolean = false;
-  applyCompShow: Boolean = false;
-  reason: Boolean = true;
+  existingCardRemaining: any;
+  isCompApplied: boolean = false;
+  applyCompShow: boolean = false;
+  reason: boolean = true;
   reasonForComp = '';
   isCardApplied: Boolean = false;
   cardAppliedTotal: any;
@@ -1011,6 +1014,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
       this.isCardApplied = false;
+      this.isExistingFareCardApplied = false;
       this.shoppingcart._payments = [];
       this.getTotalDue(this.shoppingcart);
     }
@@ -1033,6 +1037,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
     this.isCardApplied = false;
+    this.isExistingFareCardApplied =  false;
     this.shoppingcart._payments = [];
     this.getTotalDue(this.shoppingcart);
 
@@ -1843,6 +1848,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       this.cashBack = 0;
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
+      this.isExistingFareCardApplied = false;
       this.handleOpenCashDrawerResult();
       this.openCashDrawer();
       const payment = new PaymentType();
@@ -1872,6 +1878,13 @@ export class AddProductComponent implements OnInit,  OnDestroy {
 
       }
 
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+
+      }
+
       if (this.isCheckApplied) {
         this.isCheckApplied = true;
       } else {
@@ -1890,12 +1903,9 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCardApplied = false;
       }
 
-      if ((this.isCheckApplied && this.isVoucherApplied) ||
-      (this.isVoucherApplied && this.isCompApplied) ||
-       (this.isCheckApplied && this.isCompApplied) ||
-       (this.isVoucherApplied && this.isCardApplied) ||
-        (this.isCheckApplied && this.isCardApplied) ||
-         (this.isCompApplied && this.isCardApplied)) {
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || 
+      (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied) || (this.checkApplied && this.isExistingFareCardApplied)) {
+
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
@@ -1949,11 +1959,120 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     }
   }
 
+
+/**
+ * This method is used to pay through Existing Card
+ */
+  applyExistingCard() {
+    if (+this.checkoutTotal == 0) {
+
+      $('#invalidAmountModal').modal('show');
+
+    } else if (this.totalRemaining == +(this.checkoutTotal)) {
+	this.openCashDrawer();
+	$('#existingFareCardModal').modal('show');
+
+    } else if (this.totalRemaining > +this.checkoutTotal) {
+
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+
+      }
+
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        $('#existingFareCardModal').modal('show');
+
+      }
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
+      $('#voucherErrorModal').modal('show');
+    }
+  }
+  
+    existingFareCardModalApply() {
+    if (this.totalDue == (+this.checkoutTotal)) {
+      this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+      this.ExistingFareCardAppliedTotal = (+this.checkoutTotal);
+      this.existingCardRemaining = this.totalRemaining;
+      let payment = new PaymentType();
+      payment.$paymentMethodId = 10
+      payment.$amount = (+this.checkoutTotal)
+      payment.$comment = null;
+      if (Utils.getInstance.checkIsPaymentMethodExists(10, this.shoppingcart) == -1) {
+        this.shoppingcart._payments.push(payment);
+        
+      }
+      this.isExistingFareCardApplied = true;
+    
+    } else {
+      this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
+      this.existingCardRemaining = this.totalRemaining;
+      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(10, this.shoppingcart);
+      if (indexOfPayment == -1) {
+        let payment = new PaymentType();
+        payment.$amount = (+this.checkoutTotal);
+        payment.$paymentMethodId = 10;
+        payment.$comment = null;
+        this.shoppingcart._payments.push(payment);
+        console.log(this.shoppingcart._payments)
+        this.ExistingFareCardAppliedTotal = payment.$amount;
+        this.isExistingFareCardApplied = true;
+        this.checkoutTotal = "0";
+      } else {
+        this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+        this.ExistingFareCardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+        console.log(this.shoppingcart._payments)
+        this.isExistingFareCardApplied = true;
+        this.checkoutTotal = "0";
+      }
+
+    }
+    if (this.existingCardRemaining !== 0) {
+      $('#applyFareCardModal').modal('hide');
+    } else if (this.existingCardRemaining == 0) {
+      this.getRefundTitle();
+      $("#amountApplyModal").modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+    // $('#voucherApplyModal').modal('show');
+  }
+
   /**
    * checking hte credit card is applied or not.
    *
    * @memberof AddProductComponent
    */
+
   checkIfCreditCardApplied() {
     if (this.isCardApplied) {
       this.doPinPadTransaction();
@@ -1993,6 +2112,12 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCheckApplied = false;
       }
 
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+      }
+
       if (this.isCompApplied) {
         this.isCompApplied = true;
       } else {
@@ -2005,11 +2130,10 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCardApplied = false;
       }
 
-      if ((this.isCashApplied && this.isCheckApplied) ||
-       (this.isCheckApplied && this.isCompApplied) ||
-        (this.isCashApplied && this.isCompApplied) ||
-         (this.isCardApplied && this.isCompApplied) ||
-          (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied)) {
+
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || 
+      (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied)) {
+
         $('#thirdPaymentModal').modal('show');
       } else {
         this.openCashDrawer();
@@ -2069,6 +2193,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         keyboard: false
       });
     }
+
   }
 
   vocherPayment() {
@@ -2084,11 +2209,23 @@ export class AddProductComponent implements OnInit,  OnDestroy {
 
   }
 
+
+  notToApplyExistingFareCard() {
+    if (this.isExistingFareCardApplied) {
+      this.isExistingFareCardApplied = true;
+    } else {
+      this.isExistingFareCardApplied = false;
+    }
+
+  }
+
+
   /**
    * when you are doing payment through check
    *
    * @memberof AddProductComponent
    */
+
   paymentByCheck() {
     if ((+this.checkoutTotal) == 0) {
 
@@ -2130,6 +2267,12 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isVoucherApplied = false;
       }
 
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+      }
+
       if (this.isCompApplied) {
         this.isCompApplied = true;
       } else {
@@ -2142,11 +2285,10 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCardApplied = false;
       }
 
-      if ((this.isCashApplied && this.isVoucherApplied) ||
-       (this.isVoucherApplied && this.isCompApplied) ||
-        (this.isCashApplied && this.isCompApplied) ||
-         (this.isCardApplied && this.isVoucherApplied) ||
-          (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)) {
+
+      if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)
+      || (this.isExistingFareCardApplied && this.isVoucherApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied ) || (this.isExistingFareCardApplied && this.isCardApplied)) {
+
         $('#thirdPaymentModal').modal('show');
       } else {
         this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
@@ -2189,7 +2331,9 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.doSaveTransaction();
   }
 
-
+fareCardApplied(){
+  this.doSaveTransaction();
+}
 
   compApplied() {
     if ((+this.checkoutTotal) == 0) {
@@ -2210,6 +2354,13 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       } else {
         this.isVoucherApplied = false;
       }
+
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+      }
+
       if (this.isCheckApplied) {
         this.isCheckApplied = true;
       } else {
@@ -2222,11 +2373,10 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCardApplied = false;
       }
 
-      if ((this.isVoucherApplied && this.isCheckApplied) ||
-       (this.isCashApplied && this.isCheckApplied) ||
-        (this.isCashApplied && this.isVoucherApplied) ||
-        (this.isCardApplied && this.isVoucherApplied) ||
-         (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied)) {
+
+      if ((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied)
+      || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied)) {
+
         $('#thirdPaymentModal').modal('show');
       } else {
         $('#compModal').modal('show');
@@ -2316,6 +2466,12 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isVoucherApplied = false;
       }
 
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+      }
+
       if (this.isCompApplied) {
         this.isCompApplied = true;
       } else {
@@ -2328,11 +2484,9 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCheckApplied = false;
       }
 
-      if ((this.isCashApplied && this.isCheckApplied) ||
-       (this.isCheckApplied && this.isVoucherApplied) ||
-        (this.isCompApplied && this.isVoucherApplied) ||
-         (this.isCashApplied && this.isCompApplied) ||
-          (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)) {
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) || (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)
+      || (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||(this.isCompApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied)) {
+
         $('#thirdPaymentModal').modal('show');
       } else {
 
@@ -2453,18 +2607,19 @@ export class AddProductComponent implements OnInit,  OnDestroy {
           this.title = this.title + 'Credit';
           this.message = this.message + 'Credit Applied.';
           break;
-
-
-
-        default:
-          this.message = '';
-          this.title = '';
-      }
-
-      count++;
-
-
-
+          case  10:
+          this.title = this.title + "Fare_card";
+          this.message = this.message + "Place the Fare_card in the drawer."
+          break;
+     
+  
+          default: 
+          this.message = ""
+          this.title = ""
+        }
+        
+        count++;
+     
     });
 
   }
