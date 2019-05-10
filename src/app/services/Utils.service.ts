@@ -4,7 +4,9 @@ import { MediaType, TICKET_GROUP, Constants, PRODUCT_NAME } from "./MediaType";
 import { TransactionService } from './Transaction.service';
 import { DeviceInfo } from '../models/DeviceInfo';
 import { CardSummary } from '../models/CardContetns';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class Utils {
 
 
@@ -566,8 +568,8 @@ export class Utils {
 
         var amORpm = hours > 12 ? "PM" : "AM";
         if (hours > 12) hours -= 12;
-        
-        var expirationTime = hours + ":" + (minutes == 0 ? "00" : minutes )+ " "+ amORpm;
+
+        var expirationTime = hours + ":" + (minutes == 0 ? "00" : minutes) + " " + amORpm;
 
         return expirationTime;
     }
@@ -635,7 +637,7 @@ export class Utils {
         let d = expDate.getDate().toString();
         if (m.length == 1) m = '0' + m;
         if (d.length == 1) d = '0' + d;
-        return  m +"/"+ d+"/"+ y;
+        return m + "/" + d + "/" + y;
     }
 
     /**
@@ -677,17 +679,17 @@ export class Utils {
    * @returns
    * @memberof CarddataComponent
    */
-  getUserByUserID(userID) {
-    let userData = null;
-    const userJSON = JSON.parse(localStorage.getItem("shiftReport"));
-    for (const user of userJSON) {
-      if (user.userID == userID) {
-        userData = user;
-        break;
-      }
+    getUserByUserID(userID) {
+        let userData = null;
+        const userJSON = JSON.parse(localStorage.getItem("shiftReport"));
+        for (const user of userJSON) {
+            if (user.userID == userID) {
+                userData = user;
+                break;
+            }
+        }
+        return userData;
     }
-    return userData;
-  }
 
     checkSyncLimitsHit(terminalRecordData, deviceInfo) {
 
@@ -732,4 +734,5 @@ export class Utils {
         return false;
 
     }
+
 }

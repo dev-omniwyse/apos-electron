@@ -26,9 +26,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { EnvironmentComponent } from './components/environment/environment.component';
 import { SlickModule } from 'ngx-slick';
 import { Globals } from './global';
+import {SessionServiceApos} from './session';
 import { NumericOnlyDirective } from './components/add-product/numeric-only.directive';
 import { NoCommaPipe } from './pipe/no-comma.pipe';
 import { DatePipe } from '@angular/common';
+import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
 import { GlobalErrorHandler } from './services/GlobalErrorHandler.service';
 
 export class HammerConfig extends HammerGestureConfig {
@@ -64,10 +66,11 @@ export class HammerConfig extends HammerGestureConfig {
     ReactiveFormsModule,
     FormsModule,
     NgxSpinnerModule,
+    NgIdleKeepaliveModule.forRoot(),
     NgxLoadingModule.forRoot({}),
     SlickModule.forRoot()
   ],
-  providers: [CdtaService, DatePipe, Globals,
+  providers: [CdtaService, DatePipe, Globals, SessionServiceApos,
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: HammerConfig

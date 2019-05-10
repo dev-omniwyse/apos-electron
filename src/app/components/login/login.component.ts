@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { CdtaService } from '../../cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Utils } from 'src/app/services/Utils.service';
+import {SessionServiceApos} from 'src/app/session';
 
 declare var $: any;
 
@@ -50,7 +51,7 @@ export class LoginComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private router: Router,
+        private router: Router, private sessionService: SessionServiceApos,
         private cdtaservice: CdtaService, private _ngZone: NgZone, private electronService: ElectronService
     ) {
 
@@ -187,6 +188,7 @@ export class LoginComponent implements OnInit {
         }
     }
     Login() {
+        this.sessionService.startSession();
         const user = {
             username: this.username,
             password: this.password

@@ -4,6 +4,8 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { environment } from '../../../environments/environment';
+import {SessionServiceApos} from 'src/app/session';
+
 
 declare var $: any;
 @Component({
@@ -19,7 +21,7 @@ export class NavbarComponent implements OnInit {
   today = new Date();
   versionDate = new Date();
 
-  constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone,
+  constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private sessionService: SessionServiceApos,
     private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
     this.subscription = this.cdtaservice.headerShowHide$.subscribe(
       mission => {
@@ -33,6 +35,13 @@ export class NavbarComponent implements OnInit {
       mission => {
         this.terminalNumber = mission;
       });
+      this.subscription = this.cdtaservice.goToLogin$.subscribe(
+        proceedToLogIn => {
+          if (proceedToLogIn == true) {
+            this.logOut();
+            $('#userTimedOut').modal('show');
+          }
+        });
   }
 
   /**
@@ -42,7 +51,7 @@ export class NavbarComponent implements OnInit {
    */
 
   logOut() {
-
+    this.sessionService.sessionStop();
     const shiftreportUser = localStorage.getItem('userID');
     const shiftreport = JSON.parse(localStorage.getItem('shiftReport'));
     let userData;

@@ -108,6 +108,29 @@ export class CdtaService {
     this.headerShowHideSource.next(mission);
   }
 
+
+   // Observable string sources
+   private goToCheckOutSource = new Subject<Boolean>();
+
+   // Observable string streams
+   goToCheckout$ = this.goToCheckOutSource.asObservable();
+ 
+   // Service message commands
+   announcegoToCheckOut(proceedToCheckOut: Boolean) {
+     this.goToCheckOutSource.next(proceedToCheckOut);
+   }
+
+      // Observable string sources
+      private goToLogInSource = new Subject<Boolean>();
+
+      // Observable string streams
+      goToLogin$ = this.goToLogInSource.asObservable();
+    
+      // Service message commands
+      announcegoToLogIn(proceedToLogIn: Boolean) {
+        this.goToLogInSource.next(proceedToLogIn);
+      }
+
   private terminalNumberSrc = new Subject<string>();
 
   // Observable string streams
