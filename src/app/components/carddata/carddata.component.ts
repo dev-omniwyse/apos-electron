@@ -879,6 +879,11 @@ export class CarddataComponent implements OnInit, OnChanges {
           this.title = this.title + 'Credit';
           this.message = this.message + 'credit';
           break;
+          
+        case 10:
+          this.title = this.title + 'Fare Card';
+          this.message = this.message + 'Fare Card';
+          break;
 
         default:
           this.message = 'Please give the customer back ';
