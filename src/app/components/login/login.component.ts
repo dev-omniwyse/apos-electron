@@ -58,6 +58,7 @@ export class LoginComponent implements OnInit {
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != '') {
                 // this.loading = false
+                localStorage.removeItem('deviceLocked');
                 const localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
                 if (null == localDeviceInfo || undefined == localDeviceInfo) {
                     const deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
@@ -174,6 +175,11 @@ export class LoginComponent implements OnInit {
 
                         }
             });
+        }
+
+        if (localStorage.getItem('deviceLocked') == 'true') {
+            this.lockedByUserBoolean = true;
+            this.lockedByUser = localStorage.getItem('userEmail');
         }
 
     }
