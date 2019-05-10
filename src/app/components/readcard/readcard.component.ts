@@ -1,13 +1,13 @@
 
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { FareCardService } from 'src/app/services/Farecard.service';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
-import { Globals } from 'src/app/global';
 import { Utils } from 'src/app/services/Utils.service';
+import { SessionServiceApos} from 'src/app/session';
+
 declare var $: any;
 declare var pcsc: any;
 // tslint:disable-next-line:prefer-const
@@ -69,7 +69,6 @@ pcs.on('reader', function (reader) {
     }
   });
 
-    
 
   reader.on('end', function () {
     console.log('Reader', this.name, 'removed');
@@ -91,7 +90,7 @@ export class ReadcardComponent implements OnInit {
     // Global Declarations will go here
     terminalConfigJson: any = [];
 
-    statusOfShiftReport: string = ''
+    statusOfShiftReport: String = '';
     disableCards: Boolean = false;
     public errorMessage: String = 'Cannot find encoder:';
     public logger;
@@ -104,13 +103,13 @@ export class ReadcardComponent implements OnInit {
     public offeringSList: any = [];
     public isShowCardOptions: Boolean = true;
     public isFromReadCard = false;
-    public fareTotal: any = 0
-    public cardType: any = "";
-    public salesData: any
-    public salesPaymentData: any
-    backendPaymentReport = []
-    backendSalesReport = []
-    paymentReport: any
+    public fareTotal: any = 0;
+    public cardType: any = '';
+    public salesData: any;
+    public salesPaymentData: any;
+    backendPaymentReport = [];
+    backendSalesReport = [];
+    paymentReport: any;
     shoppingcart: any;
     active_wallet_status: string;
     bonusRidesCountText: string;
@@ -119,11 +118,21 @@ export class ReadcardComponent implements OnInit {
     maxSyncLimitReached = false;
     maxSyncLimitReachedText = '';
     ticketMap = new Map();
+    subscription: any;
 
-    constructor(private cdtaservice: CdtaService, private globals: Globals,
-        private route: ActivatedRoute, private router: Router, private _ngZone: NgZone,
-        private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
 
+    constructor(private cdtaservice: CdtaService,
+        private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private sessionService?: SessionServiceApos,
+        private electronService?: ElectronService) {
+            this.subscription = this.cdtaservice.goToCheckout$.subscribe(
+                proceedToCheckOut => {
+                  if (proceedToCheckOut == true) {
+                    this.readCard();
+                    this.nonFareProduct();
+                  } else {
+                    this.SessionModal();
+                  }
+                });
         route.params.subscribe(val => {
         });
         if (this.electronService.isElectronApp) {
@@ -213,7 +222,9 @@ export class ReadcardComponent implements OnInit {
         });
 
     }
-
+    SessionModal() {
+        $('#userTimedOut').modal('show');
+      }
     /**
      *
      *
@@ -262,13 +273,16 @@ export class ReadcardComponent implements OnInit {
         this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
     }
 
+    readCardSession() {
+    this.sessionService.getAuthenticated();
+    }
     /**
      *
      *
      * @param {*} event
      * @memberof ReadcardComponent
      */
-    readCard(event) {
+    readCard() {
         localStorage.removeItem('shoppingCart');
         isExistingCard = true;
         this.isFromReadCard = true;

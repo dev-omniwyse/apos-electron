@@ -28,8 +28,7 @@ var result = posAppletInstance.runInitializationSync();
 logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
-dialog.showErrorBox = function (title, content) {
-};
+dialog.showErrorBox = function(title, content) {};
 
 let win;
 
@@ -60,7 +59,7 @@ function createWindow() {
 
     // The following is optional and will open the DevTools:
 
-     win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     win.on("closed", () => {
         win = null;
@@ -174,8 +173,7 @@ ipcMain.on('newfarecard', (event, cardname) => {
 ipcMain.on('magneticcard', (event, cardname) => {
     try {
         var smartread = posAppletInstance.readCardSync();
-    } catch (error) {
-    }
+    } catch (error) {}
 
     event.sender.send('magneticcardResult', smartread);
 })
@@ -551,9 +549,9 @@ ipcMain.on('printCustomerRefundReceipt', (event, receiptContents, date) => {
 ipcMain.on('printCardSummary', (event, receipt, PID, username, date) => {
     date = java.newLong(Number(date));
     console.log("printCardSummary receipt", receipt)
-    // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
+        // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
     var result = posAppletInstance.printCardSummarySync(receipt, PID, username, date);
-    event.sender.send('printCardSummaryResult', + result);
+    event.sender.send('printCardSummaryResult', +result);
 });
 
 ipcMain.on('navigateToGenfare', (event, urlToNavigate) => {
@@ -601,5 +599,16 @@ ipcMain.on('openCashDrawer', (event) => {
     var result = posAppletInstance.openCashDrawerSync();
     console.log("openCashDrawer", result.getSuccessSync());
     event.sender.send('openCashDrawerResult', '' + result.getSuccessSync());
+});
+
+ipcMain.on('authentication', (event) => {
+    var result = posAppletInstance.getAuthenticatedSync();
+    console.log("authentication from client", result.getSuccessSync());
+    event.sender.send('sessionTimedoutResult', '' + result.getSuccessSync());
+});
+ipcMain.on('getTimeout', (event) => {
+    var result = posAppletInstance.getTimedOutSync();
+    console.log("getTimeout", result.getSuccessSync());
+    event.sender.send('getTimeOutResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/
