@@ -1,7 +1,9 @@
 import { MediaType, TICKET_GROUP, Constants, PRODUCT_NAME } from './MediaType';
 import { DeviceInfo } from '../models/DeviceInfo';
 import { CardSummary } from '../models/CardContetns';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class Utils {
 
 
@@ -497,7 +499,6 @@ export class Utils {
 
         let hours = d.getHours();
         const minutes = d.getMinutes();
-
         // tslint:disable-next-line:prefer-const
         let amORpm = hours > 12 ? 'PM' : 'AM';
         if (hours > 12) {
@@ -581,6 +582,8 @@ export class Utils {
         const y = expDate.getFullYear().toString();
         let m = (expDate.getMonth() + 1).toString();
         let d = expDate.getDate().toString();
+
+
         if (m.length == 1) {
             m = '0' + m;
         }
@@ -588,6 +591,7 @@ export class Utils {
             d = '0' + d;
          }
         return  m + '/' + d + '/' + y;
+
     }
 
     /**
@@ -628,6 +632,7 @@ export class Utils {
    * @returns
    * @memberof CarddataComponent
    */
+
   getUserByUserID(userID) {
     let userData = null;
     const userJSON = JSON.parse(localStorage.getItem('shiftReport'));
@@ -669,4 +674,5 @@ export class Utils {
         return false;
 
     }
+
 }

@@ -23,3 +23,9 @@ describe('AddProductComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+class Pcsc {
+  constructor (a) {
+    //  this.max = a;
+  }
+}

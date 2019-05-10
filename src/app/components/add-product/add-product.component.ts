@@ -8,6 +8,7 @@ import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
+import { SessionServiceApos} from 'src/app/session';
 import { PaymentType } from 'src/app/models/Payments';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -183,10 +184,18 @@ export class AddProductComponent implements OnInit,  OnDestroy {
   maxSyncLimitReached = false;
   fadeStatus: Boolean;
   isCashBack: Boolean;
+  subscription: any;
   constructor(
-    private formBuilder: FormBuilder, private cdtaService?: CdtaService,
+    private formBuilder: FormBuilder, private cdtaService?: CdtaService, private sessionService?: SessionServiceApos,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
-
+    this.subscription = this.cdtaService.goToCheckout$.subscribe(
+        proceedToCheckOut => {
+          if (proceedToCheckOut == true) {
+            this.productCheckoutBySession();
+          } else {
+            this.productCheckOutSessionModal();
+          }
+        });
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem('isMagnetic') == 'true' ? true : false;
       this.isMerchendise = localStorage.getItem('isNonFareProduct') == 'true' ? true : false;
@@ -872,13 +881,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     });
   }
 
-  /**
-   * This method will call- when you click on checkout button.
-   *
-   * @returns
-   * @memberof AddProductComponent
-   */
-  productCheckout() {
+  productCheckoutBySession() {
     if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $('#shoppingCartEmptyModal').modal({
         backdrop: 'static',
@@ -919,11 +922,24 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.customAmountForm.setValue({ 'amount': this.productTotal });
   }
 
+  /**
+   * This method will call- when you click on checkout button.
+   *
+   * @returns
+   * @memberof AddProductComponent
+   */
+  productCheckout() {
+    this.sessionService.getAuthenticated();
+    }
+
+
   cancelCheckout() {
     $('#cancelCheckoutModal').modal('show');
 
   }
-
+  productCheckOutSessionModal() {
+    $('#userTimedOut').modal('show');
+  }
   doVoidTransaction() {
     this.doPinpadVoidTransaction(this.cardAppliedTotal);
   }
