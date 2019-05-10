@@ -86,8 +86,8 @@ export class SessionServiceApos {
         localStorage.setItem('userTimedOut', 'true');
     }
     startSession() {
-        this.idle.setIdle(30);
-        this.idle.setTimeout(30);
+        this.idle.setIdle(1799);
+        this.idle.setTimeout(1);
         this.idle.watch();
         this.idleState = 'Started.';
         this.timedOut = false;
