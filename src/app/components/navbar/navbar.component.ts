@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit {
    */
 
   logOut() {
-
+    localStorage.removeItem('deviceLocked');
     const shiftreportUser = localStorage.getItem('userID');
     const shiftreport = JSON.parse(localStorage.getItem('shiftReport'));
     let userData;
@@ -72,6 +72,19 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['login']);
     }
     localStorage.removeItem('userEmail');
+  }
+
+
+
+  /**
+   *This Method is used to lock the device
+   *
+   * @memberof NavbarComponent
+   */
+  lockDevice() {
+    this.router.navigate(['/login']);
+    this.cdtaservice.setterminalNumber(undefined);
+    localStorage.setItem('deviceLocked', 'true');
   }
 
   /**
