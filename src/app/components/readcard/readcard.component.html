@@ -32,11 +32,11 @@
                     New Fare Card
                     
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="readCardSession($event);">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="readCardSession(2)">
                     Existing Fare Card
                   
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" (click)="readCardSession()">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" (click)="readCardSession(3)">
                     Non-Fare Product
                   
                 </button>

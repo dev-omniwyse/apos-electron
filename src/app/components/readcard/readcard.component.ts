@@ -6,7 +6,7 @@ import { ElectronService } from 'ngx-electron';
 import { FareCardService } from 'src/app/services/Farecard.service';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { Utils } from 'src/app/services/Utils.service';
-import { SessionServiceApos} from 'src/app/session';
+import { SessionServiceApos } from 'src/app/session';
 
 declare var $: any;
 declare var pcsc: any;
@@ -16,67 +16,68 @@ declare var pcsc: any;
 let pcs = pcsc();
 let cardName: any = '';
 let isExistingCard = false;
+let categoryIndex = 0;
 pcs.on('reader', function (reader) {
 
-  console.log('reader', reader);
-  console.log('New reader detected', reader.name);
+    console.log('reader', reader);
+    console.log('New reader detected', reader.name);
 
-  reader.on('error', function (err) {
-    console.log('Error(', this.name, '):', err.message);
-  });
+    reader.on('error', function (err) {
+        console.log('Error(', this.name, '):', err.message);
+    });
 
-  reader.on('status', function (status) {
-    console.log('Status(', this.name, '):', status);
-    /* check what has changed */
-    // tslint:disable-next-line:no-bitwise
-    const changes = this.state ^ status.state;
-    if (changes) {
-      // tslint:disable-next-line:no-bitwise
-      if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-        console.log('card removed'); /* card removed */
-        reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Disconnected');
-          }
-        });
-      // tslint:disable-next-line:no-bitwise
-      } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-        cardName = reader.name;
-        console.log('sample', cardName);
-        console.log('card inserted'); /* card inserted */
-        reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Protocol(', reader.name, '):', protocol);
-            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol,
-            // tslint:disable-next-line:no-shadowed-variable
-            function (err: any, data: { toString: (arg0: string) => void; }) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log('Data received', data);
-                console.log('Data base64', data.toString('base64'));
-                // reader.close();
-                // pcs.close();
-              }
-            });
-          }
-        });
-      }
-    }
-  });
+    reader.on('status', function (status) {
+        console.log('Status(', this.name, '):', status);
+        /* check what has changed */
+        // tslint:disable-next-line:no-bitwise
+        const changes = this.state ^ status.state;
+        if (changes) {
+            // tslint:disable-next-line:no-bitwise
+            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
+                console.log('card removed'); /* card removed */
+                reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Disconnected');
+                    }
+                });
+                // tslint:disable-next-line:no-bitwise
+            } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
+                cardName = reader.name;
+                console.log('sample', cardName);
+                console.log('card inserted'); /* card inserted */
+                reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Protocol(', reader.name, '):', protocol);
+                        reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol,
+                            // tslint:disable-next-line:no-shadowed-variable
+                            function (err: any, data: { toString: (arg0: string) => void; }) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log('Data received', data);
+                                    console.log('Data base64', data.toString('base64'));
+                                    // reader.close();
+                                    // pcs.close();
+                                }
+                            });
+                    }
+                });
+            }
+        }
+    });
 
 
-  reader.on('end', function () {
-    console.log('Reader', this.name, 'removed');
-  });
+    reader.on('end', function () {
+        console.log('Reader', this.name, 'removed');
+    });
 });
 
 pcs.on('error', function (err) {
-  console.log('PCSC error', err.message);
+    console.log('PCSC error', err.message);
 });
 
 
@@ -124,15 +125,23 @@ export class ReadcardComponent implements OnInit {
     constructor(private cdtaservice: CdtaService,
         private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
-            this.subscription = this.cdtaservice.goToCheckout$.subscribe(
-                proceedToCheckOut => {
-                  if (proceedToCheckOut == true) {
-                    this.readCard();
-                    this.nonFareProduct();
-                  } else {
+        this.subscription = this.cdtaservice.goToCheckout$.subscribe(
+            proceedToCheckOut => {
+                if (proceedToCheckOut == true) {
+                    switch (categoryIndex) {
+                        case 2:
+                            this.readCard();
+                            break;
+                        case 3:
+                            this.nonFareProduct();
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
                     this.SessionModal();
-                  }
-                });
+                }
+            });
         route.params.subscribe(val => {
         });
         if (this.electronService.isElectronApp) {
@@ -145,7 +154,7 @@ export class ReadcardComponent implements OnInit {
 
         this.maxSyncLimitReached = Utils.getInstance.checkSyncLimitsHit(JSON.parse(localStorage.getItem('terminalConfigJson')), deviceInfo);
         this.maxSyncLimitReachedText =
-        'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
+            'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
 
         this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
             console.log('print sales data', data);
@@ -166,8 +175,8 @@ export class ReadcardComponent implements OnInit {
             if (data == '[]') {
                 // tslint:disable-next-line:prefer-const
                 let salesReport: any = {
-                    'userID' : userID,
-                    'shiftType' : shiftType
+                    'userID': userID,
+                    'shiftType': shiftType
                 };
                 this.backendSalesReport.push(salesReport);
                 localStorage.setItem('backendSalesReport', JSON.stringify(this.backendSalesReport));
@@ -202,8 +211,8 @@ export class ReadcardComponent implements OnInit {
             if (data == '[]') {
 
                 const paymentReport: any = {
-                    'userID' : userID,
-                    'shiftType' : shiftType
+                    'userID': userID,
+                    'shiftType': shiftType
                 };
 
                 this.backendPaymentReport.push(paymentReport);
@@ -224,7 +233,7 @@ export class ReadcardComponent implements OnInit {
     }
     SessionModal() {
         $('#userTimedOut').modal('show');
-      }
+    }
     /**
      *
      *
@@ -273,8 +282,9 @@ export class ReadcardComponent implements OnInit {
         this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
     }
 
-    readCardSession() {
-    this.sessionService.getAuthenticated();
+    readCardSession(index) {
+        categoryIndex = index;
+        this.sessionService.getAuthenticated();
     }
     /**
      *
@@ -356,7 +366,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.once('newfarecardResult', (_event, data) => {
             if (data != undefined && data != '') {
 
-       
+
                 this._ngZone.run(() => {
                     localStorage.setItem('readCardData', JSON.stringify(data));
                     this.carddata = new Array(JSON.parse(data));
@@ -582,33 +592,33 @@ export class ReadcardComponent implements OnInit {
             shiftReports.forEach(element => {
                 // let elementUserId = String(element.userID).trim();
                 // if (elementUserId == userId) {
-                    if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
+                if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
+                    this.statusOfShiftReport = 'Main Shift is Closed';
+                } else
+                    if (element.shiftState == '3' && element.shiftType == '0') {
                         this.statusOfShiftReport = 'Main Shift is Closed';
-                    } else
-                        if (element.shiftState == '3' && element.shiftType == '0') {
-                            this.statusOfShiftReport = 'Main Shift is Closed';
 
-                        } else if (element.shiftState == '4' && element.shiftType == '0') {
-                            this.statusOfShiftReport = 'Main Shift is Paused';
-                        } else if (element.shiftState == '0' && element.shiftType == '1') {
-                            this.statusOfShiftReport = '';
-                        }
-
-                    if (element.shiftState == '3' && element.shiftType == '0' && element.userID == localStorage.getItem('userID')) {
-                        this.statusOfShiftReport = 'Main Shift is Closed';
-                        this.disableCards = true;
-                    } else if (element.shiftState == '3' && element.shiftType == '1' &&
-                    element.userID == localStorage.getItem('userID')) {
-                        this.disableCards = true;
-                    } else if (element.shiftState == '4' && element.shiftType == '0' &&
-                    element.userID == localStorage.getItem('userID')) {
-                        this.disableCards = true;
-                    // tslint:disable-next-line:max-line-length
-                    } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
-                        this.disableCards = true;
-                    } else {
-                        this.disableCards = false;
+                    } else if (element.shiftState == '4' && element.shiftType == '0') {
+                        this.statusOfShiftReport = 'Main Shift is Paused';
+                    } else if (element.shiftState == '0' && element.shiftType == '1') {
+                        this.statusOfShiftReport = '';
                     }
+
+                if (element.shiftState == '3' && element.shiftType == '0' && element.userID == localStorage.getItem('userID')) {
+                    this.statusOfShiftReport = 'Main Shift is Closed';
+                    this.disableCards = true;
+                } else if (element.shiftState == '3' && element.shiftType == '1' &&
+                    element.userID == localStorage.getItem('userID')) {
+                    this.disableCards = true;
+                } else if (element.shiftState == '4' && element.shiftType == '0' &&
+                    element.userID == localStorage.getItem('userID')) {
+                    this.disableCards = true;
+                    // tslint:disable-next-line:max-line-length
+                } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
+                    this.disableCards = true;
+                } else {
+                    this.disableCards = false;
+                }
                 // }
             });
         }
