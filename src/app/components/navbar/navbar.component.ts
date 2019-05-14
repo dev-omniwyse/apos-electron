@@ -20,6 +20,8 @@ export class NavbarComponent implements OnInit {
   hideAndShowLogout: Boolean;
   today = new Date();
   versionDate = new Date();
+  isSessionExpired: Boolean;
+
 
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private sessionService: SessionServiceApos,
     private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
@@ -38,8 +40,11 @@ export class NavbarComponent implements OnInit {
       this.subscription = this.cdtaservice.goToLogin$.subscribe(
         proceedToLogIn => {
           if (proceedToLogIn == true) {
+            this.isSessionExpired = true;
             this.logOut();
             $('#userTimedOut').modal('show');
+          } else {
+            this.isSessionExpired = false;
           }
         });
   }
@@ -65,7 +70,7 @@ export class NavbarComponent implements OnInit {
       }
     });
     if (userData.shiftState != '3' && userData.shiftType == '0') {
-      $('#warning').modal('show');
+      (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
     } else if (userData.shiftState == '3' && userData.shiftType == '1' && localStorage.getItem('closingPausedMainShift') == 'true') {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
@@ -76,7 +81,7 @@ export class NavbarComponent implements OnInit {
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
     } else if (userData.shiftState != '3' && userData.shiftType == '1') {
-      $('#warning').modal('show');
+      (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
     } else {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
@@ -85,7 +90,7 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['login']);
     }
     localStorage.removeItem('userEmail');
-  }
+}
 
 
 

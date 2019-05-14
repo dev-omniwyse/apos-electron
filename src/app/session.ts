@@ -13,6 +13,8 @@ export class SessionServiceApos {
     idleState = 'Not started.';
     timedOut = false;
     lastPing?: Date = null;
+    terminalConfigJson: any = [];
+
     constructor(private idle: Idle, private keepalive: Keepalive,
         private cdtaService?: CdtaService, private electronService?: ElectronService, private router?: Router,
         private _ngZone?: NgZone) {
@@ -86,7 +88,8 @@ export class SessionServiceApos {
         localStorage.setItem('userTimedOut', 'true');
     }
     startSession() {
-        this.idle.setIdle(1799);
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+        this.idle.setIdle((this.terminalConfigJson.idleTimeOut * 60) - 1);
         this.idle.setTimeout(1);
         this.idle.watch();
         this.idleState = 'Started.';
