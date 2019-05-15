@@ -79,14 +79,19 @@ export class SessionServiceApos {
     }
 
     ngOnInit(): void {
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
+        // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+        // Add 'implements OnInit' to the class.
 
     }
 
     timeOutUser() {
         localStorage.setItem('userTimedOut', 'true');
     }
+    /**
+     * This method is for start the session after completion of login
+     *
+     * @memberof SessionServiceApos
+     */
     startSession() {
     this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
         this.idle.setIdle((this.terminalConfigJson.idleTimeOut * 60) - 1);
@@ -95,6 +100,11 @@ export class SessionServiceApos {
         this.idleState = 'Started.';
         this.timedOut = false;
       }
+    /**
+     * This method is for stop the session.
+     *
+     * @memberof SessionServiceApos
+     */
     sessionStop() {
         this.idle.stop();
     }

@@ -1,4 +1,4 @@
-import { MediaType } from "./MediaType";
+import { MediaType } from './MediaType';
 
 
 export class FilterOfferings {
@@ -11,36 +11,36 @@ export class FilterOfferings {
     constructor() {
 
         if (FilterOfferings._filterService) {
-            throw new Error("Error: Instantiation failed: Use FilterOfferings.getInstance() instead of new.");
+            throw new Error('Error: Instantiation failed: Use FilterOfferings.getInstance() instead of new.');
         }
         FilterOfferings._filterService = this;
     }
 
-    filterFareOfferings(offeringJSON, ticketGroup,  ticketTypeId, walletLineItem){
+    filterFareOfferings(offeringJSON, ticketGroup, ticketTypeId, walletLineItem) {
 
-        let filteredProducts = [];
-        for (let item of offeringJSON) {
+        const filteredProducts = [];
+        for (const item of offeringJSON) {
 
             if (null != item.Ticket) {
                 if ((null != item.Ticket.Group) && (null != item.Ticket.TicketType)) {
                     if (item.Ticket.Group == ticketGroup &&
                         (ticketTypeId == null || item.Ticket.TicketType.TicketTypeId == ticketTypeId) &&
                         null != item.Ticket.WalletType &&
-                        null != item.Ticket.FareCode) {    
+                        null != item.Ticket.FareCode) {
                         let walletTypeMatch = false;
                         let fareCodeMatch = false;
-    
-                        for (let i =0; i < item.Ticket.WalletType.length; i++) {
+
+                        for (let i = 0; i < item.Ticket.WalletType.length; i++) {
                             if (walletLineItem._walletTypeId == item.Ticket.WalletType[i].WalletTypeId) {
                                 walletTypeMatch = true;
                             }
                         }
-                        
-                        if(walletLineItem._walletTypeId  === MediaType.MAGNETIC_ID) {
+
+                        if (walletLineItem._walletTypeId === MediaType.MAGNETIC_ID) {
                             // Display all farecodes for Magnetics
                             fareCodeMatch = true;
                         } else {
-                            for (let i =0; i < item.Ticket.FareCode.length; i++) {
+                            for (let i = 0; i < item.Ticket.FareCode.length; i++) {
                                 if (walletLineItem._fareCodeId == item.Ticket.FareCode[i].FareCodeId) {
                                     fareCodeMatch = true;
                                 }
@@ -56,18 +56,18 @@ export class FilterOfferings {
         }
 
         return filteredProducts;
-        
+
     }
 
-    filterNonFareOfferings(offeringJSON){
+    filterNonFareOfferings(offeringJSON) {
 
-        let filteredNonFareProducts = [];
-        for(let item of offeringJSON) {
+        const filteredNonFareProducts = [];
+        for (const item of offeringJSON) {
             if (true == item.IsMerchandise) {
                 filteredNonFareProducts.push(item);
             }
         }
-        
+
         return filteredNonFareProducts;
     }
 }

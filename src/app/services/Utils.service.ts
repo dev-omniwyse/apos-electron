@@ -235,7 +235,7 @@ export class Utils {
         const walletLineItems = shoppingCart._walletLineItem;
         for (let itemIndex = 0; itemIndex < walletLineItems.length; itemIndex++) {
             if (walletLineItems[itemIndex]._walletTypeId == MediaType.MAGNETIC_ID
-                 && (0 == walletLineItems[itemIndex]._walletContents.length)) {
+                && (0 == walletLineItems[itemIndex]._walletContents.length)) {
                 isEmpty = true;
                 break;
             }
@@ -412,7 +412,7 @@ export class Utils {
                         const exp = new Date(product.exp_date_str);
                         exp.setTime(exp.getTime() + addTime);
                         cardBalance = 'Exp: ' + this.getProductExpirationDate(exp_date_epoch_days, addTime)
-                         + ' ' + this.getProductExpirationTime(addTime);
+                            + ' ' + this.getProductExpirationTime(addTime);
 
                     } else {
 
@@ -504,7 +504,7 @@ export class Utils {
         if (hours > 12) {
             hours -= 12;
         }
-        const expirationTime = hours + ':' + (minutes == 0 ? '00' : minutes ) + ' ' + amORpm;
+        const expirationTime = hours + ':' + (minutes == 0 ? '00' : minutes) + ' ' + amORpm;
 
         return expirationTime;
     }
@@ -589,8 +589,8 @@ export class Utils {
         }
         if (d.length == 1) {
             d = '0' + d;
-         }
-        return  m + '/' + d + '/' + y;
+        }
+        return m + '/' + d + '/' + y;
 
     }
 
@@ -610,7 +610,7 @@ export class Utils {
             // exp date on the card is essentially the day BEFORE the expiration...but at midnight.
             if (exp_date_epoch_days < currentEpochDays) {
                 isExpired = true;
-            // product expires TODAY, check the time against addTime on the card
+                // product expires TODAY, check the time against addTime on the card
             } else if (exp_date_epoch_days == currentEpochDays) {
 
                 const d = new Date();
@@ -633,17 +633,17 @@ export class Utils {
    * @memberof CarddataComponent
    */
 
-  getUserByUserID(userID) {
-    let userData = null;
-    const userJSON = JSON.parse(localStorage.getItem('shiftReport'));
-    for (const user of userJSON) {
-      if (user.userID == userID) {
-        userData = user;
-        break;
-      }
+    getUserByUserID(userID) {
+        let userData = null;
+        const userJSON = JSON.parse(localStorage.getItem('shiftReport'));
+        for (const user of userJSON) {
+            if (user.userID == userID) {
+                userData = user;
+                break;
+            }
+        }
+        return userData;
     }
-    return userData;
-  }
 
     checkSyncLimitsHit(terminalRecordData, deviceInfo) {
 

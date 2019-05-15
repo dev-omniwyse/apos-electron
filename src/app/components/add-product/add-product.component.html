@@ -83,54 +83,59 @@
                     </div>
                 </span>
                 <span class="label label-default" *ngFor="let item of currentWalletLineItem._walletContents ; let i=index">
-                    <div class="pull-left">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}</div>
+                    <div class="pull-left padding-5">{{item._quantity}}&nbsp;{{item._description}} &nbsp; ${{item?._unitPrice | number : '1.2-2'}}
+                        <br>
+                        <div *ngIf="isMerchendise">Tax({{item._taxRate}}%)&nbsp; ${{item._taxAmount | number : '1.2-2'}}</div>
+                    </div>
                     <div class="pull-right remove-icon" (click)="removeProduct(item)" *ngIf="!productCheckOut">
             <img src="assets/images/icon-rmproduct.png" />
         </div>
-
         </span>
             </div>
         </div>
         <div class="sub-total " *ngIf="!isCashApplied && !isVoucherApplied && !isCheckApplied && !isCardApplied">
             <div class="flex">
                 <div class="float-left" *ngIf="!isMerchendise">Fare Products Subtotal</div>
-                <div class="float-left" *ngIf="isMerchendise">Non - Fare Products Subtotal</div>
+                <div class="float-left" *ngIf="isMerchendise">Non-Fare Products Subtotal</div>
                 <div class="float-right">${{subTotal | number : '1.2-2'}}</div>
             </div>
+            <div class="flex" *ngIf="isMerchendise">
+                <div class="float-left">Non-Fare Products Tax Subtotal</div>
+                <div class="float-right">${{taxTotal | number : '1.2-2'}}</div>
+            </div>
+            <hr>
+            <div class="flex totals">
+                <div class="float-left">Total Due</div>
+                <div class="float-right" *ngIf="!isCompApplied">${{totalDue | number : '1.2-2'}}</div>
+                <div class="float-right" *ngIf="isCompApplied">${{compDue | number : '1.2-2'}}</div>
+            </div>
+        </div>
+        <div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied || isExistingFareCardApplied">
+            <div class="flex">
+                <div class="float-left">Total Due</div>
+                <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
+            </div>
+            <div class="flex" *ngIf="isCashApplied">
+                <div class="float-left">Cash Applied</div>
+                <div class="float-right">${{cashAppliedTotal | number : '1.2-2'}}</div>
+            </div>
+            <div class="flex" *ngIf="isVoucherApplied">
+                <div class="float-left">Voucher Applied</div>
+                <div class="float-right">${{voucherAppliedTotal | number : '1.2-2'}}</div>
+            </div>
+            <div class="flex" *ngIf="isCheckApplied">
+                <div class="float-left">Check Applied</div>
+                <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
+            </div>
 
-    <hr>
-    <div class="flex totals">
-        <div class="float-left">Total Due</div>
-        <div class="float-right" *ngIf="!isCompApplied">${{totalDue | number : '1.2-2'}}</div>
-        <div class="float-right" *ngIf="isCompApplied">${{compDue | number : '1.2-2'}}</div>
-    </div>
-</div>
-<div class="sub-total " *ngIf="isCashApplied || isVoucherApplied || isCheckApplied || isCardApplied || isExistingFareCardApplied">
-    <div class="flex">
-        <div class="float-left">Total Due</div>
-        <div class="float-right">${{totalDue | number : '1.2-2'}}</div>
-    </div>
-    <div class="flex" *ngIf="isCashApplied">
-        <div class="float-left">Cash Applied</div>
-        <div class="float-right">${{cashAppliedTotal | number : '1.2-2'}}</div>
-    </div>
-    <div class="flex" *ngIf="isVoucherApplied">
-        <div class="float-left">Voucher Applied</div>
-        <div class="float-right">${{voucherAppliedTotal | number : '1.2-2'}}</div>
-    </div>
-    <div class="flex" *ngIf="isCheckApplied">
-        <div class="float-left">Check Applied</div>
-        <div class="float-right">${{checkAppliedTotal | number : '1.2-2'}}</div>
-    </div>
-
-    <div class="flex" *ngIf="isCardApplied">
-        <div class="float-left">Credit Applied</div>
-        <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
-    </div>
-    <div class="flex" *ngIf="isExistingFareCardApplied">
-        <div class="float-left">Fare Card Applied</div>
-        <div class="float-right">${{ExistingFareCardAppliedTotal | number : '1.2-2'}}</div>
-    </div>
+            <div class="flex" *ngIf="isCardApplied">
+                <div class="float-left">Credit Applied</div>
+                <div class="float-right">${{cardAppliedTotal | number : '1.2-2'}}</div>
+            </div>
+            <div class="flex" *ngIf="isExistingFareCardApplied">
+                <div class="float-left">Fare Card Applied</div>
+                <div class="float-right">${{ExistingFareCardAppliedTotal | number : '1.2-2'}}</div>
+            </div>
 
 
             <hr>
@@ -226,32 +231,32 @@
                     </div>
                 </div>
 
-            <div class="cr-right">
-                <button data-toggle="modal" (click)="paymentByCash()">Cash</button>
-                <button data-toggle="modal" (click)="cardApplied()">Credit or Debit Card</button>
-                <button data-toggle="modal" (click)="paymentByCheck()">Check</button>
-                <button data-toggle="modal" (click)="paymentByVoucher()">Voucher</button>
-                <button data-toggle="modal" (click)="compApplied()">Comp</button>
-                <button data-toggle="modal"  (click)="applyExistingCard()" >Existing Farecard</button>
-                <!-- data-target="#fareCardModal" -->
-                <button data-toggle="modal" class="disabled-btn" >Pay As You Go</button>
-                <!-- data-target="#payasyougoModal" -->
+                <div class="cr-right">
+                    <button data-toggle="modal" (click)="paymentByCash()">Cash</button>
+                    <button data-toggle="modal" (click)="cardApplied()">Credit or Debit Card</button>
+                    <button data-toggle="modal" (click)="paymentByCheck()">Check</button>
+                    <button data-toggle="modal" (click)="paymentByVoucher()">Voucher</button>
+                    <button data-toggle="modal" (click)="compApplied()">Comp</button>
+                    <button data-toggle="modal" (click)="applyExistingCard()">Existing Farecard</button>
+                    <!-- data-target="#fareCardModal" -->
+                    <button data-toggle="modal" class="disabled-btn">Pay As You Go</button>
+                    <!-- data-target="#payasyougoModal" -->
 
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="invalidAmountModal" role="dialog">
-                <div class="modal-dialog modal-sm  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">Error</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Invalid Amount</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-                          </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="invalidAmountModal" role="dialog">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                                <h4 class="modal-title">Error</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Invalid Amount</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -433,20 +438,20 @@
                     </div>
                 </div>
 
-            <div class="modal fade" id="fareApplyModal" role="dialog">
-                <div class="modal-dialog modal-sm modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                            <h4 class="modal-title">{{title}} Applied</h4>
-                        </div>
-                        <p>Place the Fare Card in the drawer</p>
-                        <div class="modal-body">
-                            <p>Click "OK" When cash drawer is closed</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-                           </div>
+                <div class="modal fade" id="fareApplyModal" role="dialog">
+                    <div class="modal-dialog modal-sm modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                                <h4 class="modal-title">{{title}} Applied</h4>
+                            </div>
+                            <p>Place the Fare Card in the drawer</p>
+                            <div class="modal-body">
+                                <p>Click "OK" When cash drawer is closed</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -610,12 +615,12 @@
                         </div>
                         <div class="modal-body">
                             <p>By continuing you confirm that the customer has a fare card for the amount of ${{checkoutTotal | number : '1.2-2'}} that you are using in place of payment.</p>
-                           
+
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-cancel" data-dismiss="modal" (click) = "notToApplyExistingFareCard();">No</button>
+                            <button type="button" class="btn btn-cancel" data-dismiss="modal" (click)="notToApplyExistingFareCard();">No</button>
                             <!-- [routerLink]="['/comp']" (click)="saveTransaction(8);" -->
-                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click) ="existingFareCardModalApply();">Yes</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" (click)="existingFareCardModalApply();">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -628,7 +633,7 @@
                         </div>
                         <div class="modal-body">
                             <p>Place the fare card in the Drawer. Click "OK" when the cash drawer is closed.</p>
-                           
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>

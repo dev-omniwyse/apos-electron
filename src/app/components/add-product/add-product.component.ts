@@ -8,7 +8,7 @@ import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
-import { SessionServiceApos} from 'src/app/session';
+import { SessionServiceApos } from 'src/app/session';
 import { PaymentType } from 'src/app/models/Payments';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -61,7 +61,7 @@ pcs.on('error', function (err) {
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.css']
 })
-export class AddProductComponent implements OnInit,  OnDestroy {
+export class AddProductComponent implements OnInit, OnDestroy {
   currencyForm: FormGroup = this.formBuilder.group({
     currency: ['']
   });
@@ -185,17 +185,18 @@ export class AddProductComponent implements OnInit,  OnDestroy {
   fadeStatus: Boolean;
   isCashBack: Boolean;
   subscription: any;
+  taxTotal = 0;
   constructor(
     private formBuilder: FormBuilder, private cdtaService?: CdtaService, private sessionService?: SessionServiceApos,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     this.subscription = this.cdtaService.goToCheckout$.subscribe(
-        proceedToCheckOut => {
-          if (proceedToCheckOut == true) {
-            this.productCheckoutBySession();
-          } else {
-            this.productCheckOutSessionModal();
-          }
-        });
+      proceedToCheckOut => {
+        if (proceedToCheckOut == true) {
+          this.productCheckoutBySession();
+        } else {
+          this.productCheckOutSessionModal();
+        }
+      });
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem('isMagnetic') == 'true' ? true : false;
       this.isMerchendise = localStorage.getItem('isNonFareProduct') == 'true' ? true : false;
@@ -594,7 +595,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     }
 
     return flag;
-  } 
+  }
 
   /**
    * check the product count for existing card and return the count
@@ -698,6 +699,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart, product, this.currentWalletLineItem, null);
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.getNonFareTotalTax(this.currentWalletLineItem);
 
   }
 
@@ -769,7 +771,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     }
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
-
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
   }
   /**
@@ -818,6 +820,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.currentWalletLineItem = this.currentWalletLineItem;
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.getNonFareTotalTax(this.currentWalletLineItem);
     this.productToRemove = null;
   }
 
@@ -930,7 +933,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
    */
   productCheckout() {
     this.sessionService.getAuthenticated();
-    }
+  }
 
 
   cancelCheckout() {
@@ -1037,7 +1040,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
     this.isCardApplied = false;
-    this.isExistingFareCardApplied =  false;
+    this.isExistingFareCardApplied = false;
     this.shoppingcart._payments = [];
     this.getTotalDue(this.shoppingcart);
 
@@ -1181,7 +1184,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings(item.Offering,
-       TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
+      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1263,7 +1266,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     localStorage.setItem('isMagnetic', 'true');
     this.currentMagneticIndex = index;
     (this.selectedProductCategoryIndex == 0) ? this.frequentRide() :
-    (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
+      (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
   activeWallet(item, index) {
 
@@ -1301,7 +1304,7 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       this.regularRoute = false;
       this.isMerchendise = false;
       (this.selectedProductCategoryIndex == 0) ? this.frequentRide() :
-      (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
+        (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     }
   }
   /**
@@ -1378,12 +1381,13 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     offering.UnitPrice = + productTotal;
     const thisIsCustomOffering = true;
     this.shoppingcart = FareCardService.getInstance.addFareProduct(this.shoppingcart,
-       offering, this.currentWalletLineItem, thisIsCustomOffering);
+      offering, this.currentWalletLineItem, thisIsCustomOffering);
     this.isCustomAmount = false;
     this.productTotal = 0;
     this.frequentRide();
     this.getSubTotal(this.currentWalletLineItem);
     this.getTotalDue(this.shoppingcart);
+    this.getNonFareTotalTax(this.currentWalletLineItem);
   }
   /**
    *get the sub total.
@@ -1806,8 +1810,8 @@ export class AddProductComponent implements OnInit,  OnDestroy {
 
     while (idx < list.length) {
       if (idx % howMany === 0) {
-         result.push([]);
-        }
+        result.push([]);
+      }
       result[result.length - 1].push(list[idx++]);
     }
     return result;
@@ -1827,8 +1831,8 @@ export class AddProductComponent implements OnInit,  OnDestroy {
 
     while (idx < list.length) {
       if (idx % howMany === 0) {
-         result.push([]);
-         }
+        result.push([]);
+      }
       result[result.length - 1].push(list[idx++]);
     }
     return result;
@@ -1903,8 +1907,11 @@ export class AddProductComponent implements OnInit,  OnDestroy {
         this.isCardApplied = false;
       }
 
-      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || 
-      (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied) || (this.checkApplied && this.isExistingFareCardApplied)) {
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) ||
+        (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) ||
+        (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) ||
+        (this.isCardApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) ||
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.checkApplied && this.isExistingFareCardApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -1960,17 +1967,17 @@ export class AddProductComponent implements OnInit,  OnDestroy {
   }
 
 
-/**
- * This method is used to pay through Existing Card
- */
+  /**
+   * This method is used to pay through Existing Card
+   */
   applyExistingCard() {
     if (+this.checkoutTotal == 0) {
 
       $('#invalidAmountModal').modal('show');
 
     } else if (this.totalRemaining == +(this.checkoutTotal)) {
-	this.openCashDrawer();
-	$('#existingFareCardModal').modal('show');
+      this.openCashDrawer();
+      $('#existingFareCardModal').modal('show');
 
     } else if (this.totalRemaining > +this.checkoutTotal) {
 
@@ -2001,12 +2008,14 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       }
 
       if (this.isCardApplied) {
-        this.isCardApplied = true
+        this.isCardApplied = true;
       } else {
         this.isCardApplied = false;
       }
 
-      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) || (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) ||
+        (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) ||
+        (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
         $('#existingFareCardModal').modal('show');
@@ -2016,42 +2025,42 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       $('#voucherErrorModal').modal('show');
     }
   }
-  
-    existingFareCardModalApply() {
+
+  existingFareCardModalApply() {
     if (this.totalDue == (+this.checkoutTotal)) {
       this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
       this.ExistingFareCardAppliedTotal = (+this.checkoutTotal);
       this.existingCardRemaining = this.totalRemaining;
-      let payment = new PaymentType();
-      payment.$paymentMethodId = 10
-      payment.$amount = (+this.checkoutTotal)
+      const payment = new PaymentType();
+      payment.$paymentMethodId = 10;
+      payment.$amount = (+this.checkoutTotal);
       payment.$comment = null;
       if (Utils.getInstance.checkIsPaymentMethodExists(10, this.shoppingcart) == -1) {
         this.shoppingcart._payments.push(payment);
-        
+
       }
       this.isExistingFareCardApplied = true;
-    
+
     } else {
       this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
       this.existingCardRemaining = this.totalRemaining;
-      let indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(10, this.shoppingcart);
+      const indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(10, this.shoppingcart);
       if (indexOfPayment == -1) {
-        let payment = new PaymentType();
+        const payment = new PaymentType();
         payment.$amount = (+this.checkoutTotal);
         payment.$paymentMethodId = 10;
         payment.$comment = null;
         this.shoppingcart._payments.push(payment);
-        console.log(this.shoppingcart._payments)
+        console.log(this.shoppingcart._payments);
         this.ExistingFareCardAppliedTotal = payment.$amount;
         this.isExistingFareCardApplied = true;
-        this.checkoutTotal = "0";
+        this.checkoutTotal = '0';
       } else {
         this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
         this.ExistingFareCardAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
-        console.log(this.shoppingcart._payments)
+        console.log(this.shoppingcart._payments);
         this.isExistingFareCardApplied = true;
-        this.checkoutTotal = "0";
+        this.checkoutTotal = '0';
       }
 
     }
@@ -2059,12 +2068,12 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       $('#applyFareCardModal').modal('hide');
     } else if (this.existingCardRemaining == 0) {
       this.getRefundTitle();
-      $("#amountApplyModal").modal({
+      $('#amountApplyModal').modal({
         backdrop: 'static',
         keyboard: false
       });
     }
-    // $('#voucherApplyModal').modal('show');
+  // $('#voucherApplyModal').modal('show');
   }
 
   /**
@@ -2131,8 +2140,11 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       }
 
 
-      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) || 
-      (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied)) {
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isCompApplied) ||
+        (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) ||
+        (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied) ||
+        (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) ||
+        (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2286,8 +2298,11 @@ export class AddProductComponent implements OnInit,  OnDestroy {
       }
 
 
-      if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied)
-      || (this.isExistingFareCardApplied && this.isVoucherApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied ) || (this.isExistingFareCardApplied && this.isCardApplied)) {
+      if ((this.isCashApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) ||
+        (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) ||
+        (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied) ||
+        (this.isExistingFareCardApplied && this.isVoucherApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isExistingFareCardApplied && this.isCardApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2331,9 +2346,9 @@ export class AddProductComponent implements OnInit,  OnDestroy {
     this.doSaveTransaction();
   }
 
-fareCardApplied(){
-  this.doSaveTransaction();
-}
+  fareCardApplied() {
+    this.doSaveTransaction();
+  }
 
   compApplied() {
     if ((+this.checkoutTotal) == 0) {
@@ -2374,8 +2389,11 @@ fareCardApplied(){
       }
 
 
-      if ((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) || (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied)
-      || (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied)) {
+      if ((this.isVoucherApplied && this.isCheckApplied) || (this.isCashApplied && this.isCheckApplied) ||
+        (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) ||
+        (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied) ||
+        (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
+        (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2484,8 +2502,11 @@ fareCardApplied(){
         this.isCheckApplied = false;
       }
 
-      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) || (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) || (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied)
-      || (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||(this.isCompApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied)) {
+      if ((this.isCashApplied && this.isCheckApplied) || (this.isCheckApplied && this.isVoucherApplied) ||
+        (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) ||
+        (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied) ||
+        (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2607,19 +2628,19 @@ fareCardApplied(){
           this.title = this.title + 'Credit';
           this.message = this.message + 'Credit Applied.';
           break;
-          case  10:
-          this.title = this.title + "Fare_card";
-          this.message = this.message + "Place the Fare_card in the drawer."
+        case 10:
+          this.title = this.title + 'Fare_card';
+          this.message = this.message + 'Place the Fare_card in the drawer.';
           break;
-     
-  
-          default: 
-          this.message = ""
-          this.title = ""
-        }
-        
-        count++;
-     
+
+
+        default:
+          this.message = '';
+          this.title = '';
+      }
+
+      count++;
+
     });
 
   }
@@ -2681,6 +2702,15 @@ fareCardApplied(){
       count++;
     });
 
+  }
+  /**
+   * calculating tax for merchandise prodcuts
+   *
+   * @param {*} currentWalletLineItem
+   * @memberof AddProductComponent
+   */
+  getNonFareTotalTax(currentWalletLineItem) {
+    this.taxTotal = ShoppingCartService.getInstance.getNonFareTotalTax(currentWalletLineItem);
   }
 }
 
