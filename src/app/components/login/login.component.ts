@@ -194,7 +194,6 @@ export class LoginComponent implements OnInit {
         }
     }
     Login() {
-        this.sessionService.startSession();
         const user = {
             username: this.username,
             password: this.password
@@ -204,6 +203,7 @@ export class LoginComponent implements OnInit {
         } else {
             this.electronService.ipcRenderer.send('logincall', user);
         }
+        this.sessionService.startSession();
 
     }
 }

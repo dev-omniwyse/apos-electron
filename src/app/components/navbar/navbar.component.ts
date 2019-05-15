@@ -4,7 +4,7 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { environment } from '../../../environments/environment';
-import {SessionServiceApos} from 'src/app/session';
+import { SessionServiceApos } from 'src/app/session';
 
 
 declare var $: any;
@@ -37,16 +37,16 @@ export class NavbarComponent implements OnInit {
       mission => {
         this.terminalNumber = mission;
       });
-      this.subscription = this.cdtaservice.goToLogin$.subscribe(
-        proceedToLogIn => {
-          if (proceedToLogIn == true) {
-            this.isSessionExpired = true;
-            this.logOut();
-            $('#userTimedOut').modal('show');
-          } else {
-            this.isSessionExpired = false;
-          }
-        });
+    this.subscription = this.cdtaservice.goToLogin$.subscribe(
+      proceedToLogIn => {
+        if (proceedToLogIn == true) {
+          this.isSessionExpired = true;
+          this.logOut();
+          $('#userTimedOut').modal('show');
+        } else {
+          this.isSessionExpired = false;
+        }
+      });
   }
 
   /**
@@ -90,7 +90,7 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['login']);
     }
     localStorage.removeItem('userEmail');
-}
+  }
 
 
 
@@ -111,12 +111,13 @@ export class NavbarComponent implements OnInit {
    * @memberof NavbarComponent
    */
   navigateToGenfare() {
-    var urlToNavigate = "";
-    if (environment.production)
-      urlToNavigate = "https://link.cdta.org";
-    else
-      urlToNavigate = "https://cdta-" + localStorage.getItem("environment") + ".gfcp.io";
-    this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
+    let urlToNavigate = '';
+    if (environment.production) {
+      urlToNavigate = 'https://link.cdta.org';
+    } else {
+      urlToNavigate = 'https://cdta-' + localStorage.getItem('environment') + '.gfcp.io';
+      this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
+    }
   }
 
   ngOnInit() {

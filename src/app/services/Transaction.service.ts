@@ -18,25 +18,25 @@ export class TransactionService {
     constructor() {
 
         if (TransactionService._transactionService) {
-            throw new Error("Error: Instantiation failed: Use ShoppingCartService.getInstance() instead of new.");
+            throw new Error('Error: Instantiation failed: Use ShoppingCartService.getInstance() instead of new.');
         }
         TransactionService._transactionService = this;
     }
 
     saveTransaction(shoppingCart, userData) {
 
-        let walletLineItem = shoppingCart._walletLineItem;
-        let userProfile = JSON.parse(localStorage.getItem("userProfile"));
-        let fareCodeDescription = userProfile;
+        const walletLineItem = shoppingCart._walletLineItem;
+        const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+        const fareCodeDescription = userProfile;
         if (null != walletLineItem && !Utils.getInstance.isValidMerchandise(walletLineItem[0])) {
             walletLineItem.splice(0, 1);
 
             shoppingCart._walletLineItem = walletLineItem;
         }
-        let transaction = new Transaction();
-        let transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
-        let taxAmount = ShoppingCartService.getInstance.getTax();
-        let timeStamp = shoppingCart._transactionID;
+        const transaction = new Transaction();
+        const transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
+        const taxAmount = ShoppingCartService.getInstance.getNonFareTotalTax(walletLineItem[0]);
+        const timeStamp = shoppingCart._transactionID;
 
         transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;
@@ -49,11 +49,11 @@ export class TransactionService {
 
         let items = [];
 
-        for (let wallet of walletLineItem) {
-            let item = new Items();
+        for (const wallet of walletLineItem) {
+            const item = new Items();
 
             if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
-                console.log("Adding Non-Fare Product transaction.");
+                console.log('Adding Non-Fare Product transaction.');
                 items = this.generateTransactionForMerch(wallet, timeStamp, userData);
             } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
 
@@ -63,7 +63,7 @@ export class TransactionService {
                 let walletQuantitySold = 0;
                 if (wallet._offering) {
 
-                    console.log("Adding wallet transaction.");
+                    console.log('Adding wallet transaction.');
                     walletProductIdentifier = wallet._offering.ProductIdentifier;
                     walletCost = wallet._offering.UnitPrice;
                     walletUnitPrice = wallet._unitPrice;
@@ -92,12 +92,12 @@ export class TransactionService {
                 item.$totalCost = walletCost;
                 item.$userID = userData.userID;
                 item.$shiftID = userData.shiftID;
-                //fareCodeDescription -----
+                // fareCodeDescription -----
                 item.$fareCode = fareCodeDescription;
 
                 item.$walletTypeId = wallet._walletTypeId;
 
-                console.log("wallet.walletTypeId......." + wallet._walletTypeId)
+                console.log('wallet.walletTypeId.......' + wallet._walletTypeId);
                 // special case for Magnetics - record as Products
                 if (wallet._walletTypeId == MediaType.MAGNETIC_ID) {
                     item.$IsBackendMerchandise = true;
@@ -106,13 +106,13 @@ export class TransactionService {
                 item.$shiftType = +userData.shiftType;
                 item.$timestamp = timeStamp;
 
-                let walletContentItems = [];
-                for (let fareItem of wallet._walletContents) {
-                    let walletContentItem = new WalletContentItems();
+                const walletContentItems = [];
+                for (const fareItem of wallet._walletContents) {
+                    const walletContentItem = new WalletContentItems();
 
-                    console.log("Adding wallet content transaction.");
+                    console.log('Adding wallet content transaction.');
 
-                    let totalItemCost = fareItem._unitPrice * fareItem._quantity;
+                    const totalItemCost = fareItem._unitPrice * fareItem._quantity;
 
                     let ticketValue = 0;
                     if (fareItem._offering.Ticket.Group == TICKET_GROUP.VALUE) {
@@ -163,10 +163,10 @@ export class TransactionService {
 
         transaction.$items = items;
 
-        let payments = [];
-        let paymentTypes = shoppingCart._payments;
-        for (let item of paymentTypes) {
-            let paymentInfo = new PaymentType();
+        const payments = [];
+        const paymentTypes = shoppingCart._payments;
+        for (const item of paymentTypes) {
+            const paymentInfo = new PaymentType();
             paymentInfo.$paymentMethodId = item.paymentMethodId;
             paymentInfo.$amount = item.amount;
             paymentInfo.$comment = item.comment;
@@ -178,10 +178,10 @@ export class TransactionService {
     }
 
     generateTransactionForMerch(wallet, timeStamp, userData) {
-        let items = [];
-        for (let nonFareItem of wallet._walletContents) {
-            let item = new Items();
-            let totalTax = nonFareItem._tax * nonFareItem._quantity;
+        const items = [];
+        for (const nonFareItem of wallet._walletContents) {
+            const item = new Items();
+            const totalTax = nonFareItem._taxAmount * nonFareItem._quantity;
             let totalItemCost = nonFareItem._offering.UnitPrice * nonFareItem._quantity;
             totalItemCost += totalTax;
 
@@ -199,7 +199,7 @@ export class TransactionService {
             item.$totalCost = totalItemCost;
             item.$userID = userData.userID;
             item.$shiftID = userData.shiftID;
-            item.$tax = totalTax;
+            item.$tax = nonFareItem._taxAmount;
             item.$fareCode = null;
             item.$timestamp = timeStamp;
             item.$shiftType = +userData.shiftType;
