@@ -12,6 +12,7 @@ import { SessionServiceApos } from 'src/app/session';
 import { PaymentType } from 'src/app/models/Payments';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { SysytemConfig } from 'src/app/config';
 declare var pcsc: any;
 declare var $: any;
 const pcs = pcsc();
@@ -187,7 +188,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
   subscription: any;
   taxTotal = 0;
   constructor(
-    private formBuilder: FormBuilder, private cdtaService?: CdtaService, private sessionService?: SessionServiceApos,
+    private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
+    private sessionService?: SessionServiceApos,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
     this.subscription = this.cdtaService.goToCheckout$.subscribe(
       proceedToCheckOut => {
@@ -349,7 +351,24 @@ export class AddProductComponent implements OnInit, OnDestroy {
     }
     return canAddProduct;
   }
-
+  isUltraLightProduct() {
+    let canAddProduct = false;
+    switch (this.currentWalletLineItem._walletTypeId) {
+      case MediaType.LUCC:
+      canAddProduct = true;
+    }
+    return canAddProduct;
+  }
+  isUltraLightProductLimitReached() {
+    let canAddProduct = false;
+    switch (this.currentWalletLineItem._walletTypeId) {
+      case MediaType.LUCC:
+        if (this.currentWalletLineItem._walletContents.length == 1) {
+          canAddProduct = true;
+        }
+    }
+    return canAddProduct;
+  }
   /**
    * Checking the product is merchendise product or not before adding into the wallet
    *
@@ -384,6 +403,12 @@ export class AddProductComponent implements OnInit, OnDestroy {
 
     if (this.isMagneticProduct()) {
       if (this.isMagneticProductLimitReached()) {
+        return false;
+      }
+      return true;
+    }
+    if (this.isUltraLightProduct()) {
+      if (this.isUltraLightProductLimitReached()) {
         return false;
       }
       return true;
@@ -678,7 +703,9 @@ export class AddProductComponent implements OnInit, OnDestroy {
    * @memberof AddProductComponent
    */
   addProductToWallet(product) {
-    if (this.currentWalletLineItem._walletTypeId == MediaType.SMART_CARD_ID && this.checkIsBadListedProductOnWallet(product)) {
+    if ((this.currentWalletLineItem._walletTypeId == MediaType.SMART_CARD_ID ||
+      this.currentWalletLineItem._walletTypeId == MediaType.LUCC) &&
+      this.checkIsBadListedProductOnWallet(product)) {
       this.badlistedProductModalText = 'Product is deactivated or suspended on this card.';
       $('#badlistedProductModal').modal({
         backdrop: 'static',
@@ -757,7 +784,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   removeCurrentWalletLineItemConfirmation() {
     const walletToRemove = this.currentWalletLineItem;
     this.shoppingcart = ShoppingCartService.getInstance.removeItem(this.shoppingcart, this.currentWalletLineItem, null, true);
-    if (walletToRemove._walletTypeId == MediaType.SMART_CARD_ID) {
+    if (walletToRemove._walletTypeId == MediaType.SMART_CARD_ID || walletToRemove._walletTypeId == MediaType.LUCC) {
       this.removeCardfromCardJSON();
     }
     this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
@@ -1270,11 +1297,12 @@ export class AddProductComponent implements OnInit, OnDestroy {
   }
   activeWallet(item, index) {
 
-    if (item._walletTypeId == MediaType.SMART_CARD_ID) {
+    if (item._walletTypeId == MediaType.SMART_CARD_ID || item._walletTypeId == MediaType.LUCC) {
       const cardIndex = Utils.getInstance.getIndexOfActiveWallet(this.cardJson, item);
       this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
       this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
-      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson);
+      // tslint:disable-next-line:max-line-length
+      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson, this.config.cardTypeDetected);
       this.active_printed_id = this.cardJson[cardIndex].printed_id;
       this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
       this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
@@ -2073,7 +2101,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
         keyboard: false
       });
     }
-  // $('#voucherApplyModal').modal('show');
+    // $('#voucherApplyModal').modal('show');
   }
 
   /**

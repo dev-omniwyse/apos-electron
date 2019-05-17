@@ -1,19 +1,18 @@
 import { MediaType, TICKET_GROUP, Constants, PRODUCT_NAME } from './MediaType';
 import { DeviceInfo } from '../models/DeviceInfo';
 import { CardSummary } from '../models/CardContetns';
+import { SysytemConfig } from 'src/app/config';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class Utils {
 
-
     private static _utilService = new Utils();
-
     public static get getInstance() {
         return Utils._utilService;
     }
 
-    constructor() {
+    constructor(private config?: SysytemConfig) {
 
         if (Utils._utilService) {
             throw new Error('Error: Instantiation failed: Use Utils.getInstance() instead of new.');
@@ -210,16 +209,28 @@ export class Utils {
         return bonusRideStatusText;
     }
 
-    getNextBonusRidesCount(cardData, terminalConfig) {
+    getNextBonusRidesCount(cardData, terminalConfig, cardTypeDetected) {
         const bonusRideThreshold = terminalConfig.BonusRideThreshold;
         let bonus_ride_counter = 0;
-
+        if (cardTypeDetected == MediaType.LUCC) {
+            // tslint:disable-next-line:no-debugger
+            debugger;
+            cardData.products.forEach(fItem => {
+                if (fItem.product_type == TICKET_GROUP.VALUE) {
+                    bonus_ride_counter = fItem.bonus_ride_count;
+                }
+            });
+            // if (cardData.product.product_type == TICKET_GROUP.VALUE) {
+            //     bonus_ride_counter = cardData.product.bonus_ride_count;
+            // }
+        } else {
         // cardStore.products.forEach(cardElement => {
         cardData.products.forEach(fItem => {
             if (fItem.product_type == TICKET_GROUP.VALUE) {
                 bonus_ride_counter = fItem.bonus_ride_count;
             }
         });
+    }
         const text = 'Next Bonus: ' + bonus_ride_counter + '/' + bonusRideThreshold;
         return text;
     }

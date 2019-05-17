@@ -1,5 +1,6 @@
 export enum MediaType {
     SMART_CARD_ID = 3,
+    LUCC = 4,
     MAGNETIC_ID = 10,
     MERCHANDISE_ID = 99
 }

@@ -32,11 +32,11 @@
                     New Fare Card
                     
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="readCardSession(2)">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="checkCardType()">
                     Existing Fare Card
                   
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" (click)="readCardSession(3)">
+                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached" (click)="nonFareProduct()">
                     Non-Fare Product
                   
                 </button>
@@ -86,10 +86,10 @@
             <div class="flex">
                 <div class="flex-devide">
                     <p>{{card.printed_id}} - {{active_wallet_status}}</p>
-                    <p>Fare Code: {{cardType}}</p>
+                    <p *ngIf="isSmartCard">Fare Code: {{cardType}}</p>
                     <p>Card Exp: {{card.card_expiration_date_str}}</p>
                 </div>
-                <div class="flex-devide">
+                <div *ngIf="isSmartCard" class="flex-devide">
                     <p>{{bonusRidesCountText}}</p>
                     <p>{{nextBonusRidesText}}</p>
                 </div>

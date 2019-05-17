@@ -36,7 +36,7 @@ export class FilterOfferings {
                             }
                         }
 
-                        if (walletLineItem._walletTypeId === MediaType.MAGNETIC_ID) {
+                        if (walletLineItem._walletTypeId === MediaType.MAGNETIC_ID || walletLineItem._walletTypeId === MediaType.LUCC) {
                             // Display all farecodes for Magnetics
                             fareCodeMatch = true;
                         } else {

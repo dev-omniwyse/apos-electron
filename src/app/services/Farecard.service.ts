@@ -146,7 +146,41 @@ export class FareCardService {
 
         return shoppingCart;
     }
+    addUltraLightCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
+        if (null == shoppingCart._walletLineItem[0]) {
+            shoppingCart = FareCardService.getInstance.addNonFareWallet(shoppingCart);
+        }
 
+        const offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.LUCC);
+        const walletC = [];
+        let fareCardPrice = 0;
+        let description = ' ';
+        if (isNew) {
+            fareCardPrice = offering.UnitPrice;
+            description = 'New ' + offering.Description + ' $' + offering.UnitPrice.toFixed(0);
+        } else {
+            fareCardPrice = 0;
+            description = '1 Card:' + ' ' + readCardJSON.printed_id;
+        }
+        const walletLineItem = new WalletLineItem();
+        shoppingCart._activeCardUID = readCardJSON.uid;
+
+        walletLineItem.cardPID = readCardJSON.printed_id;
+        walletLineItem.cardUID = readCardJSON.uid;
+        walletLineItem.cardExpiration = readCardJSON.card_expiration_date;
+        walletLineItem.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletLineItem(shoppingCart);
+        walletLineItem.offering = offering;
+        walletLineItem.walletTypeId = MediaType.LUCC;
+        walletLineItem.fareCodeId = readCardJSON.user_profile;
+        walletLineItem.unitPrice = fareCardPrice;
+        walletLineItem.description = description;
+        walletLineItem.walletContents = walletC;
+        walletLineItem.encoded = false;
+        walletLineItem.isNew = isNew;
+        shoppingCart._walletLineItem.push(walletLineItem);
+
+        return shoppingCart;
+    }
     addNonFareWallet(shoppingCart) {
         // get shoppingcartJSON
         const walletLineItem = new WalletLineItem();
