@@ -213,8 +213,6 @@ export class Utils {
         const bonusRideThreshold = terminalConfig.BonusRideThreshold;
         let bonus_ride_counter = 0;
         if (cardTypeDetected == MediaType.LUCC) {
-            // tslint:disable-next-line:no-debugger
-            debugger;
             cardData.products.forEach(fItem => {
                 if (fItem.product_type == TICKET_GROUP.VALUE) {
                     bonus_ride_counter = fItem.bonus_ride_count;

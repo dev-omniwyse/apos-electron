@@ -331,13 +331,28 @@ ipcMain.on('getCardPIDUltralightC', (event, cardname) => {
 ipcMain.on('readCardUltralightC', (event, cardname) => {
     var result = posAppletInstance.setEncoderSync(cardname);
     try {
-        var resultCardPid = posAppletInstance.readCardUltralightCSync();
+        var readCard = posAppletInstance.readCardUltralightCSync();
     } catch (error) {
         logger.info('show thw error here', error);
     }
-    event.sender.send('readCardUltralightCResult', resultCardPid.getValueSync());
+    event.sender.send('readCardUltralightCResult', readCard.getValueSync());
 })
-
+ipcMain.on('encodeCardUltralightC', (event, cardPID, peroidPassProductJSON, storedRideProductJSON, storedValueProductJSON) => {
+    try {
+        var encodeLucc = posAppletInstance.encodeCardUltralightCSync(cardPID, peroidPassProductJSON, storedRideProductJSON, storedValueProductJSON);
+    } catch (error) {
+        logger.info('show thw error here', error);
+    }
+    event.sender.send('encodeCardResult', encodeLucc.getValueSync());
+})
+ipcMain.on('addValueUltralightC', (event, cardPID, peroidPassProductJSON, storedRideProductJSON, storedValueProductJSON) => {
+    try {
+        var addValueForLUCC = posAppletInstance.addValueUltralightCSync(cardPID, peroidPassProductJSON, storedRideProductJSON, storedValueProductJSON);
+    } catch (error) {
+        logger.info('show thw error here', error);
+    }
+    event.sender.send('encodeCardResult', addValueForLUCC.getValueSync());
+})
 ipcMain.on('creditOrDebit', (event, catalog) => {
     logger.info("creditOrDebit  Data", posAppletInstance)
     var result = posAppletInstance.getProductCatalogJSONSync();

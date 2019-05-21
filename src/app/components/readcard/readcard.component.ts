@@ -290,6 +290,15 @@ export class ReadcardComponent implements OnInit {
     //     categoryIndex = index;
     //     this.sessionService.getAuthenticated();
     // }
+    existingCardClick() {
+        isExistingCard = true;
+        this.checkCardType();
+    }
+
+    newCardClick() {
+        isExistingCard = false;
+        this.checkCardType();
+    }
 
     checkCardType() {
         this.handleGetCardPIDResult();
@@ -304,7 +313,11 @@ export class ReadcardComponent implements OnInit {
             } else {
                 this.config.cardTypeDetected = MediaType.SMART_CARD_ID;
                 this.isSmartCard = true;
-                this.readSmartCard();
+                if (isExistingCard) {
+                    this.readSmartCard();
+                } else {
+                    this.newFareCard();
+                }
             }
         });
     }
@@ -324,7 +337,6 @@ export class ReadcardComponent implements OnInit {
 
     updateSettingsForSmartAndLUCC() {
         localStorage.removeItem('shoppingCart');
-        isExistingCard = true;
         this.isFromReadCard = true;
         localStorage.setItem('isNonFareProduct', 'false');
         localStorage.setItem('isMagnetic', 'false');
@@ -411,7 +423,7 @@ export class ReadcardComponent implements OnInit {
     populateCardDataProductForLUCC() {
         this.carddata[0].products = [];
         this.carddata[0].products.push(this.carddata[0].product);
-        this.carddata[0].products[0].designator =  this.carddata[0].card_designator;
+        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
         this.carddata[0].products[0].product_type = this.carddata[0].card_type;
         this.carddata[0].products[0].cardType = this.carddata[0].card_type;
         this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
@@ -490,7 +502,7 @@ export class ReadcardComponent implements OnInit {
      * @param {*} event
      * @memberof ReadcardComponent
      */
-    newFareCard(event) {
+    newFareCard() {
         localStorage.removeItem('shoppingCart');
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();

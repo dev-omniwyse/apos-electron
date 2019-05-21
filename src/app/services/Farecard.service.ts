@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { WalletLineItem } from '../models/WalletLineItem';
 import { WalletContent } from '../models/WalletContent';
 import { MediaType, Constants } from './MediaType';
@@ -7,7 +8,7 @@ import { ShoppingCartService } from './ShoppingCart.service';
 import { read } from 'fs';
 
 
-
+@Injectable()
 export class FareCardService {
 
     private static _fareCardService = new FareCardService();
@@ -74,6 +75,124 @@ export class FareCardService {
         return shoppingCart;
     }
 
+  /**
+   * This funcion is called from encodeLUCCCard() to construct Json based on Ticket Group for encoding.
+   *
+   * @param {*} product_type
+   * @param {*} element
+   * @memberof CarddataComponent
+   */
+  constructJsonForEncodingLUCC(product_type, element, terminalConfigJson) {
+    let JsonObjectForProductType: any;
+    const monthsToExpireLUCC = 3;
+    const amount =  element._offering.Ticket.Value * element._quantity;
+
+    let start_date = '0';
+
+    if (element._offering.Ticket.DateStartEpochDays > 0) {
+        // Fixed start period pass
+
+        // TODO: make sure this is a string;
+        const start_date_epoch_days = element._offering.Ticket.DateStartEpochDays;
+        const start_date_obj = new Date(start_date_epoch_days * 86400000);
+        start_date = (start_date_obj.getMonth() + 1) + '/' + start_date_obj.getDate() + '/' + start_date_obj.getFullYear();
+    }
+    let typeExpiration = 0;
+    let addTime = 0;
+
+    if (0 < element._offering.Ticket.ExpirationTypeId) {
+
+        // Got non-zero type expiration
+        typeExpiration = element._offering.Ticket.ExpirationTypeId;
+
+        if (1 === element._offering.Ticket.ExpirationTypeId) {
+            // Use card-level End of Transit Day
+            if (0 < terminalConfigJson.EndOfTransitDayULC) {
+                addTime = terminalConfigJson.EndOfTransitDayULC;
+            }
+        }
+
+        if (3 === element._offering.Ticket.ExpirationTypeId) {
+            // Use product-level End of Transit Day
+            if (0 < element._offering.Ticket.ExpirationTime) {
+                addTime = element._offering.Ticket.ExpirationTime;
+            }
+        }
+    }
+    switch (product_type) {
+        case 1:
+        JsonObjectForProductType = {
+            'ticket_id': element._offering.Ticket.TicketId,
+            'load_sequence_number': 0,
+            'designator': element._offering.Ticket.Designator,
+            'recharges_pending': 0,
+            'type_expiration': typeExpiration,
+            'add_time': addTime,
+            'days': element._offering.Ticket.Value,
+            'start_date': start_date,
+            'expiration_date': monthsToExpireLUCC
+          };
+        break;
+        case 2:
+        JsonObjectForProductType = {
+            'ticket_id': element._offering.Ticket.TicketId,
+            'load_sequence_number': 0,
+            'designator': element._offering.Ticket.Designator,
+            'remaining_rides': amount,
+            'start_date': '0',
+            'expiration_date': monthsToExpireLUCC
+          };
+        break;
+        case 3:
+        JsonObjectForProductType = {
+            'ticket_id': element._offering.Ticket.TicketId,
+            'load_sequence_number': 0,
+            'designator': element._offering.Ticket.Designator,
+            'remaining_value': amount,
+            'start_date': '0',
+            'expiration_date': monthsToExpireLUCC
+          };
+        break;
+  }
+  return JsonObjectForProductType;
+
+}
+  constuctDEfaultJSONForFrequentRide() {
+    const JsonObjectForProductType = {
+        'ticket_id': '',
+        'load_sequence_number': 0,
+        'designator': '',
+        'recharges_pending': 0,
+        'type_expiration': '',
+        'add_time': '',
+        'days': '',
+        'start_date': '',
+        'expiration_date': ''
+      };
+      return JsonObjectForProductType;
+  }
+  constructDefaultJSONForStoredRide() {
+   const JsonObjectForProductType = {
+        'ticket_id': '',
+        'load_sequence_number': 0,
+        'designator': '',
+        'remaining_rides': '',
+        'start_date': '0',
+        'expiration_date': ''
+      };
+      return JsonObjectForProductType;
+  }
+  constructDefaultJSONForStoredValue() {
+    const JsonObjectForProductType = {
+        'ticket_id': '',
+        'load_sequence_number': 0,
+        'designator': '',
+        'remaining_value': '',
+        'start_date': '0',
+        'expiration_date': ''
+      };
+      return JsonObjectForProductType;
+  }
     getWalletContentIndexForOffering(offering, walletContents) {
         let index = -1;
         for (let wcIndex = 0; wcIndex < walletContents.length; wcIndex++) {

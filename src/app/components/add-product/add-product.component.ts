@@ -187,6 +187,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   isCashBack: Boolean;
   subscription: any;
   taxTotal = 0;
+  isSmartCard = false;
   constructor(
     private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
     private sessionService?: SessionServiceApos,
@@ -288,36 +289,36 @@ export class AddProductComponent implements OnInit, OnDestroy {
    * @param {*} selectedItem
    * @memberof AddProductComponent
    */
-  isMaxProductLengthReached(selectedItem: any) {
-    this.isProductLimitReached = false;
-    this.currentCard.products.forEach(element => {
-      if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
+  // isMaxProductLengthReached(selectedItem: any) {
+  //   this.isProductLimitReached = false;
+  //   this.currentCard.products.forEach(element => {
+  //     if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
 
-        switch (element.product_type) {
-          case 1:
-            if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount) {
-              this.isProductLimitReached = true;
-            }
-            break;
-          case 2:
-            if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255) {
-              this.isProductLimitReached = true;
-            }
-            break;
-          case 3:
-            if (element.product_type == 3 && (((element.remaining_value +
-              (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
-              this.isProductLimitReached = true;
-              break;
-            }
-            if (this.isProductLimitReached) {
-              break;
-            }
-            return this.isProductLimitReached;
-        }
-      }
-    });
-  }
+  //       switch (element.product_type) {
+  //         case 1:
+  //           if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount) {
+  //             this.isProductLimitReached = true;
+  //           }
+  //           break;
+  //         case 2:
+  //           if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255) {
+  //             this.isProductLimitReached = true;
+  //           }
+  //           break;
+  //         case 3:
+  //           if (element.product_type == 3 && (((element.remaining_value +
+  //             (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
+  //             this.isProductLimitReached = true;
+  //             break;
+  //           }
+  //           if (this.isProductLimitReached) {
+  //             break;
+  //           }
+  //           return this.isProductLimitReached;
+  //       }
+  //     }
+  //   });
+  // }
 
   /**
    * checking the maximum product legnth for magnetic products
@@ -355,20 +356,20 @@ export class AddProductComponent implements OnInit, OnDestroy {
     let canAddProduct = false;
     switch (this.currentWalletLineItem._walletTypeId) {
       case MediaType.LUCC:
-      canAddProduct = true;
+        canAddProduct = true;
     }
     return canAddProduct;
   }
-  isUltraLightProductLimitReached() {
-    let canAddProduct = false;
-    switch (this.currentWalletLineItem._walletTypeId) {
-      case MediaType.LUCC:
-        if (this.currentWalletLineItem._walletContents.length == 1) {
-          canAddProduct = true;
-        }
-    }
-    return canAddProduct;
-  }
+  // isUltraLightProductLimitReached() {
+  //   let canAddProduct = false;
+  //   switch (this.currentWalletLineItem._walletTypeId) {
+  //     case MediaType.LUCC:
+  //       if (this.currentWalletLineItem._walletContents.length == 1 ) {
+  //         canAddProduct = true;
+  //       }
+  //   }
+  //   return canAddProduct;
+  // }
   /**
    * Checking the product is merchendise product or not before adding into the wallet
    *
@@ -408,7 +409,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       return true;
     }
     if (this.isUltraLightProduct()) {
-      if (this.isUltraLightProductLimitReached()) {
+      if (!this.isUltraLightProductLimitReached(selectedItem)) {
         return false;
       }
       return true;
@@ -447,6 +448,46 @@ export class AddProductComponent implements OnInit, OnDestroy {
       return false;
     }
 
+    return canAddProduct;
+  }
+  isUltraLightProductLimitReached(selectedItem) {
+    let canAddProduct = false;
+    let productType = 0;
+    let designator = 0;
+    let luccProductIndex = 0;
+    if ((this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0 &&
+      this.currentWalletLineItem._walletContents.length > 0)) {
+      productType = this.currentWalletLineItem._walletContents[luccProductIndex]._offering.Ticket.Group;
+      designator = this.currentWalletLineItem._walletContents[luccProductIndex]._offering.Ticket.Designator;
+    } else {
+      productType = this.currentCard.product.product_type;
+      designator = this.currentCard.product.designator;
+    }
+    if ((productType == selectedItem.Ticket.Group &&
+      designator == selectedItem.Ticket.Designator) ||
+      (productType == 0 && designator == 0)) {
+      canAddProduct = true;
+      if (this.isStoreRideProduct(selectedItem)) {
+        if (this.isCounttReachedForStoreRide(selectedItem)) {
+          return true;
+        }
+        return false;
+      }
+      if (this.isFrequentProduct(selectedItem)) {
+        if (this.isCounttReachedForFrequentRide(selectedItem)) {
+          return true;
+        }
+        return false;
+      }
+
+
+      if (this.isPayAsYouGoProduct(selectedItem)) {
+        if (this.isCounttReachedForPayAsYouGo(selectedItem)) {
+          return true;
+        }
+        return false;
+      }
+    }
     return canAddProduct;
   }
   /**
@@ -669,6 +710,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
       case MediaType.SMART_CARD_ID:
         message = 'Max product limit reached.';
         break;
+      case MediaType.LUCC:
+        message = 'Card product limit reached';
     }
     return message;
   }
@@ -1225,7 +1268,124 @@ export class AddProductComponent implements OnInit, OnDestroy {
     $('#addCardModal').modal('hide');
     $('#newCardModal').modal('show');
   }
+  checkCardType() {
+    this.handleGetCardPIDResult();
+    this.electronService.ipcRenderer.send('getCardPID', cardName);
+  }
+  existingCardClick() {
+    isExistingCard = true;
+    this.checkCardType();
+}
+  handleGetCardPIDResult() {
+    this.electronService.ipcRenderer.once('getCardPIDResult', (_event, data) => {
+        console.log('cardPID Result', data);
+        if (data == '') {
+            this.callCardPIDUltraLightC();
+        } else {
+            this.config.cardTypeDetected = MediaType.SMART_CARD_ID;
+            this.isSmartCard = true;
+            if (isExistingCard) {
+              this.ExistingCard();
+            } else {
+             this.newCard();
+            }
+        }
+    });
+}
+callCardPIDUltraLightC() {
+  this.handleGetCardPIDUltralightC();
+  this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
 
+}
+handleGetCardPIDUltralightC() {
+  this.electronService.ipcRenderer.once('getCardPIDUltraLightCResult', (_event, data) => {
+      this.config.cardTypeDetected = MediaType.LUCC;
+      console.log('UltraLight data', data);
+      this.isSmartCard = false;
+       this.readLUCCCard();
+  });
+}
+readLUCCCard() {
+  // this.updateSettingsForSmartAndLUCC();
+  this.callReadLUCCCard();
+}
+
+callReadLUCCCard() {
+  this.handleLUCCCardResult();
+  this.electronService.ipcRenderer.send('readCardUltralightC');
+}
+
+handleLUCCCardResult() {
+  this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
+      let isDuplicateCard = false;
+
+      if (data != undefined && data != '') {
+        localStorage.setItem('readCardData', JSON.stringify(data));
+        this.carddata = new Array(JSON.parse(data));
+        this.populateCardDataProductForLUCC();
+        const status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
+        if (Constants.INACTIVE == status) {
+          $('#inactiveValidation').modal('show');
+          return;
+        }
+        this._ngZone.run(() => {
+
+          const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+          ShoppingCartService.getInstance.shoppingCart = null;
+          this.cardJson.forEach(element => {
+            if (element.printed_id == JSON.parse(data).printed_id) {
+              isDuplicateCard = true;
+            }
+          });
+          if (isDuplicateCard) {
+            $('#newCardValidationModal').modal('show');
+            return;
+          } else {
+            if (isExistingCard) {
+              isExistingCard = false;
+              this.cardJson.push(JSON.parse(data));
+              this.currentCard = this.cardJson[this.cardJson.length - 1];
+              this.selectedProductCategoryIndex = 0;
+
+              this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+              this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+              this.activeWallet(this.shoppingcart._walletLineItem
+              [this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+            } else {
+              const isNewCard =  true; //this.checkIsCardNew();
+              if (isNewCard) {
+                 this.cardJson.push(this.carddata[0]);
+                this.currentCard = this.cardJson[this.cardJson.length - 1];
+                this.selectedProductCategoryIndex = 0;
+
+                this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, true);
+                this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+                this.activeWallet(this.shoppingcart._walletLineItem
+                [this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+              } else {
+                $('#newCardValidateModal').modal('show');
+              }
+            }
+          }
+        });
+      }
+  });
+}
+
+populateCardDataProductForLUCC() {
+  this.carddata[0].products = [];
+  this.carddata[0].products.push(this.carddata[0].product);
+  this.carddata[0].products[0].designator = this.carddata[0].card_designator;
+  this.carddata[0].products[0].product_type = this.carddata[0].card_type;
+  this.carddata[0].products[0].cardType = this.carddata[0].card_type;
+  this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
+  this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
+  this.carddata[0].products[0].start_date = this.carddata[0].start_date;
+  this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
+  this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
+  this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
+  this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+}
   /**
    * This method will call when you click on newcard / LUCC
    *
@@ -1561,7 +1721,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   isSmartCardFound() {
     let isSmartcardFound = false;
     this.shoppingcart._walletLineItem.forEach(element => {
-      if (element._walletTypeId == MediaType.SMART_CARD_ID) {
+      if (element._walletTypeId == MediaType.SMART_CARD_ID || element._walletTypeId == MediaType.LUCC) {
         isSmartcardFound = true;
       }
       if (!element._isNew && (0 == element._walletContents.length)) {

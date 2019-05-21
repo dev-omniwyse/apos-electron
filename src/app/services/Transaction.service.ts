@@ -55,7 +55,8 @@ export class TransactionService {
             if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
                 console.log('Adding Non-Fare Product transaction.');
                 items = this.generateTransactionForMerch(wallet, timeStamp, userData);
-            } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || wallet._walletTypeId == MediaType.MAGNETIC_ID) {
+            } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || 
+                wallet._walletTypeId == MediaType.MAGNETIC_ID || wallet._walletTypeId == MediaType.LUCC) {
 
                 let walletProductIdentifier = null;
                 let walletCost = 0;
