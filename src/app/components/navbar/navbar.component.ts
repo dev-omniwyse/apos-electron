@@ -4,7 +4,7 @@ import { CdtaService } from 'src/app/cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { environment } from '../../../environments/environment';
-import {SessionServiceApos} from 'src/app/session';
+import { SessionServiceApos } from 'src/app/session';
 
 
 declare var $: any;
@@ -20,6 +20,8 @@ export class NavbarComponent implements OnInit {
   hideAndShowLogout: Boolean;
   today = new Date();
   versionDate = new Date();
+  isSessionExpired: Boolean;
+
 
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private sessionService: SessionServiceApos,
     private electronService: ElectronService, private ref: ChangeDetectorRef, private http: HttpClient) {
@@ -35,13 +37,16 @@ export class NavbarComponent implements OnInit {
       mission => {
         this.terminalNumber = mission;
       });
-      this.subscription = this.cdtaservice.goToLogin$.subscribe(
-        proceedToLogIn => {
-          if (proceedToLogIn == true) {
-            this.logOut();
-            $('#userTimedOut').modal('show');
-          }
-        });
+    this.subscription = this.cdtaservice.goToLogin$.subscribe(
+      proceedToLogIn => {
+        if (proceedToLogIn == true) {
+          this.isSessionExpired = true;
+          this.logOut();
+          $('#userTimedOut').modal('show');
+        } else {
+          this.isSessionExpired = false;
+        }
+      });
   }
 
   /**
@@ -65,7 +70,7 @@ export class NavbarComponent implements OnInit {
       }
     });
     if (userData.shiftState != '3' && userData.shiftType == '0') {
-      $('#warning').modal('show');
+      (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
     } else if (userData.shiftState == '3' && userData.shiftType == '1' && localStorage.getItem('closingPausedMainShift') == 'true') {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
@@ -77,12 +82,8 @@ export class NavbarComponent implements OnInit {
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
     } else if (userData.shiftState != '3' && userData.shiftType == '1') {
-      $('#warning').modal('show');
-    } else if(userData.shiftState == '0' && userData.shiftType == 'unknown'){  
-      this.router.navigate(['login']);
-      this.cdtaservice.setterminalNumber(undefined);
-    }
-    else {
+      (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
+    } else {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
       localStorage.removeItem('mainShiftUser');
@@ -112,12 +113,13 @@ export class NavbarComponent implements OnInit {
    * @memberof NavbarComponent
    */
   navigateToGenfare() {
-    var urlToNavigate = "";
-    if (environment.production)
-      urlToNavigate = "https://link.cdta.org";
-    else
-      urlToNavigate = "https://cdta-" + localStorage.getItem("environment") + ".gfcp.io";
-    this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
+    let urlToNavigate = '';
+    if (environment.production) {
+      urlToNavigate = 'https://link.cdta.org';
+    } else {
+      urlToNavigate = 'https://cdta-' + localStorage.getItem('environment') + '.gfcp.io';
+      this.electronService.ipcRenderer.send('navigateToGenfare', urlToNavigate);
+    }
   }
 
   ngOnInit() {

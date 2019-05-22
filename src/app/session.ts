@@ -13,6 +13,8 @@ export class SessionServiceApos {
     idleState = 'Not started.';
     timedOut = false;
     lastPing?: Date = null;
+    terminalConfigJson: any = [];
+
     constructor(private idle: Idle, private keepalive: Keepalive,
         private cdtaService?: CdtaService, private electronService?: ElectronService, private router?: Router,
         private _ngZone?: NgZone) {
@@ -77,21 +79,32 @@ export class SessionServiceApos {
     }
 
     ngOnInit(): void {
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
+        // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+        // Add 'implements OnInit' to the class.
 
     }
 
     timeOutUser() {
         localStorage.setItem('userTimedOut', 'true');
     }
+    /**
+     * This method is for start the session after completion of login
+     *
+     * @memberof SessionServiceApos
+     */
     startSession() {
-        this.idle.setIdle(1799);
+    this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+        this.idle.setIdle((this.terminalConfigJson.idleTimeOut * 60) - 1);
         this.idle.setTimeout(1);
         this.idle.watch();
         this.idleState = 'Started.';
         this.timedOut = false;
       }
+    /**
+     * This method is for stop the session.
+     *
+     * @memberof SessionServiceApos
+     */
     sessionStop() {
         this.idle.stop();
     }

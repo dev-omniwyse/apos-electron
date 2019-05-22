@@ -19,31 +19,32 @@ export class FareCardService {
     constructor() {
 
         if (FareCardService._fareCardService) {
-            throw new Error("Error: Instantiation failed: Use FareCardService.getInstance() instead of new.");
+            throw new Error('Error: Instantiation failed: Use FareCardService.getInstance() instead of new.');
         }
         FareCardService._fareCardService = this;
     }
     /***
-     * created shoppingcart object here. in future we need to change 
+     * created shoppingcart object here. in future we need to change
      */
     // shoppingCart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
 
-    //add Offering to WalletContent
+    // add Offering to WalletContent
     addFareProduct(shoppingCart, offering, walletLineItem, requestFromCustomOffering) {
 
         // FareCardService.getInstance.getWalletContentsForGivenUID(walletLineItem.cardPID);
-        let indexOfWalletInShoppingCart = ShoppingCartService.getInstance.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
+        const indexOfWalletInShoppingCart = ShoppingCartService.getInstance.getIndexOfWalletLineItem(shoppingCart, walletLineItem);
         let walletContents = walletLineItem._walletContents;
-        console.log("Found Walletcontents for this cardUID are :");
-        let index = FareCardService.getInstance.getWalletContentIndexForOffering(offering, walletContents);
+        console.log('Found Walletcontents for this cardUID are :');
+        const index = FareCardService.getInstance.getWalletContentIndexForOffering(offering, walletContents);
         if (-1 != index) {
-            console.log("Is Existing Offering? increase qunatity.");
-            walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering, walletContents, index, requestFromCustomOffering);
+            console.log('Is Existing Offering? increase qunatity.');
+            walletContents = FareCardService.getInstance.updateOfferingCountForThisWallet(offering,
+                walletContents, index, requestFromCustomOffering);
             shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents = walletContents;
             walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents;
         } else {
-            console.log("adding wallet content..");
-            let walletContent = new WalletContent();
+            console.log('adding wallet content..');
+            const walletContent = new WalletContent();
 
             walletContent.cardUID = walletLineItem._cardUID;
             walletContent.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletContent(walletLineItem);
@@ -51,14 +52,23 @@ export class FareCardService {
             walletContent.unitPrice = offering.UnitPrice;
             walletContent.description = offering.Description;
             walletContent.quantity = 1;
-            walletContent.status = "";
+            walletContent.status = '';
             walletContent.slot = 0;
             walletContent.balance = 0.0;
             walletContent.startDate = 0;
             walletContent.expirationDate = 0;
             walletContent.rechargesPending = 0;
+            if (MediaType.MERCHANDISE_ID == walletLineItem._walletTypeId) {
+                if (offering.TaxRate != undefined) {
+                    walletContent.taxRate = offering.TaxRate;
+                    walletContent.taxAmount = +(offering.UnitPrice * (offering.TaxRate) / 100).toFixed(2);
+                } else {
+                    walletContent.taxRate = 0.00;
+                    walletContent.taxAmount = 0.00;
+                }
+            }
             shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents.push(walletContent);
-            walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents
+            walletLineItem._walletContents = shoppingCart._walletLineItem[indexOfWalletInShoppingCart]._walletContents;
         }
 
         return shoppingCart;
@@ -76,9 +86,9 @@ export class FareCardService {
     }
 
     updateOfferingCountForThisWallet(offering, walletContents, index, isCustomOffering) {
-        console.log("request for updating wallet contents");
-        console.log("Index of duplicate element is :" + index);
-        if(isCustomOffering){
+        console.log('request for updating wallet contents');
+        console.log('Index of duplicate element is :' + index);
+        if (isCustomOffering) {
             walletContents[index]._unitPrice = walletContents[index]._unitPrice + offering.UnitPrice;
         } else {
             walletContents[index]._quantity = walletContents[index]._quantity + 1;
@@ -86,7 +96,7 @@ export class FareCardService {
         return walletContents;
     }
 
-    //add smart card data - WalletLineItem
+    // add smart card data - WalletLineItem
     addSmartCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
 
         /***
@@ -99,25 +109,25 @@ export class FareCardService {
             shoppingCart = FareCardService.getInstance.addNonFareWallet(shoppingCart);
         }
 
-        let offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.SMART_CARD_ID);
-        let walletC = [];
+        const offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.SMART_CARD_ID);
+        const walletC = [];
         /**
          * if card is new then add price else say it as 0;
          */
         let fareCardPrice = 0;
-        let description = " ";
+        let description = ' ';
         if (isNew) {
             fareCardPrice = offering.UnitPrice;
-            description = "New " + offering.Description+ " $"+offering.UnitPrice.toFixed(0);
+            description = 'New ' + offering.Description + ' $' + offering.UnitPrice.toFixed(0);
         } else {
             fareCardPrice = 0;
-            description = "1 Card:"+" "+readCardJSON.printed_id;
+            description = '1 Card:' + ' ' + readCardJSON.printed_id;
         }
         // let walletLineItem = new WalletLineItem(Utils.getInstance.generateSequenceNumberForWalletLineItem(shoppingCart), offering,
         //     readCardJSON.printed_id, readCardJSON.uid, MediaType.SMART_CARD_ID, readCardJSON.user_profile, fareCardPrice,
         //     "New " + offering.Description, walletC, readCardJSON.card_expiration_date, false);
 
-        let walletLineItem = new WalletLineItem();
+        const walletLineItem = new WalletLineItem();
         shoppingCart._activeCardUID = readCardJSON.uid;
 
         walletLineItem.cardPID = readCardJSON.printed_id;
@@ -139,7 +149,7 @@ export class FareCardService {
 
     addNonFareWallet(shoppingCart) {
         // get shoppingcartJSON
-        let walletLineItem = new WalletLineItem();
+        const walletLineItem = new WalletLineItem();
 
         walletLineItem.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletLineItem(shoppingCart);
         walletLineItem.offering = null;
@@ -159,15 +169,15 @@ export class FareCardService {
          */
         // processAutoload();
 
-        var isCardNew = true;
+        let isCardNew = true;
 
     }
 
     getOfferingBasedOnWalletTypeID(offeringJSONArray, walletTypeID) {
 
-        console.log("inside getOfferingBasedOnWalletTypeID");
+        console.log('inside getOfferingBasedOnWalletTypeID');
         let offeringFound = null;
-        for (let o of offeringJSONArray) {
+        for (const o of offeringJSONArray) {
             if (!o.IsMerchandise && o.WalletType != null && o.Ticket == null && o.WalletType.WalletTypeId == walletTypeID) {
                 offeringFound = o;
                 break;
@@ -182,11 +192,11 @@ export class FareCardService {
         if (null == shoppingCart._walletLineItem[0]) {
             shoppingCart = FareCardService.getInstance.addNonFareWallet(shoppingCart);
         }
-        let offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.MAGNETIC_ID);
-        console.log("Found offering");
-        let walletC = [];
-        let walletLineItem = new WalletLineItem();
-        let text = Constants.MAGNETICS_TEXT + Utils.getInstance.genearateMagneticSequenceNumber(shoppingCart);
+        const offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.MAGNETIC_ID);
+        console.log('Found offering');
+        const walletC = [];
+        const walletLineItem = new WalletLineItem();
+        const text = Constants.MAGNETICS_TEXT + Utils.getInstance.genearateMagneticSequenceNumber(shoppingCart);
 
         walletLineItem.cardPID = text;
         walletLineItem.cardUID = new Date().getTime().toString();
@@ -196,7 +206,7 @@ export class FareCardService {
         walletLineItem.walletTypeId = MediaType.MAGNETIC_ID;
         walletLineItem.fareCodeId = 0;
         walletLineItem.unitPrice = offering.UnitPrice;
-        walletLineItem.description = 1+"New Magnetics";
+        walletLineItem.description = 1 + 'New Magnetics';
         walletLineItem.walletContents = walletC;
         walletLineItem.encoded = false;
         walletLineItem.isNew = true;
@@ -205,16 +215,5 @@ export class FareCardService {
         return shoppingCart;
     }
 
-    //list of walletLinItems
-
-    getListOfWalletLineItems() {
-
-    }
-
-    //get magneticCountIndex
-
-    //getSubtotal for cardUID
-
-    //getTotalFor CardUID
 
 }

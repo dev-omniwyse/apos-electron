@@ -5,6 +5,7 @@ import { ElectronService } from 'ngx-electron';
 import { MethodFn } from '@angular/core/src/reflection/types';
 import { MethodCall } from '@angular/compiler';
 import { Utils } from 'src/app/services/Utils.service';
+import { SessionServiceApos } from 'src/app/session';
 
 declare var $: any;
 declare var pcsc: any;
@@ -109,7 +110,7 @@ export class AdminComponent implements OnInit {
   public showSalesAndPayments: Boolean = true;
 
   constructor(private cdtaService: CdtaService, private router: Router, private _ngZone: NgZone,
-    private electronService: ElectronService, ) {
+    private electronService: ElectronService, private sessionService: SessionServiceApos, ) {
 
     this.electronService.ipcRenderer.on('adminSalesResult', (event, data) => {
       if (data != undefined && data != '') {
@@ -231,6 +232,7 @@ export class AdminComponent implements OnInit {
       if (data != undefined && data != '') {
         this._ngZone.run(() => {
           localStorage.setItem('terminalConfigJson', data);
+          this.sessionService.startSession();
           this.terminalConfigJson = JSON.parse(data);
           this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
           this.cdtaService.setterminalNumber(JSON.parse(data).SerialNumber);
@@ -453,6 +455,7 @@ export class AdminComponent implements OnInit {
    * Method to SYNC the Data.
    */
   syncData() {
+    this.sessionService.sessionStop();
     this.loading = true;
     // this.maxLoopingCount = 600;
     this.isCurrentSync = true;
