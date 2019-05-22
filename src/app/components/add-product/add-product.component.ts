@@ -1352,8 +1352,7 @@ handleLUCCCardResult() {
               this.activeWallet(this.shoppingcart._walletLineItem
               [this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
             } else {
-              const isNewCard =  true; //this.checkIsCardNew();
-              if (isNewCard) {
+              if (!(this.carddata[0].products[0].product_type != 0 && this.carddata[0].products[0].designator != 0)) {
                 this.cardJson.push(this.carddata[0]);
                 this.currentCard = this.cardJson[this.cardJson.length - 1];
                 this.selectedProductCategoryIndex = 0;
@@ -1362,7 +1361,7 @@ handleLUCCCardResult() {
                 this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
                 this.activeWallet(this.shoppingcart._walletLineItem
                 [this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
-              } else {
+               } else {
                 $('#newCardValidateModal').modal('show');
               }
             }
@@ -1681,6 +1680,10 @@ populateCardDataProductForLUCC() {
   checkIsCardNew() {
     const flag = Utils.getInstance.isNew(this.carddata[0]);
     return flag;
+  }
+
+  checkIsLUCCCardNew() {
+    const flag = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0)  ? true : false;
   }
 
 

@@ -418,10 +418,16 @@ export class ReadcardComponent implements OnInit {
             if (data != undefined && data != '') {
                 this.setCardOptionsForLUCCAndSmartCard();
                 this._ngZone.run(() => {
-
                     localStorage.setItem('printCardData', data);
                     this.carddata = new Array(JSON.parse(data));
                     this.populateCardDataProductForLUCC();
+                    if (!isExistingCard && this.carddata[0].products[0].product_type != 0 && this.carddata[0].products[0].designator != 0) {
+                        this.carddata.length = [];
+                        $('#newCardValidateModal').modal('show');
+                        this.isShowCardOptions = true;
+
+                        return;
+                    }
                     localStorage.setItem('readCardData', JSON.stringify(JSON.stringify(this.carddata[0])));
                     localStorage.setItem('userProfile', JSON.stringify(this.cardType));
                     console.log('this.carddata', this.carddata);
