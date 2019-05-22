@@ -422,7 +422,7 @@ ipcMain.on('adminSalesPaymentMethod', (event, userID, shiftType, startTime, endT
     event.sender.send('adminSalesPaymentResult', result, userID, shiftType);
 })
 
-ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID) => {
+ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID, shiftSate) => {
     // var javaLong1 = java.newInstanceSync("java.lang.Long", startTime.toString())
     // var javaLong2 = java.newInstanceSync("java.lang.Long", endTime.toString())
     //  logger.info('sales call', shiftType, startTime.toString(), endTime.toString())
@@ -431,15 +431,15 @@ ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID) => {
     var result = posAppletInstance.getSalesreportSync(shiftType, S, E);
     logger.info("salesData Result", '' + result)
 
-    event.sender.send('salesDataResult', result, userID, shiftType);
+    event.sender.send('salesDataResult', result, userID, shiftType, shiftSate);
 })
-ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3) => {
+ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3,shiftSate) => {
     var S = java.newLong(Number(startTime / 1000));
     var E = java.newLong(Number(endTime / 1000));
     var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
     logger.info("paymentsData Result", '' + result)
 
-    event.sender.send('paymentsDataResult', result, userID, shiftType);
+    event.sender.send('paymentsDataResult', result, userID, shiftType,shiftSate);
 })
 
 ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {

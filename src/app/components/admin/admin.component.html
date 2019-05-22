@@ -5,6 +5,7 @@
                 <div class="main-shift">
                     <div class="main-shift-heads">{{statusOfShiftReport}}</div>
                     <div class="main-shift-head">Shift Report</div>
+                    <div *ngIf = "showSalesAndPayments">
                     <div class="main-shift-row">
                         <div class="pull-left">Fare Sold Total</div>
                         <div class="pull-right">${{fareTotal | number : '1.2-2'}}</div>
@@ -34,6 +35,7 @@
                     <div class="main-shift-row">
                         <div class="pull-left">Over/Short</div>
                         <div class="pull-right">${{overShort | number : '1.2-2'}}</div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -114,6 +116,42 @@
                         Device Configuration 
                       </button>
 
+                    </div>
+                    <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 'closeMain' ">
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                      Close Main Shift 
+                    </button>
+                        
+                        <button class="arrow_right" [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shift Sales Summary 
+                    </button>
+
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS 
+                    </button>
+
+
+
+                        <button class="device-bottom arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                      Device Configuration 
+                    </button>
+                    </div>
+                    <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 'closeRelief' ">
+                        <button class="arrow_right" [routerLink]="['/shifts']">
+                      Close Relief Shift 
+                    </button>
+
+                        <button class="arrow_right" [routerLink]="['/shift_sales']" (click)="getSalesReports();">
+                      Shift Sales Summary 
+                    </button>
+
+                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                      Sync With CDS 
+                    </button>
+
+                        <button class="arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
+                      Device Configuration 
+                    </button>
                     </div>
 
                     <div class="modal fade" id="reliefShiftModal" role="dialog">

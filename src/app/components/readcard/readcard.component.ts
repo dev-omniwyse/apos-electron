@@ -108,6 +108,8 @@ export class ReadcardComponent implements OnInit {
     public cardType: any = '';
     public salesData: any;
     public salesPaymentData: any;
+    public isMainShiftOpen: Boolean = false;
+    public isReliefShiftOpen: Boolean = false;
     backendPaymentReport = [];
     backendSalesReport = [];
     paymentReport: any;
@@ -120,6 +122,8 @@ export class ReadcardComponent implements OnInit {
     maxSyncLimitReachedText = '';
     ticketMap = new Map();
     subscription: any;
+    expectedCash: any = 0;
+    reliefExpectedCash:any = 0;
 
 
     constructor(private cdtaservice: CdtaService,
@@ -156,7 +160,7 @@ export class ReadcardComponent implements OnInit {
         this.maxSyncLimitReachedText =
             'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
 
-        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType) => {
+        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType,shiftState) => {
             console.log('print sales data', data);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -184,7 +188,7 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType) => {
+        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType,shiftState) => {
             console.log('print payments  data', data, userID);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -196,6 +200,18 @@ export class ReadcardComponent implements OnInit {
                         paymentReport[report].userID = userID;
                         paymentReport[report].shiftType = shiftType;
                         this.backendPaymentReport.push(paymentReport[report]);
+                        if (paymentReport[report].paymentMethod == 'CASH') {
+                            if (shiftType == '0' && shiftState == '0') {
+                                this.expectedCash = Number(this.expectedCash) + paymentReport[report].paymentAmount;
+                                this.expectedCash = this.expectedCash.toFixed(2);
+                                localStorage.setItem('mainShiftExpectedCash', this.expectedCash);
+                            }
+                            if (shiftType == '1' && shiftState == '0') {
+                                this.reliefExpectedCash = Number(this.reliefExpectedCash) + paymentReport[report].paymentAmount;
+                                this.reliefExpectedCash = this.reliefExpectedCash.toFixed(2);
+                                localStorage.setItem('reliefShiftExpectedCash', this.reliefExpectedCash);
+                            }
+                        }
                     }
                     console.log(' this.backendPaymentReport', this.backendPaymentReport);
                     localStorage.setItem('printPaymentData', JSON.stringify(this.backendPaymentReport));
@@ -490,9 +506,10 @@ export class ReadcardComponent implements OnInit {
         // tslint:disable-next-line:prefer-const
         let shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
         shiftStore.forEach(record => {
-
-            this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID))
-            this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null)
+           // if (record.shiftType != 'unknown') {
+                this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID), Number(record.shiftState))
+                this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null,Number(record.shiftState))
+           // }
         });
 
     }
@@ -554,7 +571,7 @@ export class ReadcardComponent implements OnInit {
     hideModalPop() {
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
         shiftReports.forEach(element => {
-            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
+            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0') || (element.shiftType == 'unknown' && element.shiftState == '0')) {
                 localStorage.setItem('hideModalPopup', 'true');
             } else {
                 if (localStorage.getItem('shiftReopenedByMainUser') == 'true') {
@@ -589,9 +606,17 @@ export class ReadcardComponent implements OnInit {
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         if (localStorage.getItem('shiftReport') != undefined) {
             const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
+            const userId = localStorage.getItem('userID');
             shiftReports.forEach(element => {
                 // let elementUserId = String(element.userID).trim();
                 // if (elementUserId == userId) {
+                    if (element.shiftState == '0' && element.shiftType == '0') {
+                        this.isMainShiftOpen = true;
+                      }
+                      if (element.shiftState == '0' && element.shiftType == '1') {
+                        this.isReliefShiftOpen = true;
+                      }
+                     
                 if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
                     this.statusOfShiftReport = 'Main Shift is Closed';
                 } else
@@ -616,10 +641,27 @@ export class ReadcardComponent implements OnInit {
                     // tslint:disable-next-line:max-line-length
                 } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
                     this.disableCards = true;
-                } else {
+                } else
+                if (element.shiftState == '0' && element.userID != userId && this.isMainShiftOpen) {
+                    this.statusOfShiftReport = 'Shift Owned By Other User';
+                    this.disableCards = true;
+                  } else if (element.shiftState == '0' && element.userID != userId && this.isReliefShiftOpen) {
+                    this.statusOfShiftReport = 'Shift Owned By Other User';
+                    this.disableCards = true;
+                  }
+                else {
                     this.disableCards = false;
                 }
                 // }
+
+                if (element.shiftState == '0' && element.shiftType == '0') {
+                    this.expectedCash = element.openingDrawer;
+                    localStorage.setItem('mainShiftExpectedCash', this.expectedCash);
+                }
+                if (element.shiftState == '0' && element.shiftType == '1') {
+                    this.reliefExpectedCash = element.openingDrawer;
+                    localStorage.setItem('reliefShiftExpectedCash', this.reliefExpectedCash);
+                }
             });
         }
     }
