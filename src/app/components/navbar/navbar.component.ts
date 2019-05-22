@@ -75,6 +75,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
       localStorage.removeItem('closingPausedMainShift');
+      localStorage.removeItem('mainShiftUser');
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
     } else if (userData.shiftState == '3' && userData.shiftType == '1') {
@@ -85,6 +86,7 @@ export class NavbarComponent implements OnInit {
     } else {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
+      localStorage.removeItem('mainShiftUser');
       localStorage.removeItem('closingPausedMainShift');
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
