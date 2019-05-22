@@ -82,6 +82,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   currentCardProductList: any = [];
   cardIndex: any = 0;
   isNew: any = false;
+  isLUCCCardNew: any = false;
   catalogJson: any = [];
   terminalConfigJson: any = [];
   disableEncode = false;
@@ -420,7 +421,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   initiateSaveTransaction() {
     this.disableEncode = true;
     const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
-    if (this.isNew) {
+    if (this.isNew || this.isLUCCCardNew) {
       this.handleUpdateCardDataResult();
       this.electronService.ipcRenderer.send('updateCardData', cardName, expirationDate);
     } else {
@@ -582,6 +583,10 @@ export class CarddataComponent implements OnInit, OnChanges {
       (this.currentCard.products[0].remaining_value == 0))) ? true : false;
   }
 
+  checkIsLUCCCardNew() {
+    this.isLUCCCardNew = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0)  ? true : false;
+  }
+
   /**
    *
    *This function poupulates currentCardProductList with shoppingCart items based on cradIndex.
@@ -730,8 +735,8 @@ export class CarddataComponent implements OnInit, OnChanges {
         storedValueJSONObj = null;
       }
       this.handleEncodeCardResult();
-      this.checkIsCardNew();
-      if (this.isNew) {
+      this.checkIsLUCCCardNew()
+      if (this.isLUCCCardNew) {
         this.electronService.ipcRenderer.send('encodeCardUltralightC', this.currentCard.printed_id,
         frequentRideJSONObj,  storedRideJSONObj, storedValueJSONObj);
       } else {

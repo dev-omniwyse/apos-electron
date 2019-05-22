@@ -1318,7 +1318,7 @@ callReadLUCCCard() {
 handleLUCCCardResult() {
   this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
       let isDuplicateCard = false;
-
+      debugger;
       if (data != undefined && data != '') {
         localStorage.setItem('readCardData', JSON.stringify(data));
         this.carddata = new Array(JSON.parse(data));
@@ -1343,7 +1343,7 @@ handleLUCCCardResult() {
           } else {
             if (isExistingCard) {
               isExistingCard = false;
-              this.cardJson.push(JSON.parse(data));
+              this.cardJson.push(this.carddata[0]);
               this.currentCard = this.cardJson[this.cardJson.length - 1];
               this.selectedProductCategoryIndex = 0;
 
@@ -1354,7 +1354,7 @@ handleLUCCCardResult() {
             } else {
               const isNewCard =  true; //this.checkIsCardNew();
               if (isNewCard) {
-                 this.cardJson.push(this.carddata[0]);
+                this.cardJson.push(this.carddata[0]);
                 this.currentCard = this.cardJson[this.cardJson.length - 1];
                 this.selectedProductCategoryIndex = 0;
 
