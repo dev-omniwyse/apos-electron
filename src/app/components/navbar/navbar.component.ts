@@ -70,6 +70,7 @@ export class NavbarComponent implements OnInit {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
       localStorage.removeItem('closingPausedMainShift');
+      localStorage.removeItem('mainShiftUser');
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
     } else if (userData.shiftState == '3' && userData.shiftType == '1') {
@@ -77,9 +78,14 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['login']);
     } else if (userData.shiftState != '3' && userData.shiftType == '1') {
       $('#warning').modal('show');
-    } else {
+    } else if(userData.shiftState == '0' && userData.shiftType == 'unknown'){  
+      this.router.navigate(['login']);
+      this.cdtaservice.setterminalNumber(undefined);
+    }
+    else {
       localStorage.removeItem('shiftReport');
       localStorage.removeItem('mainShiftClose');
+      localStorage.removeItem('mainShiftUser');
       localStorage.removeItem('closingPausedMainShift');
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);

@@ -24,6 +24,9 @@ export class ShiftsComponent implements OnInit {
     setShiftText: any;
     expectedCash: any = 0;
     public selectedValue: any = 0;
+    specialUser: Boolean = false;
+    public isMainShiftOpen: Boolean = false;
+    public isReliefShiftOpen: Boolean = false;
 
     constructor(private formBuilder: FormBuilder, private cdtaService: CdtaService,
         private router: Router, private _ngZone: NgZone, private electronService: ElectronService) {
@@ -79,15 +82,16 @@ export class ShiftsComponent implements OnInit {
                     element.timeClosed = new Date().getTime();
                     element.userThatClosedShift = localStorage.getItem('userEmail');
                 }
-            } else {
-                if (element.userID == shiftreportUser && element.shiftType == '0') {
+            }
+            else {
+                if ((element.userID == shiftreportUser && element.shiftType == '0' && element.shiftState == '0') || (this.isMainShiftOpen == true && element.shiftType == '0' && element.shiftState == '0')) {
                     element.shiftState = '3';
                     element.timeClosed = new Date().getTime();
                     element.closingDrawer = + this.productTotal;
                     element.userThatClosedShift = localStorage.getItem('userEmail');
                     localStorage.setItem('mainShiftClose', mainShiftClose);
                 } else
-                    if (element.userID == shiftreportUser && element.shiftType == '1') {
+                    if ((element.userID == shiftreportUser && element.shiftType == '1'&& element.shiftState == '0') || (this.isReliefShiftOpen == true && element.shiftType == '1' && element.shiftState == '0')) {
                         element.shiftState = '3';
                         element.timeClosed = new Date().getTime();
                         element.closingDrawer = + this.productTotal;
@@ -98,6 +102,7 @@ export class ShiftsComponent implements OnInit {
         /**
          * here we are looping the updated shiftreport for printing open and close cash drawer
          */
+
         shiftStore.forEach(element => {
             if (localStorage.getItem('closingPausedMainShift') == 'true') {
                 if (element.userID == shiftreportUser) {
@@ -109,7 +114,7 @@ export class ShiftsComponent implements OnInit {
                 if (element.userID == shiftreportUser && element.shiftType == '0') {
                     this.cdtaService.printAllOrSpecificShiftData(null);
                 } else if (element.userID == shiftreportUser && element.shiftType == '1' &&
-                localStorage.getItem('closingPausedMainShift') != 'true') {
+                    localStorage.getItem('closingPausedMainShift') != 'true') {
                     this.cdtaService.printAllOrSpecificShiftData(new Array(element));
                 }
             }
@@ -132,19 +137,26 @@ export class ShiftsComponent implements OnInit {
         const userId = localStorage.getItem('userID');
         reliefShif.forEach(element => {
             if (element.shiftState == '3' && element.userID == userId &&
-            element.shiftType == '1' && localStorage.getItem('closingPausedMainShift')) {
+                element.shiftType == '1' && localStorage.getItem('closingPausedMainShift')) {
                 $('#closeShiftModal').modal('show');
             } else
                 if (element.shiftState == '3' && element.userID == userId && (element.shiftType == '0' || element.shiftType == '1')) {
+                   if(this.isMainShiftOpen == false){
                     $('#openShiftModal').modal('show');
+                   }
                 } else if (element.shiftState == '0' && element.userID == userId &&
-                (element.shiftType == '0' || element.shiftType == '1')) {
+                    (element.shiftType == '0' || element.shiftType == '1')) {
                     $('#closeShiftModal').modal('show');
-                } else if (element.shiftState == '4' && element.userID == userId && element.shiftType == '0') {
-
                 }
+                else
+                    if ((element.shiftState == '0' && element.userID != localStorage.getItem('userID') && this.isMainShiftOpen) || 
+                    (element.shiftState == '0' && element.userID != localStorage.getItem('userID') && this.isReliefShiftOpen)) {
+                        //  this.specialUser = true
+                        $('#closeShiftModal').modal('show');
+                    }
         });
     }
+
 
     /**
      *This Method to make calsi data empty in input
@@ -190,7 +202,7 @@ export class ShiftsComponent implements OnInit {
         }
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
         shiftReports.forEach(element => {
-            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
+            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0') || (element.shiftType == 'unknown' && element.shiftState == '0')) {
                 localStorage.setItem('hideModalPopup', 'true');
             } else if (element.shiftState == 3 && element.userID == localStorage.getItem('userID')) {
                 localStorage.setItem('hideModalPopup', 'false');
@@ -203,7 +215,7 @@ export class ShiftsComponent implements OnInit {
      *
      * @memberof ShiftsComponent
      */
-    handleOpenCashDrawerResult() { 
+    handleOpenCashDrawerResult() {
         this.electronService.ipcRenderer.once('openCashDrawerResult', (event, data) => {
             if (data != undefined && data != '') {
                 if (data) {
@@ -221,6 +233,12 @@ export class ShiftsComponent implements OnInit {
         this.handleOpenCashDrawerResult();
         this.electronService.ipcRenderer.send('openCashDrawer');
         shiftReports.forEach(element => {
+            if (element.shiftState == '0' && element.shiftType == '0') {
+                this.isMainShiftOpen = true;
+            }
+            if (element.shiftState == '0' && element.shiftType == '1') {
+                this.isReliefShiftOpen = true;
+            }
             if (localStorage.getItem('closingPausedMainShift') == 'true') {
                 this.setShiftStatus = 'CLOSE SHIFT';
                 this.expectedCash = localStorage.getItem('mainUserExpectedCash');
@@ -235,14 +253,29 @@ export class ShiftsComponent implements OnInit {
                     this.expectedCash = localStorage.getItem('expectedCash');
                     this.setShiftText = 'Enter the total closing amount in the till and Tap \'Enter\' ';
                 } else if ((element.shiftType == '1' && element.shiftState == '3') && element.userID == userId) {
+                  if(this.isMainShiftOpen == false){
                     this.setShiftStatus = 'RELIEF SHIFT';
                     this.expectedCash = 1;
                     this.setShiftText = 'Enter the total opening amount in the till and Tap \'Enter\' ';
+                  }else{
+                    this.setShiftStatus = 'CLOSE SHIFT';
+                    this.expectedCash = localStorage.getItem('mainShiftExpectedCash');
+                    this.setShiftText = 'Enter the total closing amount in the till and Tap \'Enter\' ';
+                  }
                 } else if ((element.shiftType == '1' && element.shiftState == '0') && element.userID == userId) {
                     this.setShiftStatus = 'CLOSE RELIEF SHIFT';
                     this.expectedCash = localStorage.getItem('expectedCash');
                     this.setShiftText = 'Enter the total closing amount in the till and Tap \'Enter\' ';
                 }
+            if (element.shiftState == '0' && element.userID != localStorage.getItem('userID') && this.isMainShiftOpen) {
+                this.setShiftStatus = 'CLOSE SHIFT';
+                this.expectedCash = localStorage.getItem('mainShiftExpectedCash');
+                this.setShiftText = 'Enter the total closing amount in the till and Tap \'Enter\' ';
+            } else if (element.shiftState == '0' && element.userID != localStorage.getItem('userID') && this.isReliefShiftOpen) {
+                this.setShiftStatus = 'CLOSE RELIEF SHIFT';
+                this.expectedCash = localStorage.getItem('reliefShiftExpectedCash');
+                this.setShiftText = 'Enter the total closing amount in the till and Tap \'Enter\' ';
+            }
         });
     }
 }

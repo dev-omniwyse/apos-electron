@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { CdtaService } from '../../cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Utils } from 'src/app/services/Utils.service';
-import {SessionServiceApos} from 'src/app/session';
+import { SessionServiceApos } from 'src/app/session';
 
 declare var $: any;
 
@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
     public statusOfShiftReportBoolean: Boolean = false;
     public lockedByUserBoolean: Boolean = false;
     public ownedByUserBoolean: Boolean = false;
+    public shiftPausedOrNot: Boolean = false;
     shiftReport: any = [
         {
             userEmail: '',
@@ -44,7 +45,8 @@ export class LoginComponent implements OnInit {
             initialOpeningTime: 0,
             timeOpened: 0,
             timeClosed: 0,
-            userThatClosedShift: ''
+            userThatClosedShift: '',
+            splUser: ''
         }
     ];
 
@@ -58,6 +60,7 @@ export class LoginComponent implements OnInit {
         this.electronService.ipcRenderer.on('loginCallResult', (event, data) => {
             if (data != undefined && data != '') {
                 // this.loading = false
+                console.log('login user data', data);
                 localStorage.removeItem('deviceLocked');
                 const localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
                 if (null == localDeviceInfo || undefined == localDeviceInfo) {
@@ -80,8 +83,9 @@ export class LoginComponent implements OnInit {
                     } else if (element.userID != this.userdata.personId && element.userID != '') {
                         shiftIndex++;
 
-                    } else if (element.shiftState == '4' && element.userID == this.userdata.personId && element.shiftType == '0') {
-
+                    }
+                    if (element.shiftState == '4' && element.shiftType == '0') {
+                        this.shiftPausedOrNot = true;
                     }
                 });
                 if (shiftIndex === shiftStore.length) {
@@ -96,7 +100,8 @@ export class LoginComponent implements OnInit {
                         initialOpeningTime: 0,
                         timeOpened: 0,
                         timeClosed: 0,
-                        userThatClosedShift: ''
+                        userThatClosedShift: '',
+                        splUser: ''
                     };
                     shiftStore.push(newShiftReport);
                 }
@@ -158,28 +163,29 @@ export class LoginComponent implements OnInit {
                             this.statusOfShiftReportBoolean = true;
 
                             this.statusOfShiftReport = 'Main Shift is Paused';
+                            if(localStorage.getItem('deviceLocked') == 'true'){
+                                this.lockedByUserBoolean = true;
+                                this.lockedByUser = localStorage.getItem('userEmail');
+                            }else
                             if (localStorage.getItem('mainShiftUserLock') != undefined) {
                                 this.ownedByUserBoolean = true;
                                 this.ownedByUser = localStorage.getItem('mainShiftUserLock');
                             }
-
-
                         } else if (element.shiftState == '0' && element.shiftType == '0' && element.userEmail != '') {
-                            // this.statusOfShiftReport = "Main Shift is Paused"
                             this.lockedByUserBoolean = true;
                             this.lockedByUser = localStorage.getItem('userEmail');
 
                         } else if (element.shiftState == '0' && element.shiftType == '1' && element.userEmail != '') {
                             this.ownedByUserBoolean = false;
                             localStorage.removeItem('closingPausedMainShift');
-
                         }
             });
         }
 
-        if (localStorage.getItem('deviceLocked') == 'true') {
+        if (localStorage.getItem('deviceLocked') == 'true' && localStorage.getItem('deviceLocked') != undefined ) {
             this.lockedByUserBoolean = true;
             this.lockedByUser = localStorage.getItem('userEmail');
+            console.log('main_shift_user lock', this.lockedByUser);
         }
 
     }
