@@ -9,6 +9,7 @@ import { TransactionService } from 'src/app/services/Transaction.service';
 import { debug } from 'util';
 import { timestamp } from 'rxjs/operators';
 import { Utils } from 'src/app/services/Utils.service';
+import { FareCardService } from 'src/app/services/Farecard.service';
 declare var pcsc: any;
 declare var $: any;
 const pcs = pcsc();
@@ -81,6 +82,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   currentCardProductList: any = [];
   cardIndex: any = 0;
   isNew: any = false;
+  isLUCCCardNew: any = false;
   catalogJson: any = [];
   terminalConfigJson: any = [];
   disableEncode = false;
@@ -97,14 +99,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     route.params.subscribe(val => {
       this.cardIndex = 0;
 
-      this.terminalConfigJson = JSON.parse(localStorage.getItem("terminalConfigJson"));
-      this.cardJson = JSON.parse(localStorage.getItem("cardsData"));
-      const item = JSON.parse(localStorage.getItem("catalogJSON"));
+      this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
+      this.cardJson = JSON.parse(localStorage.getItem('cardsData'));
+      const item = JSON.parse(localStorage.getItem('catalogJSON'));
       this.catalogJson = JSON.parse(item).Offering;
-      this.shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
+      this.shoppingCart = JSON.parse(localStorage.getItem('shoppingCart'));
       this.currentCard = this.cardJson[this.cardIndex];
-      if (this.isSmartCardFound()) {
-        this.getSmartCardWalletContents();
+      if (this.isSmartOrLUCCCardFound()) {
+        this.getSmartLUCCCardWalletContents();
       }
     });
   }
@@ -133,8 +135,20 @@ export class CarddataComponent implements OnInit, OnChanges {
       console.log('data', data);
       if (data != undefined && data != '') {
         this._ngZone.run(() => {
-          localStorage.setItem("readCardData", JSON.stringify(data));
-          localStorage.setItem("printCardData", data);
+          localStorage.setItem('readCardData', JSON.stringify(data));
+          localStorage.setItem('printCardData', data);
+        });
+      }
+    });
+  } 
+
+  handleLUCCCardResult() {
+    const readcardListener: any = this.electronService.ipcRenderer.once('readCardUltralightCResult', (event, data) => {
+      console.log('data', data);
+      if (data != undefined && data != '') {
+        this._ngZone.run(() => {
+          localStorage.setItem('readCardData', JSON.stringify(data));
+          localStorage.setItem('printCardData', data);
         });
       }
     });
@@ -152,7 +166,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       if (data != undefined && data != '') {
         this._ngZone.run(() => {
           if (data == this.currentCard.printed_id) {
-            (this.isEncodeOnProcess) ? this.encodeCard() : this.removeCard();
+            (this.isEncodeOnProcess) ? this.checkCardType() : this.removeCard();
           } else {
             $('#cardModal').modal('show');
             this.disableEncode = false;
@@ -165,7 +179,25 @@ export class CarddataComponent implements OnInit, OnChanges {
       }
     });
   }
-
+  handleGetCardPIDResultForLUCC() {
+    const cardPIDListener: any = this.electronService.ipcRenderer.once('getCardPIDUltraLightCResult', (event, data) => {
+      console.log('data', data);
+      if (data != undefined && data != '') {
+        this._ngZone.run(() => {
+          if (data == this.currentCard.printed_id) {
+            (this.isEncodeOnProcess) ? this.checkCardType() : this.removeCard();
+          } else {
+            $('#cardModal').modal('show');
+            this.disableEncode = false;
+            return;
+          }
+        });
+      } else {
+        $('#cardModal').modal('show');
+        return;
+      }
+    });
+  }
   /**
    *resultHandler for print reciept
    *
@@ -290,10 +322,10 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   proceedForSaveTransaction() {
     $('#encodeSuccessModal').modal('hide');
-    if (this.isSmartCardFound()) {
+    if (this.isSmartOrLUCCCardFound()) {
       this.disableEncode = false;
       this.populatCurrentCard();
-      this.getSmartCardWalletContents();
+      this.getSmartLUCCCardWalletContents();
     } else {
       this.initiateSaveTransaction();
     }
@@ -374,7 +406,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.once('getPinpadTransactionDataEncodeResult', (event, data) => {
       console.log('creditcardTransaction ', data);
       if (data != undefined && data != '') {
-        localStorage.setItem("pinPadTransactionData", data);
+        localStorage.setItem('pinPadTransactionData', data);
         this.navigateToReadCard();
       }
     });
@@ -389,19 +421,24 @@ export class CarddataComponent implements OnInit, OnChanges {
   initiateSaveTransaction() {
     this.disableEncode = true;
     const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
-    if (this.isNew) {
+    if (this.isNew || this.isLUCCCardNew) {
       this.handleUpdateCardDataResult();
       this.electronService.ipcRenderer.send('updateCardData', cardName, expirationDate);
     } else {
-      this.handleReadcardResult();
-      this.electronService.ipcRenderer.send('readSmartcard', cardName);
+      if ( this.currentCard._walletTypeId==MediaType.SMART_CARD_ID) {
+        this.handleReadcardResult();
+        this.electronService.ipcRenderer.send('readSmartcard', cardName);
+      } else{
+          this.handleLUCCCardResult();
+          this.electronService.ipcRenderer.send('readCardUltralightC');
+      }
     }
-    const userID = localStorage.getItem("userID");
+    const userID = localStorage.getItem('userID');
     const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, Utils.getInstance.getUserByUserID(userID));
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
-    const deviceData = JSON.parse(localStorage.getItem("deviceInfo"));
+    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
+    const deviceData = JSON.parse(localStorage.getItem('deviceInfo'));
     const deviceInfo = Utils.getInstance.increseTransactionCountInDeviceInfo(deviceData, transactionObj);
-    localStorage.setItem("deviceInfo", JSON.stringify(deviceInfo));
+    localStorage.setItem('deviceInfo', JSON.stringify(deviceInfo));
     this.handleSaveTransactionResult();
     this.electronService.ipcRenderer.send('savaTransaction', transactionObj);
   }
@@ -415,16 +452,16 @@ export class CarddataComponent implements OnInit, OnChanges {
   getPaymentsObject() {
     let paymentObj: any;
 
-    const transactionAmount = localStorage.getItem("transactionAmount");
-    if (localStorage.getItem("paymentMethodId") == '8') {
+    const transactionAmount = localStorage.getItem('transactionAmount');
+    if (localStorage.getItem('paymentMethodId') == '8') {
       paymentObj = {
-        'paymentMethodId': Number(localStorage.getItem("paymentMethodId")),
+        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
         'amount': transactionAmount,
-        'comment': localStorage.getItem("compReason")
+        'comment': localStorage.getItem('compReason')
       };
     } else {
       paymentObj = {
-        'paymentMethodId': Number(localStorage.getItem("paymentMethodId")),
+        'paymentMethodId': Number(localStorage.getItem('paymentMethodId')),
         'amount': transactionAmount,
         'comment': null
       };
@@ -466,16 +503,16 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   /**
    *
-   *This functions checks if next smart card is available for encoding if so sets the cardIndex and 
+   *This functions checks if next smart card is available for encoding if so sets the cardIndex and
    returns true or false.
    * @returns
    * @memberof CarddataComponent
    */
-  isSmartCardFound() {
+  isSmartOrLUCCCardFound() {
     let index = 0;
     let nextItemFound: Boolean = false;
     for (const iterator of this.shoppingCart._walletLineItem) {
-      if (iterator._walletTypeId == MediaType.SMART_CARD_ID) {
+      if (iterator._walletTypeId == MediaType.SMART_CARD_ID || iterator._walletTypeId == MediaType.LUCC) {
         if (index > this.cardIndex) {
           nextItemFound = true;
           break;
@@ -495,7 +532,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    *This function populates shopping card items based on cardindex to currentCardProductList
    * @memberof CarddataComponent
    */
-  getSmartCardWalletContents() {
+  getSmartLUCCCardWalletContents() {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex]._walletContents;
   }
 
@@ -529,11 +566,11 @@ export class CarddataComponent implements OnInit, OnChanges {
    * @memberof CarddataComponent
    */
   removeLocalStorage() {
-    localStorage.removeItem("encodeData");
-    localStorage.removeItem("productCardData");
-    localStorage.removeItem("cardsData");
-    localStorage.removeItem("catalogJSON");
-    localStorage.removeItem("readCardData");
+    localStorage.removeItem('encodeData');
+    localStorage.removeItem('productCardData');
+    localStorage.removeItem('cardsData');
+    localStorage.removeItem('catalogJSON');
+    localStorage.removeItem('readCardData');
   }
 
   /**
@@ -544,6 +581,10 @@ export class CarddataComponent implements OnInit, OnChanges {
   checkIsCardNew() {
     this.isNew = (this.currentCard.products.length == 1 && ((this.currentCard.products[0].product_type == 3) &&
       (this.currentCard.products[0].remaining_value == 0))) ? true : false;
+  }
+
+  checkIsLUCCCardNew() {
+    this.isLUCCCardNew = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0)  ? true : false;
   }
 
   /**
@@ -585,8 +626,14 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.populatCurrentCard();
     console.log(cardName);
     this.disableEncode = true;
-    this.handleGetCardPIDResult();
-    this.electronService.ipcRenderer.send('getCardPID', cardName);
+    if (this.shoppingCart._walletLineItem[this.cardIndex]._walletTypeId == MediaType.SMART_CARD_ID) {
+      this.handleGetCardPIDResult();
+      this.electronService.ipcRenderer.send('getCardPID', cardName);
+    } else {
+      this.handleGetCardPIDResultForLUCC();
+      this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+
+    }
   }
 
 
@@ -632,10 +679,77 @@ export class CarddataComponent implements OnInit, OnChanges {
       $('#encodeErrorModal').modal('show');
     }
   }
-
+  /**
+   *This function is called from handleGetCardPIDResult if pid matches with currentCard Pid
+    We construct json based on Ticket Group and call encodenewCard for LUCC or encodeExistingCard for LUCC
+    based on wether card is new or existing
+   *
+   * @memberof CarddataComponent
+   */
+  encodeLUCCCard() {
+    try {
+      console.log('product list data', this.currentCardProductList);
+      this.encodeJsonData = [];
+      let JsonObj;
+      let currentIndex = 0;
+      let isStoredRideProductPresent = false;
+      let isStoredValueProductPresent = false;
+      let isFrequentRideProductPresent = false;
+      let frequentRideJSON = [];
+      let storedRideJSON = [];
+      let storedValueJSON = [];
+      let frequentRideJSONObj;
+      let storedRideJSONObj;
+      let storedValueJSONObj;
+      this.currentCardProductList.forEach(element => {
+        if (element._offering.Ticket.Group == 1) {
+          isFrequentRideProductPresent = true;
+          for (let index = 0; index < element._quantity; index++) {
+            const internalJsonObj = FareCardService.getInstance.constructJsonForEncodingLUCC(element._offering.Ticket.Group,
+              element, this.terminalConfigJson);
+            frequentRideJSON.push(internalJsonObj);
+          }
+          frequentRideJSONObj = JSON.stringify(frequentRideJSON[0]);
+        } else if (element._offering.Ticket.Group == 2) {
+          isStoredRideProductPresent = true;
+          JsonObj = FareCardService.getInstance.constructJsonForEncodingLUCC(element._offering.Ticket.Group,
+            element, this.terminalConfigJson);
+            storedRideJSON.push(JsonObj);
+            storedRideJSONObj = JSON.stringify(storedRideJSON[0]);
+        } else if (element._offering.Ticket.Group == 3) {
+          isStoredValueProductPresent = true;
+          JsonObj = FareCardService.getInstance.constructJsonForEncodingLUCC(element._offering.Ticket.Group,
+            element, this.terminalConfigJson);
+            storedValueJSON.push(JsonObj);
+            storedValueJSONObj = JSON.stringify(storedValueJSON[0]);
+        }
+        currentIndex++;
+      });
+      if (!isFrequentRideProductPresent) {
+        frequentRideJSONObj = null;
+      }
+      if (!isStoredRideProductPresent) {
+        storedRideJSONObj = null;
+      }
+      if (!isStoredValueProductPresent) {
+        storedValueJSONObj = null;
+      }
+      this.handleEncodeCardResult();
+      this.checkIsLUCCCardNew()
+      if (this.isLUCCCardNew) {
+        this.electronService.ipcRenderer.send('encodeCardUltralightC', this.currentCard.printed_id,
+        frequentRideJSONObj,  storedRideJSONObj, storedValueJSONObj);
+      } else {
+        this.electronService.ipcRenderer.send('addValueUltralightC', this.currentCard.printed_id,
+        frequentRideJSONObj,  storedRideJSONObj,  storedValueJSONObj);
+      }
+    } catch {
+      $('#encodeErrorModal').modal('show');
+    }
+  }
   /**
    *
-   *This funcion is called from encodeCrad() to construct Json based on Ticket Group for encodinhg.
+   *This funcion is called from encodeCard() to construct Json based on Ticket Group for encoding.
    * @param {*} product_type
    * @param {*} element
    * @returns
@@ -704,7 +818,13 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.electronService.ipcRenderer.send('deleteProductsFromCard', this.currentCard.printed_id,
       this.encodedCardsData[this.currentCard.printed_id]);
   }
-
+  checkCardType() {
+    if (this.shoppingCart._walletLineItem[this.cardIndex]._walletTypeId == MediaType.SMART_CARD_ID) {
+      this.encodeCard();
+    } else {
+      this.encodeLUCCCard();
+    }
+  }
   /**
    *
    *This functions returns cardPid based on cardIndex
@@ -731,9 +851,9 @@ export class CarddataComponent implements OnInit, OnChanges {
    * @memberof CarddataComponent
    */
   prePaidTransactionObject() {
-    const userID = localStorage.getItem("userID");
+    const userID = localStorage.getItem('userID');
     const transactionObj = TransactionService.getInstance.saveTransaction(this.shoppingCart, Utils.getInstance.getUserByUserID(userID));
-    localStorage.setItem("transactionObj", JSON.stringify(transactionObj));
+    localStorage.setItem('transactionObj', JSON.stringify(transactionObj));
   }
 
   /**
@@ -770,7 +890,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.isEncodeOnProcess = false;
     this.setCardIndexForCancelEncode(cardPID);
     this.populatCurrentCard();
-    this.getSmartCardWalletContents();
+    this.getSmartLUCCCardWalletContents();
   }
 
   /**
@@ -781,7 +901,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   checkIfCreditCardPaymentExists() {
     let creditCardPaymentExists: Boolean = false;
-    const transObj = JSON.parse(localStorage.getItem("transactionObj"));
+    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         creditCardPaymentExists = true;
@@ -798,7 +918,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   getCreditCardPaymentAmount() {
     let amount = 0;
-    const transObj = JSON.parse(localStorage.getItem("transactionObj"));
+    const transObj = JSON.parse(localStorage.getItem('transactionObj'));
     transObj.payments.forEach(element => {
       if (element.paymentMethodId == 9) {
         amount = element.amount;
@@ -879,7 +999,7 @@ export class CarddataComponent implements OnInit, OnChanges {
           this.title = this.title + 'Credit';
           this.message = this.message + 'credit';
           break;
-          
+
         case 10:
           this.title = this.title + 'Fare Card';
           this.message = this.message + 'Fare Card';

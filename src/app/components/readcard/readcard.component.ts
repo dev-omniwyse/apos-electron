@@ -7,6 +7,8 @@ import { FareCardService } from 'src/app/services/Farecard.service';
 import { ShoppingCartService } from 'src/app/services/ShoppingCart.service';
 import { Utils } from 'src/app/services/Utils.service';
 import { SessionServiceApos } from 'src/app/session';
+import { SysytemConfig } from 'src/app/config';
+import { MediaType } from 'src/app/services/MediaType';
 
 declare var $: any;
 declare var pcsc: any;
@@ -122,30 +124,32 @@ export class ReadcardComponent implements OnInit {
     maxSyncLimitReachedText = '';
     ticketMap = new Map();
     subscription: any;
+    isSmartCard = false;
     expectedCash: any = 0;
     reliefExpectedCash:any = 0;
 
 
     constructor(private cdtaservice: CdtaService,
-        private route: ActivatedRoute, private router: Router, private _ngZone: NgZone, private sessionService?: SessionServiceApos,
+        private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
+        private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
-        this.subscription = this.cdtaservice.goToCheckout$.subscribe(
-            proceedToCheckOut => {
-                if (proceedToCheckOut == true) {
-                    switch (categoryIndex) {
-                        case 2:
-                            this.readCard();
-                            break;
-                        case 3:
-                            this.nonFareProduct();
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    this.SessionModal();
-                }
-            });
+        // this.subscription = this.cdtaservice.goToCheckout$.subscribe(
+        //     proceedToCheckOut => {
+        //         if (proceedToCheckOut == true) {
+        //             switch (categoryIndex) {
+        //                 case 2:
+        //                     this.readCard();
+        //                     break;
+        //                 case 3:
+        //                     this.nonFareProduct();
+        //                     break;
+        //                 default:
+        //                     break;
+        //             }
+        //         } else {
+        //             this.SessionModal();
+        //         }
+        //     });
         route.params.subscribe(val => {
         });
         if (this.electronService.isElectronApp) {
@@ -295,37 +299,89 @@ export class ReadcardComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     getNextBonusRides() {
-        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson);
+        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson, this.config.cardTypeDetected);
     }
 
-    readCardSession(index) {
-        categoryIndex = index;
-        this.sessionService.getAuthenticated();
-    }
-    /**
-     *
-     *
-     * @param {*} event
-     * @memberof ReadcardComponent
-     */
-    readCard() {
-        localStorage.removeItem('shoppingCart');
+    // readCardSession(index) {
+    //     categoryIndex = index;
+    //     this.sessionService.getAuthenticated();
+    // }
+    existingCardClick() {
         isExistingCard = true;
+        this.checkCardType();
+    }
+
+    newCardClick() {
+        isExistingCard = false;
+        this.checkCardType();
+    }
+
+    checkCardType() {
+        this.handleGetCardPIDResult();
+        this.electronService.ipcRenderer.send('getCardPID', cardName);
+
+    }
+    handleGetCardPIDResult() {
+        this.electronService.ipcRenderer.once('getCardPIDResult', (_event, data) => {
+            console.log('cardPID Result', data);
+            if (data == '') {
+                this.callCardPIDUltraLightC();
+            } else {
+                this.config.cardTypeDetected = MediaType.SMART_CARD_ID;
+                this.isSmartCard = true;
+                if (isExistingCard) {
+                    this.readSmartCard();
+                } else {
+                    this.newFareCard();
+                }
+            }
+        });
+    }
+    handleGetCardPIDUltralightC() {
+        this.electronService.ipcRenderer.once('getCardPIDUltraLightCResult', (_event, data) => {
+            this.config.cardTypeDetected = MediaType.LUCC;
+            console.log('UltraLight data', data);
+            this.isSmartCard = false;
+            this.readLUCCCard();
+        });
+    }
+    callCardPIDUltraLightC() {
+        this.handleGetCardPIDUltralightC();
+        this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+
+    }
+
+    updateSettingsForSmartAndLUCC() {
+        localStorage.removeItem('shoppingCart');
         this.isFromReadCard = true;
         localStorage.setItem('isNonFareProduct', 'false');
         localStorage.setItem('isMagnetic', 'false');
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+    }
+
+    readSmartCard() {
+        this.updateSettingsForSmartAndLUCC();
+        this.handleSmartCardResult();
+        this.electronService.ipcRenderer.once('autoLoadResult', (_event, data) => {
+            console.log(data);
+            if (data != undefined && data != '') {
+                this.electronService.ipcRenderer.send('readSmartcard', cardName);
+            }
+        });
+
+        this.electronService.ipcRenderer.send('processAutoLoad', cardName);
+        console.log('read call', cardName);
+    }
+    handleSmartCardResult() {
         this.electronService.ipcRenderer.once('readcardResult', (_event, data) => {
             console.log('data', data);
-            if (this.isFromReadCard && data != undefined && data != '') {
-                this.show = true;
-                this.isShowCardOptions = false;
-                this.isFromReadCard = false;
+            if (data != undefined && data != '') {
+                this.setCardOptionsForLUCCAndSmartCard();
                 this._ngZone.run(() => {
 
-                    localStorage.setItem("readCardData", JSON.stringify(data));
-                    localStorage.setItem("printCardData", data)
+                    localStorage.setItem('readCardData', JSON.stringify(data));
+                    localStorage.setItem('printCardData', data);
                     this.carddata = new Array(JSON.parse(data));
                     this.terminalConfigJson.Farecodes.forEach(element => {
                         if (this.carddata[0].user_profile == element.FareCodeId) {
@@ -342,15 +398,107 @@ export class ReadcardComponent implements OnInit {
                 });
             }
         });
-        this.electronService.ipcRenderer.once('autoLoadResult', (_event, data) => {
-            console.log(data);
+    }
+    setCardOptionsForLUCCAndSmartCard() {
+        this.show = true;
+        this.isShowCardOptions = false;
+        this.isFromReadCard = false;
+    }
+    readLUCCCard() {
+        this.updateSettingsForSmartAndLUCC();
+        this.callReadLUCCCard();
+    }
+    callReadLUCCCard() {
+        this.handleLUCCCardResult();
+        this.electronService.ipcRenderer.send('readCardUltralightC');
+    }
+    handleLUCCCardResult() {
+        this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
+            console.log('readCardUltralightCResult', data);
             if (data != undefined && data != '') {
-                this.electronService.ipcRenderer.send('readSmartcard', cardName);
+                this.setCardOptionsForLUCCAndSmartCard();
+                this._ngZone.run(() => {
+
+                    localStorage.setItem('printCardData', data);
+                    this.carddata = new Array(JSON.parse(data));
+                    this.populateCardDataProductForLUCC();
+                    localStorage.setItem('readCardData', JSON.stringify(JSON.stringify(this.carddata[0])));
+                    localStorage.setItem('userProfile', JSON.stringify(this.cardType));
+                    console.log('this.carddata', this.carddata);
+                    this.showCardContents();
+                    // tslint:disable-next-line:prefer-const
+                    let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+                    // tslint:disable-next-line:max-line-length
+                    this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+                });
             }
         });
+    }
 
-        this.electronService.ipcRenderer.send('processAutoLoad', cardName)
-        console.log('read call', cardName)
+    populateCardDataProductForLUCC() {
+        this.carddata[0].products = [];
+        this.carddata[0].products.push(this.carddata[0].product);
+        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
+        this.carddata[0].products[0].product_type = this.carddata[0].card_type;
+        this.carddata[0].products[0].cardType = this.carddata[0].card_type;
+        this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
+        this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
+        this.carddata[0].products[0].start_date = this.carddata[0].start_date;
+        this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
+        this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
+        this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
+        this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+    }
+    /**
+     *
+     *
+     * @param {*} event
+     * @memberof ReadcardComponent
+     */
+    readCard() {
+        // localStorage.removeItem('shoppingCart');
+        // isExistingCard = true;
+        // this.isFromReadCard = true;
+        // localStorage.setItem('isNonFareProduct', 'false');
+        // localStorage.setItem('isMagnetic', 'false');
+        // ShoppingCartService.getInstance.shoppingCart = null;
+        // this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        // this.electronService.ipcRenderer.once('readcardResult', (_event, data) => {
+        //     console.log('data', data);
+        //     if (this.isFromReadCard && data != undefined && data != '') {
+        //         this.show = true;
+        //         this.isShowCardOptions = false;
+        //         this.isFromReadCard = false;
+        //         this._ngZone.run(() => {
+
+        //             localStorage.setItem("readCardData", JSON.stringify(data));
+        //             localStorage.setItem("printCardData", data)
+        //             this.carddata = new Array(JSON.parse(data));
+        //             this.terminalConfigJson.Farecodes.forEach(element => {
+        //                 if (this.carddata[0].user_profile == element.FareCodeId) {
+        //                     this.cardType = element.Description;
+        //                 }
+        //             });
+        //             localStorage.setItem('userProfile', JSON.stringify(this.cardType));
+        //             console.log('this.carddata', this.carddata);
+        //             this.showCardContents();
+        //             // tslint:disable-next-line:prefer-const
+        //             let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+        //             this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+        //             localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+        //         });
+        //     }
+        // });
+        // this.electronService.ipcRenderer.once('autoLoadResult', (_event, data) => {
+        //     console.log(data);
+        //     if (data != undefined && data != '') {
+        //         this.electronService.ipcRenderer.send('readSmartcard', cardName);
+        //     }
+        // });
+
+        // this.electronService.ipcRenderer.send('processAutoLoad', cardName);
+        // console.log('read call', cardName);
     }
 
 
@@ -370,7 +518,7 @@ export class ReadcardComponent implements OnInit {
      * @param {*} event
      * @memberof ReadcardComponent
      */
-    newFareCard(event) {
+    newFareCard() {
         localStorage.removeItem('shoppingCart');
         ShoppingCartService.getInstance.shoppingCart = null;
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();

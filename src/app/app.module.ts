@@ -31,6 +31,7 @@ import { NumericOnlyDirective } from './components/add-product/numeric-only.dire
 import { NoCommaPipe } from './pipe/no-comma.pipe';
 import { DatePipe } from '@angular/common';
 import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import {SysytemConfig} from './config';
 import { GlobalErrorHandler } from './services/GlobalErrorHandler.service';
 
 export class HammerConfig extends HammerGestureConfig {
@@ -70,7 +71,7 @@ export class HammerConfig extends HammerGestureConfig {
     NgxLoadingModule.forRoot({}),
     SlickModule.forRoot()
   ],
-  providers: [CdtaService, DatePipe, Globals, SessionServiceApos,
+  providers: [CdtaService, DatePipe, Globals, SessionServiceApos, SysytemConfig,
     {
       provide: HAMMER_GESTURE_CONFIG,
       useClass: HammerConfig

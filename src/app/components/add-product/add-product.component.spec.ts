@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddProductComponent } from './add-product.component';
+var pcsc = require('pcsclite');
+// require('buffertools.js');
+// require('./node_modules/buffertools/build/Release/buffertools.node');
+var buffertools = require('node_modules/buffertools/buffertools.js');
 
 describe('AddProductComponent', () => {
   let component: AddProductComponent;
@@ -23,9 +27,3 @@ describe('AddProductComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-class Pcsc {
-  constructor (a) {
-    //  this.max = a;
-  }
-}
