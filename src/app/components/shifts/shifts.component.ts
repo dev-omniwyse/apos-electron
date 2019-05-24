@@ -110,11 +110,17 @@ export class ShiftsComponent implements OnInit {
                 } else {
                     // nothing to do
                 }
-            } else {
-                if (element.userID == shiftreportUser && element.shiftType == '0') {
+            }else if(element.userID != shiftreportUser && this.isMainShiftOpen == true && element.shiftType == '0' && element.shiftState == '3'){
+                this.cdtaService.printAllOrSpecificShiftData(new Array(element));
+               // this.isMainShiftOpen = false;
+            }else if(element.userID != shiftreportUser && this.isReliefShiftOpen == true && element.shiftType == '1' && element.shiftState == '3'){
+                this.cdtaService.printAllOrSpecificShiftData(new Array(element));
+                // this.isReliefShiftOpen = false;
+            }
+             else {
+                if (element.userID == shiftreportUser && element.shiftType == '0' && this.isReliefShiftOpen == false) {
                     this.cdtaService.printAllOrSpecificShiftData(null);
-                } else if (element.userID == shiftreportUser && element.shiftType == '1' &&
-                    localStorage.getItem('closingPausedMainShift') != 'true') {
+                } else if (element.userID == shiftreportUser && element.shiftType == '1' && this.isMainShiftOpen == false) {
                     this.cdtaService.printAllOrSpecificShiftData(new Array(element));
                 }
             }
