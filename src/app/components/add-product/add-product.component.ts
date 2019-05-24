@@ -455,13 +455,14 @@ export class AddProductComponent implements OnInit, OnDestroy {
     let productType = 0;
     let designator = 0;
     let luccProductIndex = 0;
-    if ((this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0 &&
+    let cardObj  = this.cardJson[this.currentWalletLineItemIndex];
+    if ((cardObj.product.product_type == 0 && cardObj.product.designator == 0 &&
       this.currentWalletLineItem._walletContents.length > 0)) {
       productType = this.currentWalletLineItem._walletContents[luccProductIndex]._offering.Ticket.Group;
       designator = this.currentWalletLineItem._walletContents[luccProductIndex]._offering.Ticket.Designator;
     } else {
-      productType = this.currentCard.product.product_type;
-      designator = this.currentCard.product.designator;
+      productType = cardObj.product.product_type;
+      designator = cardObj.product.designator;
     }
     if ((productType == selectedItem.Ticket.Group &&
       designator == selectedItem.Ticket.Designator) ||
