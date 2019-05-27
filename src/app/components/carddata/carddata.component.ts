@@ -119,8 +119,13 @@ export class CarddataComponent implements OnInit, OnChanges {
   handleUpdateCardDataResult() {
     const updateCardDataListener: any = this.electronService.ipcRenderer.once('updateCardDataResult', (event, data) => {
       if (data != undefined && data != '') {
-        this.handleReadcardResult();
-        this.electronService.ipcRenderer.send('readSmartcard', cardName);
+        if ( this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
+          this.handleReadcardResult();
+          this.electronService.ipcRenderer.send('readSmartcard', cardName);
+        } else {
+            this.handleLUCCCardResult();
+            this.electronService.ipcRenderer.send('readCardUltralightC');
+        }
       }
     });
   }
