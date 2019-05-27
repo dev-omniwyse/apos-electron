@@ -126,7 +126,7 @@ export class ReadcardComponent implements OnInit {
     subscription: any;
     isSmartCard = false;
     expectedCash: any = 0;
-    reliefExpectedCash:any = 0;
+    reliefExpectedCash: any = 0;
 
 
     constructor(private cdtaservice: CdtaService,
@@ -164,7 +164,7 @@ export class ReadcardComponent implements OnInit {
         this.maxSyncLimitReachedText =
             'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
 
-        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType,shiftState) => {
+        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType, shiftState) => {
             console.log('print sales data', data);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -192,7 +192,7 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType,shiftState) => {
+        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType, shiftState) => {
             console.log('print payments  data', data, userID);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -413,6 +413,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('readCardUltralightC');
     }
     handleLUCCCardResult() {
+        const fareCodeID = 1;
         this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
             console.log('readCardUltralightCResult', data);
             if (data != undefined && data != '') {
@@ -420,6 +421,13 @@ export class ReadcardComponent implements OnInit {
                 this._ngZone.run(() => {
                     localStorage.setItem('printCardData', data);
                     this.carddata = new Array(JSON.parse(data));
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if (this.carddata[0].user_profile == undefined && fareCodeID == element.FareCodeId) {
+                            this.cardType = element.Description;
+                        } else if (this.carddata[0].user_profile != undefined && this.carddata[0].user_profile == element.FareCodeId){
+                            this.cardType = element.Description;
+                        }
+                    });
                     this.populateCardDataProductForLUCC();
                     if (!isExistingCard && this.carddata[0].products[0].product_type != 0 && this.carddata[0].products[0].designator != 0) {
                         this.carddata.length = [];
@@ -660,10 +668,10 @@ export class ReadcardComponent implements OnInit {
         // tslint:disable-next-line:prefer-const
         let shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
         shiftStore.forEach(record => {
-           // if (record.shiftType != 'unknown') {
-                this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID), Number(record.shiftState))
-                this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null,Number(record.shiftState))
-           // }
+            // if (record.shiftType != 'unknown') {
+            this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID), Number(record.shiftState))
+            this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null, Number(record.shiftState))
+            // }
         });
 
     }
@@ -764,13 +772,13 @@ export class ReadcardComponent implements OnInit {
             shiftReports.forEach(element => {
                 // let elementUserId = String(element.userID).trim();
                 // if (elementUserId == userId) {
-                    if (element.shiftState == '0' && element.shiftType == '0') {
-                        this.isMainShiftOpen = true;
-                      }
-                      if (element.shiftState == '0' && element.shiftType == '1') {
-                        this.isReliefShiftOpen = true;
-                      }
-                     
+                if (element.shiftState == '0' && element.shiftType == '0') {
+                    this.isMainShiftOpen = true;
+                }
+                if (element.shiftState == '0' && element.shiftType == '1') {
+                    this.isReliefShiftOpen = true;
+                }
+
                 if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
                     this.statusOfShiftReport = 'Main Shift is Closed';
                 } else
@@ -796,16 +804,16 @@ export class ReadcardComponent implements OnInit {
                 } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
                     this.disableCards = true;
                 } else
-                if (element.shiftState == '0' && element.userID != userId && this.isMainShiftOpen) {
-                    this.statusOfShiftReport = 'Shift Owned By Other User';
-                    this.disableCards = true;
-                  } else if (element.shiftState == '0' && element.userID != userId && this.isReliefShiftOpen) {
-                    this.statusOfShiftReport = 'Shift Owned By Other User';
-                    this.disableCards = true;
-                  }
-                else {
-                    this.disableCards = false;
-                }
+                    if (element.shiftState == '0' && element.userID != userId && this.isMainShiftOpen) {
+                        this.statusOfShiftReport = 'Shift Owned By Other User';
+                        this.disableCards = true;
+                    } else if (element.shiftState == '0' && element.userID != userId && this.isReliefShiftOpen) {
+                        this.statusOfShiftReport = 'Shift Owned By Other User';
+                        this.disableCards = true;
+                    }
+                    else {
+                        this.disableCards = false;
+                    }
                 // }
 
                 if (element.shiftState == '0' && element.shiftType == '0') {

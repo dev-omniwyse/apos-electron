@@ -227,7 +227,6 @@ export class FareCardService {
         if (null == shoppingCart._walletLineItem[0]) {
             shoppingCart = FareCardService.getInstance.addNonFareWallet(shoppingCart);
         }
-
         const offering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(offeringJSONArray, MediaType.SMART_CARD_ID);
         const walletC = [];
         /**
@@ -266,6 +265,7 @@ export class FareCardService {
         return shoppingCart;
     }
     addUltraLightCard(shoppingCart, readCardJSON, offeringJSONArray, isNew) {
+        const cardFareCodeId = 1;
         if (null == shoppingCart._walletLineItem[0]) {
             shoppingCart = FareCardService.getInstance.addNonFareWallet(shoppingCart);
         }
@@ -290,7 +290,7 @@ export class FareCardService {
         walletLineItem.sequenceNumber = Utils.getInstance.generateSequenceNumberForWalletLineItem(shoppingCart);
         walletLineItem.offering = offering;
         walletLineItem.walletTypeId = MediaType.LUCC;
-        walletLineItem.fareCodeId = readCardJSON.user_profile;
+        walletLineItem.fareCodeId = (readCardJSON.user_profile == undefined) ? cardFareCodeId : readCardJSON.user_profile;
         walletLineItem.unitPrice = fareCardPrice;
         walletLineItem.description = description;
         walletLineItem.walletContents = walletC;
