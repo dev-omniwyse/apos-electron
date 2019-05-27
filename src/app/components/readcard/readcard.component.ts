@@ -393,7 +393,8 @@ export class ReadcardComponent implements OnInit {
                     this.showCardContents();
                     // tslint:disable-next-line:prefer-const
                     let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
+                         this.carddata[0], item.Offering, !isExistingCard);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }
@@ -443,7 +444,7 @@ export class ReadcardComponent implements OnInit {
                     // tslint:disable-next-line:prefer-const
                     let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
                     // tslint:disable-next-line:max-line-length
-                    this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, !isExistingCard);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }

@@ -72,13 +72,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
 
   merchantise = [];
   merch = [];
-  merchantList: any = [];
   merchantiseList: any = [];
   MagneticList: any = [];
-  productCardList: any = [];
   productTotal: any = '0';
   checkout = true;
-  payPricing: any = [];
   cardJson: any = [];
   productJson: any = [];
   shoppingcart: any = [];
@@ -86,10 +83,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   carddata: any = [];
   numberDigits: any = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   zeroDigits: any = ['0', '00'];
-  saveTransactionData: any;
-  encodeJsonData: any = [];
   currentCard: any = {};
-  selectedIdx: any = 0;
   selectedProductCategoryIndex: any = 0;
   nonFare = true;
   regularRoute = false;
@@ -98,9 +92,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
   terminalConfigJson: any = [];
   areExistingProducts: any = [];
   isfromAddProduct = false;
-  maxRechargesPendingReached = false;
-  maxRechargeRidesReached = false;
-  maxRemainingValueReached = false;
   maxLimitErrorMessages: String = '';
   calsifilter: Boolean = false;
   merchproductToRemove: any = {};
@@ -109,23 +100,16 @@ export class AddProductComponent implements OnInit, OnDestroy {
   magneticCardList: any = [];
   magneticIds: any = [];
   currentMagneticIndex: any = 0;
-  smartCardSubTotal: any = 0;
   magneticCardSubTotal: any = 0;
   merchentiseSubTotal: any = 0;
-  smartCradList: any = [];
   subTotal: any = 0;
   smartCardCost: any = 0;
   magneticCardCost: any = 0;
-  quantityList: any = [];
-  viewCardData: any = [];
-  cardProductData: any = [];
   compDue: any = 0;
   productCheckOut: Boolean = false;
   isNew: Boolean = false;
   totalDue: any = [];
   checkoutTotal: string;
-  isWallet: Boolean = false;
-  currentWalletsSummary: any = [];
   isCustomAmount = false;
   walletItems = [];
   walletItemContents = [];
@@ -165,7 +149,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
   isCheckApplied: Boolean = false;
   checkAppliedTotal: any = 0;
   voucherAppliedTotal: any = 0;
-  voucherRemainingTotal: any;
   voucherRemaining: any;
   existingCardRemaining: any;
   isCompApplied: boolean = false;
@@ -183,23 +166,13 @@ export class AddProductComponent implements OnInit, OnDestroy {
   title: string;
   cancelCheckoutcash: Boolean;
   maxSyncLimitReached = false;
-  fadeStatus: Boolean;
   isCashBack: Boolean;
-  subscription: any;
   taxTotal = 0;
   isSmartCard = false;
   constructor(
     private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
-    private sessionService?: SessionServiceApos,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
-    this.subscription = this.cdtaService.goToCheckout$.subscribe(
-      proceedToCheckOut => {
-        if (proceedToCheckOut == true) {
-          this.productCheckoutBySession();
-        } else {
-          this.productCheckOutSessionModal();
-        }
-      });
+
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem('isMagnetic') == 'true' ? true : false;
       this.isMerchendise = localStorage.getItem('isNonFareProduct') == 'true' ? true : false;
@@ -283,42 +256,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionStatusResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionDataResult');
   }
-  /**
-   * Checking the maximum product length is reached or not.
-   *
-   * @param {*} selectedItem
-   * @memberof AddProductComponent
-   */
-  // isMaxProductLengthReached(selectedItem: any) {
-  //   this.isProductLimitReached = false;
-  //   this.currentCard.products.forEach(element => {
-  //     if (selectedItem.Ticket.Group == element.product_type && (selectedItem.Ticket.Designator == element.designator)) {
 
-  //       switch (element.product_type) {
-  //         case 1:
-  //           if (element.recharges_pending >= this.terminalConfigJson.MaxPendingCount) {
-  //             this.isProductLimitReached = true;
-  //           }
-  //           break;
-  //         case 2:
-  //           if ((element.recharge_rides + selectedItem.Ticket.Value) >= 255) {
-  //             this.isProductLimitReached = true;
-  //           }
-  //           break;
-  //         case 3:
-  //           if (element.product_type == 3 && (((element.remaining_value +
-  //             (selectedItem.Ticket.Price * 100)) / 100) >= (this.terminalConfigJson.MaxStoredValueAmount / 100))) {
-  //             this.isProductLimitReached = true;
-  //             break;
-  //           }
-  //           if (this.isProductLimitReached) {
-  //             break;
-  //           }
-  //           return this.isProductLimitReached;
-  //       }
-  //     }
-  //   });
-  // }
 
   /**
    * checking the maximum product legnth for magnetic products
@@ -360,16 +298,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
     }
     return canAddProduct;
   }
-  // isUltraLightProductLimitReached() {
-  //   let canAddProduct = false;
-  //   switch (this.currentWalletLineItem._walletTypeId) {
-  //     case MediaType.LUCC:
-  //       if (this.currentWalletLineItem._walletContents.length == 1 ) {
-  //         canAddProduct = true;
-  //       }
-  //   }
-  //   return canAddProduct;
-  // }
   /**
    * Checking the product is merchendise product or not before adding into the wallet
    *
@@ -455,7 +383,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     let productType = 0;
     let designator = 0;
     let luccProductIndex = 0;
-    let cardObj  = this.cardJson[this.currentWalletLineItemIndex];
+    let cardObj = this.cardJson[this.currentWalletLineItemIndex];
     if ((cardObj.product.product_type == 0 && cardObj.product.designator == 0 &&
       this.currentWalletLineItem._walletContents.length > 0)) {
       productType = this.currentWalletLineItem._walletContents[luccProductIndex]._offering.Ticket.Group;
@@ -774,40 +702,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
 
   }
 
-  // getSelectedMerchProductData(merch) {
-  //   if (this.merchantiseList.length == 0) {
-  //     merch.quantity = 1;
-  //     this.merchantiseList.push(merch);
-  //   } else if (this.merchantiseList.includes(merch) === true) {
-  //     merch.quantity++;
-  //   } else if (this.merchantiseList.includes(merch) === false) {
-  //     merch.quantity = 1;
-  //     this.merchantiseList.push(merch);
-  //   }
-  //   this.merchentiseSubTotal = this.merchentiseSubTotal + parseFloat(merch.UnitPrice);
-  //   this.productTotal = this.productTotal + parseFloat(merch.UnitPrice);
-  // }
-
-  // getSelectedMagneticProductData(merch) {
-  //   let elementExists = false;
-  //   this.magneticIds.forEach(element => {
-  //     if (element == this.currentMagneticIndex) {
-  //       $('#magneticCardLimitModal').modal({
-  //         backdrop: 'static',
-  //         keyboard: false
-  //       });
-  //       elementExists = true;
-  //     }
-  //   });
-  //   if (elementExists) {
-  //     return;
-  //   }
-  //   this.MagneticList.push(merch);
-  //   this.magneticIds.push(this.currentMagneticIndex);
-  //   this.productTotal = this.productTotal + parseFloat(merch.UnitPrice);
-  // }
-
-
   /**
    * Remove current walletline item modal.
    *
@@ -955,7 +849,55 @@ export class AddProductComponent implements OnInit, OnDestroy {
     });
   }
 
-  productCheckoutBySession() {
+  // productCheckoutBySession() {
+  //   if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
+  //     $('#shoppingCartEmptyModal').modal({
+  //       backdrop: 'static',
+  //       keyboard: false
+  //     });
+  //     return;
+  //   }
+  //   if (Utils.getInstance.isAnyEmptyMagnetics(this.shoppingcart)) {
+  //     $('#emptyMagneticModal').modal({
+  //       backdrop: 'static',
+  //       keyboard: false
+  //     });
+  //     return;
+  //   }
+  //   if (this.totalDue > this.terminalConfigJson.MaxTransAmount) {
+  //     $('#maxTransactionModal').modal({
+  //       backdrop: 'static',
+  //       keyboard: false
+  //     });
+  //     return;
+  //   }
+  //   if (this.totalDue < this.terminalConfigJson.MinTransAmount) {
+  //     $('#minTransactionModal').modal({
+  //       backdrop: 'static',
+  //       keyboard: false
+  //     });
+  //     return;
+  //   }
+  //   this.productCheckOut = true;
+  //   localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+  //   localStorage.setItem('cardsData', JSON.stringify(this.cardJson));
+  //   localStorage.setItem('areExistingProducts', JSON.stringify(this.areExistingProducts));
+  //   localStorage.setItem('transactionAmount', JSON.stringify(this.totalDue));
+  //   this.checkout = false;
+  //   this.checkoutTotal = this.totalDue.toString();
+  //   this.totalRemaining = this.totalDue;
+  //   this.currencyForm.setValue({ 'currency': this.checkoutTotal });
+  //   this.customAmountForm.setValue({ 'amount': this.productTotal });
+  // }
+
+  /**
+   * This method will call- when you click on checkout button.
+   *
+   * @returns
+   * @memberof AddProductComponent
+   */
+  productCheckout() {
+    // this.sessionService.getAuthenticated();
     if (Utils.getInstance.isEmptyShoppingCart(this.shoppingcart)) {
       $('#shoppingCartEmptyModal').modal({
         backdrop: 'static',
@@ -996,24 +938,14 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.customAmountForm.setValue({ 'amount': this.productTotal });
   }
 
-  /**
-   * This method will call- when you click on checkout button.
-   *
-   * @returns
-   * @memberof AddProductComponent
-   */
-  productCheckout() {
-    this.sessionService.getAuthenticated();
-  }
-
 
   cancelCheckout() {
     $('#cancelCheckoutModal').modal('show');
 
   }
-  productCheckOutSessionModal() {
-    $('#userTimedOut').modal('show');
-  }
+  // productCheckOutSessionModal() {
+  //   $('#userTimedOut').modal('show');
+  // }
   doVoidTransaction() {
     this.doPinpadVoidTransaction(this.cardAppliedTotal);
   }
@@ -1276,48 +1208,48 @@ export class AddProductComponent implements OnInit, OnDestroy {
   existingCardClick() {
     isExistingCard = true;
     this.checkCardType();
-}
+  }
   handleGetCardPIDResult() {
     this.electronService.ipcRenderer.once('getCardPIDResult', (_event, data) => {
-        console.log('cardPID Result', data);
-        if (data == '') {
-            this.callCardPIDUltraLightC();
+      console.log('cardPID Result', data);
+      if (data == '') {
+        this.callCardPIDUltraLightC();
+      } else {
+        this.config.cardTypeDetected = MediaType.SMART_CARD_ID;
+        this.isSmartCard = true;
+        if (isExistingCard) {
+          this.ExistingCard();
         } else {
-            this.config.cardTypeDetected = MediaType.SMART_CARD_ID;
-            this.isSmartCard = true;
-            if (isExistingCard) {
-              this.ExistingCard();
-            } else {
-             this.newCard();
-            }
+          this.newCard();
         }
+      }
     });
-}
-callCardPIDUltraLightC() {
-  this.handleGetCardPIDUltralightC();
-  this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+  }
+  callCardPIDUltraLightC() {
+    this.handleGetCardPIDUltralightC();
+    this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
 
-}
-handleGetCardPIDUltralightC() {
-  this.electronService.ipcRenderer.once('getCardPIDUltraLightCResult', (_event, data) => {
+  }
+  handleGetCardPIDUltralightC() {
+    this.electronService.ipcRenderer.once('getCardPIDUltraLightCResult', (_event, data) => {
       this.config.cardTypeDetected = MediaType.LUCC;
       console.log('UltraLight data', data);
       this.isSmartCard = false;
-       this.readLUCCCard();
-  });
-}
-readLUCCCard() {
-  // this.updateSettingsForSmartAndLUCC();
-  this.callReadLUCCCard();
-}
+      this.readLUCCCard();
+    });
+  }
+  readLUCCCard() {
+    // this.updateSettingsForSmartAndLUCC();
+    this.callReadLUCCCard();
+  }
 
-callReadLUCCCard() {
-  this.handleLUCCCardResult();
-  this.electronService.ipcRenderer.send('readCardUltralightC');
-}
+  callReadLUCCCard() {
+    this.handleLUCCCardResult();
+    this.electronService.ipcRenderer.send('readCardUltralightC');
+  }
 
-handleLUCCCardResult() {
-  this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
+  handleLUCCCardResult() {
+    this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
       let isDuplicateCard = false;
       debugger;
       if (data != undefined && data != '') {
@@ -1362,30 +1294,30 @@ handleLUCCCardResult() {
                 this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
                 this.activeWallet(this.shoppingcart._walletLineItem
                 [this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
-               } else {
+              } else {
                 $('#newCardValidateModal').modal('show');
               }
             }
           }
         });
       }
-  });
-}
+    });
+  }
 
-populateCardDataProductForLUCC() {
-  this.carddata[0].products = [];
-  this.carddata[0].products.push(this.carddata[0].product);
-  this.carddata[0].products[0].designator = this.carddata[0].card_designator;
-  this.carddata[0].products[0].product_type = this.carddata[0].card_type;
-  this.carddata[0].products[0].cardType = this.carddata[0].card_type;
-  this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
-  this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
-  this.carddata[0].products[0].start_date = this.carddata[0].start_date;
-  this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
-  this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
-  this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
-  this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
-}
+  populateCardDataProductForLUCC() {
+    this.carddata[0].products = [];
+    this.carddata[0].products.push(this.carddata[0].product);
+    this.carddata[0].products[0].designator = this.carddata[0].card_designator;
+    this.carddata[0].products[0].product_type = this.carddata[0].card_type;
+    this.carddata[0].products[0].cardType = this.carddata[0].card_type;
+    this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
+    this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
+    this.carddata[0].products[0].start_date = this.carddata[0].start_date;
+    this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
+    this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
+    this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
+    this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+  }
   /**
    * This method will call when you click on newcard / LUCC
    *
@@ -1684,7 +1616,7 @@ populateCardDataProductForLUCC() {
   }
 
   checkIsLUCCCardNew() {
-    const flag = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0)  ? true : false;
+    const flag = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0) ? true : false;
   }
 
 
