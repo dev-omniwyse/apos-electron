@@ -452,19 +452,23 @@ export class ReadcardComponent implements OnInit {
     }
 
     populateCardDataProductForLUCC() {
-        this.carddata[0].products = [];
-        this.carddata[0].products.push(this.carddata[0].product);
-        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
-        this.carddata[0].products[0].product_type = this.carddata[0].card_type;
-        this.carddata[0].products[0].cardType = this.carddata[0].card_type;
-        this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
-        this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
-        this.carddata[0].products[0].start_date = this.carddata[0].start_date;
-        this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
-        this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
-        this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
-        this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+        let readableIndex = 0;
+        let cardDataProductObj = this.carddata[readableIndex].product;
+        let cardDataObj = this.carddata[readableIndex];
+        cardDataProductObj.designator = cardDataObj.card_designator;
+        cardDataProductObj.product_type = cardDataObj.card_type;
+        cardDataProductObj.cardType = cardDataObj.card_type;
+        cardDataProductObj.exp_date = cardDataObj.card_exp;
+        cardDataProductObj.card_expiration_date_str = cardDataObj.card_exp_str;
+        cardDataProductObj.start_date = cardDataObj.start_date;
+        cardDataProductObj.is_card_badlisted = cardDataObj.is_card_badlisted;
+        cardDataProductObj.is_card_registered = cardDataObj.is_card_registered;
+        cardDataProductObj.is_card_negative = cardDataObj.is_card_negative;
+        cardDataProductObj.is_auto_recharge = cardDataObj.is_auto_recharge;
+        this.carddata[readableIndex].products = [];
+        this.carddata[readableIndex].products.push(cardDataProductObj);
     }
+    
     /**
      *
      *
