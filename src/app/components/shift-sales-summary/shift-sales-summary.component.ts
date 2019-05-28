@@ -17,12 +17,15 @@ export class ShiftSalesSummaryComponent implements OnInit {
   selectedValues: any;
   salesData: any;
   salesPaymentData: any;
+  isAccessAdminReports: Boolean = true;
+  userdata: any;
+  userPermissions: any;
   public totalSold: any = 0;
   public backendPaymentReport = [];
   public backendSalesReport = [];
   constructor(private cdtaservice: CdtaService, private route: ActivatedRoute,
     private router: Router, private _ngZone: NgZone, private electronService: ElectronService,
-     private ref: ChangeDetectorRef, private http: HttpClient) {
+    private ref: ChangeDetectorRef, private http: HttpClient) {
 
     this.electronService.ipcRenderer.on('allSalesResult', (event, data, userID, shiftType) => {
       if (data != undefined && data.length != 0) {
@@ -99,16 +102,40 @@ export class ShiftSalesSummaryComponent implements OnInit {
 
   ngOnInit() {
 
-    this.sales = JSON.parse(localStorage.getItem('shiftReport'));
+
     this.selectedValue = 0;
     console.log('this.selectedValue', this.selectedValue);
     const shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
+    // checking permissions of present logged in user to access admin reports
+    this.userdata = JSON.parse(localStorage.getItem('userData'));
+    this.cdtaservice.getUserPermissionsJson().subscribe(data => {
+      if (data != undefined) {
+        this.userPermissions = data;
+        if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_ACCESS_ADMIN_REPORTS) == -1) {
+          this.isAccessAdminReports = false;
+        } else {
+          this.isAccessAdminReports = true;
+        }
+      } else {
+        console.log('permissions failure');
+      }
+    });
+
+    // Filtering dropdown list with admin report permissions
+    if (this.isAccessAdminReports == false) {
+      this.sales = JSON.parse(localStorage.getItem('shiftReport')).filter(element => {
+        return element.userID == localStorage.getItem('userID');
+      })
+    } else {
+      this.sales = JSON.parse(localStorage.getItem('shiftReport'));
+    }
+
     // To Get All Shift Users Sales and their Payments
-    shiftStore.forEach(element => {
+    this.sales.forEach(element => {
       this.electronService.ipcRenderer.send('allSales',
-      Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID));
+        Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID));
       this.electronService.ipcRenderer.send('allPayments',
-      Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
+        Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
     });
   }
 
@@ -146,18 +173,18 @@ export class ShiftSalesSummaryComponent implements OnInit {
       this.backendSalesReport = [];
       shiftStore.forEach(element => {
         this.electronService.ipcRenderer.send('allSales',
-        Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID));
+          Number(element.shiftType), element.initialOpeningTime, element.timeClosed, Number(element.userID));
         this.electronService.ipcRenderer.send('allPayments',
-        Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
+          Number(element.userID), Number(element.shiftType), element.initialOpeningTime, element.timeClosed, null, null, null);
       });
     } else {
       this.selectedValue = this.selectedValues;
       this.electronService.ipcRenderer.send('allSales',
-      Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime,
-      this.selectedValues.timeClosed, Number(this.selectedValues.userID));
+        Number(this.selectedValues.shiftType), this.selectedValues.initialOpeningTime,
+        this.selectedValues.timeClosed, Number(this.selectedValues.userID));
       this.electronService.ipcRenderer.send('allPayments',
-      Number(this.selectedValues.userID), Number(this.selectedValues.shiftType),
-      this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed, null, null, null);
+        Number(this.selectedValues.userID), Number(this.selectedValues.shiftType),
+        this.selectedValues.initialOpeningTime, this.selectedValues.timeClosed, null, null, null);
     }
   }
 
@@ -169,12 +196,18 @@ export class ShiftSalesSummaryComponent implements OnInit {
   printSummaryReceipt() {
     // tslint:disable-next-line:prefer-const
     let specificUser = [];
-    if (this.selectedValue == 0) {
-      this.cdtaservice.printAllOrSpecificShiftData(null);
-    } else {
-      specificUser.push(this.selectedValue);
-      this.cdtaservice.printAllOrSpecificShiftData(specificUser);
+    if (this.isAccessAdminReports == false) {
+      this.cdtaservice.printAllOrSpecificShiftData(this.sales);
     }
+    else {
+      if (this.selectedValue == 0) {
+        this.cdtaservice.printAllOrSpecificShiftData(null);
+      } else {
+        specificUser.push(this.selectedValue);
+        this.cdtaservice.printAllOrSpecificShiftData(specificUser);
+      }
+    }
+
   }
 
 }

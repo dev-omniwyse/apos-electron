@@ -132,6 +132,9 @@ export class AddProductComponent implements OnInit, OnDestroy {
   isCardPaymentCancelled: Boolean = false;
   currentWalletLineProduct: any = 0;
   currentWalletMerchProduct: any = 0;
+  userdata: any;
+  isPerformSales: Boolean = true;
+  userPermissions: any;
   slideConfig = {
     'slidesToShow': 2, dots: true, 'infinite': false,
     'autoplay': false, 'prevArrow': false, 'slidesPerRow': 2,
@@ -240,6 +243,20 @@ export class AddProductComponent implements OnInit, OnDestroy {
    * @memberof AddProductComponent
    */
   ngOnInit() {
+    // checking permissions of present logged in user to perform sales
+    this.userdata = JSON.parse(localStorage.getItem('userData'));
+    this.cdtaService.getUserPermissionsJson().subscribe(data => {
+        if (data != undefined) {
+            this.userPermissions = data;
+            if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
+                  this.isPerformSales = false;
+            }else{
+                this.isPerformSales = true;
+            }
+        } else {
+            console.log('permissions failure')
+        }
+    });
     this.selectedProductCategoryIndex = 0;
     this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
     this.frequentRide();

@@ -7,7 +7,7 @@
                     <label>Clerk: </label>
                     <select [(ngModel)]="selectedValues" (change)="shiftSaleSummary()">
                         <option [ngValue]="undefined" selected>Select</option>
-                        <option [ngValue]="0" >--All Sales--</option>
+                        <option [hidden] = '!isAccessAdminReports' [ngValue]="0" >--All Sales--</option>
                         <option *ngFor="let sale of sales" [ngValue]="sale">{{ sale.userEmail }}</option>
                     </select>
                 </div>

@@ -126,7 +126,10 @@ export class ReadcardComponent implements OnInit {
     subscription: any;
     isSmartCard = false;
     expectedCash: any = 0;
-    reliefExpectedCash:any = 0;
+    reliefExpectedCash: any = 0;
+    userdata: any;
+    userPermissions: any;
+    isPerformSales: Boolean = true;
 
 
     constructor(private cdtaservice: CdtaService,
@@ -164,7 +167,7 @@ export class ReadcardComponent implements OnInit {
         this.maxSyncLimitReachedText =
             'This terminal is currently over its transaction limit. The terminal must sync with CDS before sales can continue.';
 
-        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType,shiftState) => {
+        this.electronService.ipcRenderer.on('salesDataResult', (event, data, userID, shiftType, shiftState) => {
             console.log('print sales data', data);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -192,7 +195,7 @@ export class ReadcardComponent implements OnInit {
             }
         });
 
-        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType,shiftState) => {
+        this.electronService.ipcRenderer.on('paymentsDataResult', (event, data, userID, shiftType, shiftState) => {
             console.log('print payments  data', data, userID);
             if (data != undefined && data.length != 0) {
                 this._ngZone.run(() => {
@@ -660,10 +663,10 @@ export class ReadcardComponent implements OnInit {
         // tslint:disable-next-line:prefer-const
         let shiftStore = JSON.parse(localStorage.getItem('shiftReport'));
         shiftStore.forEach(record => {
-           // if (record.shiftType != 'unknown') {
-                this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID), Number(record.shiftState))
-                this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null,Number(record.shiftState))
-           // }
+            // if (record.shiftType != 'unknown') {
+            this.electronService.ipcRenderer.send('salesData', Number(record.shiftType), record.initialOpeningTime, record.timeClosed, Number(record.userID), Number(record.shiftState))
+            this.electronService.ipcRenderer.send('paymentsData', Number(record.userID), Number(record.shiftType), record.initialOpeningTime, record.timeClosed, null, null, null, Number(record.shiftState))
+            // }
         });
 
     }
@@ -758,19 +761,34 @@ export class ReadcardComponent implements OnInit {
         ShoppingCartService.getInstance.shoppingCart = null;
         this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        // checking permissions of present logged in user to perform sales
+        this.userdata = JSON.parse(localStorage.getItem('userData'));
+        this.cdtaservice.getUserPermissionsJson().subscribe(data => {
+            if (data != undefined) {
+                this.userPermissions = data;
+                if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
+                      this.isPerformSales = false;
+                }else{
+                    this.isPerformSales = true;
+                }
+            } else {
+                console.log('permissions failure')
+            }
+        });
+        
         if (localStorage.getItem('shiftReport') != undefined) {
             const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
             const userId = localStorage.getItem('userID');
             shiftReports.forEach(element => {
                 // let elementUserId = String(element.userID).trim();
                 // if (elementUserId == userId) {
-                    if (element.shiftState == '0' && element.shiftType == '0') {
-                        this.isMainShiftOpen = true;
-                      }
-                      if (element.shiftState == '0' && element.shiftType == '1') {
-                        this.isReliefShiftOpen = true;
-                      }
-                     
+                if (element.shiftState == '0' && element.shiftType == '0') {
+                    this.isMainShiftOpen = true;
+                }
+                if (element.shiftState == '0' && element.shiftType == '1') {
+                    this.isReliefShiftOpen = true;
+                }
+
                 if (element.shiftState == '3' && element.shiftType == '0' && localStorage.getItem('mainShiftClose')) {
                     this.statusOfShiftReport = 'Main Shift is Closed';
                 } else
@@ -796,16 +814,16 @@ export class ReadcardComponent implements OnInit {
                 } else if (localStorage.getItem('disableUntilReOpenShift') == 'true' && (element.shiftState == '4' || element.shiftState == '3')) {
                     this.disableCards = true;
                 } else
-                if (element.shiftState == '0' && element.userID != userId && this.isMainShiftOpen) {
-                    this.statusOfShiftReport = 'Shift Owned By Other User';
-                    this.disableCards = true;
-                  } else if (element.shiftState == '0' && element.userID != userId && this.isReliefShiftOpen) {
-                    this.statusOfShiftReport = 'Shift Owned By Other User';
-                    this.disableCards = true;
-                  }
-                else {
-                    this.disableCards = false;
-                }
+                    if (element.shiftState == '0' && element.userID != userId && this.isMainShiftOpen) {
+                        this.statusOfShiftReport = 'Shift Owned By Other User';
+                        this.disableCards = true;
+                    } else if (element.shiftState == '0' && element.userID != userId && this.isReliefShiftOpen) {
+                        this.statusOfShiftReport = 'Shift Owned By Other User';
+                        this.disableCards = true;
+                    }
+                    else {
+                        this.disableCards = false;
+                    }
                 // }
 
                 if (element.shiftState == '0' && element.shiftType == '0') {
