@@ -131,7 +131,6 @@ export class ReadcardComponent implements OnInit {
     userPermissions: any;
     isPerformSales: Boolean = true;
 
-
     constructor(private cdtaservice: CdtaService,
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
         private _ngZone: NgZone, private sessionService?: SessionServiceApos,
@@ -396,7 +395,8 @@ export class ReadcardComponent implements OnInit {
                     this.showCardContents();
                     // tslint:disable-next-line:prefer-const
                     let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
-                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
+                         this.carddata[0], item.Offering, !isExistingCard);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }
@@ -416,6 +416,7 @@ export class ReadcardComponent implements OnInit {
         this.electronService.ipcRenderer.send('readCardUltralightC');
     }
     handleLUCCCardResult() {
+        const fareCodeID = 1;
         this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
             console.log('readCardUltralightCResult', data);
             if (data != undefined && data != '') {
@@ -423,6 +424,13 @@ export class ReadcardComponent implements OnInit {
                 this._ngZone.run(() => {
                     localStorage.setItem('printCardData', data);
                     this.carddata = new Array(JSON.parse(data));
+                    this.terminalConfigJson.Farecodes.forEach(element => {
+                        if (this.carddata[0].user_profile == undefined && fareCodeID == element.FareCodeId) {
+                            this.cardType = element.Description;
+                        } else if (this.carddata[0].user_profile != undefined && this.carddata[0].user_profile == element.FareCodeId){
+                            this.cardType = element.Description;
+                        }
+                    });
                     this.populateCardDataProductForLUCC();
                     if (!isExistingCard && this.carddata[0].products[0].product_type != 0 && this.carddata[0].products[0].designator != 0) {
                         this.carddata.length = [];
@@ -438,7 +446,7 @@ export class ReadcardComponent implements OnInit {
                     // tslint:disable-next-line:prefer-const
                     let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
                     // tslint:disable-next-line:max-line-length
-                    this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, false);
+                    this.shoppingcart = FareCardService.getInstance.addUltraLightCard(this.shoppingcart, this.carddata[0], item.Offering, !isExistingCard);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }
@@ -446,19 +454,23 @@ export class ReadcardComponent implements OnInit {
     }
 
     populateCardDataProductForLUCC() {
-        this.carddata[0].products = [];
-        this.carddata[0].products.push(this.carddata[0].product);
-        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
-        this.carddata[0].products[0].product_type = this.carddata[0].card_type;
-        this.carddata[0].products[0].cardType = this.carddata[0].card_type;
-        this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
-        this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
-        this.carddata[0].products[0].start_date = this.carddata[0].start_date;
-        this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
-        this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
-        this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
-        this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+        let readableIndex = 0;
+        let cardDataProductObj = this.carddata[readableIndex].product;
+        let cardDataObj = this.carddata[readableIndex];
+        cardDataProductObj.designator = cardDataObj.card_designator;
+        cardDataProductObj.product_type = cardDataObj.card_type;
+        cardDataProductObj.cardType = cardDataObj.card_type;
+        cardDataProductObj.exp_date = cardDataObj.card_exp;
+        cardDataProductObj.card_expiration_date_str = cardDataObj.card_exp_str;
+        cardDataProductObj.start_date = cardDataObj.start_date;
+        cardDataProductObj.is_card_badlisted = cardDataObj.is_card_badlisted;
+        cardDataProductObj.is_card_registered = cardDataObj.is_card_registered;
+        cardDataProductObj.is_card_negative = cardDataObj.is_card_negative;
+        cardDataProductObj.is_auto_recharge = cardDataObj.is_auto_recharge;
+        this.carddata[readableIndex].products = [];
+        this.carddata[readableIndex].products.push(cardDataProductObj);
     }
+    
     /**
      *
      *
@@ -762,7 +774,9 @@ export class ReadcardComponent implements OnInit {
         this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         // checking permissions of present logged in user to perform sales
-        this.userdata = JSON.parse(localStorage.getItem('userData'));
+        this.
+          
+          = JSON.parse(localStorage.getItem('userData'));
         this.cdtaservice.getUserPermissionsJson().subscribe(data => {
             if (data != undefined) {
                 this.userPermissions = data;
