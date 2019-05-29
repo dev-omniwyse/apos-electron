@@ -97,6 +97,9 @@ export class CdtaService {
   public getsalesPaymentJson(): Observable<any> {
     return this.http.get("assets/data/sales_payment.json")
   }
+  public getUserPermissionsJson(): Observable<any> {
+    return this.http.get("assets/data/user_permissions.json")
+  }
   // Observable string sources
   private headerShowHideSource = new Subject<string>();
 

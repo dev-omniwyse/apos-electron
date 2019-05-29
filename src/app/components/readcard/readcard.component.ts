@@ -127,7 +127,9 @@ export class ReadcardComponent implements OnInit {
     isSmartCard = false;
     expectedCash: any = 0;
     reliefExpectedCash: any = 0;
-
+    userdata: any;
+    userPermissions: any;
+    isPerformSales: Boolean = true;
 
     constructor(private cdtaservice: CdtaService,
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
@@ -771,6 +773,23 @@ export class ReadcardComponent implements OnInit {
         ShoppingCartService.getInstance.shoppingCart = null;
         this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
+        // checking permissions of present logged in user to perform sales
+        this.
+          
+          = JSON.parse(localStorage.getItem('userData'));
+        this.cdtaservice.getUserPermissionsJson().subscribe(data => {
+            if (data != undefined) {
+                this.userPermissions = data;
+                if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
+                      this.isPerformSales = false;
+                }else{
+                    this.isPerformSales = true;
+                }
+            } else {
+                console.log('permissions failure')
+            }
+        });
+        
         if (localStorage.getItem('shiftReport') != undefined) {
             const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
             const userId = localStorage.getItem('userID');

@@ -148,7 +148,7 @@
         </div>
         <div class="btns-set">
             <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
-            <button class="btn-orange-bottom" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
+            <button class="btn-orange-bottom" [disabled] = "!isPerformSales" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
             <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">CANCEL CHECKOUT</button>
         </div>
     </div>

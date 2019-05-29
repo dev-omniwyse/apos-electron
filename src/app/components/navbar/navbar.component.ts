@@ -57,8 +57,6 @@ export class NavbarComponent implements OnInit {
 
   logOut() {
 
-    localStorage.removeItem('deviceLocked');
-
     this.sessionService.sessionStop();
 
     const shiftreportUser = localStorage.getItem('userID');
@@ -91,7 +89,12 @@ export class NavbarComponent implements OnInit {
       this.cdtaservice.setterminalNumber(undefined);
       this.router.navigate(['login']);
     }
-    localStorage.removeItem('userEmail');
+    if(this.isSessionExpired == false){
+      localStorage.removeItem('deviceLocked');
+      localStorage.removeItem('userEmail');
+    } else {
+      // nothing to do
+    }
   }
 
 
