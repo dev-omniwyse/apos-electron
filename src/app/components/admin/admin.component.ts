@@ -102,6 +102,9 @@ export class AdminComponent implements OnInit {
   isCurrentSync: Boolean = false;
   catalogData = [];
   terminalConfigJson: any = [];
+  isPerformSync : Boolean = false;
+  userdata: any;
+  userPermissions: any;
   public fareTotal: any = 0;
   public nonFareTotal: any = 0;
   public fareAndNonFareTotal: any = 0;
@@ -469,6 +472,22 @@ export class AdminComponent implements OnInit {
     const userId = localStorage.getItem('userID');
     this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
     this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
+     // checking permissions of present logged in user to perform manual sync
+     this.userdata = JSON.parse(localStorage.getItem('userData'));
+     this.cdtaService.getUserPermissionsJson().subscribe(data => {
+         if (data != undefined) {
+             this.userPermissions = data;
+             if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_MANUAL_SYNC) == -1) {
+                   this.isPerformSync = true;
+                   console.log('permissions success')
+             }else{
+                 this.isPerformSync = false;
+                 console.log('permissions false')
+             }
+         } else {
+             console.log('permissions failure')
+         }
+     });
     shiftReports.forEach(element => {
       if (element.shiftState == '0' && element.shiftType == '0') {
         this.isMainShiftOpen = true;

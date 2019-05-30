@@ -69,7 +69,7 @@
                       Shift Sales Summary 
                     </button>
 
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                       Sync With CDS 
                     </button>
 
@@ -85,7 +85,7 @@
                         <button class="arrow_right" [routerLink]="['/shifts']">
                       Open Main Shift 
                     </button>
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                         Sync With CDS 
                       </button>
                         <button class="device-bottom arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
@@ -97,7 +97,7 @@
                         <button class="arrow_right" (click)="getSalesReports();" [routerLink]="['/shift_sales']">
                       Shift Sales Summary 
                     </button>
-                        <button class="device-bottom" data-toggle="modal" data-target="#syncCds">
+                        <button class="device-bottom" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                         Sync With CDS 
                       </button>
                         <button class="device-bottom" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
@@ -109,7 +109,10 @@
                         <button class="arrow_right" data-toggle="modal" data-target="#reOpenModal">
                     Re-Open Main Shift 
                     </button>
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                    <button class="arrow_right" (click)="getSalesReports();" [routerLink]="['/shift_sales']">
+                        Shift Sales Summary 
+                      </button>
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                         Sync With CDS 
                       </button>
                         <button class="arrow_right" class="device-bottom" [routerLink]="['/deviceconfig']">
@@ -126,7 +129,7 @@
                       Shift Sales Summary 
                     </button>
 
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                       Sync With CDS 
                     </button>
 
@@ -145,7 +148,7 @@
                       Shift Sales Summary 
                     </button>
 
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                       Sync With CDS 
                     </button>
 
@@ -309,7 +312,7 @@
                         <button class="arrow_right" [routerLink]="['/shifts']">
                         Open Relief Shift 
                       </button>
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                         Sync With CDS 
                       </button>
                         <button class="arrow_right" [routerLink]="['/deviceconfig']" (click)="adminDeviceConfig();">
@@ -330,7 +333,7 @@
                       Shift Sales Summary 
                     </button>
 
-                        <button class="arrow_right" data-toggle="modal" data-target="#syncCds">
+                        <button class="arrow_right" [hidden] = "isPerformSync" data-toggle="modal" data-target="#syncCds">
                       Sync With CDS 
                     </button>
 
