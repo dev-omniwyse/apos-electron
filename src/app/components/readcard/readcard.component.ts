@@ -126,8 +126,10 @@ export class ReadcardComponent implements OnInit {
     subscription: any;
     isSmartCard = false;
     expectedCash: any = 0;
+    buttonIndex = 0;
     reliefExpectedCash: any = 0;
-
+    public buttonArray = ['Card', 'Account'];
+    showForm = false;
 
     constructor(private cdtaservice: CdtaService,
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
@@ -250,6 +252,15 @@ export class ReadcardComponent implements OnInit {
             this.showErrorMessages();
         });
 
+    }
+    changeButton(i) {
+        this.buttonIndex = i;
+    }
+    createAccountForm() {
+        this.showForm = true;
+    }
+    cancelCreateAccount() {
+        this.showForm = false;
     }
     SessionModal() {
         $('#userTimedOut').modal('show');
