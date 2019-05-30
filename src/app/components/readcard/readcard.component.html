@@ -1,19 +1,18 @@
-<div class="main-container doNotPrint" *ngIf="isShowCardOptions">
+<div class="main-container doNotPrint" *ngIf="(isShowCardOptions && buttonIndex == 0)">
     <!-- <div class="header flex">
 		<div class="header-logo pull-left"><img src="assets/images/logo.jpg" /></div>
 		<div class="header-info pull-right">
 			<div class="login-info">
 				<div>CDTA Admin <span>|</span> Terminal: 1258</div>
 				<div><a href="#">logout</a></div>
-			</div>
+			</div>ngClass="{'btn-tab-selected':buttonIndex === i}"
 		</div>
 	</div> -->
     <div class="">
         <div class="col-md-3 full-height-l">
-            <!-- <div class="btn-tab-set">
-                <div class="btn-tab-selected">Card</div>
-                <div class="btn-tab">Account</div>
-            </div>-->
+            <div class="btn-tab-set">
+                <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }" *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
+            </div>
             <div class="flex container-padding flex-row admin-btn pull-left">
                 <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
                     Admin
@@ -58,6 +57,51 @@
 
                         <button class="cancel-btn-pop" style="margin-top:15px" data-dismiss="modal">Cancel</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-container doNotPrint main-container-bg" *ngIf="(isShowCardOptions && buttonIndex == 1)">
+    <div class="col-md-3 full-height-l">
+        <div class="btn-tab-set">
+            <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }" *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
+        </div>
+        <div class="flex container-padding flex-row admin-btn pull-left">
+            <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
+                Admin
+            </button>
+        </div>
+    </div>
+    <div class="col-md-6 maxSyncLimit">
+        <div *ngIf="maxSyncLimitReached">{{maxSyncLimitReachedText}}</div>
+        <div style="margin-top: 5vh">
+            <div class="account-tab-txt">Enter Email/Wallet ID:</div>
+            <input type="text" class="account-tab-input" />
+            <button class="account-tab-input-btn">Scan Wallet</button>
+        </div>
+        <div>
+            <button class="account-tab-input-btn-full">Get Details</button>
+            <button class="account-tab-input-btn-full" (click)="createAccountForm()">Create Account</button>
+        </div>
+        <div class="create-account-set" *ngIf="showForm">
+            <div class="create-account-set-in">
+                <div>Customer Details</div>
+                <div class="create-account-input">
+                    <div>First Name*</div>
+                    <input type="text" placeholder="First Name (required)" />
+                </div>
+                <div class="create-account-input">
+                    <div>Last Name*</div>
+                    <input type="text" placeholder="Last Name (required)" />
+                </div>
+                <div class="create-account-input">
+                    <div>Email*</div>
+                    <input type="text" placeholder="email@example.com" />
+                </div>
+                <div>
+                    <button class="create-account-btns" (click)="cancelCreateAccount()">Cancel</button>&nbsp;<button class="create-account-btns">Submit</button>
                 </div>
             </div>
         </div>

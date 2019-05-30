@@ -114,14 +114,13 @@
     border-radius: 3px;
     overflow: hidden;
     text-align: center;
-    width: 75%;
     margin: 0 auto;
 }
 
 .btn-tab {
     width: 50%;
     float: left;
-    padding: 3vh;
+    padding: 2vh;
     font-size: 3vh;
 }
 
@@ -131,8 +130,12 @@
     border-radius: 3px;
     width: 50%;
     float: left;
-    padding: 3vh;
+    padding: 2vh;
     font-size: 3vh;
+}
+
+.btn-tab-b {
+    background-color: #3b80c3;
 }
 
 button:disabled {
@@ -168,7 +171,6 @@ button:disabled {
 }
 
 .maxSyncLimit {
-
     padding-top: 2%;
     font-size: 18px;
 }
@@ -183,4 +185,95 @@ button:disabled {
     color: #d65400!important;
     box-shadow: none!important;
     outline: none!important;
+}
+
+.process-comp-btn {
+    width: calc(25% - 20px);
+    margin: 10px;
+    float: left;
+}
+
+.account-tab-txt {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.account-tab-input {
+    border: 2px solid #585858;
+    border-radius: 6px;
+    padding: 1.5vh;
+    width: 70%;
+    margin-right: 1%;
+    box-shadow: inset 3px 3px 3px 0px #8888888c;
+}
+
+.account-tab-input-btn {
+    background-color: #3b80c3;
+    color: #fff;
+    border-radius: 7px;
+    width: 29%;
+    padding: 1.35vh 2vh;
+    border: 1px solid #3b80c3;
+    font-size: 3vh;
+}
+
+.account-tab-input-btn-full {
+    background-color: #3b80c3;
+    color: #fff;
+    border-radius: 7px;
+    width: 100%;
+    padding: 1.35vh 2vh;
+    border: 1px solid #3b80c3;
+    font-size: 4vh;
+    margin: 2vh 0 0 0;
+}
+
+.create-account-set {
+    margin: 0 auto;
+    width: 70%;
+    margin-top: 5vh;
+}
+
+.main-container-bg {
+    background-color: #f0f3fa;
+    height: calc(100vh - 74px);
+}
+
+.create-account-input {
+    position: relative;
+    margin-bottom: 1.2vh;
+}
+
+.create-account-input div {
+    position: absolute;
+    background-color: #eaeaea;
+    width: 30%;
+    padding: 10px;
+    font-size: 2.1vh;
+}
+
+.create-account-input input {
+    width: 100%;
+    padding: 1vh 1vh 1vh 32%;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #ccc;
+}
+
+.create-account-input input::placeholder {
+    color: #ccc;
+}
+
+.create-account-input input:focus {
+    outline: none;
+}
+
+.create-account-btns {
+    color: #3b80c3;
+    background-color: #fff;
+    border-radius: 7px;
+    width: 49%;
+    padding: 1.35vh 2vh;
+    border: 1px solid #ccc;
+    font-size: 4vh;
+    margin: 2vh 0 0 0;
 }
