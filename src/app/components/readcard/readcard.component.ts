@@ -133,6 +133,8 @@ export class ReadcardComponent implements OnInit {
     userdata: any;
     userPermissions: any;
     isPerformSales: Boolean = true;
+    accountCardData: any;
+    accountPrintedId: any = '';
 
     constructor(private cdtaservice: CdtaService,
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
@@ -255,6 +257,16 @@ export class ReadcardComponent implements OnInit {
             this.showErrorMessages();
         });
 
+        this.electronService.ipcRenderer.on('readAccountBaseCardResult', (event, data) => {
+            if (data == null) {
+                $('#errorModal').modal('show');
+            } else {
+            this.accountCardData = JSON.parse(data);
+            this.accountPrintedId = this.accountCardData.printed_id;
+            console.log('readAccountbase' , data);
+            }
+        });
+
     }
     changeButton(i) {
         this.buttonIndex = i;
@@ -265,8 +277,19 @@ export class ReadcardComponent implements OnInit {
     cancelCreateAccount() {
         this.showForm = false;
     }
+    readAccountBaseCard() {
+        this.electronService.ipcRenderer.send('readAccountBaseCard', cardName);
+    }
+    resetWalletId() {
+    this.accountPrintedId = '';
+    }
     SessionModal() {
         $('#userTimedOut').modal('show');
+    }
+    getAccountDetails() {
+        if (this.accountPrintedId == '') {
+            $('#walletIdVerifyModal').modal('show');
+        }
     }
     /**
      *

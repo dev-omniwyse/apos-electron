@@ -277,3 +277,17 @@ button:disabled {
     font-size: 4vh;
     margin: 2vh 0 0 0;
 }
+
+.close-icon-set {
+    position: absolute;
+    right: 0;
+    width: 52px;
+    height: 52px;
+    background: #f0f3fa;
+    padding: 16px;
+    display: block;
+}
+
+.input-sets {
+    position: relative;
+}
