@@ -774,9 +774,7 @@ export class ReadcardComponent implements OnInit {
         this.getProductCatalogJSON();
         this.shoppingcart = ShoppingCartService.getInstance.createLocalStoreForShoppingCart();
         // checking permissions of present logged in user to perform sales
-        this.
-          
-          = JSON.parse(localStorage.getItem('userData'));
+        this.userdata = JSON.parse(localStorage.getItem('userData'));
         this.cdtaservice.getUserPermissionsJson().subscribe(data => {
             if (data != undefined) {
                 this.userPermissions = data;
