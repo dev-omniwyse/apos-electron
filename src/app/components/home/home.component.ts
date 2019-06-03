@@ -84,11 +84,11 @@ pcs.on('error', function (err) {
 
 
 @Component({
-    selector: 'app-readcard',
-    templateUrl: './readcard.component.html',
-    styleUrls: ['./readcard.component.css']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css']
 })
-export class ReadcardComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
     // Global Declarations will go here
     terminalConfigJson: any = [];
@@ -294,7 +294,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     showCardContents() {
 
@@ -315,7 +315,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     showErrorMessages() {
         $('#errorModal').modal('show');
@@ -324,7 +324,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     getBonusRidesCount() {
         this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.carddata[0]);
@@ -333,7 +333,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     getNextBonusRides() {
         this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson, this.config.cardTypeDetected);
@@ -489,24 +489,27 @@ export class ReadcardComponent implements OnInit {
     }
 
     populateCardDataProductForLUCC() {
-        this.carddata[0].products = [];
-        this.carddata[0].products.push(this.carddata[0].product);
-        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
-        this.carddata[0].products[0].product_type = this.carddata[0].card_type;
-        this.carddata[0].products[0].cardType = this.carddata[0].card_type;
-        this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
-        this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
-        this.carddata[0].products[0].start_date = this.carddata[0].start_date;
-        this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
-        this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
-        this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
-        this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
+        let readableIndex = 0;
+        let cardDataProductObj = this.carddata[readableIndex].product;
+        let cardDataObj = this.carddata[readableIndex];
+        cardDataProductObj.designator = cardDataObj.card_designator;
+        cardDataProductObj.product_type = cardDataObj.card_type;
+        cardDataProductObj.cardType = cardDataObj.card_type;
+        cardDataProductObj.exp_date = cardDataObj.card_exp;
+        cardDataProductObj.card_expiration_date_str = cardDataObj.card_exp_str;
+        cardDataProductObj.start_date = cardDataObj.start_date;
+        cardDataProductObj.is_card_badlisted = cardDataObj.is_card_badlisted;
+        cardDataProductObj.is_card_registered = cardDataObj.is_card_registered;
+        cardDataProductObj.is_card_negative = cardDataObj.is_card_negative;
+        cardDataProductObj.is_auto_recharge = cardDataObj.is_auto_recharge;
+        this.carddata[readableIndex].products = [];
+        this.carddata[readableIndex].products.push(cardDataProductObj);
     }
     /**
      *
      *
      * @param {*} event
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     readCard() {
         // localStorage.removeItem('shoppingCart');
@@ -557,7 +560,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     printSummaryOfCard() {
         this.cdtaservice.printCardSummary();
@@ -568,7 +571,7 @@ export class ReadcardComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     newFareCard() {
         localStorage.removeItem('shoppingCart');
@@ -616,7 +619,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     nonFareProduct() {
         localStorage.removeItem('shoppingCart');
@@ -633,7 +636,7 @@ export class ReadcardComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     magneticCard(event) {
         ShoppingCartService.getInstance.shoppingCart = null;
@@ -654,7 +657,7 @@ export class ReadcardComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     writeCard(event) {
         this.electronService.ipcRenderer.send('writeSmartcard', cardName);
@@ -665,7 +668,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     getProductCatalogJSON() {
         this.logger.info('this is a message from angular');
@@ -681,7 +684,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     adminDeviceConfig() {
         this.electronService.ipcRenderer.once('adminDeviceConfigResult', (event, data) => {
@@ -700,7 +703,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     getAllUsersSalesAndPayments() {
         // tslint:disable-next-line:prefer-const
@@ -717,7 +720,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     setOffering() {
         this.offeringSList = [];
@@ -754,7 +757,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     Back() {
         localStorage.removeItem('readCardData');
@@ -766,7 +769,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     hideModalPop() {
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
@@ -788,7 +791,7 @@ export class ReadcardComponent implements OnInit {
     /**
      *
      *
-     * @memberof ReadcardComponent
+     * @memberof HomeComponent
      */
     ngOnInit() {
         this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {

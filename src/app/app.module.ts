@@ -8,7 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CdtaService } from './cdta.service';
 import { NgxElectronModule } from 'ngx-electron';
-import { ReadcardComponent } from './components/readcard/readcard.component';
+import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { CarddataComponent } from './components/carddata/carddata.component';
 import { SetupComponent } from './components/setup/setup.component';
@@ -42,7 +42,7 @@ export class HammerConfig extends HammerGestureConfig {
 @NgModule({
   declarations: [
     AppComponent,
-    ReadcardComponent,
+    HomeComponent,
     LoginComponent,
     CarddataComponent,
     SetupComponent,

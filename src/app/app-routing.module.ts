@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ReadcardComponent } from './components/readcard/readcard.component';
+import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { CarddataComponent } from './components/carddata/carddata.component';
 import { SetupComponent } from './components/setup/setup.component';
@@ -43,8 +43,8 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'readcard',
-    component: ReadcardComponent
+    path: 'home',
+    component: HomeComponent
   },
   {
     path: 'carddata',

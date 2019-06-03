@@ -258,7 +258,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.electronService.ipcRenderer.removeAllListeners('doPinPadTransactionResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionStatusResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionDataResult');
-    this.router.navigate(['/readcard']);
+    this.router.navigate(['/home']);
   }
 
   /**
@@ -1588,7 +1588,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.electronService.ipcRenderer.removeAllListeners('doPinPadTransactionResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionStatusResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionDataResult');
-    this.router.navigate(['/readcard']);
+    this.router.navigate(['/home']);
   }
 
   /**
@@ -1741,7 +1741,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
           localStorage.removeItem('cardsData');
           localStorage.removeItem('readCardData');
           this.electronService.ipcRenderer.removeAllListeners('readCardResult');
-          this.router.navigate(['/readcard']);
+          this.router.navigate(['/home']);
         });
       } else {
 

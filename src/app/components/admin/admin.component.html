@@ -53,7 +53,7 @@
         <div class="container-right">
             <div class="cr-r-set">
                 <div class="">
-                    <button class="back-to-sales arrow_left" [routerLink]="['/readcard']" (click)="hideModalPop()"> Back To Sales</button>
+                    <button class="back-to-sales arrow_left" [routerLink]="['/home']" (click)="hideModalPop()"> Back To Sales</button>
                     <div class="back-sales-txt">What would you like to do ? </div>
                     <div class="cr-right-btns" *ngIf="shiftState == 0 && shiftType == 0">
                         <button class="arrow_right" [routerLink]="['/shifts']">
@@ -279,7 +279,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-cancel" data-dismiss="modal">No<br/>Close Window</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/readcard']">Yes<br/>Start Sales</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" [routerLink]="['/home']">Yes<br/>Start Sales</button>
                                 </div>
                             </div>
                         </div>

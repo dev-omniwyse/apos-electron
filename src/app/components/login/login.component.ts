@@ -116,7 +116,7 @@ export class LoginComponent implements OnInit {
                         localStorage.setItem('shiftReport', JSON.stringify(shiftStore));
 
                         this._ngZone.run(() => {
-                            this.router.navigate(['/readcard']);
+                            this.router.navigate(['/home']);
                         });
                     }
                 }

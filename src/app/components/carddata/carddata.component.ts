@@ -550,7 +550,7 @@ export class CarddataComponent implements OnInit, OnChanges {
     const timestamp_generateReciept = new Date().getTime();
     this.cdtaService.generateReceipt(timestamp_generateReciept);
     this.removeLocalStorage();
-    this.router.navigate(['/readcard']);
+    this.router.navigate(['/home']);
   }
 
 
@@ -561,7 +561,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   navigateToReadCard() {
     this.removeLocalStorage();
-    this.router.navigate(['/readcard']);
+    this.router.navigate(['/home']);
   }
 
   /**
