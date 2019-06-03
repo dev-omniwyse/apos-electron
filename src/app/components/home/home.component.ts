@@ -145,7 +145,7 @@ export class HomeComponent implements OnInit {
         private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
             this.buttonIndex = localStorage.getItem('isAccountBased') == undefined ? 0 :
-             localStorage.getItem('isAccountBaased') == 'false' ? 0 : 1;
+             localStorage.getItem('isAccountBased') == 'false' ? 0 : 1;
 
         // this.subscription = this.cdtaservice.goToCheckout$.subscribe(
         //     proceedToCheckOut => {
