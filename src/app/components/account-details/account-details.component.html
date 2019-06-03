@@ -1,0 +1,66 @@
+<div class="main-container">
+    <div class="flex container-padding flex-row">
+        <div class="flex-devide">
+            <div class="flex">
+                <div class="flex-devide">
+                    <p>Customer Name: {{accountDetails.firstName}} {{accountDetails.lastName}}</p>
+                    <p>Email: {{accountDetails.emailId}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-devide text-right">
+            <button class="page-btns doNotPrint" (click)="printSummaryOfCard();">Refresh</button>
+
+            <button class="page-btns doNotPrint" [routerLink]="['/addproduct']">
+            Add Card</button>
+            <button class="page-btns doNotPrint" (click)="addProduct();">Add Fund/Product</button>
+
+        </div>
+    </div>
+
+
+    <div class="content-container container-padding">
+        <h1></h1>
+    </div>
+
+    <div class="flex container-padding flex-row">
+
+        <table class="table-css">
+            <tr>
+                <th>Description</th>
+                <th>Details</th>
+            </tr>
+            <tr *ngFor="let account of accountDetails.accountInfo">
+                <td>{{account.description}}</td>
+                <td>{{account.value}}</td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="flex container-padding flex-row">
+        <table class="table-css">
+            <tr>
+                <th>Card ID</th>
+                <th>Nick Name</th>
+                <th>Card status</th>
+                <th>Expiry Date</th>
+            </tr>
+            <tr *ngFor="let cardData of accountDetails.cards">
+                <td><input type="radio" name="optradio"> {{cardData.pid}}</td>
+                <td>{{cardData.nickName}}</td>
+                <td>{{cardData.status}}</td>
+                <td>{{cardData.expiryDate | date:'MM-d-yyyy h:mm:ss a'}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="container-padding">
+        <div class="flex">
+            <div class="flex-devide">
+                <button class="back-btn doNotPrint" (click)="Back();">
+                    Back</button>
+            </div>
+        </div>
+
+    </div>
+</div>

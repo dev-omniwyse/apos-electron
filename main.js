@@ -464,13 +464,13 @@ ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID, shiftSate
 
     event.sender.send('salesDataResult', result, userID, shiftType, shiftSate);
 })
-ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3,shiftSate) => {
+ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3, shiftSate) => {
     var S = java.newLong(Number(startTime / 1000));
     var E = java.newLong(Number(endTime / 1000));
     var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
     logger.info("paymentsData Result", '' + result)
 
-    event.sender.send('paymentsDataResult', result, userID, shiftType,shiftSate);
+    event.sender.send('paymentsDataResult', result, userID, shiftType, shiftSate);
 })
 
 ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
@@ -643,3 +643,16 @@ ipcMain.on('getTimeout', (event) => {
     event.sender.send('getTimeOutResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/
+
+/** Account base */
+ipcMain.on('readAccountBaseCard', (event, cardName) => {
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardName);
+    var result = posAppletInstance.readAccounBasedCardSync();
+    console.log("read card account base", result);
+    event.sender.send('readAccountBaseCardResult', result.getValueSync());
+});
+ipcMain.on('getAccountDetails', (event, type, value) => {
+    var result = posAppletInstance.getAccountDetailsSync(type, value);
+    console.log("account base details", result);
+    event.sender.send('getAccountDetailsResult', result);
+});

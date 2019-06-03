@@ -33,6 +33,7 @@ import { DatePipe } from '@angular/common';
 import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
 import {SysytemConfig} from './config';
 import { GlobalErrorHandler } from './services/GlobalErrorHandler.service';
+import { AccountDetailsComponent } from './components/account-details/account-details.component';
 
 export class HammerConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -57,7 +58,8 @@ export class HammerConfig extends HammerGestureConfig {
     ShiftsComponent,
     EnvironmentComponent,
     NumericOnlyDirective,
-    NoCommaPipe
+    NoCommaPipe,
+    AccountDetailsComponent
   ],
   imports: [
     BrowserModule,
