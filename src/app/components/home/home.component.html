@@ -11,10 +11,13 @@
     <div class="">
         <div class="col-md-3 full-height-l">
             <div class="btn-tab-set">
-                <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }" *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
+                <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }"
+                    *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
             </div>
             <div class="flex container-padding flex-row admin-btn pull-left">
-                <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
+                <button class="read-card-btn-orange"
+                    (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); "
+                    [routerLink]="['/admin']">
                     Admin
                 </button>
             </div>
@@ -27,17 +30,20 @@
         <div class="col-md-6">
             <div *ngIf="statusOfShiftReport.length != 0" class="mt20 shift-report-status">{{statusOfShiftReport}}</div>
             <div class="container-padding flex-column home-btns-set-padd">
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached || !isPerformSales" data-toggle="modal" data-target="#myModal">
+                <button class="read-card-btn home_arrow_right"
+                    [disabled]="disableCards || maxSyncLimitReached || !isPerformSales" data-toggle="modal"
+                    data-target="#myModal">
                     New Fare Card
-                    
+
                 </button>
                 <button class="read-card-btn home_arrow_right" [disabled]="disableCards" (click)="existingCardClick()">
                     Existing Fare Card
-                  
+
                 </button>
-                <button class="read-card-btn home_arrow_right" [disabled]="disableCards || maxSyncLimitReached || !isPerformSales" (click)="nonFareProduct()">
+                <button class="read-card-btn home_arrow_right"
+                    [disabled]="disableCards || maxSyncLimitReached || !isPerformSales" (click)="nonFareProduct()">
                     Non-Fare Product
-                  
+
                 </button>
             </div>
         </div>
@@ -52,8 +58,10 @@
                 <h4 class="modal-title modal-txt-h">Select Media Type</h4>
                 <div class="modal-body-in">
                     <div class="">
-                        <button class="cardBtn arrow_right" (click)="newCardClick()" data-dismiss="modal">Smart Card/LUCC</button>
-                        <button class="cardBtn arrow_right" (click)="magneticCard($event)" data-dismiss="modal">Magnetic  </button>
+                        <button class="cardBtn arrow_right" (click)="newCardClick()" data-dismiss="modal">Smart
+                            Card/LUCC</button>
+                        <button class="cardBtn arrow_right" (click)="magneticCard($event)" data-dismiss="modal">Magnetic
+                        </button>
 
                         <button class="cancel-btn-pop" style="margin-top:15px" data-dismiss="modal">Cancel</button>
                     </div>
@@ -66,10 +74,13 @@
 <div class="main-container doNotPrint main-container-bg" *ngIf="(isShowCardOptions && buttonIndex == 1)">
     <div class="col-md-3 full-height-l">
         <div class="btn-tab-set">
-            <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }" *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
+            <div class="btn-tab" id="btnArray" [ngClass]="{ 'btn-tab-selected': i == buttonIndex }"
+                *ngFor="let value of buttonArray; let i=index" (click)="changeButton(i)">{{value}}</div>
         </div>
         <div class="flex container-padding flex-row admin-btn pull-left">
-            <button class="read-card-btn-orange" (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); " [routerLink]="['/admin']">
+            <button class="read-card-btn-orange"
+                (click)="hideModalPop(); adminDeviceConfig(); getAllUsersSalesAndPayments(); "
+                [routerLink]="['/admin']">
                 Admin
             </button>
         </div>
@@ -94,26 +105,119 @@
         <div class="create-account-set" *ngIf="showForm">
             <div class="create-account-set-in">
                 <div>Customer Details</div>
-                <div class="create-account-input">
-                    <div>First Name*</div>
-                    <input type="text" placeholder="First Name (required)" />
+                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <div class="create-account-input">
+                        <div>First Name*</div>
+                        <input type="text" placeholder="First Name (required)" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                                <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                            </div>
+                    </div>
                 </div>
-                <div class="create-account-input">
-                    <div>Last Name*</div>
-                    <input type="text" placeholder="Last Name (required)" />
+                <div class="form-group">
+                    <div class="create-account-input">
+                        <div>Last Name*</div>
+                        <input type="text" placeholder="Last Name (required)" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                                <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                            </div>
+                    </div>
                 </div>
-                <div class="create-account-input">
-                    <div>Email*</div>
-                    <input type="text" placeholder="email@example.com" />
+                <div class="form-group">
+                    <div class="create-account-input">
+                        <div>Email*</div>
+                        <input type="text" placeholder="email@example.com" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.required">Email is required</div>
+                                <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                            </div>
+                    </div>
                 </div>
-                <div>
-                    <button class="create-account-btns" (click)="cancelCreateAccount()">Cancel</button>&nbsp;<button class="create-account-btns">Submit</button>
+                
+                    <div class="form-group">
+                        <button class="create-account-btns" (click)="cancelCreateAccount()">Cancel</button>&nbsp;<button
+                            class="create-account-btns">Submit</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="accountCreationErrorModal" role="dialog">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                    <h4 class="modal-title">Account Creation</h4>
+                </div>
+    
+                <div class="modal-body">
+                    <p>Please fill all required fields
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+    <div class="modal fade" id="emailCheckModal" role="dialog">
+            <div class="modal-dialog modal-sm  modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                        <h4 class="modal-title">Account Creation</h4>
+                    </div>
+        
+                    <div class="modal-body">
+                        <p>Email already exists
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="serviceNotAvailableModal" role="dialog">
+                <div class="modal-dialog modal-sm  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                            <h4 class="modal-title">Account Creation</h4>
+                        </div>
+            
+                        <div class="modal-body">
+                            <p>Service unavailable try again later.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="failCreateAccountModal" role="dialog">
+                    <div class="modal-dialog modal-sm  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                                <h4 class="modal-title">Account Creation</h4>
+                            </div>
+                
+                            <div class="modal-body">
+                                <p>Failed to create account.
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 <!-- <div *ngIf="carddata.length > 0">
 		<app-carddata [Carddata]="carddata"></app-carddata>
 	  </div> -->
@@ -150,7 +254,9 @@
             <button class="page-btns doNotPrint" (click)="printSummaryOfCard();">Print
                 Summary</button>
 
-            <button class="page-btns doNotPrint" [disabled]="active_wallet_status == 'INACTIVE' || maxSyncLimitReached || !isPerformSales" [routerLink]="['/addproduct']">Add
+            <button class="page-btns doNotPrint"
+                [disabled]="active_wallet_status == 'INACTIVE' || maxSyncLimitReached || !isPerformSales"
+                [routerLink]="['/addproduct']">Add
                 New
                 Product to Card</button>
         </div>
@@ -197,6 +303,8 @@
 
     </div>
 </div>
+
+
 
 <div class="modal fade" id="errorModal" role="dialog">
     <div class="modal-dialog modal-sm  modal-dialog-centered">

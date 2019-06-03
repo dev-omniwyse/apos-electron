@@ -1,5 +1,6 @@
 
 import { Component, OnInit, NgZone } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CdtaService } from '../../cdta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
@@ -135,8 +136,11 @@ export class HomeComponent implements OnInit {
     isPerformSales: Boolean = true;
     accountCardData: any;
     accountPrintedId: any = '';
+    registerForm: FormGroup;
+    submitted = false;
+    isNetAvailable: any;
 
-    constructor(private cdtaservice: CdtaService,
+    constructor(private cdtaservice: CdtaService, private formBuilder: FormBuilder,
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
         private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
@@ -260,13 +264,15 @@ export class HomeComponent implements OnInit {
             this.showErrorMessages();
         });
 
+
+
         this.electronService.ipcRenderer.on('readAccountBaseCardResult', (event, data) => {
             if (data == null) {
                 $('#errorModal').modal('show');
             } else {
-            this.accountCardData = JSON.parse(data);
-            this.accountPrintedId = this.accountCardData.printed_id;
-            console.log('readAccountbase' , data);
+                this.accountCardData = JSON.parse(data);
+                this.accountPrintedId = this.accountCardData.printed_id;
+                console.log('readAccountbase', data);
             }
         });
         this.electronService.ipcRenderer.on('getAccountDetailsResult', (event, data) => {
@@ -274,7 +280,14 @@ export class HomeComponent implements OnInit {
             localStorage.setItem('accountDetails', data);
         });
 
+
+
+
+
     }
+
+
+
     changeButton(i) {
         this.buttonIndex = i;
         if (this.buttonIndex == 1) {
@@ -293,7 +306,7 @@ export class HomeComponent implements OnInit {
         this.electronService.ipcRenderer.send('readAccountBaseCard', cardName);
     }
     resetWalletId() {
-    this.accountPrintedId = '';
+        this.accountPrintedId = '';
     }
     SessionModal() {
         $('#userTimedOut').modal('show');
@@ -312,7 +325,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     showCardContents() {
 
@@ -333,7 +346,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     showErrorMessages() {
         $('#errorModal').modal('show');
@@ -342,7 +355,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     getBonusRidesCount() {
         this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.carddata[0]);
@@ -351,7 +364,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     getNextBonusRides() {
         this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson, this.config.cardTypeDetected);
@@ -398,6 +411,36 @@ export class HomeComponent implements OnInit {
             console.log('UltraLight data', data);
             this.isSmartCard = false;
             this.readLUCCCard();
+        });
+    }
+
+    handleIsNetAvailable() {
+        this.electronService.ipcRenderer.once('isInternetAvailableResult', (event, data) => {
+            if (data == "true") {
+                if (this.registerForm.invalid) {
+                    return $('#accountCreationErrorModal').modal('show');
+                }
+                else {
+                    var createUser = this.registerForm.value;
+                    this.handleCreateAccountUser();
+                    this.electronService.ipcRenderer.send('createAccount', createUser.firstName, createUser.lastName, createUser.email);
+                }
+            } else {
+                $('#serviceNotAvailableModal').modal('show');
+            }
+        });
+    }
+
+    handleCreateAccountUser() {
+        this.electronService.ipcRenderer.once('createAccountResult', (event, data) => {
+            console.log('create user data', data);
+            if (data.trim() == 'success') {
+                alert('account created successfully');
+            } else if ('Email Already Exist' == data.trim()) {
+                $('#emailCheckModal').modal('show');
+            } else {
+                $('#failCreateAccountModal').modal('show');
+            }
         });
     }
     callCardPIDUltraLightC() {
@@ -449,7 +492,7 @@ export class HomeComponent implements OnInit {
                     // tslint:disable-next-line:prefer-const
                     let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
                     this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
-                         this.carddata[0], item.Offering, !isExistingCard);
+                        this.carddata[0], item.Offering, !isExistingCard);
                     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
                 });
             }
@@ -480,7 +523,7 @@ export class HomeComponent implements OnInit {
                     this.terminalConfigJson.Farecodes.forEach(element => {
                         if (this.carddata[0].user_profile == undefined && fareCodeID == element.FareCodeId) {
                             this.cardType = element.Description;
-                        } else if (this.carddata[0].user_profile != undefined && this.carddata[0].user_profile == element.FareCodeId){
+                        } else if (this.carddata[0].user_profile != undefined && this.carddata[0].user_profile == element.FareCodeId) {
                             this.cardType = element.Description;
                         }
                     });
@@ -507,27 +550,24 @@ export class HomeComponent implements OnInit {
     }
 
     populateCardDataProductForLUCC() {
-        let readableIndex = 0;
-        let cardDataProductObj = this.carddata[readableIndex].product;
-        let cardDataObj = this.carddata[readableIndex];
-        cardDataProductObj.designator = cardDataObj.card_designator;
-        cardDataProductObj.product_type = cardDataObj.card_type;
-        cardDataProductObj.cardType = cardDataObj.card_type;
-        cardDataProductObj.exp_date = cardDataObj.card_exp;
-        cardDataProductObj.card_expiration_date_str = cardDataObj.card_exp_str;
-        cardDataProductObj.start_date = cardDataObj.start_date;
-        cardDataProductObj.is_card_badlisted = cardDataObj.is_card_badlisted;
-        cardDataProductObj.is_card_registered = cardDataObj.is_card_registered;
-        cardDataProductObj.is_card_negative = cardDataObj.is_card_negative;
-        cardDataProductObj.is_auto_recharge = cardDataObj.is_auto_recharge;
-        this.carddata[readableIndex].products = [];
-        this.carddata[readableIndex].products.push(cardDataProductObj);
+        this.carddata[0].products = [];
+        this.carddata[0].products.push(this.carddata[0].product);
+        this.carddata[0].products[0].designator = this.carddata[0].card_designator;
+        this.carddata[0].products[0].product_type = this.carddata[0].card_type;
+        this.carddata[0].products[0].cardType = this.carddata[0].card_type;
+        this.carddata[0].products[0].exp_date = this.carddata[0].card_exp;
+        this.carddata[0].card_expiration_date_str = this.carddata[0].card_exp_str;
+        this.carddata[0].products[0].start_date = this.carddata[0].start_date;
+        this.carddata[0].products[0].is_card_badlisted = this.carddata[0].is_card_badlisted;
+        this.carddata[0].products[0].is_card_registered = this.carddata[0].is_card_registered;
+        this.carddata[0].products[0].is_card_negative = this.carddata[0].is_card_negative;
+        this.carddata[0].products[0].is_auto_recharge = this.carddata[0].is_auto_recharge;
     }
     /**
      *
      *
      * @param {*} event
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     readCard() {
         // localStorage.removeItem('shoppingCart');
@@ -578,7 +618,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     printSummaryOfCard() {
         this.cdtaservice.printCardSummary();
@@ -589,7 +629,7 @@ export class HomeComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     newFareCard() {
         localStorage.removeItem('shoppingCart');
@@ -637,7 +677,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     nonFareProduct() {
         localStorage.removeItem('shoppingCart');
@@ -654,7 +694,7 @@ export class HomeComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     magneticCard(event) {
         ShoppingCartService.getInstance.shoppingCart = null;
@@ -675,7 +715,7 @@ export class HomeComponent implements OnInit {
      *
      *
      * @param {*} event
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     writeCard(event) {
         this.electronService.ipcRenderer.send('writeSmartcard', cardName);
@@ -686,7 +726,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     getProductCatalogJSON() {
         this.logger.info('this is a message from angular');
@@ -702,7 +742,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     adminDeviceConfig() {
         this.electronService.ipcRenderer.once('adminDeviceConfigResult', (event, data) => {
@@ -721,7 +761,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     getAllUsersSalesAndPayments() {
         // tslint:disable-next-line:prefer-const
@@ -738,7 +778,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     setOffering() {
         this.offeringSList = [];
@@ -775,7 +815,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     Back() {
         localStorage.removeItem('readCardData');
@@ -787,7 +827,7 @@ export class HomeComponent implements OnInit {
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     hideModalPop() {
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
@@ -806,12 +846,29 @@ export class HomeComponent implements OnInit {
 
     }
 
+
+    get f() { return this.registerForm.controls; }
+
+    onSubmit() {
+        this.submitted = true;
+        this.handleIsNetAvailable();
+        this.electronService.ipcRenderer.send('isInternetAvailable');
+    }
+
     /**
      *
      *
-     * @memberof HomeComponent
+     * @memberof ReadcardComponent
      */
     ngOnInit() {
+
+
+        this.registerForm = this.formBuilder.group({
+            firstName: ['', Validators.required],
+            lastName: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+        });
+
         this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
             if (data != undefined && data != '') {
                 localStorage.setItem('terminalConfigJson', data);
@@ -831,15 +888,15 @@ export class HomeComponent implements OnInit {
             if (data != undefined) {
                 this.userPermissions = data;
                 if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
-                      this.isPerformSales = false;
-                }else{
+                    this.isPerformSales = false;
+                } else {
                     this.isPerformSales = true;
                 }
             } else {
                 console.log('permissions failure')
             }
         });
-        
+
         if (localStorage.getItem('shiftReport') != undefined) {
             const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
             const userId = localStorage.getItem('userID');

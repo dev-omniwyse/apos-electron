@@ -656,3 +656,14 @@ ipcMain.on('getAccountDetails', (event, type, value) => {
     console.log("account base details", result);
     event.sender.send('getAccountDetailsResult', result);
 });
+ipcMain.on('isInternetAvailable', (event) => {
+    var result = posAppletInstance.isInternetAvailableSync();
+    logger.info("isInternetAvailable", result)
+    event.sender.send('isInternetAvailableResult', '' + result);
+});
+
+ipcMain.on('createAccount', (event, fname, lname, email) => {
+    var result = posAppletInstance.createAccountSync(fname, lname, email);
+    logger.info("createAccount user", result);
+    event.sender.send('createAccountResult', '' + result);
+});
