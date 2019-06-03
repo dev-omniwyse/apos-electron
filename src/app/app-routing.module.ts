@@ -13,6 +13,7 @@ import { DeviceconfComponent } from './components/deviceconf/deviceconf.componen
 import { ShiftSalesSummaryComponent } from './components/shift-sales-summary/shift-sales-summary.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { EnvironmentComponent } from './components/environment/environment.component';
+import { AccountDetailsComponent } from './components/account-details/account-details.component';
 const routes: Routes = [
   {
     path: '',
@@ -73,6 +74,10 @@ const routes: Routes = [
   {
     path: 'shifts',
     component: ShiftsComponent
+  },
+  {
+    path: 'account_details',
+    component: AccountDetailsComponent
   },
 ];
 

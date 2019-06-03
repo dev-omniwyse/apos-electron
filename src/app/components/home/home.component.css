@@ -202,7 +202,7 @@ button:disabled {
     border: 2px solid #585858;
     border-radius: 6px;
     padding: 1.5vh;
-    width: 70%;
+    width: 100%;
     margin-right: 1%;
     box-shadow: inset 3px 3px 3px 0px #8888888c;
 }
@@ -281,13 +281,15 @@ button:disabled {
 .close-icon-set {
     position: absolute;
     right: 0;
-    width: 52px;
-    height: 52px;
-    background: #f0f3fa;
-    padding: 16px;
+    width: 45px;
+    height: 47px;
+    padding: 11px;
     display: block;
 }
 
 .input-sets {
     position: relative;
+    margin-right: 1%;
+    width: 69%;
+    float: left;
 }

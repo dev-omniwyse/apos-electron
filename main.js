@@ -464,13 +464,13 @@ ipcMain.on('salesData', (event, shiftType, startTime, endTime, userID, shiftSate
 
     event.sender.send('salesDataResult', result, userID, shiftType, shiftSate);
 })
-ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3,shiftSate) => {
+ipcMain.on('paymentsData', (event, userID, shiftType, startTime, endTime, nul1, nul2, nul3, shiftSate) => {
     var S = java.newLong(Number(startTime / 1000));
     var E = java.newLong(Number(endTime / 1000));
     var result = posAppletInstance.getTotalPaymentReportSync(false, shiftType, S, E, 0, 0, 0);
     logger.info("paymentsData Result", '' + result)
 
-    event.sender.send('paymentsDataResult', result, userID, shiftType,shiftSate);
+    event.sender.send('paymentsDataResult', result, userID, shiftType, shiftSate);
 })
 
 ipcMain.on('printReceiptHeader', (event, filter, datevalue) => {
@@ -644,14 +644,26 @@ ipcMain.on('getTimeout', (event) => {
 });
 /** ADMIN METHODS END HERE*/
 
+/** Account base */
+ipcMain.on('readAccountBaseCard', (event, cardName) => {
+    var resultSetEncoder = posAppletInstance.setEncoderSync(cardName);
+    var result = posAppletInstance.readAccounBasedCardSync();
+    console.log("read card account base", result);
+    event.sender.send('readAccountBaseCardResult', result.getValueSync());
+});
+ipcMain.on('getAccountDetails', (event, type, value) => {
+    var result = posAppletInstance.getAccountDetailsSync(type, value);
+    console.log("account base details", result);
+    event.sender.send('getAccountDetailsResult', result);
+});
 ipcMain.on('isInternetAvailable', (event) => {
     var result = posAppletInstance.isInternetAvailableSync();
     logger.info("isInternetAvailable", result)
     event.sender.send('isInternetAvailableResult', '' + result);
 });
 
-ipcMain.on('createAccount', (event,fname,lname,email) => {
-    var result = posAppletInstance.createAccountSync(fname,lname,email);
+ipcMain.on('createAccount', (event, fname, lname, email) => {
+    var result = posAppletInstance.createAccountSync(fname, lname, email);
     logger.info("createAccount user", result);
     event.sender.send('createAccountResult', '' + result);
 });

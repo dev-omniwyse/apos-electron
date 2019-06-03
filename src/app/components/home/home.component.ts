@@ -144,6 +144,9 @@ export class HomeComponent implements OnInit {
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
         private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
+            this.buttonIndex = localStorage.getItem('isAccountBased') == undefined ? 0 :
+             localStorage.getItem('isAccountBaased') == 'false' ? 0 : 1;
+
         // this.subscription = this.cdtaservice.goToCheckout$.subscribe(
         //     proceedToCheckOut => {
         //         if (proceedToCheckOut == true) {
@@ -272,6 +275,10 @@ export class HomeComponent implements OnInit {
                 console.log('readAccountbase', data);
             }
         });
+        this.electronService.ipcRenderer.on('getAccountDetailsResult', (event, data) => {
+            console.log('account details' , data);
+            localStorage.setItem('accountDetails', data);
+        });
 
 
 
@@ -283,6 +290,11 @@ export class HomeComponent implements OnInit {
 
     changeButton(i) {
         this.buttonIndex = i;
+        if (this.buttonIndex == 1) {
+            localStorage.setItem('isAccountBased', 'true');
+        } else {
+            localStorage.setItem('isAccountBased', 'false');
+        }
     }
     createAccountForm() {
         this.showForm = true;
@@ -300,8 +312,14 @@ export class HomeComponent implements OnInit {
         $('#userTimedOut').modal('show');
     }
     getAccountDetails() {
+        const type = this.accountPrintedId.indexOf('@') == -1 ? 'walletid' : 'emailid';
         if (this.accountPrintedId == '') {
             $('#walletIdVerifyModal').modal('show');
+        } else {
+            this.electronService.ipcRenderer.send('getAccountDetails', type, this.accountPrintedId);
+            this.router.navigate(['/account_details']);
+            this.isShowCardOptions = false;
+
         }
     }
     /**
