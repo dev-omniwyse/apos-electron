@@ -643,3 +643,15 @@ ipcMain.on('getTimeout', (event) => {
     event.sender.send('getTimeOutResult', '' + result.getSuccessSync());
 });
 /** ADMIN METHODS END HERE*/
+
+ipcMain.on('isInternetAvailable', (event) => {
+    var result = posAppletInstance.isInternetAvailableSync();
+    logger.info("isInternetAvailable", result)
+    event.sender.send('isInternetAvailableResult', '' + result);
+});
+
+ipcMain.on('createAccount', (event,fname,lname,email) => {
+    var result = posAppletInstance.createAccountSync(fname,lname,email);
+    logger.info("createAccount user", result);
+    event.sender.send('createAccountResult', '' + result);
+});
