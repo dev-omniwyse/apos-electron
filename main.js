@@ -665,5 +665,5 @@ ipcMain.on('isInternetAvailable', (event) => {
 ipcMain.on('createAccount', (event, fname, lname, email) => {
     var result = posAppletInstance.createAccountSync(fname, lname, email);
     logger.info("createAccount user", result);
-    event.sender.send('createAccountResult', '' + result);
+    event.sender.send('createAccountResult', '' + result, email);
 });
