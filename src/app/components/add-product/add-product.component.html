@@ -1,13 +1,16 @@
 <div class="main-container" *ngIf="!isCustomAmount && !applyCompShow">
     <div class="container-left">
-        <div class="header-l">
-            <img src="assets/images/icon-cart.png" />
+
+        <div class="header-l" *ngIf="!accountBase">
             <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
                 CARD</button>
             <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top-cancel" *ngIf="!checkout">VIEW
                     CARD</button>
 
             <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
+        </div>
+        <div class="header-l">
+            <img src="assets/images/icon-cart.png" />
         </div>
         <div class="modal fade" id="viewCard" role="dialog">
             <div class="modal-dialog modal-custom  modal-dialog-centered">
@@ -56,7 +59,7 @@
             </div>
         </div>
         <!-- new code  -->
-        <div class="btns-mag">
+        <div class="btns-mag" *ngIf="!accountBase">
             <div id="Carousel" class="carousel slide col-lg-10 col-offset-2" data-ride="carousel">
 
 
@@ -73,8 +76,9 @@
         </div>
         <div class="container-l-app">
             <div>
-                <div *ngIf="!isMerchendise" class="cont-products-head"> FARE PRODUCTS</div>
-                <div *ngIf="isMerchendise" class="cont-products-head"> NON FARE PRODUCTS</div>
+                <div *ngIf="!isMerchendise && !accountBase" class="cont-products-head"> FARE PRODUCTS</div>
+                <div *ngIf="accountBase" class="cont-products-head"> PRODUCTS</div>
+                <div *ngIf="isMerchendise && !accountBase" class="cont-products-head"> NON FARE PRODUCTS</div>
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left" >{{currentWalletLineItem?._description}}</div>
 
@@ -148,7 +152,7 @@
         </div>
         <div class="btns-set">
             <button class="btn-white" (click)="navigateToReadCard()" *ngIf="!productCheckOut">Cancel</button>
-            <button class="btn-orange-bottom" [disabled] = "!isPerformSales" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
+            <button class="btn-orange-bottom" [disabled]="!isPerformSales" (click)="productCheckout()" *ngIf="!productCheckOut">Checkout</button>
             <button class="btn-white-top-cancel-checkout" *ngIf="productCheckOut" (click)="cancelCheckout()">CANCEL CHECKOUT</button>
         </div>
     </div>

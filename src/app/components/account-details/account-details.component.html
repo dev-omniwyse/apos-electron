@@ -1,20 +1,27 @@
+<div class="warning-banner" *ngIf="disableaddFund">Maximum amount reached can not add fund</div>
 <div class="main-container">
     <div class="flex container-padding flex-row">
         <div class="flex-devide">
             <div class="flex">
                 <div class="flex-devide">
-                    <p>Customer Name: {{accountDetails.firstName}} {{accountDetails.lastName}}</p>
-                    <p>Email: {{accountDetails.emailId}}</p>
+                    <div class="customer-info-de">
+                        <div class="customer-info-de-l">Customer Name:</div>
+                        <div class="customer-info-de-r">{{accountDetails.firstName}} {{accountDetails.lastName}}</div>
+                    </div>
+                    <div class="customer-info-de">
+                        <div class="customer-info-de-l">Email:</div>
+                        <div class="customer-info-de-r">{{accountDetails.emailId}}</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="flex-devide text-right">
-            <button class="page-btns doNotPrint" (click)="printSummaryOfCard();">Refresh</button>
+            <button class="page-btns doNotPrint" (click)="refreshAccountDetails();">Refresh</button>
 
-            <button class="page-btns doNotPrint" [routerLink]="['/addproduct']">
+            <button class="page-btns doNotPrint" (click)="addCard()">
             Add Card</button>
-            <button class="page-btns doNotPrint" (click)="addProduct();">Add Fund/Product</button>
+            <button class="page-btns doNotPrint" [disabled]="disableaddFund" (click)="addProduct();">Add Fund/Product</button>
 
         </div>
     </div>
@@ -47,7 +54,7 @@
                 <th>Expiry Date</th>
             </tr>
             <tr *ngFor="let cardData of accountDetails.cards">
-                <td><input type="radio" name="optradio"> {{cardData.pid}}</td>
+                <td><input type="radio" name="optradio">{{cardData.pid}}</td>
                 <td>{{cardData.nickName}}</td>
                 <td>{{cardData.status}}</td>
                 <td>{{cardData.expiryDate | date:'MM-d-yyyy h:mm:ss a'}}</td>
@@ -62,5 +69,23 @@
             </div>
         </div>
 
+    </div>
+</div>
+<div class="modal fade" id="errorModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Card is already associated with this account. Please place a different card on the encoder.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
     </div>
 </div>

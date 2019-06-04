@@ -280,13 +280,7 @@ export class HomeComponent implements OnInit {
             localStorage.setItem('accountDetails', data);
         });
 
-
-
-
-
     }
-
-
 
     changeButton(i) {
         this.buttonIndex = i;

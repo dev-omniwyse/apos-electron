@@ -171,6 +171,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   maxSyncLimitReached = false;
   isCashBack: Boolean;
   taxTotal = 0;
+  accountBase: Boolean;
   isSmartCard = false;
   constructor(
     private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
@@ -217,6 +218,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // checking permissions of present logged in user to perform sales
+    this.accountBase =  localStorage.getItem('isAccountBased') == 'false' ? false : true;
     this.userdata = JSON.parse(localStorage.getItem('userData'));
     this.cdtaService.getUserPermissionsJson().subscribe(data => {
         if (data != undefined) {
@@ -702,7 +704,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       });
       return false;
     }
-    if (!this.isMerchendise) {
+    if (!this.isMerchendise && !this.accountBase) {
       if (!this.isTotalproductCountForCardreached(product)) {
         this.maxLimitErrorMessages = this.getProductLimitMessage();
         $('#maxCardLimitModal').modal({
@@ -1152,7 +1154,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings
-      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem);
+      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem , this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1167,7 +1169,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings(item.Offering,
-      TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem);
+      TICKET_GROUP.PERIOD_PASS, TICKET_TYPE.PERIOD, this.currentWalletLineItem, this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1204,7 +1206,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings(item.Offering,
-      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem);
+      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem , this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }

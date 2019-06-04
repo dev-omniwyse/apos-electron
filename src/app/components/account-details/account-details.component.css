@@ -1,3 +1,26 @@
 .flex {
     display: flex
 }
+
+.customer-info-de {
+    font-size: 1.5vw;
+}
+
+.customer-info-de-l {
+    width: 28%;
+    float: left;
+}
+
+.customer-info-de-r {
+    width: 72%;
+    float: left;
+}
+
+.warning-banner {
+    background-color: #d65400;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    height: 33px;
+    margin: 8px;
+}
