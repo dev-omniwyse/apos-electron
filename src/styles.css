@@ -308,14 +308,14 @@ body {
 .table-css {
     border-collapse: collapse;
     width: 100%;
-    font-size: 23px;
+    font-size: 1.25vw;
     font-weight: 100;
 }
 
 .table-css td,
 .table-css th {
     border: 1px solid #ddd;
-    padding: 15px;
+    padding: 0.5vw;
 }
 
 .table-css tr:nth-child(odd) {
@@ -327,7 +327,7 @@ body {
 }
 
 .table-css th {
-    padding: 15px;
+    padding: 0.5vw;
     text-align: left;
     background-color: #395067;
     color: white;

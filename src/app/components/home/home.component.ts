@@ -296,13 +296,7 @@ export class HomeComponent implements OnInit {
            
         });
 
-
-
-
-
     }
-
-
 
     changeButton(i) {
         this.buttonIndex = i;

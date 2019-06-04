@@ -16,7 +16,7 @@ export class FilterOfferings {
         FilterOfferings._filterService = this;
     }
 
-    filterFareOfferings(offeringJSON, ticketGroup, ticketTypeId, walletLineItem) {
+    filterFareOfferings(offeringJSON, ticketGroup, ticketTypeId, walletLineItem, isAccountBased) {
 
         const filteredProducts = [];
         for (const item of offeringJSON) {
@@ -47,7 +47,9 @@ export class FilterOfferings {
                             }
                         }
 
-                        if (walletTypeMatch && fareCodeMatch && item.IsCardBased) {
+                        if (!isAccountBased && walletTypeMatch && fareCodeMatch && item.IsCardBased) {
+                            filteredProducts.push(item);
+                        } else if (walletTypeMatch && fareCodeMatch && item.IsAccountBased) {
                             filteredProducts.push(item);
                         }
                     }
@@ -70,4 +72,5 @@ export class FilterOfferings {
 
         return filteredNonFareProducts;
     }
+
 }
