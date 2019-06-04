@@ -144,8 +144,10 @@ export class HomeComponent implements OnInit {
         private route: ActivatedRoute, private config: SysytemConfig, private router: Router,
         private _ngZone: NgZone, private sessionService?: SessionServiceApos,
         private electronService?: ElectronService) {
+
             this.buttonIndex = localStorage.getItem('isAccountBased') == undefined ? 0 :
              localStorage.getItem('isAccountBased') == 'false' ? 0 : 1;
+
 
         // this.subscription = this.cdtaservice.goToCheckout$.subscribe(
         //     proceedToCheckOut => {
@@ -276,8 +278,22 @@ export class HomeComponent implements OnInit {
             }
         });
         this.electronService.ipcRenderer.on('getAccountDetailsResult', (event, data) => {
-            console.log('account details' , data);
-            localStorage.setItem('accountDetails', data);
+            console.log('account details', data);
+            if (data == 'No Internet') {
+                $('#serviceNotAvailableModal').modal('show');
+            }else if(data != ''){
+                var accountDetails = JSON.parse(data);
+                if(accountDetails.profileType == 'Account-Based'){
+                    localStorage.setItem('accountDetails', data);
+                    this.router.navigate(['/account_details']);
+                    this.isShowCardOptions = false;
+                }else{
+                    $('#notAccountBasedModal').modal('show');
+                }
+            }else{
+                $('#invalidMailOrWalletModal').modal('show');
+            }
+           
         });
 
     }
@@ -302,6 +318,15 @@ export class HomeComponent implements OnInit {
     resetWalletId() {
         this.accountPrintedId = '';
     }
+    resetFirstName(){
+        this.registerForm.controls['firstName'].setValue('');
+    }
+    resetLastName(){
+        this.registerForm.controls['lastName'].setValue('');
+    }
+    resetEmail(){
+        this.registerForm.controls['email'].setValue('');
+    }
     SessionModal() {
         $('#userTimedOut').modal('show');
     }
@@ -311,8 +336,6 @@ export class HomeComponent implements OnInit {
             $('#walletIdVerifyModal').modal('show');
         } else {
             this.electronService.ipcRenderer.send('getAccountDetails', type, this.accountPrintedId);
-            this.router.navigate(['/account_details']);
-            this.isShowCardOptions = false;
 
         }
     }
@@ -411,11 +434,18 @@ export class HomeComponent implements OnInit {
     handleIsNetAvailable() {
         this.electronService.ipcRenderer.once('isInternetAvailableResult', (event, data) => {
             if (data == "true") {
-                if (this.registerForm.invalid) {
+                var createUser = this.registerForm.value;
+                var regName = /^[a-zA-Z \\-\\]{1,30}$/;
+                var regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                if (createUser.firstName == '' || createUser.lastName == '' || createUser.email == '') {
                     return $('#accountCreationErrorModal').modal('show');
                 }
+                else if (!regName.test(createUser.firstName) || !regName.test(createUser.lastName)) {
+                    return $('#invalidNamesModal').modal('show');
+                } else if (regEmail.test(createUser.email) == false) {
+                    return $('#invalidMailModal').modal('show');
+                }
                 else {
-                    var createUser = this.registerForm.value;
                     this.handleCreateAccountUser();
                     this.electronService.ipcRenderer.send('createAccount', createUser.firstName, createUser.lastName, createUser.email);
                 }
@@ -426,10 +456,13 @@ export class HomeComponent implements OnInit {
     }
 
     handleCreateAccountUser() {
-        this.electronService.ipcRenderer.once('createAccountResult', (event, data) => {
+        this.electronService.ipcRenderer.once('createAccountResult', (event, data, email) => {
             console.log('create user data', data);
             if (data.trim() == 'success') {
-                alert('account created successfully');
+                alert('user created successfully');
+                console.log('this.registerForm.value.email', this.registerForm.value.email)
+                this.accountPrintedId = this.registerForm.value.email;
+                this.getAccountDetails();
             } else if ('Email Already Exist' == data.trim()) {
                 $('#emailCheckModal').modal('show');
             } else {
@@ -437,6 +470,7 @@ export class HomeComponent implements OnInit {
             }
         });
     }
+
     callCardPIDUltraLightC() {
         this.handleGetCardPIDUltralightC();
         this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);

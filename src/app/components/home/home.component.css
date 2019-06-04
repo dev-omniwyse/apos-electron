@@ -248,7 +248,7 @@ button:disabled {
     position: absolute;
     background-color: #eaeaea;
     width: 30%;
-    padding: 10px;
+    padding: 0.9vh 0.9vh 0.9vh 1.7vh;
     font-size: 2.1vh;
 }
 
@@ -292,4 +292,16 @@ button:disabled {
     margin-right: 1%;
     width: 69%;
     float: left;
+}
+
+.invalid-feedback{
+    position: relative!important;
+    width: 100%!important;
+    margin-top: 6px;
+}
+
+.invalid-feedback div{
+    position: relative!important;
+    width: 100%!important;
+    padding: 0!important;
 }
