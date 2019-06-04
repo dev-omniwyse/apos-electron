@@ -287,6 +287,15 @@ button:disabled {
     display: block;
 }
 
+.close-icon-set-create {
+    position: absolute;
+    right: -89px;
+    width: 30px;
+    height: 32px;
+    padding: -23px;
+    /* display: block; */
+    }
+    
 .input-sets {
     position: relative;
     margin-right: 1%;
