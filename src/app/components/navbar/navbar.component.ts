@@ -58,6 +58,7 @@ export class NavbarComponent implements OnInit {
   logOut() {
 
     this.sessionService.sessionStop();
+    localStorage.removeItem('isAccountBased');
 
     const shiftreportUser = localStorage.getItem('userID');
     const shiftreport = JSON.parse(localStorage.getItem('shiftReport'));
