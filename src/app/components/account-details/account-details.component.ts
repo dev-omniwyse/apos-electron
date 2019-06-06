@@ -190,7 +190,7 @@ export class AccountDetailsComponent implements OnInit {
   }
   addCard() {
     if (this.accountDetails.cards.length !== 0) {
-      $('#errorModal').modal('show');
+      $('#addCardErrorModal').modal('show');
     }
   }
 }
