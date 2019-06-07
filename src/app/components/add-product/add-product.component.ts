@@ -218,19 +218,19 @@ export class AddProductComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // checking permissions of present logged in user to perform sales
-    this.accountBase =  localStorage.getItem('isAccountBased') == 'false' ? false : true;
+    this.accountBase = localStorage.getItem('isAccountBased') == 'false' ? false : true;
     this.userdata = JSON.parse(localStorage.getItem('userData'));
     this.cdtaService.getUserPermissionsJson().subscribe(data => {
-        if (data != undefined) {
-            this.userPermissions = data;
-            if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
-                  this.isPerformSales = false;
-            }else{
-                this.isPerformSales = true;
-            }
+      if (data != undefined) {
+        this.userPermissions = data;
+        if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
+          this.isPerformSales = false;
         } else {
-            console.log('permissions failure')
+          this.isPerformSales = true;
         }
+      } else {
+        console.log('permissions failure')
+      }
     });
     this.selectedProductCategoryIndex = 0;
     this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
@@ -260,9 +260,13 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.electronService.ipcRenderer.removeAllListeners('doPinPadTransactionResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionStatusResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionDataResult');
-    this.router.navigate(['/home']);
+    const isAccountBased = localStorage.getItem('isAccountBased');
+    if (isAccountBased == 'true') {
+      this.router.navigate(['/account_details']);
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
-
   /**
    * Cleanup all listeners using this method
    *
@@ -1154,7 +1158,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings
-      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem , this.accountBase);
+      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem, this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1206,7 +1210,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings(item.Offering,
-      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem , this.accountBase);
+      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem, this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }

@@ -151,6 +151,7 @@ export class LoginComponent implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
+        localStorage.setItem('isAccountBased', 'false');
         localStorage.removeItem('expectedCash');
         localStorage.removeItem('mainShiftClosed');
         localStorage.removeItem('mainShiftClose');
