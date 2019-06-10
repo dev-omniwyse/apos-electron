@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
   subscription: any;
   hideHeader = true;
   terminalNumber: any = undefined;
+  terminalUser: any = undefined;
   hideAndShowLogout: Boolean;
   today = new Date();
   versionDate = new Date();
@@ -35,7 +36,9 @@ export class NavbarComponent implements OnInit {
       });
     this.subscription = this.cdtaservice.terminalNumber$.subscribe(
       mission => {
-        this.terminalNumber = mission; 
+        console.log('mission',mission);
+        this.terminalNumber = mission.terminalName; 
+        this.terminalUser = mission.userName;
       });
     this.subscription = this.cdtaservice.goToLogin$.subscribe(
       proceedToLogIn => {

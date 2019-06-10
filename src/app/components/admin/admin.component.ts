@@ -102,7 +102,7 @@ export class AdminComponent implements OnInit {
   isCurrentSync: Boolean = false;
   catalogData = [];
   terminalConfigJson: any = [];
-  isPerformSync : Boolean = false;
+  isPerformSync: Boolean = false;
   userdata: any;
   userPermissions: any;
   public fareTotal: any = 0;
@@ -238,7 +238,13 @@ export class AdminComponent implements OnInit {
           this.sessionService.startSession();
           this.terminalConfigJson = JSON.parse(data);
           this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
-          this.cdtaService.setterminalNumber(JSON.parse(data).SerialNumber);
+          const userInfo = JSON.parse(localStorage.getItem('userData'))
+          const userName = userInfo.firstName + ' ' + userInfo.lastName;
+          const userObj = {
+            'terminalName':JSON.parse(data).SerialNumber,
+            'userName' : userName
+          }
+          this.cdtaService.setterminalNumber(userObj);
         });
       }
     });
@@ -472,22 +478,22 @@ export class AdminComponent implements OnInit {
     const userId = localStorage.getItem('userID');
     this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
     this.maxLoopingCount = this.terminalConfigJson.StandardSyncInterval;
-     // checking permissions of present logged in user to perform manual sync
-     this.userdata = JSON.parse(localStorage.getItem('userData'));
-     this.cdtaService.getUserPermissionsJson().subscribe(data => {
-         if (data != undefined) {
-             this.userPermissions = data;
-             if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_MANUAL_SYNC) == -1) {
-                   this.isPerformSync = true;
-                   console.log('permissions success')
-             }else{
-                 this.isPerformSync = false;
-                 console.log('permissions false')
-             }
-         } else {
-             console.log('permissions failure')
-         }
-     });
+    // checking permissions of present logged in user to perform manual sync
+    this.userdata = JSON.parse(localStorage.getItem('userData'));
+    this.cdtaService.getUserPermissionsJson().subscribe(data => {
+      if (data != undefined) {
+        this.userPermissions = data;
+        if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_MANUAL_SYNC) == -1) {
+          this.isPerformSync = true;
+          console.log('permissions success')
+        } else {
+          this.isPerformSync = false;
+          console.log('permissions false')
+        }
+      } else {
+        console.log('permissions failure')
+      }
+    });
     shiftReports.forEach(element => {
       if (element.shiftState == '0' && element.shiftType == '0') {
         this.isMainShiftOpen = true;

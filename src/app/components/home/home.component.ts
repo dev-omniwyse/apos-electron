@@ -900,7 +900,13 @@ export class HomeComponent implements OnInit {
         this.electronService.ipcRenderer.once('terminalConfigResult', (event, data) => {
             if (data != undefined && data != '') {
                 localStorage.setItem('terminalConfigJson', data);
-                this.cdtaservice.setterminalNumber(JSON.parse(data).SerialNumber);
+                const userInfo = JSON.parse(localStorage.getItem('userData'))
+                const userName = userInfo.firstName + ' ' + userInfo.lastName;
+                const userObj = {
+                  'terminalName':JSON.parse(data).SerialNumber,
+                  'userName' : userName
+                }
+                this.cdtaservice.setterminalNumber(userObj);
                 this._ngZone.run(() => {
                     this.terminalConfigJson = JSON.parse(data);
                 });
