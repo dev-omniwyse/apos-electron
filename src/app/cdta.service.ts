@@ -20,6 +20,10 @@ const httpOptions = {
 
 const apiUrl = "https://api.qe.gfcp.io/services/data-api/v1/wpf/id_card/updateExisting?tenant=CDTA&access_token=6294ffc6-1189-4803-8ddf-6a99f039f37a"
 
+export interface IterminalInfo {
+  terminalName: string;
+  userName: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -134,13 +138,13 @@ export class CdtaService {
         this.goToLogInSource.next(proceedToLogIn);
       }
 
-  private terminalNumberSrc = new Subject<string>();
+  private terminalNumberSrc = new Subject<IterminalInfo>();
 
   // Observable string streams
   terminalNumber$ = this.terminalNumberSrc.asObservable();
 
   // Service message commands
-  setterminalNumber(mission: string) {
+  setterminalNumber(mission) {
     this.terminalNumberSrc.next(mission);
   }
 

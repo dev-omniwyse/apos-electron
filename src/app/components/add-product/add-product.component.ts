@@ -221,6 +221,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // checking permissions of present logged in user to perform sales
+    this.accountBase = localStorage.getItem('isAccountBased') == 'false' ? false : true;
     this.userdata = JSON.parse(localStorage.getItem('userData'));
     this.cdtaService.getUserPermissionsJson().subscribe(data => {
       if (data != undefined) {
@@ -262,9 +263,13 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.electronService.ipcRenderer.removeAllListeners('doPinPadTransactionResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionStatusResult');
     this.electronService.ipcRenderer.removeAllListeners('getPinpadTransactionDataResult');
-    this.router.navigate(['/home']);
+    const isAccountBased = localStorage.getItem('isAccountBased');
+    if (isAccountBased == 'true') {
+      this.router.navigate(['/account_details']);
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
-
   /**
    * Cleanup all listeners using this method
    *
