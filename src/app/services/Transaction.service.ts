@@ -6,6 +6,8 @@ import { Items } from '../models/Items';
 import { WalletContentItems } from '../models/WalletContentItems';
 import { TicketType } from '../models/TicketType';
 import { PaymentType } from '../models/Payments';
+import { AccountBaseItems } from '../models/AccountBaseItems';
+import { AccountWalletContentItems } from '../models/AccountWalletContentItems';
 
 export class TransactionService {
     private static _transactionService = new TransactionService();
@@ -37,7 +39,9 @@ export class TransactionService {
         const transactionAmount = ShoppingCartService.getInstance.getGrandTotal(shoppingCart);
         const taxAmount = ShoppingCartService.getInstance.getNonFareTotalTax(walletLineItem[0]);
         const timeStamp = shoppingCart._transactionID;
-
+        const isAccountBase = localStorage.getItem('isAccountBased') == 'false' ? false : true;
+        const selectedAccountBaseCardIndex = Number(localStorage.getItem('selectedAccountBaseCardIndex'));
+        const accountDetails = JSON.parse(localStorage.getItem('accountDetails'));
         transaction.$userID = userData.userEmail;
         transaction.$transactionType = Constants.CHARGE;
         transaction.$transactionID = timeStamp;
@@ -46,16 +50,16 @@ export class TransactionService {
         transaction.$taxAmount = taxAmount;
         transaction.$timestamp = timeStamp;
         transaction.$shiftType = +userData.shiftType;
-
+ 
         let items = [];
 
         for (const wallet of walletLineItem) {
-            const item = new Items();
-
+            let item: any;
+            item = (!isAccountBase) ? new Items() : new AccountBaseItems();
             if (MediaType.MERCHANDISE_ID == wallet._walletTypeId) {
                 console.log('Adding Non-Fare Product transaction.');
                 items = this.generateTransactionForMerch(wallet, timeStamp, userData);
-            } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID || 
+            } else if (wallet._walletTypeId == MediaType.SMART_CARD_ID ||
                 wallet._walletTypeId == MediaType.MAGNETIC_ID || wallet._walletTypeId == MediaType.LUCC) {
 
                 let walletProductIdentifier = null;
@@ -77,26 +81,40 @@ export class TransactionService {
                     walletQuantitySold = 0;
                 }
                 item.$transactionID = timeStamp;
-                item.$cardPID = wallet._cardPID;
-                item.$cardUID = wallet._cardUID;
-                item.$quantity = walletQuantitySold;
-                item.$productIdentifier = walletProductIdentifier;
+                item.$cardPID = (isAccountBase) ? selectedAccountBaseCardIndex != -1
+                                                ? accountDetails.cards[selectedAccountBaseCardIndex].pid
+                                                : Utils.getInstance.isFromAccountBasedCard() ? wallet._cardPID : null
+                                                : wallet._cardPID;
+                item.$cardUID = (isAccountBase) ? selectedAccountBaseCardIndex != -1
+                                                ? accountDetails.cards[selectedAccountBaseCardIndex].eid
+                                                : Utils.getInstance.isFromAccountBasedCard() ? wallet._cardUID : null
+                                                : wallet._cardUID;
+                item.$expirationDate = (isAccountBase) ? selectedAccountBaseCardIndex != -1
+                                                ? Number(accountDetails.cards[selectedAccountBaseCardIndex].expiryDate) / 86400000
+                                                : Utils.getInstance.isFromAccountBasedCard() ? wallet._cardExpiration : 0
+                                                : wallet._cardExpiration;
+                item.$quantity = (isAccountBase) ? 0 : walletQuantitySold;
+                item.$productIdentifier = isAccountBase ? null : walletProductIdentifier;
                 item.$ticketTypeId = null;
                 item.$ticketValue = 0;
-                item.$slotNumber = 0;
-                item.$expirationDate = wallet._cardExpiration;
+                item.$slotNumber = (isAccountBase) ? 1 : 0;
                 item.$balance = 0;
                 item.$IsMerchandise = false;
                 item.$IsBackendMerchandise = false;
                 item.$IsFareCard = true;
-                item.$unitPrice = walletUnitPrice;
-                item.$totalCost = walletCost;
-                item.$userID = userData.userID;
+                item.$unitPrice = (isAccountBase) ? 0 : walletUnitPrice;
+                item.$totalCost = (isAccountBase) ? 0 : walletCost;
+                item.$userID = (isAccountBase) ? userData.userEmail : userData.userID;
                 item.$shiftID = userData.shiftID;
+                if (isAccountBase) {
+                    item.$personId = Number(accountDetails.personId);
+                }
                 // fareCodeDescription -----
-                item.$fareCode = fareCodeDescription;
+                item.$fareCode = (isAccountBase) ? 'Full' : fareCodeDescription;
 
-                item.$walletTypeId = wallet._walletTypeId;
+                if (!isAccountBase) {
+                    item.$walletTypeId = wallet._walletTypeId;
+                }
 
                 console.log('wallet.walletTypeId.......' + wallet._walletTypeId);
                 // special case for Magnetics - record as Products
@@ -107,9 +125,10 @@ export class TransactionService {
                 item.$shiftType = +userData.shiftType;
                 item.$timestamp = timeStamp;
 
-                const walletContentItems = [];
+                const walletContentItemsConst = [];
                 for (const fareItem of wallet._walletContents) {
-                    const walletContentItem = new WalletContentItems();
+                    let walletContentItem: any;
+                    walletContentItem  = (isAccountBase) ? new AccountWalletContentItems() : new WalletContentItems();
 
                     console.log('Adding wallet content transaction.');
 
@@ -127,25 +146,27 @@ export class TransactionService {
                     walletContentItem.$ticketTypeId = fareItem._offering.Ticket.TicketType.TicketTypeId;
                     walletContentItem.$ticketValue = ticketValue;
                     walletContentItem.$productIdentifier = fareItem._offering.ProductIdentifier;
-                    walletContentItem.$status = fareItem._status;
-                    walletContentItem.$slotNumber = fareItem._slot;
-                    walletContentItem.$startDate = fareItem._startDate;
-                    walletContentItem.$expirationDate = fareItem._expirationDate;
+                    walletContentItem.$status = (isAccountBase) ? (fareItem._status == '') ? null : fareItem._status : fareItem._status;
+                    walletContentItem.$slotNumber = (isAccountBase) ? 1 : fareItem._slot;
                     walletContentItem.$balance = fareItem._balance;
-                    walletContentItem.$rechargesPending = fareItem._rechargesPending;
                     walletContentItem.$IsMerchandise = false;
                     walletContentItem.$IsBackendMerchandise = false;
                     walletContentItem.$IsFareCard = false;
                     walletContentItem.$unitPrice = fareItem._unitPrice;
                     walletContentItem.$totalCost = totalItemCost;
                     walletContentItem.$userID = userData.username;
+                    walletContentItem.$userID = (isAccountBase) ? userData.userEmail : userData.userID;
                     walletContentItem.$shiftID = userData.shiftID;
-                    walletContentItem.$fareCode = fareCodeDescription;
-
-                    walletContentItem.$offeringId = fareItem._offering.OfferingId;
-                    walletContentItem.$cardPID = wallet._cardPID;
-                    walletContentItem.$cardUID = wallet._cardUID;
-                    walletContentItem.$walletTypeId = wallet._walletTypeId;
+                    walletContentItem.$fareCode = (isAccountBase) ? 'Full' : fareCodeDescription;
+                    if (!isAccountBase) {
+                        walletContentItem.$walletTypeId = wallet._walletTypeId;
+                        walletContentItem.$cardPID = wallet._cardPID;
+                        walletContentItem.$cardUID = wallet._cardUID;
+                        walletContentItem.$offeringId = fareItem._offering.OfferingId;
+                        walletContentItem.$rechargesPending = fareItem._rechargesPending;
+                        walletContentItem.$startDate = fareItem._startDate;
+                        walletContentItem.$expirationDate = fareItem._expirationDate;
+                    }
                     walletContentItem.$timestamp = timeStamp;
                     walletContentItem.$shiftType = +userData.shiftType;
 
@@ -153,9 +174,9 @@ export class TransactionService {
                     if (wallet._walletTypeId == MediaType.MAGNETIC_ID) {
                         item.$IsBackendMerchandise = true;
                     }
-                    walletContentItems.push(walletContentItem);
+                    walletContentItemsConst.push(walletContentItem);
                 }
-                item.$walletContentItems = walletContentItems;
+                item.$walletContentItems = walletContentItemsConst;
             }
             if (MediaType.MERCHANDISE_ID != wallet._walletTypeId) {
                 items.push(item);

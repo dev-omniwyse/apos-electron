@@ -49,7 +49,7 @@ export class FilterOfferings {
 
                         if (!isAccountBased && walletTypeMatch && fareCodeMatch && item.IsCardBased) {
                             filteredProducts.push(item);
-                        } else if (walletTypeMatch && fareCodeMatch && item.IsAccountBased) {
+                        } else if (item.IsAccountBased) {
                             filteredProducts.push(item);
                         }
                     }

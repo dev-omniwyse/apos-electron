@@ -180,6 +180,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     route.params.subscribe(val => {
       this.isMagnetic = localStorage.getItem('isMagnetic') == 'true' ? true : false;
       this.isMerchendise = localStorage.getItem('isNonFareProduct') == 'true' ? true : false;
+      this.accountBase = localStorage.getItem('isAccountBased') == 'false' ? false : true;
       this.smartCardCost = localStorage.getItem('smartCardCost');
       this.magneticCardCost = localStorage.getItem('magneticCardCost');
       const item = JSON.parse(localStorage.getItem('catalogJSON'));
@@ -206,7 +207,9 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
         this.walletItems = this.formatWatlletItems(this.shoppingcart._walletLineItem, 2);
+        // if ((this.isFromAccountBasedCard()) || !this.accountBase) {
         this.activeWallet(this.shoppingcart._walletLineItem[this.shoppingcart._walletLineItem.length - 1], this.walletItems.length - 1);
+        // }
       }
     });
   }
@@ -218,19 +221,18 @@ export class AddProductComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // checking permissions of present logged in user to perform sales
-    this.accountBase =  localStorage.getItem('isAccountBased') == 'false' ? false : true;
     this.userdata = JSON.parse(localStorage.getItem('userData'));
     this.cdtaService.getUserPermissionsJson().subscribe(data => {
-        if (data != undefined) {
-            this.userPermissions = data;
-            if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
-                  this.isPerformSales = false;
-            }else{
-                this.isPerformSales = true;
-            }
+      if (data != undefined) {
+        this.userPermissions = data;
+        if (this.userdata.permissions.indexOf(this.userPermissions.PERMISSIONS.PERM_APOS_PERFORM_SALES) == -1) {
+          this.isPerformSales = false;
         } else {
-            console.log('permissions failure')
+          this.isPerformSales = true;
         }
+      } else {
+        console.log('permissions failure')
+      }
     });
     this.selectedProductCategoryIndex = 0;
     this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
@@ -1154,7 +1156,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings
-      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem , this.accountBase);
+      (item.Offering, TICKET_GROUP.RIDE, TICKET_TYPE.RIDE, this.currentWalletLineItem, this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1206,7 +1208,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.merchantise = [];
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     const list = FilterOfferings.getInstance.filterFareOfferings(item.Offering,
-      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem , this.accountBase);
+      TICKET_GROUP.VALUE, TICKET_TYPE.STORED_FIXED_VALUE, this.currentWalletLineItem, this.accountBase);
     this.walletItemContents = this.formatWatlletContents(list, 6);
     this.merchantise = list;
   }
@@ -1410,13 +1412,14 @@ export class AddProductComponent implements OnInit, OnDestroy {
       (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
   }
   activeWallet(item, index) {
-
     if (item._walletTypeId == MediaType.SMART_CARD_ID || item._walletTypeId == MediaType.LUCC) {
       const cardIndex = Utils.getInstance.getIndexOfActiveWallet(this.cardJson, item);
-      this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
-      this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
-      // tslint:disable-next-line:max-line-length
-      this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson, this.config.cardTypeDetected);
+      // if ((this.isFromAccountBasedCard()) || !this.accountBase) {
+        this.bonusRidesCountText = Utils.getInstance.getBonusRideCount(this.cardJson[cardIndex]);
+        this.userFarecode = Utils.getInstance.getFareCodeTextForThisWallet(this.cardJson[cardIndex], this.terminalConfigJson);
+        // tslint:disable-next-line:max-line-length
+        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.cardJson[cardIndex], this.terminalConfigJson, this.config.cardTypeDetected);
+      // }
       this.active_printed_id = this.cardJson[cardIndex].printed_id;
       this.active_card_expiration_date_str = this.cardJson[cardIndex].card_expiration_date_str;
       this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.cardJson[cardIndex]);
@@ -1735,7 +1738,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionForMagneticMerchandiseResult', (event, data) => {
       if (data != undefined && data != '') {
         const timestamp = new Date().getTime();
-        this.cdtaService.generateReceipt(timestamp);
+        // this.cdtaService.generateReceipt(timestamp);
         this._ngZone.run(() => {
 
           localStorage.removeItem('encodeData');
@@ -1784,7 +1787,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.isCheckApplied = false;
       this.isCompApplied = false;
       localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
-      if (this.isSmartCardFound()) {
+      if (((this.isSmartCardFound()) && !this.accountBase) || (Utils.getInstance.isFromAccountBasedCard())) {
         this.router.navigate(['/carddata']);
       } else {
         this.saveTransactionForMerchandiseAndMagnetic();

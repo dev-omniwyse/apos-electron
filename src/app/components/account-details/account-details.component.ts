@@ -94,7 +94,7 @@ export class AccountDetailsComponent implements OnInit {
   ticketMap = new Map();
   public readCardData = [];
   disableaddFund: Boolean = false;
-
+  selectedCardIndex: any = -1;
 
   constructor(private router: Router, private _ngZone: NgZone, private electronService?: ElectronService) { }
 
@@ -123,13 +123,40 @@ export class AccountDetailsComponent implements OnInit {
       this.accountDetails.accountInfo.push({ description: this.accountDescription[i], value: accountDescriptionValue });
     }
   }
+
   addProduct() {
-    this.handleSmartCardResult();
-    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+    localStorage.setItem('addCardForAccount', 'false');
+    // this.readCard();
+    this.updateSettingsForSmartAndLUCC();
+    this.populateEmptyCard();
+    this.navigateToShoppingCart();
   }
+
   Back() {
     this.router.navigate(['/home']);
   }
+
+  readCard() {
+    this.handleSmartCardResult();
+    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+  }
+
+  navigateToShoppingCart() {
+    localStorage.setItem('selectedAccountBaseCardIndex', this.selectedCardIndex);
+    this.router.navigate(['/addproduct']);
+  }
+
+  populateEmptyCard() {
+    const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+    this.carddata.push(Utils.getInstance.populateDummyCard());
+    this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
+      this.carddata[0], item.Offering, false);
+    localStorage.setItem('readCardData', JSON.stringify(JSON.stringify(this.carddata[0])));
+    localStorage.setItem('printCardData', this.carddata[0]);
+    localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
+    this.showCardContents();
+  }
+
   handleSmartCardResult() {
     this.electronService.ipcRenderer.once('readcardResult', (_event, data) => {
       console.log('data', data);
@@ -148,10 +175,12 @@ export class AccountDetailsComponent implements OnInit {
             this.carddata[0], item.Offering, false);
           localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
           this.showCardContents();
+          this.navigateToShoppingCart();
         });
       }
     });
   }
+
   updateSettingsForSmartAndLUCC() {
     localStorage.removeItem('shoppingCart');
     ShoppingCartService.getInstance.shoppingCart = null;
@@ -162,8 +191,6 @@ export class AccountDetailsComponent implements OnInit {
     this._ngZone.run(() => {
       const item = JSON.parse(localStorage.getItem('catalogJSON'));
       this.catalogData = JSON.parse(item).Offering;
-      // this.getBonusRidesCount();
-      // this.getNextBonusRides();
       this.active_wallet_status = Utils.getInstance.getStatusOfWallet(this.carddata[0]);
       this.cardContents = Utils.getInstance.getWalletProducts(this.carddata[0], this.ticketMap);
       this.router.navigate(['/addproduct']);
@@ -183,14 +210,23 @@ export class AccountDetailsComponent implements OnInit {
       this.disabledAddFundProducts();
     });
   }
+
   disabledAddFundProducts() {
     if (this.accountDetails.balance >= this.terminalConfigJson.MaximumAccountBalance) {
       this.disableaddFund = true;
     }
   }
+
   addCard() {
     if (this.accountDetails.cards.length !== 0) {
       $('#addCardErrorModal').modal('show');
+      return;
     }
+    localStorage.setItem('addCardForAccount', 'true');
+    this.readCard();
+  }
+
+  onCardSelect(index) {
+    this.selectedCardIndex = index;
   }
 }

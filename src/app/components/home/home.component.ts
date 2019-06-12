@@ -302,6 +302,9 @@ export class HomeComponent implements OnInit {
         this.buttonIndex = i;
         if (this.buttonIndex == 1) {
             localStorage.setItem('isAccountBased', 'true');
+            localStorage.setItem('isMagnetic', 'false');
+            localStorage.setItem('isNonFareProduct', 'false');
+            localStorage.setItem('addCardForAccount', 'false');
         } else {
             localStorage.setItem('isAccountBased', 'false');
         }

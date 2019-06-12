@@ -53,8 +53,8 @@
                 <th>Card status</th>
                 <th>Expiry Date</th>
             </tr>
-            <tr *ngFor="let cardData of accountDetails.cards">
-                <td><input type="radio" name="optradio">{{cardData.pid}}</td>
+            <tr *ngFor="let cardData of accountDetails.cards;let k = index" (click)="onCardSelect(k)">
+                <td><input type="radio" [checked]="k==selectedCardIndex"  name="optradio">{{cardData.pid}}</td>
                 <td>{{cardData.nickName}}</td>
                 <td>{{cardData.status}}</td>
                 <td>{{cardData.expiryDate | date:'MM-d-yyyy h:mm:ss a'}}</td>
