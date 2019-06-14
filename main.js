@@ -667,3 +667,8 @@ ipcMain.on('createAccount', (event, fname, lname, email) => {
     logger.info("createAccount user", result);
     event.sender.send('createAccountResult', '' + result, email);
 });
+ipcMain.on('readAccountDetails', (event, type, value) => {
+    var result = posAppletInstance.getAccountDetailsSync(type, value);
+    logger.info("inventory details", result);
+    event.sender.send('newReadCardResult', '' + result);
+});
