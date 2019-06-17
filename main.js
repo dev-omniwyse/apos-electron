@@ -717,6 +717,7 @@ ipcMain.on('returnChargeStoredAmount', (event, card_id, amount) => {
     var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
     logger.info(" return chargeStoredValue", result.getSuccessSync());
     event.sender.send('returnChargeStoredAmountResult', '' + result.getSuccessSync(),card_id);
+});
 
 ipcMain.on('readAccountDetails', (event, type, value) => {
     var result = posAppletInstance.getAccountDetailsSync(type, value);
@@ -724,3 +725,4 @@ ipcMain.on('readAccountDetails', (event, type, value) => {
     event.sender.send('newReadCardResult', '' + result);
 
 });
+
