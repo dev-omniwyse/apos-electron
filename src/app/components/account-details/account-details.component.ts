@@ -307,7 +307,7 @@ export class AccountDetailsComponent implements OnInit {
 
   initiateNavigationToShoppingCart() {
     localStorage.setItem('userProfile', JSON.stringify(this.cardType));
-    let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
+    const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
     this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
       this.carddata[0], item.Offering, true);
     localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingcart));
