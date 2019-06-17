@@ -109,6 +109,7 @@ export class AccountDetailsComponent implements OnInit {
     this.terminalConfigJson = JSON.parse(localStorage.getItem('terminalConfigJson'));
     console.log(this.accountDetails);
     this.populateAccountDetails();
+    this.selectDefaultCard();
     this.disabledAddFundProducts();
   }
   populateAccountDetails() {
@@ -127,6 +128,12 @@ export class AccountDetailsComponent implements OnInit {
           break;
       }
       this.accountDetails.accountInfo.push({ description: this.accountDescription[i], value: accountDescriptionValue });
+    }
+  }
+
+  selectDefaultCard() {
+    if (this.accountDetails.cards.length > 0) {
+      this.onCardSelect(0);
     }
   }
 
@@ -253,6 +260,7 @@ export class AccountDetailsComponent implements OnInit {
       localStorage.setItem('accountDetails', data);
       this.accountDetails = JSON.parse(localStorage.getItem('accountDetails'));
       this.populateAccountDetails();
+      this.selectDefaultCard();
       this.disabledAddFundProducts();
     });
   }
