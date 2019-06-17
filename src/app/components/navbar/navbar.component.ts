@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
     this.subscription = this.cdtaservice.terminalNumber$.subscribe(
       mission => {
         console.log('mission',mission);
-        this.terminalNumber = mission.terminalName; 
+        this.terminalNumber = mission.terminalName;
         this.terminalUser = mission.userName;
       });
     this.subscription = this.cdtaservice.goToLogin$.subscribe(

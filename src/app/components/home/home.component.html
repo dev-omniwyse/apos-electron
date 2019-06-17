@@ -87,16 +87,19 @@
                 </div>
                 <input type="text" class="account-tab-input" [(ngModel)]="accountPrintedId" />
             </div>
+
             <button [disabled]="disableCards" class="account-tab-input-btn" (click)="readAccountBaseCard()">Scan Wallet</button>
         </div>
         <div>
             <button [disabled]="disableCards" class="account-tab-input-btn-full" (click)="getAccountDetails()">Get Details</button>
             <button [disabled]="disableCards" class="account-tab-input-btn-full" (click)="createAccountForm()">Create Account</button>
+
         </div>
         <div class="create-account-set" *ngIf="showForm">
             <div class="create-account-set-in">
                 <div>Customer Details</div>
                 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
                     <div class="form-group">
                         <div class="create-account-input">
                             <div>First Name*</div>
@@ -107,6 +110,7 @@
                             <!-- <div  *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
                                 <div *ngIf="f.firstName.errors.required">First Name is required</div>
                             </div> -->
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -120,6 +124,8 @@
                             <!-- <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
                                 <div *ngIf="f.lastName.errors.required">Last Name is required</div>
                             </div> -->
+
+
                         </div>
                     </div>
                     <div class="form-group">

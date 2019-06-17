@@ -684,6 +684,21 @@ export class Utils {
 
     }
 
+
+    isPayAsYouGoBalanceAvailable(carddata){
+        var cardBalance = 0;
+        const filterPayAsYouGo =  carddata[0].products;
+           for(let i =0 ; i <= filterPayAsYouGo.length ; i++){
+            if (filterPayAsYouGo[i].product_type == 3) {
+                if (filterPayAsYouGo[i].remaining_value && filterPayAsYouGo[i].remaining_value > 0) {
+                  cardBalance = filterPayAsYouGo[i].remaining_value;
+                }
+                return cardBalance;
+              }
+           }
+    }
+
+
     populateDummyCard() {
         const cardData = {'uid': 1154851244231552, 'printed_id': '0000000988', 'user_profile': 1, 'card_expiration_date': 18190,
         'user_profile_expiration_date': 0, 'card_expiration_date_str': 'Oct 21, 2019', 'user_profile_expiration_date_str': 'Jan 01, 1970',
@@ -701,5 +716,6 @@ export class Utils {
         const isFromAccountCardBased: Boolean = localStorage.getItem('addCardForAccount') == 'true' ? true : false;
         return isFromAccountCardBased;
       }
+
 
 }

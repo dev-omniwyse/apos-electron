@@ -106,6 +106,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   smartCardCost: any = 0;
   magneticCardCost: any = 0;
   compDue: any = 0;
+  payAsYouGoBalInCard: any = 0;
   productCheckOut: Boolean = false;
   isNew: Boolean = false;
   totalDue: any = [];
@@ -133,7 +134,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   active_printed_id: number;
   active_wallet_status: string;
   currentWalletLineItem: any = [];
-
+  card_id: any;
   isProductLimitReached = false;
   numOfAttempts = 0;
   magneticId: any = 0;
@@ -147,6 +148,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
   isCashApplied: boolean = false;
   isExistingFareCardApplied: boolean = false;
   ExistingFareCardAppliedTotal: any = 0;
+  isPayAsYouGoApplied: boolean = false;
+  payAsYouGoAppliedTotal: any = 0;
   cashAppliedTotal: any = 0;
   isVoucherApplied: Boolean = false;
   isCheckApplied: Boolean = false;
@@ -154,6 +157,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   voucherAppliedTotal: any = 0;
   voucherRemaining: any;
   existingCardRemaining: any;
+  payAsYouGoRemaining: any;
   isCompApplied: boolean = false;
   applyCompShow: boolean = false;
   reason: boolean = true;
@@ -173,6 +177,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   taxTotal = 0;
   accountBase: Boolean;
   isSmartCard = false;
+  onlyPayAsYouGoApplied: boolean = false;
   constructor(
     private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -967,7 +972,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
 
   cancelCheckout() {
     $('#cancelCheckoutModal').modal('show');
-
+  }
+  returnPayAsYouGo() {
+    this.handleReadCardForReturnPayAsYouGo();
+    this.electronService.ipcRenderer.send('readCardForReturnPayAsYouGo', cardName);
   }
   // productCheckOutSessionModal() {
   //   $('#userTimedOut').modal('show');
@@ -1030,14 +1038,32 @@ export class AddProductComponent implements OnInit, OnDestroy {
     } else {
       this.cancelCheckoutcash = false;
     }
+    if (this.isPayAsYouGoApplied == true) {
+      $('#returnPayAsYouGoModal').modal('show');
+    } else {
+      this.cancelCheckoutListOfPayments();
+    }
+  }
+
+  cancelCheckoutListOfPayments() {
+    var onlyPayAsYouGo = false;
     if (this.shoppingcart._payments.length != 0) {
       this.cashBack = this.cashAppliedTotal;
+      for (let i = 0; i < this.shoppingcart._payments.length; i++) {
+        if (this.shoppingcart._payments[i].paymentMethodId == 12) {
+          onlyPayAsYouGo = true
+        }
+      }
       this.getRefundCancelCheckoutTitle();
       $('#cancelCheckoutModal').modal('hide');
-      $('#amountApplyCancelModal').modal({
-        backdrop: 'static',
-        keyboard: false
-      });
+      if (this.shoppingcart._payments.length == 1 && onlyPayAsYouGo == true) {
+        this.refundConfirmation();
+      } else {
+        $('#amountApplyCancelModal').modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
     } else {
       $('#cancelCheckoutModal').modal('hide');
       this.productCheckOut = false;
@@ -1047,6 +1073,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.isCheckApplied = false;
       this.isCardApplied = false;
       this.isExistingFareCardApplied = false;
+      this.isPayAsYouGoApplied = false;
       this.shoppingcart._payments = [];
       this.getTotalDue(this.shoppingcart);
     }
@@ -1055,7 +1082,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.doVoidTransaction();
     }
   }
-
   /**
    * refund confirmation
    *
@@ -1064,12 +1090,13 @@ export class AddProductComponent implements OnInit, OnDestroy {
   refundConfirmation() {
     this.productCheckOut = false;
     this.checkout = true;
-
     this.isCashApplied = false;
     this.isVoucherApplied = false;
     this.isCheckApplied = false;
     this.isCardApplied = false;
     this.isExistingFareCardApplied = false;
+    this.isPayAsYouGoApplied = false;
+    this.payAsYouGoAppliedTotal = 0;
     this.shoppingcart._payments = [];
     this.getTotalDue(this.shoppingcart);
 
@@ -1111,7 +1138,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
           const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
           ShoppingCartService.getInstance.shoppingCart = null;
           this.cardJson.forEach(element => {
-            if (element.printed_id == JSON.parse(data).printed_id) {
+            if (element.printed_id == JSON.parse(data).printed_id && !this.isPayAsYouGoApplied) {
               isDuplicateCard = true;
             }
           });
@@ -1146,10 +1173,61 @@ export class AddProductComponent implements OnInit, OnDestroy {
             }
           }
         });
+
       }
     });
   }
 
+  handleReadCardForPayAsYouGo() {
+    this.electronService.ipcRenderer.once('readcard_for_payasyougo_Result', (event, data) => {
+      if (data != undefined && data != '') {
+        var readCardInfo = new Array(JSON.parse(data));
+        this.payAsYouGoBalInCard = Utils.getInstance.isPayAsYouGoBalanceAvailable(readCardInfo);
+        if (this.payAsYouGoBalInCard == 0) {
+          var presentPayAsYouGoBalInCard = 0;
+        } else {
+          var presentPayAsYouGoBalInCard = this.payAsYouGoBalInCard / 100;
+        }
+        this.payAsYouGoAppliedTotal = +this.checkoutTotal
+        if (this.payAsYouGoBalInCard != 0) {
+          if (this.payAsYouGoAppliedTotal > presentPayAsYouGoBalInCard) {
+            $('#notEnoughPayAsYouGo').modal('show');
+          } else {
+            this.handleChargeStoredValue();
+            this.electronService.ipcRenderer.send('chargeStoredValue', JSON.parse(data).printed_id, Number(this.payAsYouGoAppliedTotal) * 100);
+          }
+        }
+      } else if (data == null || data == '') {
+        $('#errorModal').modal('show');
+      }
+    })
+  }
+
+  handleReadCardForReturnPayAsYouGo() {
+    this.electronService.ipcRenderer.once('readcard_for_return_payasyougo_Result', (event, data) => {
+      if (data != undefined && data != '') {
+        var readCardInfo = new Array(JSON.parse(data));
+        this.payAsYouGoAppliedTotal = -Math.abs(this.payAsYouGoAppliedTotal);
+        this.handleReturnChargeStoredValue();
+        this.electronService.ipcRenderer.send('returnChargeStoredValue', JSON.parse(data).printed_id, Number(this.payAsYouGoAppliedTotal) * 100);
+      } else if (data == null || data == '') {
+        $('#errorModal').modal('show');
+      }
+    })
+  }
+
+  handleReturnChargeStoredValue() {
+    this.electronService.ipcRenderer.once('returnChargeStoredResult', (event, data, card_id) => {
+      if (data != undefined && data != '') {
+        if (data == 'true') {
+          this.card_id = card_id;
+          $('#returnPayAsYouGoToCard').modal('show');
+        } else {
+          $('#unableToReturnPayAsYouGo').modal('show');
+        }
+      }
+    });
+  }
   /**
    * getting the list of stored value
    *
@@ -1277,7 +1355,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
   handleLUCCCardResult() {
     this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
       let isDuplicateCard = false;
-      debugger;
       if (data != undefined && data != '') {
         localStorage.setItem('readCardData', JSON.stringify(data));
         this.carddata = new Array(JSON.parse(data));
@@ -1935,7 +2012,80 @@ export class AddProductComponent implements OnInit, OnDestroy {
       }
     });
   }
+  handleChargeStoredValue() {
+    this.electronService.ipcRenderer.once('chargeStoredValueResult', (event, data, card_id) => {
+      if (data != undefined && data != '') {
+        if (data) {
+          console.log('chargeStoredValue success');
+          this.card_id = card_id;
+          if (this.totalDue == (+this.checkoutTotal)) {
+            this.onlyPayAsYouGoApplied = true
+            this.isPayAsYouGoApplied = true;
+            this.totalRemaining = +(this.totalRemaining - (+this.checkoutTotal)).toFixed(2);
+            this.payAsYouGoAppliedTotal = (+this.checkoutTotal);
+            this.payAsYouGoRemaining = this.totalRemaining;
+            const payment = new PaymentType();
+            payment.$paymentMethodId = 12;
+            payment.$amount = (+this.checkoutTotal);
+            payment.$comment = null;
+            if (Utils.getInstance.checkIsPaymentMethodExists(12, this.shoppingcart) == -1) {
+              this.shoppingcart._payments.push(payment);
+            }
+            this.isPayAsYouGoApplied = true;
+          } else {
+            this.isPayAsYouGoApplied = true;
+            this.totalRemaining = this.totalRemaining - (+this.checkoutTotal);
+            this.payAsYouGoRemaining = this.totalRemaining;
+            const indexOfPayment = Utils.getInstance.checkIsPaymentMethodExists(12, this.shoppingcart);
+            if (indexOfPayment == -1) {
+              const payment = new PaymentType();
+              payment.$amount = (+this.checkoutTotal);
+              payment.$paymentMethodId = 12;
+              payment.$comment = null;
+              this.shoppingcart._payments.push(payment);
+              console.log(this.shoppingcart._payments);
+              this.payAsYouGoAppliedTotal = payment.$amount;
+              this.isPayAsYouGoApplied = true;
+              this.checkoutTotal = '0';
+            } else {
+              this.shoppingcart._payments[indexOfPayment].amount += this.checkoutTotal;
+              this.payAsYouGoAppliedTotal = this.shoppingcart._payments[indexOfPayment].amount;
+              console.log(this.shoppingcart._payments);
+              this.isPayAsYouGoApplied = true;
+              this.checkoutTotal = '0';
+            }
+          }
+          if (this.payAsYouGoRemaining !== 0) {
+            $('#payAsYouGoModal').modal('hide');
+            $('#successPayAsYouGo').modal({
+              backdrop: 'static',
+              keyboard: false
+            });
+          } else if (this.payAsYouGoRemaining == 0) {
+            this.getRefundTitle();
+            $('#successPayAsYouGo').modal({
+              backdrop: 'static',
+              keyboard: false
+            });
+            // this.filerterIsOnlyPayAsYouGo(this.onlyPayAsYouGoApplied);
+          }
+        } else {
+          $('#unablePayAsYouGo').modal('hide');
+        }
+      }
+    });
+  }
 
+  filerterIsOnlyPayAsYouGo() {
+    if (this.onlyPayAsYouGoApplied == true) {
+      this.amountApplied();
+    } else if (this.payAsYouGoRemaining == 0) {
+      $('#amountApplyModal').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+  }
   /**
    *After payment to open cash drawer
    *
@@ -2007,6 +2157,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.isVoucherApplied = false;
       this.isCheckApplied = false;
       this.isExistingFareCardApplied = false;
+      this.isPayAsYouGoApplied = false;
       this.handleOpenCashDrawerResult();
       this.openCashDrawer();
       const payment = new PaymentType();
@@ -2034,6 +2185,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isVoucherApplied = false;
 
+      }
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
       }
 
       if (this.isExistingFareCardApplied) {
@@ -2065,7 +2221,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) ||
         (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) ||
         (this.isCardApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) ||
-        (this.isCompApplied && this.isExistingFareCardApplied) || (this.checkApplied && this.isExistingFareCardApplied)) {
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.checkApplied && this.isExistingFareCardApplied) ||
+        (this.isCardApplied && this.isPayAsYouGoApplied) || (this.isVoucherApplied && this.isPayAsYouGoApplied) ||
+        (this.isCompApplied && this.isPayAsYouGoApplied) || (this.checkApplied && this.isPayAsYouGoApplied) ||
+        (this.isExistingFareCardApplied && this.isPayAsYouGoApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2166,10 +2325,19 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isCardApplied = false;
       }
-
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
+      }
       if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) ||
         (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) ||
-        (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied)) {
+        (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) ||
+        (this.isCheckApplied && this.isPayAsYouGoApplied) || (this.isVoucherApplied && this.isPayAsYouGoApplied) ||
+        (this.isCompApplied && this.isPayAsYouGoApplied) || (this.isCardApplied && this.isPayAsYouGoApplied) ||
+        (this.isCheckApplied && this.isCashApplied) || (this.isVoucherApplied && this.isCashApplied) ||
+        (this.isCompApplied && this.isCashApplied) || (this.isCardApplied && this.isCashApplied) ||
+        (this.isCashApplied && this.isPayAsYouGoApplied)) {
         $('#thirdPaymentModal').modal('show');
       } else {
         $('#existingFareCardModal').modal('show');
@@ -2230,6 +2398,80 @@ export class AddProductComponent implements OnInit, OnDestroy {
     // $('#voucherApplyModal').modal('show');
   }
 
+
+  applyPayAsYouGo() {
+    if (+this.checkoutTotal == 0) {
+      $('#invalidAmountModal').modal('show');
+    } else if (this.payAsYouGoAppliedTotal != 0) {
+      $('#limitOncePaymentModal').modal('show');
+    }
+    else if (this.totalRemaining == +(this.checkoutTotal)) {
+      this.openCashDrawer();
+      $('#payAsYouGoModal').modal('show');
+    } else if (this.totalRemaining > +this.checkoutTotal) {
+
+      if (this.isVoucherApplied) {
+        this.isVoucherApplied = true;
+      } else {
+        this.isVoucherApplied = false;
+
+      }
+
+      if (this.isCashApplied) {
+        this.isCashApplied = true;
+      } else {
+        this.isCashApplied = false;
+
+      }
+
+      if (this.isCheckApplied) {
+        this.isCheckApplied = true;
+      } else {
+        this.isCheckApplied = false;
+      }
+
+      if (this.isCompApplied) {
+        this.isCompApplied = true;
+      } else {
+        this.isCompApplied = false;
+      }
+
+      if (this.isCardApplied) {
+        this.isCardApplied = true;
+      } else {
+        this.isCardApplied = false;
+      }
+
+      if (this.isExistingFareCardApplied) {
+        this.isExistingFareCardApplied = true;
+      } else {
+        this.isExistingFareCardApplied = false;
+      }
+
+      if ((this.isCheckApplied && this.isVoucherApplied) || (this.isVoucherApplied && this.isCompApplied) ||
+        (this.isCheckApplied && this.isCompApplied) || (this.isVoucherApplied && this.isCardApplied) ||
+        (this.isCheckApplied && this.isCardApplied) || (this.isCompApplied && this.isCardApplied) ||
+        (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied) ||
+        (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied) ||
+        (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isCashApplied) ||
+        (this.isVoucherApplied && this.isCashApplied) || (this.isCompApplied && this.isCashApplied) ||
+        (this.isCardApplied && this.isCashApplied)) {
+        $('#thirdPaymentModal').modal('show');
+      } else {
+        $('#payAsYouGoModal').modal('show');
+
+      }
+    } else if (this.totalRemaining < (+this.checkoutTotal)) {
+      $('#voucherErrorModal').modal('show');
+    }
+  }
+
+  payAsYouGoModalApply() {
+    this.handleReadCardForPayAsYouGo();
+    // this.isPayAsYouGoApplied = true;
+    // this.isfromAddProduct = true;
+    this.electronService.ipcRenderer.send('readCardForPayAsYouGo', cardName);
+  }
   /**
    * checking hte credit card is applied or not.
    *
@@ -2274,7 +2516,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isCheckApplied = false;
       }
-
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
+      }
       if (this.isExistingFareCardApplied) {
         this.isExistingFareCardApplied = true;
       } else {
@@ -2298,7 +2544,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isCompApplied) ||
         (this.isCardApplied && this.isCashApplied) || (this.isCardApplied && this.isCheckApplied) ||
         (this.isCashApplied && this.isExistingFareCardApplied) || (this.isCardApplied && this.isExistingFareCardApplied) ||
-        (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied)) {
+        (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCompApplied && this.isExistingFareCardApplied) ||
+        (this.isCashApplied && this.isPayAsYouGoApplied) || (this.isCardApplied && this.isPayAsYouGoApplied) ||
+        (this.isCheckApplied && this.isPayAsYouGoApplied) || (this.isCompApplied && this.isPayAsYouGoApplied) ||
+        (this.isExistingFareCardApplied && this.isPayAsYouGoApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2432,7 +2681,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isVoucherApplied = false;
       }
-
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
+      }
       if (this.isExistingFareCardApplied) {
         this.isExistingFareCardApplied = true;
       } else {
@@ -2456,7 +2709,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         (this.isCashApplied && this.isCompApplied) || (this.isCardApplied && this.isVoucherApplied) ||
         (this.isCardApplied && this.isCompApplied) || (this.isCashApplied && this.isCardApplied) ||
         (this.isExistingFareCardApplied && this.isVoucherApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
-        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isExistingFareCardApplied && this.isCardApplied)) {
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isExistingFareCardApplied && this.isCardApplied) ||
+        (this.isPayAsYouGoApplied && this.isVoucherApplied) || (this.isCashApplied && this.isPayAsYouGoApplied) ||
+        (this.isCompApplied && this.isPayAsYouGoApplied) || (this.isPayAsYouGoApplied && this.isCardApplied) ||
+        (this.isExistingFareCardApplied && this.isPayAsYouGoApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2529,7 +2785,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isExistingFareCardApplied = false;
       }
-
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
+      }
       if (this.isCheckApplied) {
         this.isCheckApplied = true;
       } else {
@@ -2547,7 +2807,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         (this.isCashApplied && this.isVoucherApplied) || (this.isCardApplied && this.isVoucherApplied) ||
         (this.isCardApplied && this.isCheckApplied) || (this.isCashApplied && this.isCardApplied) ||
         (this.isCardApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
-        (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied)) {
+        (this.isVoucherApplied && this.isExistingFareCardApplied) || (this.isCheckApplied && this.isExistingFareCardApplied) ||
+        (this.isCardApplied && this.isPayAsYouGoApplied) || (this.isCashApplied && this.isPayAsYouGoApplied) ||
+        (this.isVoucherApplied && this.isPayAsYouGoApplied) || (this.isCheckApplied && this.isPayAsYouGoApplied) ||
+        (this.isExistingFareCardApplied && this.isPayAsYouGoApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2643,7 +2906,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
       } else {
         this.isExistingFareCardApplied = false;
       }
-
+      if (this.isPayAsYouGoApplied) {
+        this.isPayAsYouGoApplied = true;
+      } else {
+        this.isPayAsYouGoApplied = false;
+      }
       if (this.isCompApplied) {
         this.isCompApplied = true;
       } else {
@@ -2660,7 +2927,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
         (this.isCompApplied && this.isVoucherApplied) || (this.isCashApplied && this.isCompApplied) ||
         (this.isCashApplied && this.isVoucherApplied) || (this.isCheckApplied && this.isCompApplied) ||
         (this.isCheckApplied && this.isExistingFareCardApplied) || (this.isCashApplied && this.isExistingFareCardApplied) ||
-        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied)) {
+        (this.isCompApplied && this.isExistingFareCardApplied) || (this.isVoucherApplied && this.isExistingFareCardApplied) ||
+        (this.isCheckApplied && this.isPayAsYouGoApplied) || (this.isCashApplied && this.isPayAsYouGoApplied) ||
+        (this.isCompApplied && this.isPayAsYouGoApplied) || (this.isVoucherApplied && this.isPayAsYouGoApplied) ||
+        (this.isExistingFareCardApplied && this.isPayAsYouGoApplied)) {
 
         $('#thirdPaymentModal').modal('show');
       } else {
@@ -2786,7 +3056,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
           this.title = this.title + 'Fare_card';
           this.message = this.message + 'Place the Fare_card in the drawer.';
           break;
-
+        case 12:
+          this.title = this.title + 'Pay_as_you_go';
+          this.message = this.message + 'Pay As You Go Applied.';
+          break;
 
         default:
           this.message = '';
@@ -2848,6 +3121,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
         case 9:
           this.title = this.title + 'Credit';
           this.message = this.message + 'credit';
+          break;
+
+        case 12:
+          this.title = this.title + 'Pay As You Go';
+          this.message = this.message + 'pay as you go';
           break;
 
         default:
