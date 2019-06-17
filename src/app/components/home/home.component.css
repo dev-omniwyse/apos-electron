@@ -296,6 +296,13 @@ button:disabled {
     /* display: block; */
     }
     
+    .close-icon-set-create-ac{
+        right: 0;
+        width: 30px!important;
+        height: 32px;
+        padding: 5px!important;
+        background-color: transparent!important;
+    }
 .input-sets {
     position: relative;
     margin-right: 1%;

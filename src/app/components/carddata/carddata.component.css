@@ -104,6 +104,14 @@
     padding: 10px 15px;
 }
 
+.pay-as-you {
+    width: 100%;
+    background-color: #337ab7;
+    border: 1px solid #337ab7;
+    border-radius: 3px;
+    padding: 14px;
+    color: #fff;
+}
 .merch-btn {
     margin: 20px 0
 }

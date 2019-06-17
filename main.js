@@ -28,7 +28,7 @@ var result = posAppletInstance.runInitializationSync();
 logger.info(result);
 const electron = require('electron');
 const dialog = electron.dialog;
-dialog.showErrorBox = function(title, content) {};
+dialog.showErrorBox = function (title, content) { };
 
 let win;
 
@@ -128,6 +128,36 @@ ipcMain.on('readSmartcard', (event, cardname) => {
     }
 })
 
+ipcMain.on('readCardForPayAsYouGo', (event, cardname) => {
+    var result = posAppletInstance.setEncoderSync(cardname);
+    if (result.getSuccessSync()) {
+        var result = posAppletInstance.readCardSync();
+        event.sender.send('readcard_for_payasyougo_Result', result.getValueSync());
+    } else {
+        event.sender.send('encoderError', result.getMessageSync());
+    }
+});
+
+ipcMain.on('readCardForReturnPayAsYouGo', (event, cardname) => {
+    var result = posAppletInstance.setEncoderSync(cardname);
+    if (result.getSuccessSync()) {
+        var result = posAppletInstance.readCardSync();
+        event.sender.send('readcard_for_return_payasyougo_Result', result.getValueSync());
+    } else {
+        event.sender.send('encoderError', result.getMessageSync());
+    }
+});
+
+ipcMain.on('readForPayAsYouGoAmount', (event, cardname) => {
+    var result = posAppletInstance.setEncoderSync(cardname);
+    if (result.getSuccessSync()) {
+        var result = posAppletInstance.readCardSync();
+        event.sender.send('readCardToReturnPayAsYouGoResult', result.getValueSync());
+    } else {
+        event.sender.send('encoderError', result.getMessageSync());
+    }
+});
+
 // function readSmartCardOnSetEncoder(){
 //   try{
 //     var result = posAppletInstance.readCardSync();
@@ -173,7 +203,7 @@ ipcMain.on('newfarecard', (event, cardname) => {
 ipcMain.on('magneticcard', (event, cardname) => {
     try {
         var smartread = posAppletInstance.readCardSync();
-    } catch (error) {}
+    } catch (error) { }
 
     event.sender.send('magneticcardResult', smartread);
 })
@@ -580,7 +610,7 @@ ipcMain.on('printCustomerRefundReceipt', (event, receiptContents, date) => {
 ipcMain.on('printCardSummary', (event, receipt, PID, username, date) => {
     date = java.newLong(Number(date));
     console.log("printCardSummary receipt", receipt)
-        // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
+    // var resultSetEncoder = posAppletInstance.setEncoderSync(receipt, PID, username, date);
     var result = posAppletInstance.printCardSummarySync(receipt, PID, username, date);
     event.sender.send('printCardSummaryResult', +result);
 });
@@ -667,3 +697,32 @@ ipcMain.on('createAccount', (event, fname, lname, email) => {
     logger.info("createAccount user", result);
     event.sender.send('createAccountResult', '' + result, email);
 });
+
+
+ipcMain.on('chargeStoredValue', (event, card_id, amount) => {
+    logger.info("card id ", card_id);
+    var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
+    logger.info("chargeStoredValue", result.getSuccessSync());
+    event.sender.send('chargeStoredValueResult', '' + result.getSuccessSync(), card_id);
+});
+
+ipcMain.on('returnChargeStoredValue', (event, card_id, amount) => {
+    logger.info("card id ", card_id);
+    var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
+    logger.info(" return chargeStoredValue", result.getSuccessSync());
+    event.sender.send('returnChargeStoredResult', '' + result.getSuccessSync(),card_id);
+});
+ipcMain.on('returnChargeStoredAmount', (event, card_id, amount) => {
+    logger.info("card id ", card_id);
+    var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
+    logger.info(" return chargeStoredValue", result.getSuccessSync());
+    event.sender.send('returnChargeStoredAmountResult', '' + result.getSuccessSync(),card_id);
+});
+
+ipcMain.on('readAccountDetails', (event, type, value) => {
+    var result = posAppletInstance.getAccountDetailsSync(type, value);
+    logger.info("inventory details", result);
+    event.sender.send('newReadCardResult', '' + result);
+
+});
+
