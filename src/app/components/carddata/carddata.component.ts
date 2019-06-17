@@ -676,7 +676,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       });
       this.handleEncodeCardResult();
       this.checkIsCardNew();
-      if (this.isNew) {
+      if (this.isNew || Utils.getInstance.isFromAccountBasedCard()) {
         this.electronService.ipcRenderer.send('encodenewCard', this.currentCard.printed_id,
           this.shoppingCart._walletLineItem[this.cardIndex]._fareCodeId, 0, 0, this.encodeJsonData);
       } else {

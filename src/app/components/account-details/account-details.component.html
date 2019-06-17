@@ -53,8 +53,8 @@
                 <th>Card status</th>
                 <th>Expiry Date</th>
             </tr>
-            <tr *ngFor="let cardData of accountDetails.cards">
-                <td><input type="radio" name="optradio">{{cardData.pid}}</td>
+            <tr *ngFor="let cardData of accountDetails.cards;let k = index" (click)="onCardSelect(k)">
+                <td><input type="radio" [checked]="k==selectedCardIndex" name="optradio">{{cardData.pid}}</td>
                 <td>{{cardData.nickName}}</td>
                 <td>{{cardData.status}}</td>
                 <td>{{cardData.expiryDate | date:'MM-d-yyyy h:mm:ss a'}}</td>
@@ -81,6 +81,74 @@
 
             <div class="modal-body">
                 <p>Card is already associated with this account. Please place a different card on the encoder.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorModal" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Failed to read card contents
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="inventoryError" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Card is not in the inventory. Please check.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="cardSaleError" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>Card type not available for sale.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="userProfileError" role="dialog">
+    <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>User profile is different from the card profile. Please check.
                 </p>
             </div>
             <div class="modal-footer">

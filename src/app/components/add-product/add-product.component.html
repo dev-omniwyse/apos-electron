@@ -1,5 +1,8 @@
 <div class="main-container" *ngIf="!isCustomAmount && !applyCompShow">
     <div class="container-left">
+        <img src="assets/images/icon-cart.png" />
+        <div>
+
 
         <div class="header-l" *ngIf="!accountBase">
             <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard"
@@ -9,11 +12,14 @@
                 class="btn-white-top-cancel" *ngIf="!checkout">VIEW
                 CARD</button>
 
-            <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
+
+                <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
+            </div>
         </div>
-        <div class="header-l">
+
+        <!-- <div class="header-l">
             <img src="assets/images/icon-cart.png" />
-        </div>
+        </div> -->
         <div class="modal fade" id="viewCard" role="dialog">
             <div class="modal-dialog modal-custom  modal-dialog-centered">
                 <div class="modal-content">
@@ -88,8 +94,10 @@
                 <div *ngIf="!isMerchendise && !accountBase" class="cont-products-head"> FARE PRODUCTS</div>
                 <div *ngIf="accountBase" class="cont-products-head"> PRODUCTS</div>
                 <div *ngIf="isMerchendise && !accountBase" class="cont-products-head"> NON FARE PRODUCTS</div>
+
                 <span class="label label-default" *ngIf="!isMerchendise">
                     <div class="pull-left">{{currentWalletLineItem?._description}}</div>
+
 
                     <div class="pull-right remove-slide remove-icon" (click)="removeCurrentWalletLineItem()"
                         *ngIf="!productCheckOut">

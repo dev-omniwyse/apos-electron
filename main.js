@@ -698,6 +698,7 @@ ipcMain.on('createAccount', (event, fname, lname, email) => {
     event.sender.send('createAccountResult', '' + result, email);
 });
 
+
 ipcMain.on('chargeStoredValue', (event, card_id, amount) => {
     logger.info("card id ", card_id);
     var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
@@ -716,4 +717,10 @@ ipcMain.on('returnChargeStoredAmount', (event, card_id, amount) => {
     var result = posAppletInstance.chargeStoredValueSync(card_id, amount);
     logger.info(" return chargeStoredValue", result.getSuccessSync());
     event.sender.send('returnChargeStoredAmountResult', '' + result.getSuccessSync(),card_id);
+
+ipcMain.on('readAccountDetails', (event, type, value) => {
+    var result = posAppletInstance.getAccountDetailsSync(type, value);
+    logger.info("inventory details", result);
+    event.sender.send('newReadCardResult', '' + result);
+
 });
