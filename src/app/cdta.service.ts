@@ -116,27 +116,27 @@ export class CdtaService {
   }
 
 
-   // Observable string sources
-   private goToCheckOutSource = new Subject<Boolean>();
+  // Observable string sources
+  private goToCheckOutSource = new Subject<Boolean>();
 
-   // Observable string streams
-   goToCheckout$ = this.goToCheckOutSource.asObservable();
- 
-   // Service message commands
-   announcegoToCheckOut(proceedToCheckOut: Boolean) {
-     this.goToCheckOutSource.next(proceedToCheckOut);
-   }
+  // Observable string streams
+  goToCheckout$ = this.goToCheckOutSource.asObservable();
 
-      // Observable string sources
-      private goToLogInSource = new Subject<Boolean>();
+  // Service message commands
+  announcegoToCheckOut(proceedToCheckOut: Boolean) {
+    this.goToCheckOutSource.next(proceedToCheckOut);
+  }
 
-      // Observable string streams
-      goToLogin$ = this.goToLogInSource.asObservable();
-    
-      // Service message commands
-      announcegoToLogIn(proceedToLogIn: Boolean) {
-        this.goToLogInSource.next(proceedToLogIn);
-      }
+  // Observable string sources
+  private goToLogInSource = new Subject<Boolean>();
+
+  // Observable string streams
+  goToLogin$ = this.goToLogInSource.asObservable();
+
+  // Service message commands
+  announcegoToLogIn(proceedToLogIn: Boolean) {
+    this.goToLogInSource.next(proceedToLogIn);
+  }
 
   private terminalNumberSrc = new Subject<IterminalInfo>();
 
@@ -853,7 +853,7 @@ export class CdtaService {
     } else {
       console.log("Receipt printing, did not detect any wallets.");
     }
-  
+
     if (anythingToPrint) {
       console.log("Detected items to print.");
     } else {
@@ -891,8 +891,20 @@ export class CdtaService {
         receipt += lineItem + subtotalStr + "\n\n";
       } else {
 
-        var PID = (element.cardPID) ? element.cardPID : JSON.parse(localStorage.getItem('accountDetails')).emailId;
+        var PID = element.cardPID;
         var cardText = "Card ID:";
+
+        var mailText = 'Email';
+        if (localStorage.getItem('isAccountBased') == 'true') {
+          var mailId = JSON.parse(localStorage.getItem('accountDetails')).emailId;
+          receipt += mailText;
+          padSize = receiptWidth - (mailText.length + mailId.length);
+          spacer = '';
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
+          receipt += spacer + mailId + "\n";
+        }
 
         receipt += cardText;
         padSize = receiptWidth - (cardText.length + PID.length);
@@ -1266,7 +1278,7 @@ export class CdtaService {
               JSON.parse(catalog).Offering.forEach(catalogElement => {
                 if (catalogElement.Ticket != undefined) {
                   if (catalogElement.Ticket.Group == productType && (catalogElement.Ticket.Designator == designator)) {
-                   
+
                     return productDescription = catalogElement.Ticket.Description
 
                   }
@@ -1383,7 +1395,7 @@ export class CdtaService {
     if (null != cardStore.length) {
       PID = cardStore.printed_id;
     }
-   
+
     refundReceipt += "\n" + this.centerText("REFUNDED  TRANSACTION") + "\n\n";
 
 
@@ -1501,7 +1513,7 @@ export class CdtaService {
 
         refundReceipt += "\n";
       });
-   
+
     });
 
     var productLineItem = null;
@@ -1590,7 +1602,7 @@ export class CdtaService {
       paymentAmount: any = 0,
       paymentMethodCount: any = 0;
     var cashTotal: any = 0;
- 
+
     var getReport = this.getCart();
     var paymentReport = getReport._payments
 
