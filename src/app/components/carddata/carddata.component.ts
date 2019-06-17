@@ -91,9 +91,11 @@ export class CarddataComponent implements OnInit, OnChanges {
   isEncodeOnProcess: Boolean = true;
   encodedJsonCardIndex = 0;
   numOfAttempts = 0;
+  payAsYouGoAppliedTotal = 0;
   message: string;
   title: string;
   commaFlag: boolean;
+  card_id: any;
   constructor(private cdtaService: CdtaService, private route: ActivatedRoute, private router: Router,
     private _ngZone: NgZone, private electronService: ElectronService) {
     route.params.subscribe(val => {
@@ -119,12 +121,12 @@ export class CarddataComponent implements OnInit, OnChanges {
   handleUpdateCardDataResult() {
     const updateCardDataListener: any = this.electronService.ipcRenderer.once('updateCardDataResult', (event, data) => {
       if (data != undefined && data != '') {
-        if ( this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
+        if (this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
           this.handleReadcardResult();
           this.electronService.ipcRenderer.send('readSmartcard', cardName);
         } else {
-            this.handleLUCCCardResult();
-            this.electronService.ipcRenderer.send('readCardUltralightC');
+          this.handleLUCCCardResult();
+          this.electronService.ipcRenderer.send('readCardUltralightC');
         }
       }
     });
@@ -145,7 +147,7 @@ export class CarddataComponent implements OnInit, OnChanges {
         });
       }
     });
-  } 
+  }
 
   handleLUCCCardResult() {
     const readcardListener: any = this.electronService.ipcRenderer.once('readCardUltralightCResult', (event, data) => {
@@ -430,12 +432,12 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.handleUpdateCardDataResult();
       this.electronService.ipcRenderer.send('updateCardData', cardName, expirationDate);
     } else {
-      if ( this.currentCard._walletTypeId==MediaType.SMART_CARD_ID) {
+      if (this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
         this.handleReadcardResult();
         this.electronService.ipcRenderer.send('readSmartcard', cardName);
-      } else{
-          this.handleLUCCCardResult();
-          this.electronService.ipcRenderer.send('readCardUltralightC');
+      } else {
+        this.handleLUCCCardResult();
+        this.electronService.ipcRenderer.send('readCardUltralightC');
       }
     }
     const userID = localStorage.getItem('userID');
@@ -589,7 +591,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   }
 
   checkIsLUCCCardNew() {
-    this.isLUCCCardNew = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0)  ? true : false;
+    this.isLUCCCardNew = (this.currentCard.product.product_type == 0 && this.currentCard.product.designator == 0) ? true : false;
   }
 
   /**
@@ -719,14 +721,14 @@ export class CarddataComponent implements OnInit, OnChanges {
           isStoredRideProductPresent = true;
           JsonObj = FareCardService.getInstance.constructJsonForEncodingLUCC(element._offering.Ticket.Group,
             element, this.terminalConfigJson);
-            storedRideJSON.push(JsonObj);
-            storedRideJSONObj = JSON.stringify(storedRideJSON[0]);
+          storedRideJSON.push(JsonObj);
+          storedRideJSONObj = JSON.stringify(storedRideJSON[0]);
         } else if (element._offering.Ticket.Group == 3) {
           isStoredValueProductPresent = true;
           JsonObj = FareCardService.getInstance.constructJsonForEncodingLUCC(element._offering.Ticket.Group,
             element, this.terminalConfigJson);
-            storedValueJSON.push(JsonObj);
-            storedValueJSONObj = JSON.stringify(storedValueJSON[0]);
+          storedValueJSON.push(JsonObj);
+          storedValueJSONObj = JSON.stringify(storedValueJSON[0]);
         }
         currentIndex++;
       });
@@ -743,10 +745,10 @@ export class CarddataComponent implements OnInit, OnChanges {
       this.checkIsLUCCCardNew()
       if (this.isLUCCCardNew) {
         this.electronService.ipcRenderer.send('encodeCardUltralightC', this.currentCard.printed_id,
-        frequentRideJSONObj,  storedRideJSONObj, storedValueJSONObj);
+          frequentRideJSONObj, storedRideJSONObj, storedValueJSONObj);
       } else {
         this.electronService.ipcRenderer.send('addValueUltralightC', this.currentCard.printed_id,
-        frequentRideJSONObj,  storedRideJSONObj,  storedValueJSONObj);
+          frequentRideJSONObj, storedRideJSONObj, storedValueJSONObj);
       }
     } catch {
       $('#encodeErrorModal').modal('show');
@@ -953,7 +955,68 @@ export class CarddataComponent implements OnInit, OnChanges {
     this.getRefundTitle();
   }
 
+  returnPayments() {
+    var payments = JSON.parse(localStorage.getItem('shoppingCart'))._payments;
+    if (payments.length != 0) {
+      for (let i = 0; i < payments.length; i++) {
+        if (payments[i].paymentMethodId == 12) {
+          this.payAsYouGoAppliedTotal = payments[i].amount;
+        }
+      }
+    }
+    if( this.payAsYouGoAppliedTotal > 0){
+      $('#returnPayAsYouGoAmount').modal('show');
+    }else{
+      $('#returnCheckModal').modal('show');
+    }
+  }
 
+  returnPayAsYouGoAmount(){
+    this.handleReadCardForReturnPayAsYouGo();
+    this.electronService.ipcRenderer.send('readForPayAsYouGoAmount', cardName);
+  }
+
+  handleReadCardForReturnPayAsYouGo() {
+    this.electronService.ipcRenderer.once('readCardToReturnPayAsYouGoResult', (event, data) => {
+      if (data != undefined && data != '') {
+        this.payAsYouGoAppliedTotal = -Math.abs(this.payAsYouGoAppliedTotal);
+        this.handleReturnChargeStoredValue();
+        this.electronService.ipcRenderer.send('returnChargeStoredAmount', JSON.parse(data).printed_id, Number(this.payAsYouGoAppliedTotal) * 100);
+      } else if (data == null || data == '') {
+        $('#errorToReadModal').modal('show');
+      }
+    })
+  }
+  
+    handleReturnChargeStoredValue() {
+      this.electronService.ipcRenderer.once('returnChargeStoredAmountResult', (event, data, card_id) => {
+        if (data != undefined && data != '') {
+          if (data == 'true') {
+            this.card_id = card_id;
+            $('#returnSuccessPayAsYouGoAmount').modal('show');
+          } else {
+            $('#unableToReturnPayAsYouGoAmount').modal('show');
+          }
+        }
+      });
+    }
+  
+    cancelListOfPayments(){
+      var onlyPayAsYouGo = false;
+      if(this.shoppingCart._payments.length != 0){
+        for (let i = 0; i < this.shoppingCart._payments.length; i++) {
+          if (this.shoppingCart._payments[i].paymentMethodId == 12) {
+            onlyPayAsYouGo = true
+          }
+        }
+        if (this.shoppingCart._payments.length == 1 && onlyPayAsYouGo == true) {
+          this.initiateCancelEncoding(this.encodedJsonCardIndex);
+        }else{
+          $('#returnCheckModal').modal('show');
+        }
+      }
+
+    }
   /**
    *
    *This function returns refundTitle based on paymentMethod
@@ -1008,6 +1071,10 @@ export class CarddataComponent implements OnInit, OnChanges {
         case 10:
           this.title = this.title + 'Fare Card';
           this.message = this.message + 'Fare Card';
+          break;
+        case 12:
+          this.title = this.title + 'Pay As You Go';
+          this.message = this.message + 'Pay As You Go';
           break;
 
         default:

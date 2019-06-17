@@ -96,11 +96,11 @@
                 </div>
                 <input type="text" class="account-tab-input" [(ngModel)]="accountPrintedId" />
             </div>
-            <button [disabled] = "disableCards" class="account-tab-input-btn" (click)="readAccountBaseCard()">Scan Wallet</button>
+            <button class="account-tab-input-btn" (click)="readAccountBaseCard()">Scan Wallet</button>
         </div>
         <div>
-            <button [disabled] = "disableCards" class="account-tab-input-btn-full" (click)="getAccountDetails()">Get Details</button>
-            <button [disabled] = "disableCards" class="account-tab-input-btn-full" (click)="createAccountForm()">Create Account</button>
+            <button class="account-tab-input-btn-full" (click)="getAccountDetails()">Get Details</button>
+            <button class="account-tab-input-btn-full" (click)="createAccountForm()">Create Account</button>
         </div>
         <div class="create-account-set" *ngIf="showForm">
             <div class="create-account-set-in">
@@ -109,7 +109,7 @@
                 <div class="form-group">
                     <div class="create-account-input">
                         <div>First Name*</div>
-                        <div class="close-icon-set-create" *ngIf="registerForm.value.firstName" (click)="resetFirstName()">
+                        <div class="close-icon-set" *ngIf="registerForm.value.firstName" (click)="resetFirstName()">
                             <img src="assets/images/close-icon.png" />
                         </div>
                         <input type="text" placeholder="First Name (required)" formControlName="firstName" class="form-control"  />
@@ -119,10 +119,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                
                     <div class="create-account-input">
                         <div>Last Name*</div>
-                        <div class="close-icon-set-create" *ngIf="registerForm.value.lastName" (click)="resetLastName()">
+                        <div class="close-icon-set" *ngIf="registerForm.value.lastName" (click)="resetLastName()">
                             <img src="assets/images/close-icon.png" />
                         </div>
                         <input type="text" placeholder="Last Name (required)" formControlName="lastName" class="form-control"  />
@@ -134,7 +133,7 @@
                 <div class="form-group">
                     <div class="create-account-input">
                         <div>Email*</div>
-                        <div class="close-icon-set-create" *ngIf="registerForm.value.email" (click)="resetEmail()">
+                        <div class="close-icon-set" *ngIf="registerForm.value.email" (click)="resetEmail()">
                             <img src="assets/images/close-icon.png" />
                         </div>
                         <input type="text" placeholder="email@example.com" formControlName="email" class="form-control"  />

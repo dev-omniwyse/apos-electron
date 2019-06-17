@@ -684,4 +684,17 @@ export class Utils {
 
     }
 
+    isPayAsYouGoBalanceAvailable(carddata){
+        var cardBalance = 0;
+        const filterPayAsYouGo =  carddata[0].products;
+           for(let i =0 ; i <= filterPayAsYouGo.length ; i++){
+            if (filterPayAsYouGo[i].product_type == 3) {
+                if (filterPayAsYouGo[i].remaining_value && filterPayAsYouGo[i].remaining_value > 0) {
+                  cardBalance = filterPayAsYouGo[i].remaining_value;
+                }
+                return cardBalance;
+              }
+           }
+    }
+
 }
