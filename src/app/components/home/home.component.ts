@@ -462,7 +462,6 @@ export class HomeComponent implements OnInit {
         this.electronService.ipcRenderer.once('createAccountResult', (event, data, email) => {
             console.log('create user data', data);
             if (data.trim() == 'success') {
-                alert('user created successfully');
                 console.log('this.registerForm.value.email', this.registerForm.value.email)
                 this.accountPrintedId = this.registerForm.value.email;
                 this.getAccountDetails();
