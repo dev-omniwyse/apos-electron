@@ -1277,7 +1277,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
   handleLUCCCardResult() {
     this.electronService.ipcRenderer.once('readCardUltralightCResult', (_event, data) => {
       let isDuplicateCard = false;
-      debugger;
       if (data != undefined && data != '') {
         localStorage.setItem('readCardData', JSON.stringify(data));
         this.carddata = new Array(JSON.parse(data));

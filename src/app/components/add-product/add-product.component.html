@@ -1,7 +1,8 @@
 <div class="main-container" *ngIf="!isCustomAmount && !applyCompShow">
     <div class="container-left">
-        <img src="assets/images/icon-cart.png" />
+
         <div>
+            <img class="pull-left" src="assets/images/icon-cart.png" />
 
             <div class="header-l" *ngIf="!accountBase">
                 <button [disabled]="isMagnetic || isMerchendise" data-toggle="modal" data-target="#viewCard" class="btn-white-top" *ngIf="checkout">VIEW
@@ -12,7 +13,6 @@
                 <button class="btn-orange" (click)="addCard()" *ngIf="!productCheckOut">ADD CARD</button>
             </div>
         </div>
-
         <!-- <div class="header-l">
             <img src="assets/images/icon-cart.png" />
         </div> -->
