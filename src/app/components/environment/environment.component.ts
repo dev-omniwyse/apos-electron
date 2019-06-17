@@ -52,7 +52,7 @@ export class EnvironmentComponent implements OnInit {
   }
 
   /**
-   * Selecting Environments and showing pop up here
+   * Selecting Environments and showing pop up h ere
    *
    * @param {*} environment
    * @memberof EnvironmentComponent

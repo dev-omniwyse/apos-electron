@@ -36,9 +36,9 @@ export class NavbarComponent implements OnInit {
       });
     this.subscription = this.cdtaservice.terminalNumber$.subscribe(
       mission => {
-        console.log('mission',mission);
-        this.terminalNumber = mission.terminalName; 
-        this.terminalUser = mission.userName;
+        console.log('mission', mission);
+        this.terminalNumber = (mission) ? mission.terminalName : undefined;
+        this.terminalUser = (mission) ? mission.userName : undefined;
       });
     this.subscription = this.cdtaservice.goToLogin$.subscribe(
       proceedToLogIn => {
@@ -109,6 +109,7 @@ export class NavbarComponent implements OnInit {
    * @memberof NavbarComponent
    */
   lockDevice() {
+    this.cdtaservice.announceHeaderShowHide('hideHeader');
     this.router.navigate(['/login']);
     this.cdtaservice.setterminalNumber(undefined);
     localStorage.setItem('deviceLocked', 'true');

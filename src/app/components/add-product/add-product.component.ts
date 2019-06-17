@@ -585,7 +585,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     });
 
     this.currentWalletLineItem._walletContents.forEach(walletContent => {
-      if (walletContent._offering.Ticket.Group == selectProduct.Ticket.Group &&
+      if (walletContent._offering.Ticket. Group == selectProduct.Ticket.Group &&
         walletContent._offering.Ticket.Designator == selectProduct.Ticket.Designator) {
         remainingValue = remainingValue + (walletContent._quantity * walletContent._offering.Ticket.Value);
       }
@@ -1743,7 +1743,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     var transactionListener: any = this.electronService.ipcRenderer.once('saveTransactionForMagneticMerchandiseResult', (event, data) => {
       if (data != undefined && data != '') {
         const timestamp = new Date().getTime();
-        // this.cdtaService.generateReceipt(timestamp);
+        this.cdtaService.generateReceipt(timestamp);
         this._ngZone.run(() => {
 
           localStorage.removeItem('encodeData');

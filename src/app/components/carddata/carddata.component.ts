@@ -599,7 +599,7 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   populatCurrentCardEncodedData() {
     this.currentCardProductList = this.shoppingCart._walletLineItem[this.cardIndex + 1]._walletContents;
-  }
+  } 
 
 
   /**

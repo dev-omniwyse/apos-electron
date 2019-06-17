@@ -891,7 +891,7 @@ export class CdtaService {
         receipt += lineItem + subtotalStr + "\n\n";
       } else {
 
-        var PID = element.cardPID;
+        var PID = (element.cardPID) ? element.cardPID : JSON.parse(localStorage.getItem('accountDetails')).emailId;
         var cardText = "Card ID:";
 
         receipt += cardText;
