@@ -225,7 +225,7 @@ export class AccountDetailsComponent implements OnInit {
     this.selectedCardIndex = index;
   }
   handleReadAccountDetailsResult() {
-    this.electronService.ipcRenderer.on('newReadCardResult', (event, data) => {
+    this.electronService.ipcRenderer.once('newReadCardResult', (event, data) => {
       this._ngZone.run(() => {
         if (data != null && data.length == 0) {
           $('#inventoryError').modal('show');
