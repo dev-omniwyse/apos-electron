@@ -2,73 +2,15 @@ import { Component, OnInit, Input, OnChanges, SimpleChange, SimpleChanges, NgZon
 import { CdtaService } from 'src/app/cdta.service';
 import { ElectronService } from 'ngx-electron';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SSL_OP_NO_TICKET } from 'constants';
-import { encode } from 'punycode';
 import { MediaType, TICKET_GROUP } from 'src/app/services/MediaType';
 import { TransactionService } from 'src/app/services/Transaction.service';
-import { debug } from 'util';
-import { timestamp } from 'rxjs/operators';
 import { Utils } from 'src/app/services/Utils.service';
 import { FareCardService } from 'src/app/services/Farecard.service';
-declare var pcsc: any;
+import { CardService } from 'src/app/services/Card.service';
+
 declare var $: any;
-const pcs = pcsc();
-let cardName: any = 0;
-pcs.on('reader', function (reader) {
-  console.log('reader', reader);
-  console.log('New reader detected', reader.name);
 
-  reader.on('error', function (err) {
-    console.log('Error(', this.name, '):', err.message);
-  });
 
-  reader.on('status', function (status) {
-    console.log('Status(', this.name, '):', status);
-    /* check what has changed */
-    const changes = this.state ^ status.state;
-    if (changes) {
-      if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-        console.log('card removed'); /* card removed */
-        reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Disconnected');
-          }
-        });
-      } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-        cardName = reader.name;
-        console.log('sample', cardName);
-        console.log('card inserted'); /* card inserted */
-        reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('Protocol(', reader.name, '):', protocol);
-            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (errTransmit, data) {
-              if (errTransmit) {
-                console.log(errTransmit);
-              } else {
-                console.log('Data received', data);
-                console.log('Data base64', data.toString('base64'));
-                // reader.close();
-                // pcs.close();
-              }
-            });
-          }
-        });
-      }
-    }
-  });
-
-  reader.on('end', function () {
-    console.log('Reader', this.name, 'removed');
-  });
-});
-
-pcs.on('error', function (err) {
-  console.log('PCSC error', err.message);
-});
 @Component({
   selector: 'app-carddata',
   templateUrl: './carddata.component.html',
@@ -123,7 +65,7 @@ export class CarddataComponent implements OnInit, OnChanges {
       if (data != undefined && data != '') {
         if (this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
           this.handleReadcardResult();
-          this.electronService.ipcRenderer.send('readSmartcard', cardName);
+          this.electronService.ipcRenderer.send('readSmartcard', CardService.getInstance.getCardName());
         } else {
           this.handleLUCCCardResult();
           this.electronService.ipcRenderer.send('readCardUltralightC');
@@ -430,11 +372,11 @@ export class CarddataComponent implements OnInit, OnChanges {
     const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
     if (this.isNew || this.isLUCCCardNew) {
       this.handleUpdateCardDataResult();
-      this.electronService.ipcRenderer.send('updateCardData', cardName, expirationDate);
+      this.electronService.ipcRenderer.send('updateCardData', CardService.getInstance.getCardName(), expirationDate);
     } else {
       if (this.currentCard._walletTypeId == MediaType.SMART_CARD_ID) {
         this.handleReadcardResult();
-        this.electronService.ipcRenderer.send('readSmartcard', cardName);
+        this.electronService.ipcRenderer.send('readSmartcard', CardService.getInstance.getCardName());
       } else {
         this.handleLUCCCardResult();
         this.electronService.ipcRenderer.send('readCardUltralightC');
@@ -631,14 +573,14 @@ export class CarddataComponent implements OnInit, OnChanges {
    */
   checkCorrectCard() {
     this.populatCurrentCard();
-    console.log(cardName);
+    console.log(CardService.getInstance.getCardName());
     this.disableEncode = true;
     if (this.shoppingCart._walletLineItem[this.cardIndex]._walletTypeId == MediaType.SMART_CARD_ID) {
       this.handleGetCardPIDResult();
-      this.electronService.ipcRenderer.send('getCardPID', cardName);
+      this.electronService.ipcRenderer.send('getCardPID', CardService.getInstance.getCardName());
     } else {
       this.handleGetCardPIDResultForLUCC();
-      this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+      this.electronService.ipcRenderer.send('getCardPIDUltralightC', CardService.getInstance.getCardName());
 
     }
   }
@@ -973,7 +915,7 @@ export class CarddataComponent implements OnInit, OnChanges {
 
   returnPayAsYouGoAmount(){
     this.handleReadCardForReturnPayAsYouGo();
-    this.electronService.ipcRenderer.send('readForPayAsYouGoAmount', cardName);
+    this.electronService.ipcRenderer.send('readForPayAsYouGoAmount', CardService.getInstance.getCardName());
   }
 
   handleReadCardForReturnPayAsYouGo() {

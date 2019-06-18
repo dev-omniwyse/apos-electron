@@ -10,79 +10,11 @@ import { Utils } from 'src/app/services/Utils.service';
 import { SessionServiceApos } from 'src/app/session';
 import { SysytemConfig } from 'src/app/config';
 import { MediaType } from 'src/app/services/MediaType';
+import { CardService } from 'src/app/services/Card.service';
+
 
 declare var $: any;
-declare var pcsc: any;
-// tslint:disable-next-line:prefer-const
-declare var pcsc: any;
-// tslint:disable-next-line:prefer-const
-let pcs = pcsc();
-let cardName: any = '';
 let isExistingCard = false;
-let categoryIndex = 0;
-pcs.on('reader', function (reader) {
-
-    console.log('reader', reader);
-    console.log('New reader detected', reader.name);
-
-    reader.on('error', function (err) {
-        console.log('Error(', this.name, '):', err.message);
-    });
-
-    reader.on('status', function (status) {
-        console.log('Status(', this.name, '):', status);
-        /* check what has changed */
-        // tslint:disable-next-line:no-bitwise
-        const changes = this.state ^ status.state;
-        if (changes) {
-            // tslint:disable-next-line:no-bitwise
-            if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-                console.log('card removed'); /* card removed */
-                reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Disconnected');
-                    }
-                });
-                // tslint:disable-next-line:no-bitwise
-            } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-                cardName = reader.name;
-                console.log('sample', cardName);
-                console.log('card inserted'); /* card inserted */
-                reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Protocol(', reader.name, '):', protocol);
-                        reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol,
-                            // tslint:disable-next-line:no-shadowed-variable
-                            function (err: any, data: { toString: (arg0: string) => void; }) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    console.log('Data received', data);
-                                    console.log('Data base64', data.toString('base64'));
-                                    // reader.close();
-                                    // pcs.close();
-                                }
-                            });
-                    }
-                });
-            }
-        }
-    });
-
-
-    reader.on('end', function () {
-        console.log('Reader', this.name, 'removed');
-    });
-});
-
-pcs.on('error', function (err) {
-    console.log('PCSC error', err.message);
-});
-
 
 @Component({
     selector: 'app-home',
@@ -316,7 +248,7 @@ export class HomeComponent implements OnInit {
         this.showForm = false;
     }
     readAccountBaseCard() {
-        this.electronService.ipcRenderer.send('readAccountBaseCard', cardName);
+        this.electronService.ipcRenderer.send('readAccountBaseCard', CardService.getInstance.getCardName());
     }
     resetWalletId() {
         this.accountPrintedId = '';
@@ -387,7 +319,8 @@ export class HomeComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     getNextBonusRides() {
-        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0], this.terminalConfigJson, this.config.cardTypeDetected);
+        this.nextBonusRidesText = Utils.getInstance.getNextBonusRidesCount(this.carddata[0],
+             this.terminalConfigJson, this.config.cardTypeDetected);
     }
 
     // readCardSession(index) {
@@ -406,7 +339,7 @@ export class HomeComponent implements OnInit {
 
     checkCardType() {
         this.handleGetCardPIDResult();
-        this.electronService.ipcRenderer.send('getCardPID', cardName);
+        this.electronService.ipcRenderer.send('getCardPID', CardService.getInstance.getCardName());
 
     }
     handleGetCardPIDResult() {
@@ -475,7 +408,7 @@ export class HomeComponent implements OnInit {
 
     callCardPIDUltraLightC() {
         this.handleGetCardPIDUltralightC();
-        this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+        this.electronService.ipcRenderer.send('getCardPIDUltralightC', CardService.getInstance.getCardName());
 
     }
 
@@ -494,12 +427,12 @@ export class HomeComponent implements OnInit {
         this.electronService.ipcRenderer.once('autoLoadResult', (_event, data) => {
             console.log(data);
             if (data != undefined && data != '') {
-                this.electronService.ipcRenderer.send('readSmartcard', cardName);
+                this.electronService.ipcRenderer.send('readSmartcard', CardService.getInstance.getCardName());
             }
         });
 
-        this.electronService.ipcRenderer.send('processAutoLoad', cardName);
-        console.log('read call', cardName);
+        this.electronService.ipcRenderer.send('processAutoLoad', CardService.getInstance.getCardName());
+        console.log('read call', CardService.getInstance.getCardName());
     }
     handleSmartCardResult() {
         this.electronService.ipcRenderer.once('readcardResult', (_event, data) => {
@@ -700,7 +633,7 @@ export class HomeComponent implements OnInit {
                 });
             }
         });
-        this.electronService.ipcRenderer.send('newfarecard', cardName);
+        this.electronService.ipcRenderer.send('newfarecard', CardService.getInstance.getCardName());
     }
 
 
@@ -748,8 +681,8 @@ export class HomeComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     writeCard(event) {
-        this.electronService.ipcRenderer.send('writeSmartcard', cardName);
-        console.log('write call', cardName);
+        this.electronService.ipcRenderer.send('writeSmartcard', CardService.getInstance.getCardName());
+        console.log('write call', CardService.getInstance.getCardName());
     }
 
 
@@ -766,7 +699,7 @@ export class HomeComponent implements OnInit {
             this.catalogData = JSON.parse(item).Offering;
             this.setOffering();
         });
-        this.electronService.ipcRenderer.send('productCatalogJson', cardName);
+        this.electronService.ipcRenderer.send('productCatalogJson', CardService.getInstance.getCardName());
     }
 
     /**

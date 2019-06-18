@@ -685,37 +685,37 @@ export class Utils {
     }
 
 
-    isPayAsYouGoBalanceAvailable(carddata){
+    isPayAsYouGoBalanceAvailable(carddata) {
         var cardBalance = 0;
-        const filterPayAsYouGo =  carddata[0].products;
-           for(let i =0 ; i <= filterPayAsYouGo.length ; i++){
+        const filterPayAsYouGo = carddata[0].products;
+        for (let i = 0; i <= filterPayAsYouGo.length; i++) {
             if (filterPayAsYouGo[i].product_type == 3) {
                 if (filterPayAsYouGo[i].remaining_value && filterPayAsYouGo[i].remaining_value > 0) {
-                  cardBalance = filterPayAsYouGo[i].remaining_value;
+                    cardBalance = filterPayAsYouGo[i].remaining_value;
                 }
                 return cardBalance;
-              }
-           }
+            }
+        }
     }
 
 
     populateDummyCard() {
-        const cardData = {'uid': 1154851244231552, 'printed_id': '0000000988', 'user_profile': 1, 'card_expiration_date': 18190,
-        'user_profile_expiration_date': 0, 'card_expiration_date_str': 'Oct 21, 2019', 'user_profile_expiration_date_str': 'Jan 01, 1970',
-        'is_card_bad_listed': false, 'is_card_registered': false, 'preferred_language': 0, 'accessibility_flags': 0, 'products': [],
-        'journals': null, 'is_tpb_locked': true, 'tpb_code': 0, 'manufacturer_id': 0, 'equipment_type': 0, 'equipment_id': 0,
-        'num_products': 0, 'cardPropertiesFileVersion': 1 , 'printedIDFileVersion': 1, 'productListFileVersion': 0,
-        'prioritiesAndConfigurationType': 1, 'individualLoadSeqNo': 0, 'rangeLoadSeqNo': 0, 'agency': 194, 'security_code': 0,
-        'account_flag': true, 'account_load_sequence': 0, 'group': 1, 'designator': 43, 'account_fulfillment': false,
-        'num_transfers': 0, 'num_bonus_passes': 0, 'num_pay_as_you_go_passes': 0, 'transfer': null,
-        'bonus_pass': null, 'pay_as_you_go_pass': null };
+        const cardData = {
+            'uid': 1154851244231552, 'printed_id': '0000000988', 'user_profile': 1, 'card_expiration_date': 18190,
+            'user_profile_expiration_date': 0, 'card_expiration_date_str': 'Oct 21, 2019', 'user_profile_expiration_date_str': 'Jan 01, 1970',
+            'is_card_bad_listed': false, 'is_card_registered': false, 'preferred_language': 0, 'accessibility_flags': 0, 'products': [],
+            'journals': null, 'is_tpb_locked': true, 'tpb_code': 0, 'manufacturer_id': 0, 'equipment_type': 0, 'equipment_id': 0,
+            'num_products': 0, 'cardPropertiesFileVersion': 1, 'printedIDFileVersion': 1, 'productListFileVersion': 0,
+            'prioritiesAndConfigurationType': 1, 'individualLoadSeqNo': 0, 'rangeLoadSeqNo': 0, 'agency': 194, 'security_code': 0,
+            'account_flag': true, 'account_load_sequence': 0, 'group': 1, 'designator': 43, 'account_fulfillment': false,
+            'num_transfers': 0, 'num_bonus_passes': 0, 'num_pay_as_you_go_passes': 0, 'transfer': null,
+            'bonus_pass': null, 'pay_as_you_go_pass': null
+        };
         return cardData;
     }
 
     isFromAccountBasedCard() {
         const isFromAccountCardBased: Boolean = localStorage.getItem('addCardForAccount') == 'true' ? true : false;
         return isFromAccountCardBased;
-      }
-
-
+    }
 }
