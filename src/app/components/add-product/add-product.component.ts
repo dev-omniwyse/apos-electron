@@ -178,6 +178,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   accountBase: Boolean;
   isSmartCard = false;
   onlyPayAsYouGoApplied: boolean = false;
+  checkAccountCardsLength: any;
   constructor(
     private formBuilder: FormBuilder, private config?: SysytemConfig, private cdtaService?: CdtaService,
     private route?: ActivatedRoute, private router?: Router, private _ngZone?: NgZone, private electronService?: ElectronService, ) {
@@ -188,6 +189,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.accountBase = localStorage.getItem('isAccountBased') == 'false' ? false : true;
       this.smartCardCost = localStorage.getItem('smartCardCost');
       this.magneticCardCost = localStorage.getItem('magneticCardCost');
+      this.checkAccountCardsLength = JSON.parse(localStorage.getItem('accountDetails'));
+
       const item = JSON.parse(localStorage.getItem('catalogJSON'));
       this.productJson = JSON.parse(item).Offering;
       this.readCarddata = JSON.parse(localStorage.getItem('readCardData'));
@@ -240,9 +243,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
         console.log('permissions failure')
       }
     });
-    this.selectedProductCategoryIndex = 0;
     this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
+    if(this.checkAccountCardsLength.cards.length != 0) {
+      this.selectedProductCategoryIndex = 0;
     this.frequentRide();
+    }
     if (this.isMerchendise) {
       this.clickOnMerch();
     }
@@ -1530,7 +1535,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       this.nonFare = true;
       this.regularRoute = false;
       this.isMerchendise = false;
-      (this.selectedProductCategoryIndex == 0) ? this.frequentRide() :
+      (this.selectedProductCategoryIndex == 0 && this.checkAccountCardsLength.cards.length != 0) ? this.frequentRide() :
         (this.selectedProductCategoryIndex == 1) ? this.storedValue() : this.payValue();
     }
   }
