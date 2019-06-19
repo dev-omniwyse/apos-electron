@@ -8,55 +8,19 @@ import { FilterOfferings } from 'src/app/services/FilterOfferings.service';
 import { MediaType, TICKET_GROUP, TICKET_TYPE, Constants } from 'src/app/services/MediaType';
 import { Utils } from 'src/app/services/Utils.service';
 import { TransactionService } from 'src/app/services/Transaction.service';
-import { SessionServiceApos } from 'src/app/session';
 import { PaymentType } from 'src/app/models/Payments';
 import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { SysytemConfig } from 'src/app/config';
-declare var pcsc: any;
+import { CardService } from 'src/app/services/Card.service';
+
+
 declare var $: any;
-const pcs = pcsc();
-let cardName: any;
+
 let isExistingCard = false;
 const hammertime = new Hammer(document.body);
 hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-pcs.on('reader', function (reader) {
-  reader.on('error', function (err) {
-  });
 
-  reader.on('status', function (status) {
-    const changes = this.state ^ status.state;
-    if (changes) {
-      if ((changes & this.SCARD_STATE_EMPTY) && (status.state & this.SCARD_STATE_EMPTY)) {
-        reader.disconnect(reader.SCARD_LEAVE_CARD, function (err) {
-          if (err) {
-          } else {
-          }
-        });
-      } else if ((changes & this.SCARD_STATE_PRESENT) && (status.state & this.SCARD_STATE_PRESENT)) {
-        cardName = reader.name;
-        reader.connect({ share_mode: this.SCARD_SHARE_SHARED }, function (err, protocol) {
-          if (err) {
-          } else {
-            reader.transmit(new Buffer([0x00, 0xB0, 0x00, 0x00, 0x20]), 40, protocol, function (err, data) {
-              if (err) {
-              } else {
-              }
-            });
-          }
-        });
-      }
-    }
-  });
-
-  reader.on('end', function () {
-    console.log('Reader', this.name, 'removed');
-  });
-});
-
-pcs.on('error', function (err) {
-  console.log('PCSC error', err.message);
-});
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
@@ -980,7 +944,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   }
   returnPayAsYouGo() {
     this.handleReadCardForReturnPayAsYouGo();
-    this.electronService.ipcRenderer.send('readCardForReturnPayAsYouGo', cardName);
+    this.electronService.ipcRenderer.send('readCardForReturnPayAsYouGo', CardService.getInstance.getCardName());
   }
   // productCheckOutSessionModal() {
   //   $('#userTimedOut').modal('show');
@@ -1312,7 +1276,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   }
   checkCardType() {
     this.handleGetCardPIDResult();
-    this.electronService.ipcRenderer.send('getCardPID', cardName);
+    this.electronService.ipcRenderer.send('getCardPID', CardService.getInstance.getCardName());
   }
   existingCardClick() {
     isExistingCard = true;
@@ -1336,7 +1300,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   }
   callCardPIDUltraLightC() {
     this.handleGetCardPIDUltralightC();
-    this.electronService.ipcRenderer.send('getCardPIDUltralightC', cardName);
+    this.electronService.ipcRenderer.send('getCardPIDUltralightC', CardService.getInstance.getCardName());
 
   }
   handleGetCardPIDUltralightC() {
@@ -1437,7 +1401,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   newCard() {
     this.isfromAddProduct = true;
     this.handleReadCardResult();
-    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+    this.electronService.ipcRenderer.send('readSmartcard', CardService.getInstance.getCardName());
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem('isMagnetic', 'false');
@@ -1454,7 +1418,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.isfromAddProduct = true;
     isExistingCard = true;
     this.handleReadCardResult();
-    this.electronService.ipcRenderer.send('readSmartcard', cardName);
+    this.electronService.ipcRenderer.send('readSmartcard', CardService.getInstance.getCardName());
     this.isMagnetic = false;
     this.isMerchendise = false;
     localStorage.setItem('isMagnetic', 'false');
@@ -2475,7 +2439,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.handleReadCardForPayAsYouGo();
     // this.isPayAsYouGoApplied = true;
     // this.isfromAddProduct = true;
-    this.electronService.ipcRenderer.send('readCardForPayAsYouGo', cardName);
+    this.electronService.ipcRenderer.send('readCardForPayAsYouGo', CardService.getInstance.getCardName());
   }
   /**
    * checking hte credit card is applied or not.
