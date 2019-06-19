@@ -905,44 +905,45 @@ export class CdtaService {
           }
           receipt += spacer + mailId + "\n";
         }
+        if (PID) {
+          receipt += cardText;
+          padSize = receiptWidth - (cardText.length + PID.length);
+          spacer = '';
 
-        receipt += cardText;
-        padSize = receiptWidth - (cardText.length + PID.length);
-        spacer = '';
+          while (spacer.length <= (padSize - 1)) {
+            spacer += " ";
+          }
 
-        while (spacer.length <= (padSize - 1)) {
-          spacer += " ";
+          receipt += spacer + PID + "\n";
         }
-
-        receipt += spacer + PID + "\n";
-
         var dashes = "";
         while (dashes.length <= receiptWidth) {
           dashes += "-";
         }
 
         receipt += dashes + "\n";
-        if (element.description == undefined) {
-          var lineItem = "Card:" + PID + "";
-        } else {
-          var lineItem = element.description + "";
+        if (PID) {
+          if (element.description == undefined) {
+            var lineItem = "Card:" + PID + "";
+          } else {
+            var lineItem = element.description + "";
+          }
+
+          var lineItemQty = " - Qty: 1 ";
+
+          if (lineItem.length > (35 - lineItemQty.length)) {
+            lineItem = lineItem.substring(0, (35 - lineItemQty.length));
+          }
+
+          lineItem = lineItem + lineItemQty + "                                   ";
+          lineItem = lineItem.substring(0, 35);
+
+          var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
+
+          subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
+
+          receipt += lineItem + subtotalStr + "\n\n";
         }
-
-        var lineItemQty = " - Qty: 1 ";
-
-        if (lineItem.length > (35 - lineItemQty.length)) {
-          lineItem = lineItem.substring(0, (35 - lineItemQty.length));
-        }
-
-        lineItem = lineItem + lineItemQty + "                                   ";
-        lineItem = lineItem.substring(0, 35);
-
-        var subtotalStr = "          $" + (element.unitPrice).toFixed(2);
-
-        subtotalStr = subtotalStr.substring(subtotalStr.length - 10);
-
-        receipt += lineItem + subtotalStr + "\n\n";
-
 
 
 
