@@ -74,34 +74,42 @@ export class NavbarComponent implements OnInit {
     if (userData.shiftState != '3' && userData.shiftType == '0') {
       (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
     } else if (userData.shiftState == '3' && userData.shiftType == '1' && localStorage.getItem('closingPausedMainShift') == 'true') {
-      localStorage.removeItem('shiftReport');
-      localStorage.removeItem('mainShiftClose');
-      localStorage.removeItem('closingPausedMainShift');
-      localStorage.removeItem('mainShiftUser');
+      this.removeReports();
       this.cdtaservice.setterminalNumber(undefined);
+      this.checkSessionExpiration();
       this.router.navigate(['login']);
     } else if (userData.shiftState == '3' && userData.shiftType == '1') {
       this.cdtaservice.setterminalNumber(undefined);
+      this.checkSessionExpiration()
       this.router.navigate(['login']);
     } else if (userData.shiftState != '3' && userData.shiftType == '1') {
       (this.isSessionExpired) ? this.router.navigate(['login']) : $('#warning').modal('show');
     } else {
-      localStorage.removeItem('shiftReport');
-      localStorage.removeItem('mainShiftClose');
-      localStorage.removeItem('mainShiftUser');
-      localStorage.removeItem('closingPausedMainShift');
+      this.removeReports();
       this.cdtaservice.setterminalNumber(undefined);
+      this.checkSessionExpiration();
       this.router.navigate(['login']);
     }
-    if(this.isSessionExpired == false){
-      localStorage.removeItem('deviceLocked');
+    if(this.isSessionExpired == false || this.isSessionExpired == undefined){
+     // localStorage.removeItem('deviceLocked');
       localStorage.removeItem('userEmail');
-    } else {
-      // nothing to do
     }
   }
 
+checkSessionExpiration(){
+  console.log('is session expired', this.isSessionExpired)
+  if(this.isSessionExpired == false || this.isSessionExpired == undefined){
+    // localStorage.removeItem('deviceLocked');
+     localStorage.removeItem('userEmail');
+   }
+}
 
+removeReports(){
+  localStorage.removeItem('shiftReport');
+  localStorage.removeItem('mainShiftClose');
+  localStorage.removeItem('mainShiftUser');
+  localStorage.removeItem('closingPausedMainShift');
+}
 
   /**
    *This Method is used to lock the device
@@ -110,6 +118,7 @@ export class NavbarComponent implements OnInit {
    */
   lockDevice() {
     this.cdtaservice.announceHeaderShowHide('hideHeader');
+    localStorage.setItem('deviceLockedByUser', localStorage.getItem('userEmail'));
     this.router.navigate(['/login']);
     this.cdtaservice.setterminalNumber(undefined);
     localStorage.setItem('deviceLocked', 'true');

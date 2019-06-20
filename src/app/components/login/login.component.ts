@@ -69,7 +69,9 @@ export class LoginComponent implements OnInit {
                     } else {
                         console.log('permission available');
                         console.log('login user data', data);
-                        localStorage.removeItem('deviceLocked');
+                        if (localStorage.getItem('deviceLocked') == 'true' && localStorage.getItem('deviceLockedByUser') == this.userdata.username) {
+                            localStorage.removeItem('deviceLocked');
+                        }
                         const localDeviceInfo = JSON.parse(localStorage.getItem('deviceInfo'));
                         if (null == localDeviceInfo || undefined == localDeviceInfo) {
                             const deviceInfo = Utils.getInstance.createDeviceInfoDefaultRecord();
@@ -120,7 +122,7 @@ export class LoginComponent implements OnInit {
                         });
                     }
                 }
-                else{
+                else {
                     $('#errorLogin').modal('show');
                 }
             }
@@ -163,12 +165,14 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('shiftReport', JSON.stringify(this.shiftReport));
             this.statusOfShiftReportBoolean = true;
             this.statusOfShiftReport = 'Main Shift is Closed';
+            localStorage.removeItem('deviceLocked');
         } else if (localStorage.getItem('shiftReport') != null) {
             const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
             const userId = localStorage.getItem('userID');
             shiftReports.forEach(element => {
                 if (element.shiftState == '3' && element.userID != '' && element.shiftType == '0') {
                     localStorage.removeItem('shiftReport');
+                    localStorage.removeItem('deviceLocked');
                     localStorage.setItem('shiftReport', JSON.stringify(this.shiftReport));
                     this.statusOfShiftReportBoolean = true;
                     this.statusOfShiftReport = 'Main Shift is Closed';
@@ -184,13 +188,14 @@ export class LoginComponent implements OnInit {
                         if (element.shiftState == '3' && element.shiftType == '0') {
                             this.statusOfShiftReportBoolean = true;
                             this.statusOfShiftReport = 'Main Shift is Closed';
+                            localStorage.removeItem('deviceLocked');
                         } else if (element.shiftState == '4' && element.shiftType == '0') {
                             this.statusOfShiftReportBoolean = true;
 
                             this.statusOfShiftReport = 'Main Shift is Paused';
                             if (localStorage.getItem('deviceLocked') == 'true') {
                                 this.lockedByUserBoolean = true;
-                                this.lockedByUser = localStorage.getItem('userEmail');
+                                this.lockedByUser = localStorage.getItem('deviceLockedByUser');
                             } else
                                 if (localStorage.getItem('mainShiftUserLock') != undefined) {
                                     this.ownedByUserBoolean = true;
@@ -198,7 +203,7 @@ export class LoginComponent implements OnInit {
                                 }
                         } else if (element.shiftState == '0' && element.shiftType == '0' && element.userEmail != '') {
                             this.lockedByUserBoolean = true;
-                            this.lockedByUser = localStorage.getItem('userEmail');
+                            this.lockedByUser = (localStorage.getItem('userEmail') != undefined) ? localStorage.getItem('userEmail') : localStorage.getItem('deviceLockedByUser');
 
                         } else if (element.shiftState == '0' && element.shiftType == '1' && element.userEmail != '') {
                             this.ownedByUserBoolean = false;
@@ -209,8 +214,9 @@ export class LoginComponent implements OnInit {
 
         if (localStorage.getItem('deviceLocked') == 'true' && localStorage.getItem('deviceLocked') != undefined) {
             this.lockedByUserBoolean = true;
-            this.lockedByUser = localStorage.getItem('userEmail');
+            this.lockedByUser = (localStorage.getItem('userEmail') != undefined) ? localStorage.getItem('userEmail') : localStorage.getItem('deviceLockedByUser');
             console.log('main_shift_user lock', this.lockedByUser);
+
         }
 
     }
