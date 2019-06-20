@@ -370,7 +370,7 @@ export class CarddataComponent implements OnInit, OnChanges {
   initiateSaveTransaction() {
     this.disableEncode = true;
     const expirationDate: String = (new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + (new Date().getFullYear() + 10);
-    if (this.isNew || this.isLUCCCardNew) {
+    if (this.isNew || this.isLUCCCardNew || Utils.getInstance.isFromAccountBasedCard()) {
       this.handleUpdateCardDataResult();
       this.electronService.ipcRenderer.send('updateCardData', CardService.getInstance.getCardName(), expirationDate);
     } else {

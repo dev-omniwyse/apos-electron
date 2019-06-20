@@ -93,17 +93,22 @@ export class TransactionService {
                                                 ? Number(accountDetails.cards[selectedAccountBaseCardIndex].expiryDate) / 86400000
                                                 : Utils.getInstance.isFromAccountBasedCard() ? wallet._cardExpiration : 0
                                                 : wallet._cardExpiration;
-                item.$quantity = (isAccountBase) ? 0 : walletQuantitySold;
-                item.$productIdentifier = isAccountBase ? null : walletProductIdentifier;
+                // item.$quantity = (isAccountBase) ? 0 : walletQuantitySold;
+                item.$quantity = walletQuantitySold;
+                // item.$productIdentifier = isAccountBase ? null : walletProductIdentifier;
+                item.$productIdentifier =  walletProductIdentifier;
                 item.$ticketTypeId = null;
                 item.$ticketValue = 0;
-                item.$slotNumber = (isAccountBase) ? 1 : 0;
+                // item.$slotNumber = (isAccountBase) ? 1 : 0;
+                item.$slotNumber = 0;
                 item.$balance = 0;
                 item.$IsMerchandise = false;
                 item.$IsBackendMerchandise = false;
                 item.$IsFareCard = true;
-                item.$unitPrice = (isAccountBase) ? 0 : walletUnitPrice;
-                item.$totalCost = (isAccountBase) ? 0 : walletCost;
+                // item.$unitPrice = (isAccountBase) ? 0 : walletUnitPrice;
+                // item.$totalCost = (isAccountBase) ? 0 : walletCost;
+                item.$unitPrice =  walletUnitPrice;
+                item.$totalCost = walletCost;
                 item.$userID = (isAccountBase) ? userData.userEmail : userData.userID;
                 item.$shiftID = userData.shiftID;
                 if (isAccountBase) {

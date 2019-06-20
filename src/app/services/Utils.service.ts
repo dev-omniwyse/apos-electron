@@ -699,9 +699,9 @@ export class Utils {
     }
 
 
-    populateDummyCard() {
+    populateDummyCard(pid) {
         const cardData = {
-            'uid': 1154851244231552, 'printed_id': '0000000988', 'user_profile': 1, 'card_expiration_date': 18190,
+            'uid': 1154851244231552, 'printed_id': (pid) ? pid : '-1', 'user_profile': 1, 'card_expiration_date': 18190,
             'user_profile_expiration_date': 0, 'card_expiration_date_str': 'Oct 21, 2019', 'user_profile_expiration_date_str': 'Jan 01, 1970',
             'is_card_bad_listed': false, 'is_card_registered': false, 'preferred_language': 0, 'accessibility_flags': 0, 'products': [],
             'journals': null, 'is_tpb_locked': true, 'tpb_code': 0, 'manufacturer_id': 0, 'equipment_type': 0, 'equipment_id': 0,

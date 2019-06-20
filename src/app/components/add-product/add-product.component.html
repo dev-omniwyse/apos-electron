@@ -86,7 +86,7 @@
                 <div *ngIf="accountBase" class="cont-products-head"> PRODUCTS</div>
                 <div *ngIf="isMerchendise && !accountBase" class="cont-products-head"> NON FARE PRODUCTS</div>
 
-                <span class="label label-default" *ngIf="!isMerchendise">
+                <span class="label label-default" *ngIf="(!isMerchendise) && (active_printed_id != '-1')">
                     <div class="pull-left">{{currentWalletLineItem?._description}}</div>
 
 

@@ -94,7 +94,8 @@ export class AccountDetailsComponent implements OnInit {
 
   populateEmptyCard() {
     const item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
-    this.carddata.push(Utils.getInstance.populateDummyCard());
+    this.carddata.push(Utils.getInstance.populateDummyCard((this.selectedCardIndex != -1) ?
+     this.accountDetails.cards[this.selectedCardIndex].pid : null));
     this.shoppingcart = FareCardService.getInstance.addSmartCard(this.shoppingcart,
       this.carddata[0], item.Offering, false);
     localStorage.setItem('readCardData', JSON.stringify(JSON.stringify(this.carddata[0])));
@@ -216,6 +217,7 @@ export class AccountDetailsComponent implements OnInit {
 
   addCard() {
     localStorage.setItem('addCardForAccount', 'true');
+    this.selectedCardIndex = -1;
     this.readCard();
   }
   showErrorMessages() {
