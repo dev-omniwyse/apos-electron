@@ -799,10 +799,12 @@ export class HomeComponent implements OnInit {
                 localStorage.setItem('hideModalPopup', 'true');
             } else {
                 if (localStorage.getItem('shiftReopenedByMainUser') == 'true') {
-
-                    localStorage.setItem('hideModalPopup', 'true');
+                    localStorage.setItem('hideModalPopup', 'true'); 
                 } else {
-                    localStorage.setItem('hideModalPopup', 'false');
+                    if(this.isMainShiftOpen != true && this.isReliefShiftOpen != true){
+                        localStorage.setItem('hideModalPopup', 'false');
+                    }
+                    
                 }
             }
         });
