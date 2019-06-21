@@ -208,10 +208,12 @@ export class ShiftsComponent implements OnInit {
         }
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
         shiftReports.forEach(element => {
-            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0') || (element.shiftType == 'unknown' && element.shiftState == '0')) {
+            if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
                 localStorage.setItem('hideModalPopup', 'true');
             } else if (element.shiftState == 3 && element.userID == localStorage.getItem('userID')) {
-                localStorage.setItem('hideModalPopup', 'false');
+                if(this.isMainShiftOpen != true && this.isReliefShiftOpen != true){
+                    localStorage.setItem('hideModalPopup', 'false');
+                }
             }
         });
     }
