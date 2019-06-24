@@ -368,14 +368,15 @@ export class AdminComponent implements OnInit {
   hideModalPop() {
     const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
     shiftReports.forEach(element => {
-      if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0') || (element.shiftType == 'unknown' && element.shiftState == '0')) {
+      if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0')) {
         localStorage.setItem('hideModalPopup', 'true');
       } else {
-
         if (localStorage.getItem('shiftReopenedByMainUser') == 'true') {
           localStorage.setItem('hideModalPopup', 'true');
         } else {
-          localStorage.setItem('hideModalPopup', 'false');
+          if(this.isMainShiftOpen != true && this.isReliefShiftOpen != true){
+            localStorage.setItem('hideModalPopup', 'false');
+        }
         }
 
       }
