@@ -793,6 +793,7 @@ export class HomeComponent implements OnInit {
      * @memberof ReadcardComponent
      */
     hideModalPop() {
+        localStorage.removeItem('isAccountBased');
         const shiftReports = JSON.parse(localStorage.getItem('shiftReport'));
         shiftReports.forEach(element => {
             if ((element.shiftType == '0' && element.shiftState == '0') || (element.shiftType == '1' && element.shiftState == '0') || (element.shiftType == 'unknown' && element.shiftState == '0')) {
