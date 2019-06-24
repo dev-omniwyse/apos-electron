@@ -115,7 +115,11 @@ export class AccountDetailsComponent implements OnInit {
           this.carddata = new Array(JSON.parse(data));
           let item = JSON.parse(JSON.parse(localStorage.getItem('catalogJSON')));
           const checkOffering = FareCardService.getInstance.getOfferingBasedOnWalletTypeID(item, this.carddata[0].group);
-          if (checkOffering) {
+          if(!this.carddata[0].account_flag){
+            $('#notAccountCard').modal('show');
+            return;
+          }
+          else if (checkOffering) {
             this.showCardNotAvailableForSale();
             return;
           }
