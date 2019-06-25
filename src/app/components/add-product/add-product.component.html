@@ -179,7 +179,7 @@
         </div>
         <div class="tab-sets">
             <ul class="nav nav-pills" *ngIf="!regularRoute">
-                <li [ngClass]="selectedProductCategoryIndex == 0? 'active': ''" (click)="frequentRide()" *ngIf="checkAccountCardsLength.cards.length != 0"><a data-toggle="pill">FREQUENT RIDER</a></li>
+                <li [ngClass]="selectedProductCategoryIndex == 0? 'active': ''" (click)="frequentRide()" *ngIf="((checkAccountCardsLength == null) || (checkAccountCardsLength.cards.length != 0))"><a data-toggle="pill">FREQUENT RIDER</a></li>
                 <li [ngClass]="selectedProductCategoryIndex == 1? 'active': ''" *ngIf="!accountBase" (click)="storedValue()"><a data-toggle="pill">STORED RIDE PASS</a></li>
                 <li [ngClass]="selectedProductCategoryIndex == 2? 'active': ''" (click)="payValue()"><a data-toggle="pill">PAY AS YOU GO</a></li>
             </ul>

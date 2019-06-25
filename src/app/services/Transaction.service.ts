@@ -117,7 +117,7 @@ export class TransactionService {
                 // fareCodeDescription -----
                 item.$fareCode = (isAccountBase) ? 'Full' : fareCodeDescription;
 
-                if (!isAccountBase) {
+                if (!isAccountBase) { 
                     item.$walletTypeId = wallet._walletTypeId;
                 }
 

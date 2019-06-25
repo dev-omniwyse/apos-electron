@@ -13,6 +13,7 @@ import * as Hammer from 'hammerjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { SysytemConfig } from 'src/app/config';
 import { CardService } from 'src/app/services/Card.service';
+import {AddProductValidations} from 'src/app/validations/AddProductValidations';
 
 
 declare var $: any;
@@ -208,9 +209,9 @@ export class AddProductComponent implements OnInit, OnDestroy {
       }
     });
     this.shoppingcart = JSON.parse(localStorage.getItem('shoppingCart'));
-    if(this.checkAccountCardsLength.cards.length != 0) {
+    if((this.checkAccountCardsLength == null) || (this.checkAccountCardsLength.cards.length != 0)) {
       this.selectedProductCategoryIndex = 0;
-    this.frequentRide();
+      this.frequentRide();
     }
     if (this.isMerchendise) {
       this.clickOnMerch();
@@ -677,7 +678,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   addProductToWallet(product) {
     if ((this.currentWalletLineItem._walletTypeId == MediaType.SMART_CARD_ID ||
       this.currentWalletLineItem._walletTypeId == MediaType.LUCC) &&
-      this.checkIsBadListedProductOnWallet(product)) {
+      AddProductValidations.getInstance.checkIsBadListedProductOnWallet(product, this.currentCard)) {
       this.badlistedProductModalText = 'Product is deactivated or suspended on this card.';
       $('#badlistedProductModal').modal({
         backdrop: 'static',
