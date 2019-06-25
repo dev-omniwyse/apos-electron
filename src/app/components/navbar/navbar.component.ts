@@ -21,7 +21,7 @@ export class NavbarComponent implements OnInit {
   hideAndShowLogout: Boolean;
   today = new Date();
   versionDate = new Date();
-  isSessionExpired: Boolean;
+  isSessionExpired: Boolean = false;
 
 
   constructor(private cdtaservice: CdtaService, private router: Router, private _ngZone: NgZone, private sessionService: SessionServiceApos,
@@ -59,10 +59,8 @@ export class NavbarComponent implements OnInit {
    */
 
   logOut() {
-
     this.sessionService.sessionStop();
     localStorage.removeItem('isAccountBased');
-
     const shiftreportUser = localStorage.getItem('userID');
     const shiftreport = JSON.parse(localStorage.getItem('shiftReport'));
     let userData;
@@ -93,6 +91,8 @@ export class NavbarComponent implements OnInit {
     if(this.isSessionExpired == false || this.isSessionExpired == undefined){
      // localStorage.removeItem('deviceLocked');
       localStorage.removeItem('userEmail');
+    }else if(this.isSessionExpired == true){
+      this.cdtaservice.setterminalNumber(undefined);
     }
   }
 
